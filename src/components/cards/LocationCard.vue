@@ -1,7 +1,7 @@
 <template>
 	<v-card class="my-1">
 		<v-card-title>
-			<p class="text-subtitle-2 text--primary">{{ title }}</p>
+			<p class="text-subtitle-2 text--primary">{{ name }}</p>
 		</v-card-title>
 		<v-card-text>
 			<p class="text-body-2 text--primary">{{ desc }}</p>
@@ -14,7 +14,8 @@ export default {
     name: "LocationCard",
     props: {
         id: Number,
-        title: String,
+        order: Number,
+        name: String,
         desc: String
     }
 };
