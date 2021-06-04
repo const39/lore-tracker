@@ -34,6 +34,7 @@ Stockées dans des panneaux (*panels*).
     * Infos à propos de l'événement, ex : *Une grande bataille...*
     * Localité de l'événement, ex : *Langdale* (optionnel)
     * Personnages impliqués, ex : *Acménos, Halvor...* (optionnel)
+    * Type d'événement [Combat, Rencontre, Découverte, Voyage, Autre]
 
 * Objectifs
     * Infos à propos de l'objectifs, ex : *Retrouver Zyrlat.*
