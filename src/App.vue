@@ -12,12 +12,13 @@
 					<span class="mr-2">Home</span>
 				</v-btn>
 			</router-link>
-			<!-- *** Non-implemented routes *** -->
-			<!-- <router-link to="/timeline">
+			<router-link to="/timeline">
 				<v-btn text>
 					<span class="mr-2">Timeline</span>
 				</v-btn>
 			</router-link>
+			<!-- *** Non-implemented routes *** -->
+			<!-- 
 			<router-link to="/dice">
 				<v-btn text>
 					<span class="mr-2">Dice</span>
