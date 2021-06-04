@@ -1,15 +1,19 @@
 <template>
-  <hello-world />
+	<v-container>
+		<PanelsContainer></PanelsContainer>
+	</v-container>
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+import PanelsContainer from "../components/PanelsContainer.vue";
+// import Timeline from '../components/Timeline.vue';
 
-  export default {
-    name: 'Home',
+export default {
+	name: "Home",
 
-    components: {
-      HelloWorld,
-    },
-  }
+	components: {
+		// Timeline,
+		PanelsContainer,
+	},
+};
 </script>
