@@ -87,4 +87,58 @@ let testData = {
 	],
 };
 
-export default { testData: testData };
+import { LowSync, JSONFileSync } from "lowdb";
+
+const SAVE_DIR = "./saves/";
+const SAVE_FILE = SAVE_DIR + "save.json";
+
+const db = new LowSync(new JSONFileSync(SAVE_FILE));
+db.read(); // Reads file to init db.data (null if file doesn't exist)
+
+// If data is null, init with default empty object
+db.data ||= {
+	objectives: [],
+	events: [],
+	locations: [],
+	characters: [],
+	notes: [],
+};
+
+let orders = {
+	objectives: 0,
+	events: 0,
+	locations: 0,
+	characters: 0,
+	notes: 0,
+}
+
+for (const key in db.data) {
+	db.data[key].forEach(elem => {
+		orders[key] = Math.max(orders[key], elem.order);
+	});
+}
+
+console.log(db.data);
+
+function uid() {
+	return new Date().getTime();
+}
+
+function addLocation(name, desc) {
+
+	if(name) {
+		db.data.locations.push({
+			id: uid(),
+			order: orders.locations++,
+			name: name,
+			desc: desc
+		});
+		db.write();
+	}
+}
+
+export default {
+	testData,
+	data: db.data,
+	addLocation,
+};

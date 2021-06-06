@@ -17,8 +17,8 @@
 					</v-card-title>
 					<v-card-text>
 						<v-container>
-							<v-text-field label="Nom de la localité" :rules="requiredRule"></v-text-field>
-							<v-textarea outlined label="Description"></v-textarea>
+							<v-text-field label="Nom de la localité" :rules="requiredRule" v-model="locationName"></v-text-field>
+							<v-textarea outlined label="Description" v-model="locationDesc"></v-textarea>
 						</v-container>
 					</v-card-text>
 					<v-card-actions>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import storage from "../../js/storage.js";
+
 export default {
 	data() {
 		return {
@@ -40,14 +42,27 @@ export default {
 			valid: false,
             requiredRule: [
                 v => !!v || 'Champ requis'
-            ]
+            ],
+			locationName: '',
+			locationDesc: '',
 		};
 	},
 	methods: {
 		submit() {
             this.$refs.form.validate();
-            if(this.valid) this.showDialog = false;
+            if(this.valid) {
+
+				storage.addLocation(this.locationName, this.locationDesc);
+
+				this.resetModels();
+				this.showDialog = false;
+			} 
+
 		},
+		resetModels() {
+			this.locationName = '';
+			this.locationDesc = '';
+		}
 	},
 };
 </script>

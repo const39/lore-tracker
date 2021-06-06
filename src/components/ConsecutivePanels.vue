@@ -4,7 +4,7 @@
 			<Panel :title="panels[0]"> </Panel>
 			<Panel :title="panels[1]"> </Panel>
 			<Panel :title="panels[2]">
-				<LocationCard v-for="location in data.locations" :key="location.id" v-bind="location"></LocationCard>
+				<LocationCard v-for="location in liveData.locations" :key="location.id" v-bind="location"></LocationCard>
 				<LocationForm></LocationForm>
 			</Panel>
 			<Panel :title="panels[3]"> </Panel>
@@ -30,9 +30,15 @@ export default {
 	data() {
 		return {
 			panels: ["Objectifs", "Événements", "Localités", "Personnages", "Notes"],
-			data: storage.testData,
+			liveData: storage.data,
 		};
 	},
+	// watch: {
+	// 	liveData() {
+	// 		db.write();
+	// 		console.log('written');
+	// 	}
+	// }
 };
 </script>
 
