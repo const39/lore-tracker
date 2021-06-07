@@ -3,16 +3,16 @@
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1">
-					<v-icon large>mdi-sword-cross</v-icon>
+					<v-icon large>{{icons.whichEventIcon(type)}}</v-icon>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<p class="text--primary">{{ desc }}</p>
 					<v-chip class="mx-1">
-						<v-icon left>mdi-home</v-icon>
+						<v-icon left>{{icons.location}}</v-icon>
 						{{ locationName }}
 					</v-chip>
 					<v-chip v-for="characterId in charactersIds" :key="characterId" outlined class="mx-1">
-						<v-icon left>mdi-account</v-icon>
+						<v-icon left>{{icons.player}}</v-icon>
 						{{ characterName(characterId) }}
 					</v-chip>
 				</v-col>
@@ -23,6 +23,7 @@
 
 <script>
 import storage from "../../js/storage.js";
+import icons from "../../js/icons.js";
 
 export default {
 	name: "EventCard",
@@ -33,6 +34,11 @@ export default {
 		locationId: Number,
 		charactersIds: Array,
 		type: String,
+	},
+	data() {
+		return {
+			icons: icons
+		}
 	},
     methods: {
         characterName(characterId) {
