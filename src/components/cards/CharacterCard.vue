@@ -16,7 +16,7 @@
 					<span>Joueur</span>
 				</v-tooltip>
 			</p>
-			<p class="text-subtitle-2 text--primary">{{ race }} - {{ classes }} ({{ role }})</p>
+			<p class="text-subtitle-2 text--primary">{{ identity }}</p>
 			<p class="text--primary">{{ desc }}</p>
 		</v-card-text>
 	</v-card>
@@ -42,6 +42,16 @@ export default {
 			icons: icons,
 		};
 	},
+    computed: {
+        identity() {
+
+            let race = this.race || 'Race inconnue';
+            let classes = this.classes || 'Classes inconnues';
+            let role = this.role || 'Rôle inconnu';
+
+            return `${race} - ${classes} (${role})`;
+        }
+    }
 };
 </script>
 

@@ -2,12 +2,12 @@
 	<v-card class="mb-4">
 		<v-card-text class="pa-3">
 			<p class="text--primary">{{ desc }}</p>
-			<v-chip class="mx-1">
-				<v-icon left>{{icons.location}}</v-icon>
+			<v-chip class="mx-1" v-if="locationName">
+				<v-icon left>{{ icons.location }}</v-icon>
 				{{ locationName }}
 			</v-chip>
 			<v-chip v-for="characterId in charactersIds" :key="characterId" outlined class="mx-1">
-				<v-icon left>{{icons.player}}</v-icon>
+				<v-icon left>{{ icons.player }}</v-icon>
 				{{ characterName(characterId) }}
 			</v-chip>
 		</v-card-text>
@@ -27,19 +27,22 @@ export default {
 		locationId: Number,
 		charactersIds: Array,
 	},
-    data() {
-        return {
-            icons: icons
-        }
-    },
+	data() {
+		return {
+			icons: icons,
+		};
+	},
 	methods: {
 		characterName(characterId) {
-			return storage.data.characters.find((entry) => entry.id === characterId).name;
+			if (characterId != undefined) return storage.data.characters.find((entry) => entry.id === characterId).name;
+			else return "";
 		},
 	},
 	computed: {
 		locationName() {
-			return storage.data.locations.find((entry) => entry.id === this.locationId).name;
+			if (this.locationId != undefined)
+				return storage.data.locations.find((entry) => entry.id === this.locationId).name;
+			else return "";
 		},
 	},
 };

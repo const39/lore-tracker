@@ -26,9 +26,10 @@ Stockées dans des panneaux (*panels*).
 
 
 
-* Localités
-    * Nom de la localité, ex : *Langdale*
-    * Infos à propos de la localité, ex : *Un petit village perdu dans une plaine. Une taverne, L'Auberge Noire, s'y trouve. Le village a connu une bataille lorsque...* (optionnel)
+* Objectifs
+    * Infos à propos de l'objectifs, ex : *Retrouver Zyrlat.*
+    * Localité de l'événement, ex : *Langdale* (optionnel)
+    * Personnages impliqués, ex : *Acménos, Halvor...* (optionnel)
 
 * Événements
     * Infos à propos de l'événement, ex : *Une grande bataille...*
@@ -36,10 +37,9 @@ Stockées dans des panneaux (*panels*).
     * Personnages impliqués, ex : *Acménos, Halvor...* (optionnel)
     * Type d'événement [Combat, Rencontre, Découverte, Voyage, Autre]
 
-* Objectifs
-    * Infos à propos de l'objectifs, ex : *Retrouver Zyrlat.*
-    * Localité de l'événement, ex : *Langdale* (optionnel)
-    * Personnages impliqués, ex : *Acménos, Halvor...* (optionnel)
+* Localités
+    * Nom de la localité, ex : *Langdale*
+    * Infos à propos de la localité, ex : *Un petit village perdu dans une plaine. Une taverne, L'Auberge Noire, s'y trouve. Le village a connu une bataille lorsque...* (optionnel)
 
 * Personnages
     * Nom, ex : *Acménos*
