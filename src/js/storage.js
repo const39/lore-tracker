@@ -27,7 +27,7 @@ let orders = {
 	notes: 0,
 };
 
-// Browse through each field and get the max order 
+// Browse through each field and get the max order
 for (const key in db.data) {
 	db.data[key].forEach((elem) => {
 		orders[key] = Math.max(orders[key], elem.order);
@@ -45,9 +45,7 @@ function uid() {
 export default {
 	data: db.data,
 	addLocation: function(location) {
-
 		if (location.name) {
-
 			db.data.locations.push({
 				id: uid(),
 				order: orders.locations++,
@@ -55,14 +53,10 @@ export default {
 				desc: location.desc || undefined,
 			});
 			db.write();
-
-		} else
-			throw Error("Required field not present.");
+		} else throw Error("Required field not present.");
 	},
 	addCharacter: function(character) {
-
-		if(character.name && character.isNPC != undefined) {
-
+		if (character.name && character.isNPC != undefined) {
 			db.data.characters.push({
 				id: uid(),
 				order: orders.characters++,
@@ -71,10 +65,23 @@ export default {
 				classes: character.classes || undefined,
 				role: character.role || undefined,
 				isNPC: character.isNPC,
-				desc: character.desc || undefined
+				desc: character.desc || undefined,
 			});
 			db.write();
-		} else 
-			throw Error('Required fields not present.')
-	}
+		} else throw Error("Required fields not present.");
+	},
+	addNote: function(note) {
+		
+		if (note.desc) {
+
+			db.data.notes.push({
+				id: uid(),
+				order: orders.notes++,
+				title: note.title || undefined,
+				desc: note.desc,
+			});
+			db.write();
+
+		} else throw Error("Required fields not present.");
+	},
 };

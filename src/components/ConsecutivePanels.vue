@@ -17,6 +17,7 @@
 			</Panel>
 			<Panel :title="panels[4]">
 				<NoteCard v-for="note in liveData.notes" :key="note.id" v-bind="note"></NoteCard>
+				<NoteForm></NoteForm>
 			</Panel>
 		</v-expansion-panels>
 	</v-container>
@@ -33,6 +34,7 @@ import NoteCard from "./cards/NoteCard.vue";
 
 import LocationForm from "./forms/LocationForm.vue";
 import CharacterForm from "./forms/CharacterForm.vue";
+import NoteForm from "./forms/NoteForm.vue";
 
 import storage from "../js/storage.js";
 
@@ -47,6 +49,7 @@ export default {
 		NoteCard,
 		LocationForm,
 		CharacterForm,
+		NoteForm,
 	},
 	data() {
 		return {

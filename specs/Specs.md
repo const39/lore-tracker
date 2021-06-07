@@ -55,3 +55,10 @@ Stockées dans des panneaux (*panels*).
 
 
 Maquettes sur Lucidchart
+
+## TODO
+
+* Gestion des erreurs lors de l'ajout de nouvelles cartes
+* Mise à jour de cartes existantes
+* Suppression de cartes existantes
+* Ajuster les couleurs pour le Dark theme
