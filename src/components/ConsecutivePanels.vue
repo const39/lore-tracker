@@ -13,6 +13,7 @@
 			</Panel>
 			<Panel :title="panels[3]">
 				<CharacterCard v-for="character in liveData.characters" :key="character.id" v-bind="character"></CharacterCard>
+				<CharacterForm></CharacterForm>
 			</Panel>
 			<Panel :title="panels[4]">
 				<NoteCard v-for="note in liveData.notes" :key="note.id" v-bind="note"></NoteCard>
@@ -23,12 +24,15 @@
 
 <script>
 import Panel from "./Panel.vue";
+
 import ObjectiveCard from "./cards/ObjectiveCard.vue";
 import EventCard from "./cards/EventCard.vue";
 import LocationCard from "./cards/LocationCard.vue";
-import LocationForm from "./forms/LocationForm.vue";
 import CharacterCard from "./cards/CharacterCard.vue";
 import NoteCard from "./cards/NoteCard.vue";
+
+import LocationForm from "./forms/LocationForm.vue";
+import CharacterForm from "./forms/CharacterForm.vue";
 
 import storage from "../js/storage.js";
 
@@ -39,9 +43,10 @@ export default {
 		ObjectiveCard,
 		EventCard,
 		LocationCard,
-		LocationForm,
 		CharacterCard,
 		NoteCard,
+		LocationForm,
+		CharacterForm,
 	},
 	data() {
 		return {

@@ -17,8 +17,8 @@
 					</v-card-title>
 					<v-card-text>
 						<v-container>
-							<v-text-field label="Nom de la localité" :rules="requiredRule" v-model="locationName"></v-text-field>
-							<v-textarea outlined label="Description" v-model="locationDesc"></v-textarea>
+							<v-text-field label="Nom de la localité" :rules="requiredRule" v-model="locationModel.name"></v-text-field>
+							<v-textarea outlined label="Description" v-model="locationModel.desc"></v-textarea>
 						</v-container>
 					</v-card-text>
 					<v-card-actions>
@@ -43,8 +43,7 @@ export default {
             requiredRule: [
                 v => !!v || 'Champ requis'
             ],
-			locationName: '',
-			locationDesc: '',
+			locationModel: this.initModel()
 		};
 	},
 	methods: {
@@ -52,16 +51,18 @@ export default {
             this.$refs.form.validate();
             if(this.valid) {
 
-				storage.addLocation(this.locationName, this.locationDesc);
+				storage.addLocation(this.locationModel);
 
-				this.resetModels();
+				this.locationModel = this.initModel();
 				this.showDialog = false;
 			} 
 
 		},
-		resetModels() {
-			this.locationName = '';
-			this.locationDesc = '';
+		initModel() {
+			return {
+				name: '',
+				desc: ''
+			}
 		}
 	},
 };
