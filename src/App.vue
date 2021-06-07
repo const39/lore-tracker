@@ -24,6 +24,8 @@
 					<span class="mr-2">Dice</span>
 				</v-btn>
 			</router-link> -->
+
+			<v-icon @click="$vuetify.theme.dark = !$vuetify.theme.dark"> {{themeIcon}} </v-icon>
 		</v-app-bar>
 
 		<v-main>
@@ -37,9 +39,10 @@
 <script>
 export default {
 	name: "App",
-
-	data: () => ({
-		//
-	}),
+	computed: {
+		themeIcon() {
+			return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-7';
+		}
+	}
 };
 </script>
