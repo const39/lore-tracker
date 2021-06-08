@@ -42,15 +42,20 @@ export default {
 	},
 	methods: {
 		characterName(characterId) {
-			if (characterId != undefined) return storage.data.characters.find((entry) => entry.id === characterId).name;
-			else return "";
+			if (characterId != undefined) {
+				let char = storage.data.characters.find((entry) => entry.id === characterId);
+				if(char) return char.name;
+			}
+			return "";
 		},
 	},
 	computed: {
 		locationName() {
-			if (this.locationId != undefined)
-				return storage.data.locations.find((entry) => entry.id === this.locationId).name;
-			else return "";
+			if (this.locationId != undefined) {
+				let loc = storage.data.locations.find((entry) => entry.id === this.locationId);
+				if(loc) return loc.name;
+			}
+			return "";
 		},
 	},
 };
