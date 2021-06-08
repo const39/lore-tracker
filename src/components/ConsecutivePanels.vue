@@ -3,6 +3,7 @@
 		<v-expansion-panels multiple>
 			<Panel :title="panels[0]">
 				<ObjectiveCard v-for="objective in liveData.objectives" :key="objective.id" v-bind="objective"></ObjectiveCard>
+				<ObjectiveForm></ObjectiveForm>
 			</Panel>
 			<Panel :title="panels[1]">
 				<EventCard v-for="event in liveData.events" :key="event.id" v-bind="event"></EventCard>
@@ -32,6 +33,7 @@ import LocationCard from "./cards/LocationCard.vue";
 import CharacterCard from "./cards/CharacterCard.vue";
 import NoteCard from "./cards/NoteCard.vue";
 
+import ObjectiveForm from "./forms/ObjectiveForm.vue";
 import LocationForm from "./forms/LocationForm.vue";
 import CharacterForm from "./forms/CharacterForm.vue";
 import NoteForm from "./forms/NoteForm.vue";
@@ -47,6 +49,7 @@ export default {
 		LocationCard,
 		CharacterCard,
 		NoteCard,
+		ObjectiveForm,
 		LocationForm,
 		CharacterForm,
 		NoteForm,

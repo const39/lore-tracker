@@ -44,6 +44,19 @@ function uid() {
 
 export default {
 	data: db.data,
+	addObjective: function(objective) {
+
+		if (objective.desc) {
+			db.data.objectives.push({
+				id: uid(),
+				order: orders.objectives++,
+				desc: objective.desc,
+				locationId: objective.locationId || undefined,
+				charactersIds: objective.charactersIds || undefined
+			});
+			db.write();
+		} else throw Error("Required field missing.");
+	},
 	addLocation: function(location) {
 		if (location.name) {
 			db.data.locations.push({
@@ -53,7 +66,7 @@ export default {
 				desc: location.desc || undefined,
 			});
 			db.write();
-		} else throw Error("Required field not present.");
+		} else throw Error("Required field missing.");
 	},
 	addCharacter: function(character) {
 		if (character.name && character.isNPC != undefined) {
@@ -68,7 +81,7 @@ export default {
 				desc: character.desc || undefined,
 			});
 			db.write();
-		} else throw Error("Required fields not present.");
+		} else throw Error("Required fields missing.");
 	},
 	addNote: function(note) {
 		
@@ -82,6 +95,6 @@ export default {
 			});
 			db.write();
 
-		} else throw Error("Required fields not present.");
+		} else throw Error("Required fields missing.");
 	},
 };
