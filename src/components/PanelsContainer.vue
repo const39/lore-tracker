@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-row>
+		<div class="my-3">
 			<div class="text-xl-h4 text-center">Lore tracker</div>
 			<v-spacer></v-spacer>
 			<div class="display-selector">
@@ -14,21 +14,25 @@
 					<v-icon>mdi-view-column-outline</v-icon>
 				</v-btn>
 			</div>
-		</v-row>
+		</div>
 
 		<ConsecutivePanels v-if="selectedDisplay == 'consecutive'"></ConsecutivePanels>
-		<div v-else-if="selectedDisplay == 'tabbed'"></div>
-		<div v-else-if="selectedDisplay == 'column'"></div>
+		<TabbedPanels v-else-if="selectedDisplay == 'tabbed'"></TabbedPanels>
+		<ColumnPanels v-else-if="selectedDisplay == 'column'"></ColumnPanels>
 	</div>
 </template>
 
 <script>
 import ConsecutivePanels from "./ConsecutivePanels.vue";
+import TabbedPanels from "./TabbedPanels.vue";
+import ColumnPanels from "./ColumnPanels.vue";
 
 export default {
 	name: "PanelsContainer",
 	components: {
 		ConsecutivePanels,
+		TabbedPanels,
+		ColumnPanels,
 	},
 	data() {
 		return {
