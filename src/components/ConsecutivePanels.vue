@@ -7,6 +7,7 @@
 			</Panel>
 			<Panel :title="panels[1]">
 				<EventCard v-for="event in liveData.events" :key="event.id" v-bind="event"></EventCard>
+				<EventForm></EventForm>
 			</Panel>
 			<Panel :title="panels[2]">
 				<LocationCard v-for="location in liveData.locations" :key="location.id" v-bind="location"></LocationCard>
@@ -33,6 +34,7 @@ import LocationCard from "./cards/LocationCard.vue";
 import CharacterCard from "./cards/CharacterCard.vue";
 import NoteCard from "./cards/NoteCard.vue";
 
+import EventForm from "./forms/EventForm.vue";
 import ObjectiveForm from "./forms/ObjectiveForm.vue";
 import LocationForm from "./forms/LocationForm.vue";
 import CharacterForm from "./forms/CharacterForm.vue";
@@ -49,6 +51,7 @@ export default {
 		LocationCard,
 		CharacterCard,
 		NoteCard,
+		EventForm,
 		ObjectiveForm,
 		LocationForm,
 		CharacterForm,

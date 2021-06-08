@@ -44,6 +44,21 @@ function uid() {
 
 export default {
 	data: db.data,
+	eventTypes: ['combat', 'encounter', 'discovery', 'travel', 'other'],
+	addEvent: function(event) {
+
+		if (event.desc && this.eventTypes.includes(event.type)) {
+			db.data.events.push({
+				id: uid(),
+				order: orders.events++,
+				desc: event.desc,
+				locationId: event.locationId || undefined,
+				charactersIds: event.charactersIds || undefined,
+				type: event.type
+			});
+			db.write();
+		} else throw Error("Required field missing.");
+	},
 	addObjective: function(objective) {
 
 		if (objective.desc) {
