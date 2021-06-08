@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<div class="my-3">
-			<div class="text-xl-h4 text-center">Lore tracker</div>
+		<div class="my-3 d-flex">
+			<div class="text-xl-h4">Lore tracker</div>
 			<v-spacer></v-spacer>
 			<div class="display-selector">
 				<v-btn icon :color="color('consecutive')" @click="onClick('consecutive')">

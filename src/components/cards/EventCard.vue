@@ -2,7 +2,7 @@
 	<v-card class="mb-4">
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
-				<v-col class="flex-grow-0 flex-shrink-1">
+				<v-col class="flex-grow-0 flex-shrink-1" v-if="showIcon">
 					<v-icon large>{{ icons.whichEventIcon(type) }}</v-icon>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
@@ -34,6 +34,7 @@ export default {
 		locationId: Number,
 		charactersIds: Array,
 		type: String,
+		showIcon: Boolean
 	},
 	data() {
 		return {

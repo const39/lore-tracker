@@ -7,10 +7,7 @@
 				:icon="icons.whichEventIcon(event.type)"
 				fill-dot
 			>
-				<v-card class="elevation-2">
-					<v-card-title class="text-subtitle-2"> {{ "title" }} </v-card-title>
-					<v-card-text> {{ event.desc }} </v-card-text>
-				</v-card>
+				<EventCard v-bind="event" :show-icon="false"></EventCard>
 			</v-timeline-item>
 		</v-timeline>
 	</v-container>
@@ -19,7 +16,12 @@
 import storage from "../js/storage.js";
 import icons from "../js/icons.js";
 
+import EventCard from "../components/cards/EventCard.vue";
+
 export default {
+	components: {
+		EventCard,
+	},
 	data() {
 		return {
 			liveData: storage.data,

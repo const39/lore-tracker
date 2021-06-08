@@ -14,7 +14,7 @@
                 <v-card>
                     <v-card-title> {{panels[1]}} </v-card-title>
                     <v-card-text>
-                        <EventCard v-for="event in liveData.events" :key="event.id" v-bind="event"></EventCard>
+                        <EventCard v-for="event in liveData.events" :key="event.id" v-bind="event" :show-icon="true"></EventCard>
                         <EventForm></EventForm>
                     </v-card-text>
                 </v-card>
