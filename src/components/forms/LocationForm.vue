@@ -7,7 +7,7 @@
 						<v-icon>mdi-plus</v-icon>
 					</v-card-text>
 				</v-card>
-			</v-hover> 
+			</v-hover>
 		</template>
 		<template v-slot:default>
 			<v-form v-model="valid" ref="form">
@@ -17,7 +17,11 @@
 					</v-card-title>
 					<v-card-text>
 						<v-container>
-							<v-text-field label="Nom de la localité" :rules="requiredRule" v-model="locationModel.name"></v-text-field>
+							<v-text-field
+								label="Nom de la localité"
+								:rules="requiredRule"
+								v-model="locationModel.name"
+							></v-text-field>
 							<v-textarea outlined label="Description" v-model="locationModel.desc"></v-textarea>
 						</v-container>
 					</v-card-text>
@@ -40,30 +44,36 @@ export default {
 		return {
 			showDialog: false,
 			valid: false,
-            requiredRule: [
-                v => !!v || 'Champ requis'
-            ],
-			locationModel: this.initModel()
+			requiredRule: [(v) => !!v || "Champ requis"],
+			locationModel: this.initModel(),
 		};
 	},
 	methods: {
 		submit() {
-            this.$refs.form.validate();
-            if(this.valid) {
-
+			this.$refs.form.validate();
+			if (this.valid) {
 				storage.addLocation(this.locationModel);
-
-				this.locationModel = this.initModel();
 				this.showDialog = false;
-			} 
-
+			}
 		},
 		initModel() {
 			return {
-				name: '',
-				desc: ''
-			}
-		}
+				name: "",
+				desc: "",
+			};
+		},
+	},
+	watch: {
+		/**
+		 * Observe the showDialog variable to reset the model on dialog close, i.e. when the value changes to False.
+		 * Using a watcher allows to covers all dialog close cases : 
+		 * - on submit
+		 * - on explicit close (by clicking on the 'Close' button)
+		 * - on implicit close (by clicking outside the dialog or pressing Esc)
+		 */
+		showDialog: function(newVal) {
+			if (!newVal) this.locationModel = this.initModel();
+		},
 	},
 };
 </script>

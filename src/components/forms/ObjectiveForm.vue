@@ -91,10 +91,7 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-
 				storage.addObjective(this.objectiveModel);
-
-				this.objectiveModel = this.initModel();
 				this.showDialog = false;
 			}
 		},
@@ -104,6 +101,18 @@ export default {
 				locationId: undefined,
 				charactersIds: [],
 			};
+		},
+	},
+	watch: {
+		/**
+		 * Observe the showDialog variable to reset the model on dialog close, i.e. when the value changes to False.
+		 * Using a watcher allows to covers all dialog close cases :
+		 * - on submit
+		 * - on explicit close (by clicking on the 'Close' button)
+		 * - on implicit close (by clicking outside the dialog or pressing Esc)
+		 */
+		showDialog: function(newVal) {
+			if (!newVal) this.objectiveModel = this.initModel();
 		},
 	},
 };
