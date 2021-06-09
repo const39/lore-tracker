@@ -9,7 +9,7 @@
 					<v-container>
 						<v-textarea
 							outlined
-							label="Description"
+							label="Description*"
 							:rules="requiredRule"
 							v-model="eventModel.desc"
 						></v-textarea>
@@ -34,7 +34,7 @@
 							<v-col cols="12" sm="6">
 								<v-autocomplete
 									chips
-									label="Type d'événement"
+									label="Type d'événement*"
 									v-model="eventModel.type"
 									:rules="requiredRule"
 									:items="eventTypes"
@@ -71,6 +71,7 @@
 							</template>
 						</v-autocomplete>
 					</v-container>
+					<small>*champ requis</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>

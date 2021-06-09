@@ -10,11 +10,12 @@
 						<v-text-field label="Titre" v-model="noteModel.title"></v-text-field>
 						<v-textarea
 							outlined
-							label="Description"
+							label="Description*"
 							:rules="requiredRule"
 							v-model="noteModel.desc"
 						></v-textarea>
 					</v-container>
+					<small>*champ requis</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>

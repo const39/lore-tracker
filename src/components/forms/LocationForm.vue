@@ -8,12 +8,13 @@
 				<v-card-text>
 					<v-container>
 						<v-text-field
-							label="Nom de la localité"
+							label="Nom de la localité*"
 							:rules="requiredRule"
 							v-model="locationModel.name"
 						></v-text-field>
 						<v-textarea outlined label="Description" v-model="locationModel.desc"></v-textarea>
 					</v-container>
+					<small>*champ requis</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>

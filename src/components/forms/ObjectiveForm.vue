@@ -10,7 +10,7 @@
 					<v-container>
 						<v-textarea
 							outlined
-							label="Description"
+							label="Description*"
 							:rules="requiredRule"
 							v-model="objectiveModel.desc"
 						></v-textarea>
@@ -48,6 +48,7 @@
 							</template>
 						</v-autocomplete>
 					</v-container>
+					<small>*champ requis</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>

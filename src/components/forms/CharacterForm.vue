@@ -10,7 +10,7 @@
 						<v-row>
 							<v-col cols="12" sm="6" md="4">
 								<v-text-field
-									label="Nom"
+									label="Nom*"
 									:rules="requiredRule"
 									v-model="characterModel.name"
 								></v-text-field>
@@ -35,6 +35,7 @@
 						</v-row>
 						<v-textarea outlined label="Description" v-model="characterModel.desc"></v-textarea>
 					</v-container>
+					<small>*champ requis</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
