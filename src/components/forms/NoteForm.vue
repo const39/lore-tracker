@@ -31,7 +31,7 @@ import storage from "../../js/storage.js";
 
 export default {
 	props: {
-		value: Boolean,
+		value: Boolean, // Default v-model overwrite
 	},
 	data() {
 		return {
@@ -44,9 +44,9 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-				storage.addNote(this.noteModel);
-
-				this.noteModel = this.initModel();
+				this.noteModel.id = storage.uid();
+				storage.data.notes.push(this.noteModel);
+				storage.persist();
 				this.showDialog = false;
 			}
 		},

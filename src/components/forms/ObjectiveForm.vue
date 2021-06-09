@@ -18,7 +18,6 @@
 							chips
 							label="Localité"
 							v-model="objectiveModel.locationId"
-							:rules="requiredRule"
 							:items="locations"
 							item-text="name"
 							item-value="id"
@@ -36,7 +35,6 @@
 							multiple
 							label="Personnages impliqués"
 							v-model="objectiveModel.charactersIds"
-							:rules="requiredRule"
 							:items="characters"
 							item-text="name"
 							item-value="id"
@@ -67,9 +65,9 @@ import icons from "../../js/icons.js";
 
 export default {
 	props: {
-		value: Boolean,	// Default v-model overwrite
+		value: Boolean, // Default v-model overwrite
 		id: Number,
-		edit: Boolean
+		edit: Boolean,
 	},
 	data() {
 		return {
@@ -86,18 +84,24 @@ export default {
 			this.$refs.form.validate();
 			if (this.valid) {
 
-				if(this.edit) storage.editObjective(this.objectiveModel);
-				else storage.addObjective(this.objectiveModel);
+				/**
+				 * We explicitly modify the store on submit only when adding a new record.
+				 * On edit mode, the model already has a reference on the store so modification are live.
+				 * @see initModel()  
+				 */
+				if (!this.edit) {
+					this.objectiveModel.id = storage.uid();
+					storage.data.objectives.push(this.objectiveModel);
+				}
 
+				storage.persist();
 				this.showDialog = false;
 			}
 		},
 		initModel() {
-
-			if(this.edit && this.id) {
-
+			if (this.edit && this.id) {
 				let data = storage.data.objectives.find((entry) => entry.id === this.id);
-				if(data) return data;
+				if (data) return data;
 			}
 			return {
 				desc: "",

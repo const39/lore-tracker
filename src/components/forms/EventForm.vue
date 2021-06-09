@@ -19,7 +19,6 @@
 									chips
 									label="Localité"
 									v-model="eventModel.locationId"
-									:rules="requiredRule"
 									:items="locations"
 									item-text="name"
 									item-value="id"
@@ -59,7 +58,6 @@
 							multiple
 							label="Personnages impliqués"
 							v-model="eventModel.charactersIds"
-							:rules="requiredRule"
 							:items="characters"
 							item-text="name"
 							item-value="id"
@@ -90,7 +88,7 @@ import icons from "../../js/icons.js";
 
 export default {
 	props: {
-		value: Boolean,
+		value: Boolean, // Default v-model overwrite
 	},
 	data() {
 		return {
@@ -128,7 +126,9 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-				storage.addEvent(this.eventModel);
+				this.eventModel.id = storage.uid();
+				storage.data.events.push(this.eventModel);
+				storage.persist();
 				this.showDialog = false;
 			}
 		},

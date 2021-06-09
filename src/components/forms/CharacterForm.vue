@@ -51,7 +51,7 @@ import storage from "../../js/storage.js";
 
 export default {
 	props: {
-		value: Boolean,
+		value: Boolean, // Default v-model overwrite
 	},
 	data() {
 		return {
@@ -64,8 +64,10 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-				this.characterModel.isNPC = this.characterModel.isNPC === "npc";
-				storage.addCharacter(this.characterModel);
+				this.characterModel.id = storage.uid();
+				this.characterModel.isNPC = (this.characterModel.isNPC === "npc");
+				storage.data.characters.push(this.characterModel);
+				storage.persist();
 				this.showDialog = false;
 			}
 		},

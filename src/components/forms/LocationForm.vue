@@ -30,7 +30,7 @@ import storage from "../../js/storage.js";
 
 export default {
 	props: {
-		value: Boolean,
+		value: Boolean, // Default v-model overwrite
 	},
 	data() {
 		return {
@@ -43,7 +43,9 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-				storage.addLocation(this.locationModel);
+				this.locationModel.id = storage.uid();
+				storage.data.locations.push(this.locationModel);
+				storage.persist();
 				this.showDialog = false;
 			}
 		},
