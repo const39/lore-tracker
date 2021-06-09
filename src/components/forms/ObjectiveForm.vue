@@ -3,8 +3,8 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit"> Modifer une localité</span>
-					<span class="text-h5" v-else> Ajouter une localité</span>
+					<span class="text-h5" v-if="edit"> Modifer un objectif</span>
+					<span class="text-h5" v-else> Ajouter un objectif</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
@@ -14,21 +14,31 @@
 							:rules="requiredRule"
 							v-model="objectiveModel.desc"
 						></v-textarea>
-						<v-autocomplete
-							chips
-							label="Localité"
-							v-model="objectiveModel.locationId"
-							:items="locations"
-							item-text="name"
-							item-value="id"
-						>
-							<template v-slot:selection="data">
-								<v-chip>
-									<v-icon left>{{ icons.location }}</v-icon>
-									{{ data.item.name }}
-								</v-chip>
-							</template>
-						</v-autocomplete>
+						<v-row>
+							<v-col cols="12" sm="6">
+								<v-autocomplete
+									chips
+									label="Localité"
+									v-model="objectiveModel.locationId"
+									:items="locations"
+									item-text="name"
+									item-value="id"
+								>
+									<template v-slot:selection="data">
+										<v-chip>
+											<v-icon left>{{ icons.location }}</v-icon>
+											{{ data.item.name }}
+										</v-chip>
+									</template>
+								</v-autocomplete>
+							</v-col>
+							<v-col cols="12" sm="6">
+								<v-radio-group v-model="objectiveModel.isCompleted" row mandatory>
+									<v-radio label="En cours" :value="false"></v-radio>
+									<v-radio label="Accompli" :value="true"></v-radio>
+								</v-radio-group>
+							</v-col>
+						</v-row>
 						<v-autocomplete
 							chips
 							deletable-chips
@@ -106,6 +116,7 @@ export default {
 			}
 			return {
 				desc: "",
+				isCompleted: "",
 				locationId: undefined,
 				charactersIds: [],
 			};

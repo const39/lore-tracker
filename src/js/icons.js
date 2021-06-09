@@ -1,4 +1,5 @@
 export default {
+    completed: 'mdi-check-decagram',
     player: 'mdi-account',
     npc: 'mdi-controller-classic',
     location: 'mdi-home',

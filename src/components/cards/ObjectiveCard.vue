@@ -14,6 +14,12 @@
 				<v-icon left>{{ icons.player }}</v-icon>
 				{{ characterName(characterId) }}
 			</v-chip>
+			<v-tooltip top v-if="isCompleted">
+				<template v-slot:activator="{ on, attrs }">
+					<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
+				</template>
+				<span>Accompli</span>
+			</v-tooltip>
 		</v-card-text>
 	</v-card>
 </template>
@@ -33,15 +39,15 @@ export default {
 	},
 	props: {
 		id: Number,
-		order: Number,
 		desc: String,
+		isCompleted: Boolean,
 		locationId: Number,
 		charactersIds: Array,
 	},
 	data() {
 		return {
 			icons: icons,
-			showEditDialog: false
+			showEditDialog: false,
 		};
 	},
 	methods: {
