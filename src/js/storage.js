@@ -16,25 +16,6 @@ db.data ||= {
 };
 
 /**
- * Store the max used order for each field
- */
-// Init object
-let orders = {
-	objectives: 0,
-	events: 0,
-	locations: 0,
-	characters: 0,
-	notes: 0,
-};
-
-// Browse through each field and get the max order
-for (const key in db.data) {
-	db.data[key].forEach((elem) => {
-		orders[key] = Math.max(orders[key], elem.order);
-	});
-}
-
-/**
  * Returns the current timestamp. To be used as a Unique Identifier.
  * @returns the current timestamp
  */
@@ -49,7 +30,6 @@ export default {
 		if (event.desc && this.eventTypes.includes(event.type)) {
 			db.data.events.push({
 				id: uid(),
-				order: orders.events++,
 				desc: event.desc,
 				locationId: event.locationId || undefined,
 				charactersIds: event.charactersIds || undefined,
@@ -62,7 +42,6 @@ export default {
 		if (objective.desc) {
 			db.data.objectives.push({
 				id: uid(),
-				order: orders.objectives++,
 				desc: objective.desc,
 				locationId: objective.locationId || undefined,
 				charactersIds: objective.charactersIds || undefined,
@@ -76,7 +55,6 @@ export default {
 			if (index != -1) {
 				db.data.objectives[index] = {
 					id: objective.id,
-					order: orders.objectives++,
 					desc: objective.desc,
 					locationId: objective.locationId || undefined,
 					charactersIds: objective.charactersIds || undefined,
@@ -89,7 +67,6 @@ export default {
 		if (location.name) {
 			db.data.locations.push({
 				id: uid(),
-				order: orders.locations++,
 				name: location.name,
 				desc: location.desc || undefined,
 			});
@@ -100,7 +77,6 @@ export default {
 		if (character.name && character.isNPC != undefined) {
 			db.data.characters.push({
 				id: uid(),
-				order: orders.characters++,
 				name: character.name || undefined,
 				race: character.race || undefined,
 				classes: character.classes || undefined,
@@ -115,7 +91,6 @@ export default {
 		if (note.desc) {
 			db.data.notes.push({
 				id: uid(),
-				order: orders.notes++,
 				title: note.title || undefined,
 				desc: note.desc,
 			});
