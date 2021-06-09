@@ -3,7 +3,8 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5">Ajouter une localité</span>
+					<span class="text-h5" v-if="edit"> Modifer une localité</span>
+					<span class="text-h5" v-else> Ajouter une localité</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
@@ -66,7 +67,9 @@ import icons from "../../js/icons.js";
 
 export default {
 	props: {
-		value: Boolean,
+		value: Boolean,	// Default v-model overwrite
+		id: Number,
+		edit: Boolean
 	},
 	data() {
 		return {
@@ -82,11 +85,20 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-				storage.addObjective(this.objectiveModel);
+
+				if(this.edit) storage.editObjective(this.objectiveModel);
+				else storage.addObjective(this.objectiveModel);
+
 				this.showDialog = false;
 			}
 		},
 		initModel() {
+
+			if(this.edit && this.id) {
+
+				let data = storage.data.objectives.find((entry) => entry.id === this.id);
+				if(data) return data;
+			}
 			return {
 				desc: "",
 				locationId: undefined,

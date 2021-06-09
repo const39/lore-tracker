@@ -1,5 +1,9 @@
 <template>
 	<v-card class="mb-4">
+		<v-card-actions class="float-right">
+			<CardOptions @option-selected="onOptionSelected"></CardOptions>
+			<ObjectiveForm v-model="showEditDialog" edit :id="id"></ObjectiveForm>
+		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text--primary">{{ desc }}</p>
 			<v-chip class="mx-1" v-if="locationName">
@@ -18,8 +22,15 @@
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
 
+import CardOptions from "./CardOptions.vue";
+import ObjectiveForm from "../forms/ObjectiveForm.vue";
+
 export default {
 	name: "ObjectiveCard",
+	components: {
+		CardOptions,
+		ObjectiveForm,
+	},
 	props: {
 		id: Number,
 		order: Number,
@@ -30,22 +41,27 @@ export default {
 	data() {
 		return {
 			icons: icons,
+			showEditDialog: false
 		};
 	},
 	methods: {
 		characterName(characterId) {
 			if (characterId != undefined) {
 				let char = storage.data.characters.find((entry) => entry.id === characterId);
-				if(char) return char.name;
+				if (char) return char.name;
 			}
 			return "";
+		},
+		onOptionSelected(value) {
+			if (value === "edit") this.showEditDialog = true;
+			// else if (value === "delete") console.log('delete');
 		},
 	},
 	computed: {
 		locationName() {
 			if (this.locationId != undefined) {
 				let loc = storage.data.locations.find((entry) => entry.id === this.locationId);
-				if(loc) return loc.name;
+				if (loc) return loc.name;
 			}
 			return "";
 		},
