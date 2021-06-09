@@ -12,7 +12,6 @@ export default {
     name: "LocationCard",
     props: {
         id: Number,
-        order: Number,
         title: String,
         desc: String
     }

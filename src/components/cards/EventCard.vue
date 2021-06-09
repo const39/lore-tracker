@@ -29,7 +29,6 @@ export default {
 	name: "EventCard",
 	props: {
 		id: Number,
-		order: Number,
 		desc: String,
 		locationId: Number,
 		charactersIds: Array,

@@ -28,8 +28,8 @@
 							</v-col>
 							<v-col cols="12" sm="6">
 								<v-radio-group v-model="characterModel.isNPC" row mandatory>
-									<v-radio label="Joueur" value="player"></v-radio>
-									<v-radio label="Non-joueur" value="npc"></v-radio>
+									<v-radio label="Joueur" :value="false"></v-radio>
+									<v-radio label="Non-joueur" :value="true"></v-radio>
 								</v-radio-group>
 							</v-col>
 						</v-row>
@@ -66,7 +66,6 @@ export default {
 			this.$refs.form.validate();
 			if (this.valid) {
 				this.characterModel.id = storage.uid();
-				this.characterModel.isNPC = (this.characterModel.isNPC === "npc");
 				storage.data.characters.push(this.characterModel);
 				storage.persist();
 				this.showDialog = false;

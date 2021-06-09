@@ -29,7 +29,6 @@ export default {
 	name: "CharacterCard",
 	props: {
 		id: Number,
-		order: Number,
 		name: String,
 		race: String,
 		classes: String,
