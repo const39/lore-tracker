@@ -3,7 +3,8 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5">Ajouter une localité</span>
+					<span class="text-h5" v-if="edit">Modifier une localité</span>
+					<span class="text-h5" v-else>Ajouter une localité</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
@@ -32,6 +33,8 @@ import storage from "../../js/storage.js";
 export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
+		id: Number,
+		edit: Boolean
 	},
 	data() {
 		return {
@@ -43,14 +46,37 @@ export default {
 	methods: {
 		submit() {
 			this.$refs.form.validate();
+
 			if (this.valid) {
-				this.locationModel.id = storage.uid();
-				storage.data.locations.push(this.locationModel);
+
+				// In edit mode
+				if(this.edit) {
+
+					let index = storage.data.locations.findIndex(entry => entry.id === this.id);
+
+					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
+					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+					if(index != -1) this.$set(storage.data.locations, index, this.locationModel);
+					else console.error("Could not save the edit.");
+
+				// In create mode
+				} else {
+					this.locationModel.id = storage.uid();
+					storage.data.locations.push(this.locationModel);
+				}
+
 				storage.persist();
 				this.showDialog = false;
 			}
 		},
 		initModel() {
+			if (this.edit && this.id) {
+				let data = storage.data.locations.find((entry) => entry.id === this.id);
+
+				// We return a clone of the object to avoid modifying directly the store
+				// Helpful when the user cancels their changes because we don't have to rollback
+				if (data) return storage.clone(data);
+			}
 			return {
 				name: "",
 				desc: "",
