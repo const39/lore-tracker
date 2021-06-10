@@ -1,6 +1,6 @@
 <template>
 	<v-hover v-slot="{ hover }">
-		<v-card outlined class="my-1 custom-border" :class="{ 'grey lighten-3': hover }">
+		<v-card outlined class="my-1 custom-border" :class="{'grey': hover, 'lighten-3': !isDarkTheme, 'darken-3': isDarkTheme}">
 			<v-card-text class="text-center clickable" icon @click="onClick">
 				<v-icon>mdi-plus</v-icon>
 			</v-card-text>
@@ -17,6 +17,11 @@ export default {
          */
         onClick() {
             this.$emit('add-card-clicked')
+        },
+    },
+    computed: {
+        isDarkTheme() {
+            return this.$vuetify.theme.dark;
         }
     }
 };
