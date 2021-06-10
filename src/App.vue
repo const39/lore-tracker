@@ -25,7 +25,7 @@
 				</v-btn>
 			</router-link> -->
 
-			<v-icon @click="$vuetify.theme.dark = !$vuetify.theme.dark"> {{themeIcon}} </v-icon>
+			<v-icon @click="switchTheme"> {{themeIcon}} </v-icon>
 		</v-app-bar>
 
 		<v-main>
@@ -37,12 +37,23 @@
 </template>
 
 <script>
+const DARK_THEME_KEY = 'isDarkTheme';
+
 export default {
 	name: "App",
+	methods: {
+		switchTheme() {
+			this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
+			localStorage.setItem(DARK_THEME_KEY, this.$vuetify.theme.dark);
+		}
+	},
 	computed: {
 		themeIcon() {
 			return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-7';
 		}
+	},
+	created() {
+		this.$vuetify.theme.dark = (localStorage.getItem(DARK_THEME_KEY) === 'true');
 	}
 };
 </script>
