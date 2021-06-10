@@ -1,15 +1,22 @@
 <template>
 	<v-container>
-		<v-timeline>
-			<v-timeline-item
-				v-for="event in liveData.events"
-				:key="event.id"
-				:icon="icons.whichEventIcon(event.type)"
-				fill-dot
-			>
-				<EventCard v-bind="event" :show-icon="false"></EventCard>
-			</v-timeline-item>
-		</v-timeline>
+		<div class="my-3">
+			<div class="text-xl-h4">Frise des événements</div>
+			<v-timeline v-if="liveData.events.length > 0">
+				<v-timeline-item
+					v-for="event in liveData.events"
+					:key="event.id"
+					:icon="icons.whichEventIcon(event.type)"
+					fill-dot
+				>
+					<EventCard v-bind="event" :show-icon="false"></EventCard>
+				</v-timeline-item>
+			</v-timeline>
+			<p class="text-center" v-else>
+				Aucun événement enregistré. Vous pouvez en ajouter sur le
+				<router-link to="/">Lore Tracker</router-link>.
+			</p>
+		</div>
 	</v-container>
 </template>
 <script>

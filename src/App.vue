@@ -9,12 +9,12 @@
 
 			<router-link to="/">
 				<v-btn text>
-					<span class="mr-2">Home</span>
+					<span class="mr-2">Lore tracker</span>
 				</v-btn>
 			</router-link>
 			<router-link to="/timeline">
 				<v-btn text>
-					<span class="mr-2">Timeline</span>
+					<span class="mr-2">Frise des événements</span>
 				</v-btn>
 			</router-link>
 			<!-- *** Non-implemented routes *** -->
