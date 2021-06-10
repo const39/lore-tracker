@@ -16,8 +16,8 @@
 			</div>
 		</div>
 
-		<ConsecutivePanels v-if="selectedDisplay == 'consecutive'"></ConsecutivePanels>
-		<TabbedPanels v-else-if="selectedDisplay == 'tabbed'"></TabbedPanels>
+		<TabbedPanels v-if="selectedDisplay == 'tabbed'"></TabbedPanels>
+		<ConsecutivePanels v-else-if="selectedDisplay == 'consecutive'"></ConsecutivePanels>
 		<ColumnPanels v-else-if="selectedDisplay == 'column'"></ColumnPanels>
 	</div>
 </template>
@@ -36,7 +36,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedDisplay: "consecutive",
+			selectedDisplay: "tabbed",
 		};
 	},
 	methods: {

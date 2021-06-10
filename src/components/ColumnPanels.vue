@@ -6,7 +6,8 @@
                     <v-card-title> {{panels[0]}} </v-card-title>
                     <v-card-text>
                         <ObjectiveCard v-for="objective in liveData.objectives" :key="objective.id" v-bind="objective"></ObjectiveCard>
-                        <ObjectiveForm></ObjectiveForm>
+                        <AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
+                        <ObjectiveForm v-model="showObjectiveForm"></ObjectiveForm>
                     </v-card-text>
                 </v-card>
 			</v-col>
@@ -15,7 +16,8 @@
                     <v-card-title> {{panels[1]}} </v-card-title>
                     <v-card-text>
                         <EventCard v-for="event in liveData.events" :key="event.id" v-bind="event" :show-icon="true"></EventCard>
-                        <EventForm></EventForm>
+                        <AddCard @add-card-clicked="showEventForm = true"></AddCard>
+                        <EventForm v-model="showEventForm"></EventForm>
                     </v-card-text>
                 </v-card>
 			</v-col>
@@ -24,7 +26,8 @@
                     <v-card-title> {{panels[2]}} </v-card-title>
                     <v-card-text>
                         <LocationCard v-for="location in liveData.locations" :key="location.id" v-bind="location"></LocationCard>
-                        <LocationForm></LocationForm>
+                        <AddCard @add-card-clicked="showLocationForm = true"></AddCard>
+                        <LocationForm v-model="showLocationForm"></LocationForm>
                     </v-card-text>
                 </v-card>
 			</v-col>
@@ -33,7 +36,8 @@
                     <v-card-title> {{panels[3]}} </v-card-title>
                     <v-card-text>
                         <CharacterCard v-for="character in liveData.characters" :key="character.id" v-bind="character"></CharacterCard>
-                        <CharacterForm></CharacterForm>
+                        <AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
+                        <CharacterForm v-model="showCharacterForm"></CharacterForm>
                     </v-card-text>
                 </v-card>
 			</v-col>
@@ -42,7 +46,8 @@
                     <v-card-title> {{panels[4]}} </v-card-title>
                     <v-card-text>
                         <NoteCard v-for="note in liveData.notes" :key="note.id" v-bind="note"></NoteCard>
-                        <NoteForm></NoteForm>
+                        <AddCard @add-card-clicked="showNoteForm = true"></AddCard>
+                        <NoteForm v-model="showNoteForm"></NoteForm>
                     </v-card-text>
                 </v-card>
 			</v-col>
@@ -51,13 +56,12 @@
 </template>
 
 <script>
-// import Panel from "./Panel.vue";
-
 import ObjectiveCard from "./cards/ObjectiveCard.vue";
 import EventCard from "./cards/EventCard.vue";
 import LocationCard from "./cards/LocationCard.vue";
 import CharacterCard from "./cards/CharacterCard.vue";
 import NoteCard from "./cards/NoteCard.vue";
+import AddCard from "./cards/AddCard.vue";
 
 import EventForm from "./forms/EventForm.vue";
 import ObjectiveForm from "./forms/ObjectiveForm.vue";
@@ -70,12 +74,12 @@ import storage from "../js/storage.js";
 export default {
 	name: "ColumnPanels",
 	components: {
-		// Panel,
 		ObjectiveCard,
 		EventCard,
 		LocationCard,
 		CharacterCard,
 		NoteCard,
+        AddCard,
 		EventForm,
 		ObjectiveForm,
 		LocationForm,
@@ -86,6 +90,11 @@ export default {
 		return {
 			panels: ["Objectifs", "Événements", "Localités", "Personnages", "Notes"],
 			liveData: storage.data,
+            showObjectiveForm: false,
+            showEventForm: false,
+            showLocationForm: false,
+            showCharacterForm: false,
+            showNoteForm: false,
 		};
 	},
 };
