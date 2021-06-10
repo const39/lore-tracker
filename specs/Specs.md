@@ -11,6 +11,7 @@
 * Chaque panneau contient une "carte" contenant une information (ex: une ville)
 * On peut ajouter/modifier/supprimer de nouvelles cartes sur chaque panneau
 * Chaque carte peut contenir des références/hyperliens vers d'autres cartes
+* Les cartes peuvent être déplacées entre elles afin de les réordonner.
 
 **Extra :**
 * Affichage d'une frise des événements
@@ -30,6 +31,7 @@ Stockées dans des panneaux (*panels*).
     * Infos à propos de l'objectifs, ex : *Retrouver Zyrlat.*
     * Localité de l'événement, ex : *Langdale* (optionnel)
     * Personnages impliqués, ex : *Acménos, Halvor...* (optionnel)
+    * Accompli ou non, ex : *Accompli*
 
 * Événements
     * Infos à propos de l'événement, ex : *Une grande bataille...*
@@ -59,6 +61,5 @@ Maquettes sur Lucidchart
 ## TODO
 
 * Gestion des erreurs lors de l'ajout de nouvelles cartes
-* Mise à jour de cartes existantes
 * Suppression de cartes existantes
 * Ajuster les couleurs pour le Dark theme
