@@ -1,5 +1,9 @@
 <template>
 	<v-card class="mb-4">
+		<v-card-actions class="float-right">
+			<CardOptions @option-selected="onOptionSelected"></CardOptions>
+			<CharacterForm v-model="showEditDialog" edit :id="id"></CharacterForm>
+		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
 				{{ name }}
@@ -25,8 +29,15 @@
 <script>
 import icons from "../../js/icons.js";
 
+import CardOptions from "./CardOptions.vue";
+import CharacterForm from "../forms/CharacterForm.vue";
+
 export default {
 	name: "CharacterCard",
+	components: {
+		CardOptions,
+		CharacterForm,
+	},
 	props: {
 		id: Number,
 		name: String,
@@ -39,7 +50,14 @@ export default {
 	data() {
 		return {
 			icons: icons,
+			showEditDialog: false,
 		};
+	},
+	methods: {
+		onOptionSelected(value) {
+			if (value === "edit") this.showEditDialog = true;
+			// else if (value === "delete") console.log('delete');
+		},
 	},
     computed: {
         identity() {
