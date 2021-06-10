@@ -31,4 +31,12 @@ export default {
 	uid: function() {
 		return new Date().getTime();
 	},
+	/**
+	 * Clones the given object. 
+	 * @param {Object} object the object to clone. Must be a "simple" object (i.e. that can be parsed in JSON).
+	 * @returns a copy of object
+	 */
+	clone: function(object) {
+		return JSON.parse(JSON.stringify(object));
+	}
 };

@@ -93,14 +93,21 @@ export default {
 	methods: {
 		submit() {
 			this.$refs.form.validate();
+
 			if (this.valid) {
 
-				/**
-				 * We explicitly modify the store on submit only when adding a new record.
-				 * On edit mode, the model already has a reference on the store so modification are live.
-				 * @see initModel()  
-				 */
-				if (!this.edit) {
+				// In edit mode
+				if (this.edit) {
+
+					let index = storage.data.objectives.findIndex(entry => entry.id === this.id);
+
+					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
+					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+					if(index != -1) this.$set(storage.data.objectives, index, this.objectiveModel);
+					else console.error("Could not save the edit.");
+
+				// In create mode
+				} else {
 					this.objectiveModel.id = storage.uid();
 					storage.data.objectives.push(this.objectiveModel);
 				}
@@ -112,7 +119,10 @@ export default {
 		initModel() {
 			if (this.edit && this.id) {
 				let data = storage.data.objectives.find((entry) => entry.id === this.id);
-				if (data) return data;
+
+				// We return a clone of the object to avoid modifying directly the store
+				// Helpful when the user cancels their changes because we don't have to rollback
+				if (data) return storage.clone(data);
 			}
 			return {
 				desc: "",
@@ -152,8 +162,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.custom-border {
-	border-style: dashed;
-}
-</style>
+<style></style>
