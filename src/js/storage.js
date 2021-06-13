@@ -1,13 +1,16 @@
-import { LowSync, JSONFileSync } from "lowdb";
 
-const SAVE_DIR = "./saves/";
-const SAVE_FILE = SAVE_DIR + "save.json";
+const DATA_KEY = 'DATA';
 
-const db = new LowSync(new JSONFileSync(SAVE_FILE));
-db.read(); // Reads file to init db.data (null if file doesn't exist)
+function read(key) {
+	return JSON.parse(localStorage.getItem(key));
+}
 
-// If data is null, init with default empty object
-db.data ||= {
+function persist(key, data) {
+	localStorage.setItem(key, JSON.stringify(data));
+}
+
+// Reads the persisted data. If null, set a default value
+let data = read(DATA_KEY) || {
 	objectives: [],
 	events: [],
 	locations: [],
@@ -16,13 +19,13 @@ db.data ||= {
 };
 
 export default {
-	data: db.data,
+	data,
 	eventTypes: ["combat", "encounter", "discovery", "travel", "other"],
 	/**
 	 * Writes current data store to file.
 	 */
 	persist: function() {
-		db.write();
+		persist(DATA_KEY, data);
 	},
 	/**
 	 * Returns the current timestamp. To be used as a Unique Identifier.
@@ -47,7 +50,7 @@ export default {
 		let index = this.data.objectives.findIndex((entry) => entry.id === id);
 		if (index != -1) {
 			this.data.objectives.splice(index, 1);
-			db.write();
+			this.persist();
 		}
 	},
 	/**
@@ -58,7 +61,7 @@ export default {
 		let index = this.data.events.findIndex((entry) => entry.id === id);
 		if (index != -1) {
 			this.data.events.splice(index, 1);
-			db.write();
+			this.persist();
 		}
 	},
 	/**
@@ -79,7 +82,7 @@ export default {
 			});
 
 			this.data.locations.splice(index, 1);
-			db.write();
+			this.persist();
 		}
 	},
 	/**
@@ -102,7 +105,7 @@ export default {
 			});
 
 			this.data.characters.splice(index, 1);
-			db.write();
+			this.persist();
 		}
 	},
 	/**
@@ -113,7 +116,7 @@ export default {
 		let index = this.data.notes.findIndex((entry) => entry.id === id);
 		if (index != -1) {
 			this.data.notes.splice(index, 1);
-			db.write();
+			this.persist();
 		}
 	},
 };
