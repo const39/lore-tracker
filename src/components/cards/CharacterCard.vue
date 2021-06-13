@@ -3,6 +3,12 @@
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
 			<CharacterForm v-model="showEditDialog" edit :id="id"></CharacterForm>
+			<ConfirmDialog
+				v-model="showDeleteDialog"
+				:acceptAction="deleteCharacter"
+				:title="`Supprimer ${name} ?`"
+				:message="'Voulez-vous vraiment supprimer ce personnage ?'"
+			></ConfirmDialog>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
@@ -27,16 +33,19 @@
 </template>
 
 <script>
+import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
 
 import CardOptions from "./CardOptions.vue";
 import CharacterForm from "../forms/CharacterForm.vue";
+import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "CharacterCard",
 	components: {
 		CardOptions,
 		CharacterForm,
+		ConfirmDialog
 	},
 	props: {
 		id: Number,
@@ -51,12 +60,16 @@ export default {
 		return {
 			icons: icons,
 			showEditDialog: false,
+			showDeleteDialog: false,
 		};
 	},
 	methods: {
 		onOptionSelected(value) {
 			if (value === "edit") this.showEditDialog = true;
-			// else if (value === "delete") console.log('delete');
+			else if (value === "delete") this.showDeleteDialog = true;
+		},
+		deleteCharacter() {
+			storage.deleteCharacter(this.id);
 		},
 	},
     computed: {

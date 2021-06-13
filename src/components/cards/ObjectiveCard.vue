@@ -3,6 +3,12 @@
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
 			<ObjectiveForm v-model="showEditDialog" edit :id="id"></ObjectiveForm>
+			<ConfirmDialog
+				v-model="showDeleteDialog"
+				:acceptAction="deleteObjective"
+				:title="`Supprimer ${desc} ?`"
+				:message="'Voulez-vous vraiment supprimer cet objectif ?'"
+			></ConfirmDialog>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text--primary">{{ desc }}</p>
@@ -30,12 +36,14 @@ import icons from "../../js/icons.js";
 
 import CardOptions from "./CardOptions.vue";
 import ObjectiveForm from "../forms/ObjectiveForm.vue";
+import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "ObjectiveCard",
 	components: {
 		CardOptions,
 		ObjectiveForm,
+		ConfirmDialog,
 	},
 	props: {
 		id: Number,
@@ -48,6 +56,7 @@ export default {
 		return {
 			icons: icons,
 			showEditDialog: false,
+			showDeleteDialog: false,
 		};
 	},
 	methods: {
@@ -60,7 +69,10 @@ export default {
 		},
 		onOptionSelected(value) {
 			if (value === "edit") this.showEditDialog = true;
-			// else if (value === "delete") console.log('delete');
+			else if (value === "delete") this.showDeleteDialog = true;
+		},
+		deleteObjective() {
+			storage.deleteObjective(this.id);
 		},
 	},
 	computed: {

@@ -3,6 +3,12 @@
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
 			<EventForm v-model="showEditDialog" edit :id="id"></EventForm>
+			<ConfirmDialog
+				v-model="showDeleteDialog"
+				:acceptAction="deleteEvent"
+				:title="`Supprimer ${desc} ?`"
+				:message="'Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.'"
+			></ConfirmDialog>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
@@ -31,12 +37,14 @@ import icons from "../../js/icons.js";
 
 import CardOptions from "./CardOptions.vue";
 import EventForm from "../forms/EventForm.vue";
+import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "EventCard",
 	components: {
 		CardOptions,
 		EventForm,
+		ConfirmDialog
 	},
 	props: {
 		id: Number,
@@ -50,6 +58,7 @@ export default {
 		return {
 			icons: icons,
 			showEditDialog: false,
+			showDeleteDialog: false,
 		};
 	},
 	methods: {
@@ -62,7 +71,10 @@ export default {
 		},
 		onOptionSelected(value) {
 			if (value === "edit") this.showEditDialog = true;
-			// else if (value === "delete") console.log('delete');
+			else if (value === "delete") this.showDeleteDialog = true;
+		},
+		deleteEvent() {
+			storage.deleteEvent(this.id);
 		},
 	},
 	computed: {
