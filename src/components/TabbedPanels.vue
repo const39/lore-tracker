@@ -5,60 +5,79 @@
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
 			<v-tab-item>
-				<draggable v-model="liveData.objectives" group="objectives" @start="drag = true" @end="drag = false; persist()">
-					<ObjectiveCard
-						class="draggable"
-						v-for="objective in liveData.objectives"
-						:key="objective.id"
-						v-bind="objective"
-					></ObjectiveCard>
-				</draggable>
-				<AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
-				<ObjectiveForm v-model="showObjectiveForm"></ObjectiveForm>
+				<v-container>
+						<draggable tag="v-row" draggable=".item" v-model="liveData.objectives" group="objectives" @start="drag = true" @end="drag = false; persist();">
+							<v-col cols="12" md="4" class="item" v-for="objective in liveData.objectives" :key="objective.id">
+								<ObjectiveCard class="draggable" v-bind="objective"></ObjectiveCard>
+							</v-col>
+							<template v-slot:footer>
+								<v-col cols="12" md="4">
+									<AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
+								</v-col>
+							</template>
+						</draggable>
+					<ObjectiveForm v-model="showObjectiveForm"></ObjectiveForm>
+				</v-container>
 			</v-tab-item>
 			<v-tab-item>
-				<draggable v-model="liveData.events" group="events" @start="drag = true" @end="drag = false; persist()">
-					<EventCard
-						class="draggable"
-						v-for="event in liveData.events"
-						:key="event.id"
-						v-bind="event"
-						:show-icon="true"
-					></EventCard>
-				</draggable>
-				<AddCard @add-card-clicked="showEventForm = true"></AddCard>
-				<EventForm v-model="showEventForm"></EventForm>
+				<v-container>
+						<draggable tag="v-row" draggable=".item" v-model="liveData.events" group="events" @start="drag = true" @end="drag = false; persist();">
+							<v-col cols="12" md="4" class="item" v-for="event in liveData.events" :key="event.id">
+								<EventCard class="draggable" v-bind="event"></EventCard>
+							</v-col>
+							<template v-slot:footer>
+								<v-col cols="12" md="4">
+									<AddCard @add-card-clicked="showEventForm = true"></AddCard>
+								</v-col>
+							</template>
+						</draggable>
+					<EventForm v-model="showEventForm"></EventForm>
+				</v-container>
 			</v-tab-item>
 			<v-tab-item>
-				<draggable v-model="liveData.locations" group="locations" @start="drag = true" @end="drag = false; persist()">
-					<LocationCard
-						class="draggable"
-						v-for="location in liveData.locations"
-						:key="location.id"
-						v-bind="location"
-					></LocationCard>
-				</draggable>
-				<AddCard @add-card-clicked="showLocationForm = true"></AddCard>
-				<LocationForm v-model="showLocationForm"></LocationForm>
+				<v-container>
+						<draggable tag="v-row" draggable=".item" v-model="liveData.locations" group="locations" @start="drag = true" @end="drag = false; persist();">
+							<v-col cols="12" md="4" class="item" v-for="location in liveData.locations" :key="location.id">
+								<LocationCard class="draggable" v-bind="location"></LocationCard>
+							</v-col>
+							<template v-slot:footer>
+								<v-col cols="12" md="4">
+									<AddCard @add-card-clicked="showLocationForm = true"></AddCard>
+								</v-col>
+							</template>
+						</draggable>
+					<LocationForm v-model="showLocationForm"></LocationForm>
+				</v-container>
 			</v-tab-item>
 			<v-tab-item>
-				<draggable v-model="liveData.characters" group="characters" @start="drag = true" @end="drag = false; persist()">
-					<CharacterCard
-						class="draggable"
-						v-for="character in liveData.characters"
-						:key="character.id"
-						v-bind="character"
-					></CharacterCard>
-				</draggable>
-				<AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
-				<CharacterForm v-model="showCharacterForm"></CharacterForm>
+				<v-container>
+						<draggable tag="v-row" draggable=".item" v-model="liveData.characters" group="characters" @start="drag = true" @end="drag = false; persist();">
+							<v-col cols="12" md="4" class="item" v-for="character in liveData.characters" :key="character.id">
+								<CharacterCard class="draggable" v-bind="character"></CharacterCard>
+							</v-col>
+							<template v-slot:footer>
+								<v-col cols="12" md="4">
+									<AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
+								</v-col>
+							</template>
+						</draggable>
+					<CharacterForm v-model="showCharacterForm"></CharacterForm>
+				</v-container>
 			</v-tab-item>
 			<v-tab-item>
-				<draggable v-model="liveData.notes" group="notes" @start="drag = true" @end="drag = false; persist()">
-					<NoteCard class="draggable" v-for="note in liveData.notes" :key="note.id" v-bind="note"></NoteCard>
-				</draggable>
-				<AddCard @add-card-clicked="showNoteForm = true"></AddCard>
-				<NoteForm v-model="showNoteForm"></NoteForm>
+				<v-container>
+						<draggable tag="v-row" draggable=".item" v-model="liveData.notes" group="notes" @start="drag = true" @end="drag = false; persist();">
+							<v-col cols="12" md="4" class="item" v-for="note in liveData.notes" :key="note.id">
+								<NoteCard class="draggable" v-bind="note"></NoteCard>
+							</v-col>
+							<template v-slot:footer>
+								<v-col cols="12" md="4">
+									<AddCard @add-card-clicked="showNoteForm = true"></AddCard>
+								</v-col>
+							</template>
+						</draggable>
+					<NoteForm v-model="showNoteForm"></NoteForm>
+				</v-container>
 			</v-tab-item>
 		</v-tabs-items>
 	</v-container>
