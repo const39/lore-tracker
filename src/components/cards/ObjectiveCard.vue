@@ -2,7 +2,6 @@
 	<v-card class="mb-4">
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
-			<ObjectiveForm v-model="showEditDialog" edit :id="id"></ObjectiveForm>
 			<ConfirmDialog
 				v-model="showDeleteDialog"
 				:acceptAction="deleteObjective"
@@ -33,16 +32,15 @@
 <script>
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
+import eventHub from '../../js/eventHub.js';
 
 import CardOptions from "./CardOptions.vue";
-import ObjectiveForm from "../forms/ObjectiveForm.vue";
 import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "ObjectiveCard",
 	components: {
 		CardOptions,
-		ObjectiveForm,
 		ConfirmDialog,
 	},
 	props: {
@@ -55,7 +53,6 @@ export default {
 	data() {
 		return {
 			icons: icons,
-			showEditDialog: false,
 			showDeleteDialog: false,
 		};
 	},
@@ -68,7 +65,7 @@ export default {
 			return "";
 		},
 		onOptionSelected(value) {
-			if (value === "edit") this.showEditDialog = true;
+			if (value === "edit") eventHub.$emit('edit', {type: 'objective', id: this.id})
 			else if (value === "delete") this.showDeleteDialog = true;
 		},
 		deleteObjective() {

@@ -133,6 +133,14 @@ export default {
 		showDialog: function(newVal) {
 			if (!newVal) this.characterModel = this.initModel();
 		},
+		/**
+		 * Observe the id prop. When the prop changes, we update the model.
+		 * This is allows to use a unique dialog for all character cards edits.
+		 * The parent only have to pass the id of the character to edit. When that id changes, the form gets the relevant data to set the model.
+		 */
+		id: function() {
+			this.characterModel = this.initModel();
+		}
 	},
 };
 </script>

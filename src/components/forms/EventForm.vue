@@ -194,6 +194,14 @@ export default {
 		showDialog: function(newVal) {
 			if (!newVal) this.eventModel = this.initModel();
 		},
+		/**
+		 * Observe the id prop. When the prop changes, we update the model.
+		 * This is allows to use a unique dialog for all event cards edits.
+		 * The parent only have to pass the id of the event to edit. When that id changes, the form gets the relevant data to set the model.
+		 */
+		id: function() {
+			this.eventModel = this.initModel();
+		}
 	},
 };
 </script>
