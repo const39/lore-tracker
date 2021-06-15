@@ -2,12 +2,6 @@
 	<v-card class="mb-4">
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
-			<ConfirmDialog
-				v-model="showDeleteDialog"
-				:acceptAction="deleteCharacter"
-				:title="`Supprimer ${name} ?`"
-				:message="'Voulez-vous vraiment supprimer ce personnage ?'"
-			></ConfirmDialog>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
@@ -32,18 +26,15 @@
 </template>
 
 <script>
-import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
-import eventHub from "../../js/eventHub.js";
+import {eventHub, CardEvent} from '../../js/eventHub.js';
 
 import CardOptions from "./CardOptions.vue";
-import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "CharacterCard",
 	components: {
 		CardOptions,
-		ConfirmDialog
 	},
 	props: {
 		id: Number,
@@ -57,16 +48,11 @@ export default {
 	data() {
 		return {
 			icons: icons,
-			showDeleteDialog: false,
 		};
 	},
 	methods: {
 		onOptionSelected(value) {
-			if (value === "edit") eventHub.$emit('edit', {type: 'character', id: this.id})
-			else if (value === "delete") this.showDeleteDialog = true;
-		},
-		deleteCharacter() {
-			storage.deleteCharacter(this.id);
+			eventHub.$emit(value, new CardEvent({type: 'character', id: this.id}))
 		},
 	},
     computed: {

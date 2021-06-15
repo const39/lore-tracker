@@ -2,12 +2,6 @@
 	<v-card class="mb-4">
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
-			<ConfirmDialog
-				v-model="showDeleteDialog"
-				:acceptAction="deleteEvent"
-				:title="`Supprimer ${desc} ?`"
-				:message="'Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.'"
-			></ConfirmDialog>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
@@ -33,16 +27,14 @@
 <script>
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
-import eventHub from "../../js/eventHub.js";
+import {eventHub, CardEvent} from '../../js/eventHub.js';
 
 import CardOptions from "./CardOptions.vue";
-import ConfirmDialog from "../ConfirmDialog.vue";
 
 export default {
 	name: "EventCard",
 	components: {
 		CardOptions,
-		ConfirmDialog
 	},
 	props: {
 		id: Number,
@@ -55,7 +47,6 @@ export default {
 	data() {
 		return {
 			icons: icons,
-			showDeleteDialog: false,
 		};
 	},
 	methods: {
@@ -67,11 +58,7 @@ export default {
 			return "";
 		},
 		onOptionSelected(value) {
-			if (value === "edit") eventHub.$emit('edit', {type: 'event', id: this.id})
-			else if (value === "delete") this.showDeleteDialog = true;
-		},
-		deleteEvent() {
-			storage.deleteEvent(this.id);
+			eventHub.$emit(value, new CardEvent({type: 'event', id: this.id}))
 		},
 	},
 	computed: {
