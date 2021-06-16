@@ -11,9 +11,9 @@
 						<v-text-field
 							label="Nom de la localité*"
 							:rules="requiredRule"
-							v-model="locationModel.name"
+							v-model="model.name"
 						></v-text-field>
-						<v-textarea outlined label="Description" v-model="locationModel.desc"></v-textarea>
+						<v-textarea outlined label="Description" v-model="model.desc"></v-textarea>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { Location } from '../../js/model.js';
 import storage from "../../js/storage.js";
 
 export default {
@@ -40,7 +41,7 @@ export default {
 		return {
 			valid: false,
 			requiredRule: [(v) => !!v || "Champ requis"],
-			locationModel: this.initModel(),
+			model: this.initModel(),
 		};
 	},
 	methods: {
@@ -56,14 +57,11 @@ export default {
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if(index != -1) this.$set(storage.data.locations, index, this.locationModel);
+					if(index != -1) this.$set(storage.data.locations, index, this.model);
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else {
-					this.locationModel.id = storage.uid();
-					storage.data.locations.push(this.locationModel);
-				}
+				} else storage.data.locations.push(this.model);
 
 				storage.persist();
 				this.showDialog = false;
@@ -75,12 +73,9 @@ export default {
 
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return storage.clone(data);
+				if (data) return new Location(data);
 			}
-			return {
-				name: "",
-				desc: "",
-			};
+			return new Location();
 		},
 	},
 	computed: {
@@ -107,7 +102,7 @@ export default {
 		 * - on implicit close (by clicking outside the dialog or pressing Esc)
 		 */
 		showDialog: function(newVal) {
-			if (!newVal) this.locationModel = this.initModel();
+			if (!newVal) this.model = this.initModel();
 		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
@@ -115,7 +110,7 @@ export default {
 		 * The parent only have to pass the id of the location to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		id: function() {
-			this.locationModel = this.initModel();
+			this.model = this.initModel();
 		}
 	},
 };

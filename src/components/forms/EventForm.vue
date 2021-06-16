@@ -12,14 +12,14 @@
 							outlined
 							label="Description*"
 							:rules="requiredRule"
-							v-model="eventModel.desc"
+							v-model="model.desc"
 						></v-textarea>
 						<v-row>
 							<v-col cols="12" sm="6">
 								<v-autocomplete
 									chips
 									label="Localité"
-									v-model="eventModel.locationId"
+									v-model="model.locationId"
 									:items="locations"
 									item-text="name"
 									item-value="id"
@@ -36,7 +36,7 @@
 								<v-autocomplete
 									chips
 									label="Type d'événement*"
-									v-model="eventModel.type"
+									v-model="model.type"
 									:rules="requiredRule"
 									:items="eventTypes"
 								>
@@ -58,7 +58,7 @@
 							deletable-chips
 							multiple
 							label="Personnages impliqués"
-							v-model="eventModel.charactersIds"
+							v-model="model.charactersIds"
 							:items="characters"
 							item-text="name"
 							item-value="id"
@@ -87,6 +87,7 @@
 <script>
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
+import { Event } from '../../js/model.js';
 
 export default {
 	props: {
@@ -99,7 +100,7 @@ export default {
 			valid: false,
 			requiredRule: [(v) => !!v || "Champ requis"],
 			icons: icons,
-			eventModel: this.initModel(),
+			model: this.initModel(),
 			locations: storage.data.locations,
 			characters: storage.data.characters,
 			eventTypes: [
@@ -139,14 +140,11 @@ export default {
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if(index != -1) this.$set(storage.data.events, index, this.eventModel);
+					if(index != -1) this.$set(storage.data.events, index, this.model);
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else {
-					this.eventModel.id = storage.uid();
-					storage.data.events.push(this.eventModel);
-				}
+				} else storage.data.events.push(this.model);
 
 				storage.persist();
 				this.showDialog = false;
@@ -158,14 +156,9 @@ export default {
 
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return storage.clone(data);
+				if (data) return new Event(data);
 			}
-			return {
-				desc: "",
-				locationId: undefined,
-				charactersIds: [],
-				type: "",
-			};
+			return new Event();
 		},
 	},
 	computed: {
@@ -192,7 +185,7 @@ export default {
 		 * - on implicit close (by clicking outside the dialog or pressing Esc)
 		 */
 		showDialog: function(newVal) {
-			if (!newVal) this.eventModel = this.initModel();
+			if (!newVal) this.model = this.initModel();
 		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
@@ -200,7 +193,7 @@ export default {
 		 * The parent only have to pass the id of the event to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		id: function() {
-			this.eventModel = this.initModel();
+			this.model = this.initModel();
 		}
 	},
 };

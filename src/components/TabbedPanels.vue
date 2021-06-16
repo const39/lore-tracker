@@ -27,7 +27,7 @@
 							v-for="objective in liveData.objectives"
 							:key="objective.id"
 						>
-							<ObjectiveCard class="draggable" v-bind="objective"></ObjectiveCard>
+							<ObjectiveCard class="draggable" :item-data="objective"></ObjectiveCard>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
@@ -52,7 +52,7 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="event in liveData.events" :key="event.id">
-							<EventCard class="draggable" v-bind="event"></EventCard>
+							<EventCard class="draggable" :item-data="event" :show-icon="true"></EventCard>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
@@ -77,7 +77,7 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="location in liveData.locations" :key="location.id">
-							<LocationCard class="draggable" v-bind="location"></LocationCard>
+							<LocationCard class="draggable" :item-data="location"></LocationCard>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
@@ -108,7 +108,7 @@
 							v-for="character in liveData.characters"
 							:key="character.id"
 						>
-							<CharacterCard class="draggable" v-bind="character"></CharacterCard>
+							<CharacterCard class="draggable" :item-data="character"></CharacterCard>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
@@ -133,7 +133,7 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="note in liveData.notes" :key="note.id">
-							<NoteCard class="draggable" v-bind="note"></NoteCard>
+							<NoteCard class="draggable" :item-data="note"></NoteCard>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">

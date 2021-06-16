@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import { Note } from '../../js/model.js';
 import storage from "../../js/storage.js";
 
 export default {
@@ -61,10 +62,7 @@ export default {
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else {
-					this.noteModel.id = storage.uid();
-					storage.data.notes.push(this.noteModel);
-				}
+				} else storage.data.notes.push(this.noteModel);
 
 				storage.persist();
 				this.showDialog = false;
@@ -76,12 +74,9 @@ export default {
 
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return storage.clone(data);
+				if (data) return new Note(data);
 			}
-			return {
-				title: "",
-				desc: "",
-			};
+			return new Note();
 		},
 	},
 	computed: {

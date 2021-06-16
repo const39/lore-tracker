@@ -5,8 +5,8 @@
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
-				{{ name }}
-				<v-tooltip top v-if="isNPC">
+				{{ itemData.name }}
+				<v-tooltip top v-if="itemData.isNPC">
 					<template v-slot:activator="{ on, attrs }">
 						<v-icon v-bind="attrs" v-on="on">{{ icons.npc }}</v-icon>
 					</template>
@@ -20,13 +20,14 @@
 				</v-tooltip>
 			</p>
 			<p class="text-subtitle-2 text--primary">{{ identity }}</p>
-			<p class="text--primary">{{ desc }}</p>
+			<p class="text--primary">{{ itemData.desc }}</p>
 		</v-card-text>
 	</v-card>
 </template>
 
 <script>
 import icons from "../../js/icons.js";
+import { Character } from '../../js/model.js';
 import {eventHub, CardEvent} from '../../js/eventHub.js';
 
 import CardOptions from "./CardOptions.vue";
@@ -37,13 +38,7 @@ export default {
 		CardOptions,
 	},
 	props: {
-		id: Number,
-		name: String,
-		race: String,
-		classes: String,
-		role: String,
-		isNPC: Boolean,
-		desc: String,
+		itemData: Character
 	},
 	data() {
 		return {
@@ -52,15 +47,15 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent({type: 'character', id: this.id}))
+			eventHub.$emit(value, new CardEvent('character', this.itemData))
 		},
 	},
     computed: {
         identity() {
 
-            let race = this.race || 'Race inconnue';
-            let classes = this.classes || 'Classes inconnues';
-            let role = this.role || 'Rôle inconnu';
+            let race = this.itemData.race || 'Race inconnue';
+            let classes = this.itemData.classes || 'Classe inconnue';
+            let role = this.itemData.role || 'Rôle inconnu';
 
             return `${race} - ${classes} (${role})`;
         }

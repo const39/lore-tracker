@@ -1,22 +1,54 @@
+import { Objective, Event, Character, Location, Note } from "./model.js";
 
-const DATA_KEY = 'DATA';
+const DATA_KEY = "DATA";
 
 function read(key) {
-	return JSON.parse(localStorage.getItem(key));
+
+	// Get persisted raw data
+	let rawData = JSON.parse(localStorage.getItem(key));
+
+	// Set data object as default
+	let data = {
+		objectives: [],
+		events: [],
+		locations: [],
+		characters: [],
+		notes: [],
+	};
+
+	// If rawData is exploitable
+	if (rawData) {
+
+		// Convert all raw JS objects as Objective instances
+		for (const entry of rawData.objectives)
+			data.objectives.push(new Objective(entry))
+		
+		// Convert all raw JS objects as Event instances
+		for (const entry of rawData.events)
+			data.events.push(new Event(entry))
+		
+		// Convert all raw JS objects as Location instances
+		for (const entry of rawData.locations)
+			data.locations.push(new Location(entry))
+		
+		// Convert all raw JS objects as Character instances
+		for (const entry of rawData.characters)
+			data.characters.push(new Character(entry))
+		
+		// Convert all raw JS objects as Note instances
+		for (const entry of rawData.notes)
+			data.notes.push(new Note(entry))
+	}
+
+	return data;
 }
 
 function persist(key, data) {
 	localStorage.setItem(key, JSON.stringify(data));
 }
 
-// Reads the persisted data. If null, set a default value
-let data = read(DATA_KEY) || {
-	objectives: [],
-	events: [],
-	locations: [],
-	characters: [],
-	notes: [],
-};
+// Reads the persisted data.
+let data = read(DATA_KEY);
 
 export default {
 	data,
@@ -26,21 +58,6 @@ export default {
 	 */
 	persist: function() {
 		persist(DATA_KEY, data);
-	},
-	/**
-	 * Returns the current timestamp. To be used as a Unique Identifier.
-	 * @returns the current timestamp
-	 */
-	uid: function() {
-		return new Date().getTime();
-	},
-	/**
-	 * Clones the given object.
-	 * @param {Object} object the object to clone. Must be a "simple" object (i.e. that can be parsed in JSON).
-	 * @returns a copy of object
-	 */
-	clone: function(object) {
-		return JSON.parse(JSON.stringify(object));
 	},
 	/**
 	 * Deletes the objective with the specified 'id' value from the store.
@@ -71,7 +88,6 @@ export default {
 	deleteLocation(id) {
 		let index = this.data.locations.findIndex((entry) => entry.id === id);
 		if (index != -1) {
-
 			// Remove eventual references to the current location in events and objectives
 			this.data.events.forEach((event) => {
 				if (event.locationId === id) event.locationId = undefined;
@@ -92,7 +108,6 @@ export default {
 	deleteCharacter(id) {
 		let index = this.data.characters.findIndex((entry) => entry.id === id);
 		if (index != -1) {
-
 			// Remove eventual references to the current character in events and objectives
 			this.data.events.forEach((event) => {
 				let referenceIndex = event.charactersIds.findIndex((event) => event === id);

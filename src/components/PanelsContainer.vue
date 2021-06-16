@@ -107,41 +107,42 @@ export default {
 
 		eventHub.$on("edit", (e) => {
 			let type = e.type.toString().toLowerCase();
-			this[`${type}EditForm`].id = e.id;
+			this[`${type}EditForm`].id = e.object.id;
 			this[`${type}EditForm`].show = true;
+			console.log('parent ', this[`${type}EditForm`]);
 		});
 
 		eventHub.$on("delete", (e) => {
 			let type = e.type.toString().toLowerCase();
-			let objectToDelete = storage.data[`${type}s`].find((entry) => entry.id === e.id);
+			let objectToDelete = storage.data[`${type}s`].find((entry) => entry.id === e.object.id);
 
 			if (objectToDelete) {
 				switch (type) {
 					case "objective":
 						this.confirmDialog.title = `Supprimer "${objectToDelete.desc}" ?`;
 						this.confirmDialog.message = "Voulez-vous vraiment supprimer cet objectif ?";
-						this.confirmDialog.acceptAction = () => storage.deleteObjective(e.id);
+						this.confirmDialog.acceptAction = () => storage.deleteObjective(e.object.id);
 						break;
 					case "event":
 						this.confirmDialog.title = `Supprimer "${objectToDelete.desc}" ?`;
 						this.confirmDialog.message =
 							"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.";
-						this.confirmDialog.acceptAction = () => storage.deleteEvent(e.id);
+						this.confirmDialog.acceptAction = () => storage.deleteEvent(e.object.id);
 						break;
 					case "character":
 						this.confirmDialog.title = `Supprimer "${objectToDelete.name}" ?`;
 						this.confirmDialog.message = "Voulez-vous vraiment supprimer ce personnage ?";
-						this.confirmDialog.acceptAction = () => storage.deleteCharacter(e.id);
+						this.confirmDialog.acceptAction = () => storage.deleteCharacter(e.object.id);
 						break;
 					case "location":
 						this.confirmDialog.title = `Supprimer "${objectToDelete.name}" ?`;
 						this.confirmDialog.message = "Voulez-vous vraiment supprimer cette localité ?";
-						this.confirmDialog.acceptAction = () => storage.deleteLocation(e.id);
+						this.confirmDialog.acceptAction = () => storage.deleteLocation(e.object.id);
 						break;
 					case "note":
 						this.confirmDialog.title = `Supprimer "${objectToDelete.title || objectToDelete.desc}" ?`;
 						this.confirmDialog.message = "Voulez-vous vraiment supprimer cette note ?";
-						this.confirmDialog.acceptAction = () => storage.deleteNote(e.id);
+						this.confirmDialog.acceptAction = () => storage.deleteNote(e.object.id);
 						break;
 				}
 

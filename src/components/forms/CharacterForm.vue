@@ -13,28 +13,28 @@
 								<v-text-field
 									label="Nom*"
 									:rules="requiredRule"
-									v-model="characterModel.name"
+									v-model="model.name"
 								></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Race" v-model="characterModel.race"></v-text-field>
+								<v-text-field label="Race" v-model="model.race"></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Classes" v-model="characterModel.classes"></v-text-field>
+								<v-text-field label="Classes" v-model="model.classes"></v-text-field>
 							</v-col>
 						</v-row>
 						<v-row>
 							<v-col cols="12" sm="6">
-								<v-text-field label="Rôle" v-model="characterModel.role"></v-text-field>
+								<v-text-field label="Rôle" v-model="model.role"></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="6">
-								<v-radio-group v-model="characterModel.isNPC" row mandatory>
+								<v-radio-group v-model="model.isNPC" row mandatory>
 									<v-radio label="Joueur" :value="false"></v-radio>
 									<v-radio label="Non-joueur" :value="true"></v-radio>
 								</v-radio-group>
 							</v-col>
 						</v-row>
-						<v-textarea outlined label="Description" v-model="characterModel.desc"></v-textarea>
+						<v-textarea outlined label="Description" v-model="model.desc"></v-textarea>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import { Character } from '../../js/model.js';
 import storage from "../../js/storage.js";
 
 export default {
@@ -61,7 +62,7 @@ export default {
 		return {
 			valid: false,
 			requiredRule: [(v) => !!v || "Champ requis"],
-			characterModel: this.initModel(),
+			model: this.initModel(),
 		};
 	},
 	methods: {
@@ -76,14 +77,11 @@ export default {
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if (index != -1) this.$set(storage.data.characters, index, this.characterModel);
+					if (index != -1) this.$set(storage.data.characters, index, this.model);
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else {
-					this.characterModel.id = storage.uid();
-					storage.data.characters.push(this.characterModel);
-				}
+				} else storage.data.characters.push(this.model);
 
 				storage.persist();
 				this.showDialog = false;
@@ -95,16 +93,9 @@ export default {
 
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return storage.clone(data);
+				if (data) return new Character(data);
 			}
-			return {
-				name: "",
-				race: "",
-				classes: "",
-				role: "",
-				isNPC: "",
-				desc: "",
-			};
+			return new Character();
 		},
 	},
 	computed: {
@@ -131,7 +122,7 @@ export default {
 		 * - on implicit close (by clicking outside the dialog or pressing Esc)
 		 */
 		showDialog: function(newVal) {
-			if (!newVal) this.characterModel = this.initModel();
+			if (!newVal) this.model = this.initModel();
 		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
@@ -139,7 +130,7 @@ export default {
 		 * The parent only have to pass the id of the character to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		id: function() {
-			this.characterModel = this.initModel();
+			this.model = this.initModel();
 		}
 	},
 };

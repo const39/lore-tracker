@@ -3,8 +3,8 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit"> Modifer un objectif</span>
-					<span class="text-h5" v-else> Ajouter un objectif</span>
+					<span class="text-h5" v-if="edit">Modifer un objectif</span>
+					<span class="text-h5" v-else>Ajouter un objectif</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
@@ -12,14 +12,14 @@
 							outlined
 							label="Description*"
 							:rules="requiredRule"
-							v-model="objectiveModel.desc"
+							v-model="model.desc"
 						></v-textarea>
 						<v-row>
 							<v-col cols="12" sm="6">
 								<v-autocomplete
 									chips
 									label="Localité"
-									v-model="objectiveModel.locationId"
+									v-model="model.locationId"
 									:items="locations"
 									item-text="name"
 									item-value="id"
@@ -33,7 +33,7 @@
 								</v-autocomplete>
 							</v-col>
 							<v-col cols="12" sm="6">
-								<v-radio-group v-model="objectiveModel.isCompleted" row mandatory>
+								<v-radio-group v-model="model.isCompleted" row mandatory>
 									<v-radio label="En cours" :value="false"></v-radio>
 									<v-radio label="Accompli" :value="true"></v-radio>
 								</v-radio-group>
@@ -44,7 +44,7 @@
 							deletable-chips
 							multiple
 							label="Personnages impliqués"
-							v-model="objectiveModel.charactersIds"
+							v-model="model.charactersIds"
 							:items="characters"
 							item-text="name"
 							item-value="id"
@@ -73,6 +73,7 @@
 <script>
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
+import { Objective } from "../../js/model.js";
 
 export default {
 	props: {
@@ -85,7 +86,7 @@ export default {
 			valid: false,
 			requiredRule: [(v) => !!v || "Champ requis"],
 			icons: icons,
-			objectiveModel: this.initModel(),
+			model: this.initModel(),
 			locations: storage.data.locations,
 			characters: storage.data.characters,
 		};
@@ -95,22 +96,17 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-
 				// In edit mode
 				if (this.edit) {
-
-					let index = storage.data.objectives.findIndex(entry => entry.id === this.id);
+					let index = storage.data.objectives.findIndex((entry) => entry.id === this.id);
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if(index != -1) this.$set(storage.data.objectives, index, this.objectiveModel);
+					if (index != -1) this.$set(storage.data.objectives, index, this.model);
 					else console.error("Could not save the edit.");
 
-				// In create mode
-				} else {
-					this.objectiveModel.id = storage.uid();
-					storage.data.objectives.push(this.objectiveModel);
-				}
+					// In create mode
+				} else storage.data.objectives.push(this.model);
 
 				storage.persist();
 				this.showDialog = false;
@@ -119,17 +115,11 @@ export default {
 		initModel() {
 			if (this.edit && this.id) {
 				let data = storage.data.objectives.find((entry) => entry.id === this.id);
-
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return storage.clone(data);
-			}
-			return {
-				desc: "",
-				isCompleted: "",
-				locationId: undefined,
-				charactersIds: [],
-			};
+				if (data) return new Objective(data);
+			} 
+			return new Objective();
 		},
 	},
 	computed: {
@@ -156,7 +146,7 @@ export default {
 		 * - on implicit close (by clicking outside the dialog or pressing Esc)
 		 */
 		showDialog: function(newVal) {
-			if (!newVal) this.objectiveModel = this.initModel();
+			if (!newVal) this.model = this.initModel();
 		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
@@ -164,8 +154,8 @@ export default {
 		 * The parent only have to pass the id of the objective to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		id: function() {
-			this.objectiveModel = this.initModel();
-		}
+			this.model = this.initModel();
+		},
 	},
 };
 </script>

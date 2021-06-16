@@ -4,32 +4,31 @@
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
 		</v-card-actions>
 		<v-card-text class="pa-3">
-			<p class="text-h6 text--primary">{{ title }}</p>
-			<p class="text--primary">{{ desc }}</p>
-        </v-card-text>
+			<p class="text-h6 text--primary">{{ itemData.title }}</p>
+			<p class="text--primary">{{ itemData.desc }}</p>
+		</v-card-text>
 	</v-card>
 </template>
 
 <script>
-import CardOptions from './CardOptions.vue'
+import CardOptions from "./CardOptions.vue";
 
-import {eventHub, CardEvent} from '../../js/eventHub.js';
+import { Note } from "../../js/model.js";
+import { eventHub, CardEvent } from "../../js/eventHub.js";
 
 export default {
-    name: "LocationCard",
-    components: {
-        CardOptions,
-    },
-    props: {
-        id: Number,
-        title: String,
-        desc: String
-    },
-    methods: {
+	name: "NoteCard",
+	components: {
+		CardOptions,
+	},
+	props: {
+		itemData: Note,
+	},
+	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent({type: 'note', id: this.id}))
+			eventHub.$emit(value, new CardEvent('note', this.itemData))
 		},
-    }
+	},
 };
 </script>
 

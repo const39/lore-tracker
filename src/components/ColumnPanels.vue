@@ -21,7 +21,7 @@
 									class="draggable"
 									v-for="objective in liveData.objectives"
 									:key="objective.id"
-									v-bind="objective"
+									:item-data="objective"
 								></ObjectiveCard>
 							</draggable>
 							<AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
@@ -50,7 +50,7 @@
 									class="draggable"
 									v-for="event in liveData.events"
 									:key="event.id"
-									v-bind="event"
+									:item-data="event"
 									:show-icon="true"
 								></EventCard>
 							</draggable>
@@ -80,7 +80,7 @@
 									class="draggable"
 									v-for="location in liveData.locations"
 									:key="location.id"
-									v-bind="location"
+									:item-data="location"
 								></LocationCard>
 							</draggable>
 							<AddCard @add-card-clicked="showLocationForm = true"></AddCard>
@@ -109,7 +109,7 @@
 									class="draggable"
 									v-for="character in liveData.characters"
 									:key="character.id"
-									v-bind="character"
+									:item-data="character"
 								></CharacterCard>
 							</draggable>
 							<AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
@@ -138,7 +138,7 @@
 									class="draggable"
 									v-for="note in liveData.notes"
 									:key="note.id"
-									v-bind="note"
+									:item-data="note"
 								></NoteCard>
 							</draggable>
 							<AddCard @add-card-clicked="showNoteForm = true"></AddCard>
