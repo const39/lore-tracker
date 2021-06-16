@@ -1,7 +1,7 @@
 <template>
 	<v-container>
 		<v-row>
-			<v-col cols="12" md="4" sm="2">
+			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isObjectiveCollapsed">
 					<v-expansion-panel>
 						<v-expansion-panel-header class="text-h5 text--primary">
@@ -30,7 +30,7 @@
 					</v-expansion-panel>
 				</v-expansion-panels>
 			</v-col>
-			<v-col cols="12" md="4" sm="2">
+			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isEventCollapsed">
 					<v-expansion-panel>
 						<v-expansion-panel-header class="text-h5 text--primary">
@@ -60,7 +60,7 @@
 					</v-expansion-panel>
 				</v-expansion-panels>
 			</v-col>
-			<v-col cols="12" md="4" sm="2">
+			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isLocationCollapsed">
 					<v-expansion-panel>
 						<v-expansion-panel-header class="text-h5 text--primary">
@@ -89,7 +89,7 @@
 					</v-expansion-panel>
 				</v-expansion-panels>
 			</v-col>
-			<v-col cols="12" md="4" sm="2">
+			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isCharacterCollapsed">
 					<v-expansion-panel>
 						<v-expansion-panel-header class="text-h5 text--primary">
@@ -118,7 +118,7 @@
 					</v-expansion-panel>
 				</v-expansion-panels>
 			</v-col>
-			<v-col cols="12" md="4" sm="2">
+			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isNoteCollapsed">
 					<v-expansion-panel>
 						<v-expansion-panel-header class="text-h5 text--primary">
