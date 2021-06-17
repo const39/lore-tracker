@@ -4,8 +4,11 @@
 			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isObjectiveCollapsed">
 					<v-expansion-panel>
-						<v-expansion-panel-header class="text-h5 text--primary">
-							{{ panels[0] }}
+						<v-expansion-panel-header>
+							<div class="text-h5 text--primary">
+								<v-icon left>{{ panels[0].icon }}</v-icon>
+								{{ panels[0].title }}
+							</div>
 						</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -18,14 +21,15 @@
 								"
 							>
 								<CardObjective
+									outlined
 									class="draggable"
 									v-for="objective in liveData.objectives"
 									:key="objective.id"
 									:item-data="objective"
 								/>
 							</draggable>
-							<CardAdd @add-card-clicked="showObjectiveForm = true"/>
-							<FormObjective v-model="showObjectiveForm"/>
+							<CardAdd @add-card-clicked="showObjectiveForm = true" />
+							<FormObjective v-model="showObjectiveForm" />
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -33,8 +37,11 @@
 			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isEventCollapsed">
 					<v-expansion-panel>
-						<v-expansion-panel-header class="text-h5 text--primary">
-							{{ panels[1] }}
+						<v-expansion-panel-header>
+							<div class="text-h5 text--primary">
+								<v-icon left>{{ panels[1].icon }}</v-icon>
+								{{ panels[1].title }}
+							</div>
 						</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -47,6 +54,7 @@
 								"
 							>
 								<CardEvent
+									outlined
 									class="draggable"
 									v-for="event in liveData.events"
 									:key="event.id"
@@ -54,8 +62,8 @@
 									:show-icon="true"
 								/>
 							</draggable>
-							<CardAdd @add-card-clicked="showEventForm = true"/>
-							<FormEvent v-model="showEventForm"/>
+							<CardAdd @add-card-clicked="showEventForm = true" />
+							<FormEvent v-model="showEventForm" />
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -63,8 +71,11 @@
 			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isLocationCollapsed">
 					<v-expansion-panel>
-						<v-expansion-panel-header class="text-h5 text--primary">
-							{{ panels[2] }}
+						<v-expansion-panel-header>
+							<div class="text-h5 text--primary">
+								<v-icon left>{{ panels[2].icon }}</v-icon>
+								{{ panels[2].title }}
+							</div>
 						</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -77,14 +88,15 @@
 								"
 							>
 								<CardLocation
+									outlined
 									class="draggable"
 									v-for="location in liveData.locations"
 									:key="location.id"
 									:item-data="location"
 								/>
 							</draggable>
-							<CardAdd @add-card-clicked="showLocationForm = true"/>
-							<FormLocation v-model="showLocationForm"/>
+							<CardAdd @add-card-clicked="showLocationForm = true" />
+							<FormLocation v-model="showLocationForm" />
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -92,8 +104,11 @@
 			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isCharacterCollapsed">
 					<v-expansion-panel>
-						<v-expansion-panel-header class="text-h5 text--primary">
-							{{ panels[3] }}
+						<v-expansion-panel-header>
+							<div class="text-h5 text--primary">
+								<v-icon left>{{ panels[3].icon }}</v-icon>
+								{{ panels[3].title }}
+							</div>
 						</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -106,14 +121,15 @@
 								"
 							>
 								<CardCharacter
+									outlined
 									class="draggable"
 									v-for="character in liveData.characters"
 									:key="character.id"
 									:item-data="character"
 								/>
 							</draggable>
-							<CardAdd @add-card-clicked="showCharacterForm = true"/>
-							<FormCharacter v-model="showCharacterForm"/>
+							<CardAdd @add-card-clicked="showCharacterForm = true" />
+							<FormCharacter v-model="showCharacterForm" />
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -121,8 +137,11 @@
 			<v-col cols="12" md="4" sm="12">
 				<v-expansion-panels v-model="isNoteCollapsed">
 					<v-expansion-panel>
-						<v-expansion-panel-header class="text-h5 text--primary">
-							{{ panels[4] }}
+						<v-expansion-panel-header>
+							<div class="text-h5 text--primary">
+								<v-icon left>{{ panels[4].icon }}</v-icon>
+								{{ panels[4].title }}
+							</div>
 						</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -135,14 +154,15 @@
 								"
 							>
 								<CardNote
+									outlined
 									class="draggable"
 									v-for="note in liveData.notes"
 									:key="note.id"
 									:item-data="note"
 								/>
 							</draggable>
-							<CardAdd @add-card-clicked="showNoteForm = true"/>
-							<FormNote v-model="showNoteForm"/>
+							<CardAdd @add-card-clicked="showNoteForm = true" />
+							<FormNote v-model="showNoteForm" />
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -168,6 +188,7 @@ import FormNote from "../forms/FormNote.vue";
 import draggable from "vuedraggable";
 
 import storage from "../../js/storage.js";
+import icons from "../../js/icons.js";
 
 export default {
 	name: "LayoutColumns",
@@ -187,7 +208,29 @@ export default {
 	},
 	data() {
 		return {
-			panels: ["Objectifs", "Événements", "Localités", "Personnages", "Notes"],
+			// panels: ["Objectifs", "Événements", "Localités", "Personnages", "Notes"],
+			panels: [
+				{
+					title: "Objectifs",
+					icon: icons.objective,
+				},
+				{
+					title: "Événements",
+					icon: icons.event,
+				},
+				{
+					title: "Localités",
+					icon: icons.location,
+				},
+				{
+					title: "Personnages",
+					icon: icons.character,
+				},
+				{
+					title: "Notes",
+					icon: icons.note,
+				},
+			],
 			liveData: storage.data,
 			showObjectiveForm: false,
 			showEventForm: false,

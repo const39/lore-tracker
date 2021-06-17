@@ -7,9 +7,10 @@
 					v-for="event in liveData.events"
 					:key="event.id"
 					:icon="icons.whichEventIcon(event.type)"
+					:color="computeColor(event.type)"
 					fill-dot
 				>
-					<CardEvent v-bind="event" :show-icon="false"/>
+					<CardEvent :item-data="event" :show-icon="false" />
 				</v-timeline-item>
 			</v-timeline>
 			<p class="text-center" v-else>
@@ -35,16 +36,31 @@ export default {
 			icons: icons,
 		};
 	},
+	methods: {
+		computeColor(eventType) {
+			if (eventType) {
+				switch (eventType.toLowerCase()) {
+					case "combat":
+						return "deep-orange darken-1";
+					case "encounter":
+						return "purple darken-1";
+					case "discovery":
+						return "green lighten-1";
+					case "travel":
+						return "indigo";
+					default:
+						return "grey darken-2";
+				}
+			} else return "grey darken-2";
+		},
+	},
 };
 </script>
 
 <style>
 /* Set zoom on hover animation on the compiled Vuetify class of the dot */
 .v-timeline-item__dot:hover {
-	animation-name: zoom-on-hover;
-	animation-iteration-count: 1;
-	animation-timing-function: ease-in;
-	animation-duration: 0.1s;
+	animation: zoom-on-hover 0.1s ease-in 1;
 	transform: scale(1.25);
 }
 

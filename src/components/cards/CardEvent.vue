@@ -1,5 +1,5 @@
 <template>
-	<v-card class="mb-4">
+	<BaseCard :outlined="outlined">
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"/>
 		</v-card-actions>
@@ -14,7 +14,7 @@
 				</v-col>
 			</v-row>
 		</v-card-text>
-	</v-card>
+	</BaseCard>
 </template>
 
 <script>
@@ -22,6 +22,7 @@ import icons from "../../js/icons.js";
 import { Event } from '../../js/model.js';
 import {eventHub, CardEvent} from '../../js/eventHub.js';
 
+import BaseCard from "./BaseCard.vue";
 import CardOptions from "./CardOptions.vue";
 import TagList from '../TagList.vue';
 
@@ -29,6 +30,7 @@ export default {
 	name: "CardEvent",
 	components: {
 		CardOptions,
+		BaseCard,
 		TagList
 	},
 	props: {
@@ -36,6 +38,7 @@ export default {
 			type: Event,
 			required: true
 		},
+		outlined: Boolean,
 		showIcon: Boolean
 	},
 	data() {
@@ -48,5 +51,8 @@ export default {
 			eventHub.$emit(value, new CardEvent('event', this.itemData))
 		},
 	},
+	computed: {
+
+	}
 };
 </script>
