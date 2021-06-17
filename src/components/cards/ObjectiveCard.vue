@@ -4,14 +4,15 @@
 			<CardOptions @option-selected="onOptionSelected"></CardOptions>
 		</v-card-actions>
 		<v-card-text class="pa-3">
-			<p class="text--primary">{{ itemData.desc }}</p>
-			<!-- TODO Tweak style -->
-			<v-tooltip top v-if="itemData.isCompleted">
-				<template v-slot:activator="{ on, attrs }">
-					<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
-				</template>
-				<span>Accompli</span>
-			</v-tooltip>
+			<p class="text--primary">
+				<v-tooltip top v-if="itemData.isCompleted">
+					<template v-slot:activator="{ on, attrs }">
+						<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
+					</template>
+					<span>Accompli</span>
+				</v-tooltip>
+				{{ itemData.desc }}
+			</p>
 			<TagList :items="itemData.tags"></TagList>
 		</v-card-text>
 	</v-card>
@@ -19,20 +20,20 @@
 
 <script>
 import icons from "../../js/icons.js";
-import { Objective } from '../../js/model.js';
-import {eventHub, CardEvent} from '../../js/eventHub.js';
+import { Objective } from "../../js/model.js";
+import { eventHub, CardEvent } from "../../js/eventHub.js";
 
 import CardOptions from "./CardOptions.vue";
-import TagList from '../TagList.vue';
+import TagList from "../TagList.vue";
 
 export default {
 	name: "ObjectiveCard",
 	components: {
 		CardOptions,
-		TagList
+		TagList,
 	},
 	props: {
-		itemData: Objective
+		itemData: Objective,
 	},
 	data() {
 		return {
@@ -41,7 +42,7 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent('objective', this.itemData))
+			eventHub.$emit(value, new CardEvent("objective", this.itemData));
 		},
 	},
 };

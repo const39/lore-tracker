@@ -14,12 +14,13 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<!-- TODO Tweak style -->
-						<v-radio-group v-model="model.isCompleted" row mandatory>
-							<v-radio label="En cours" :value="false"></v-radio>
-							<v-radio label="Accompli" :value="true"></v-radio>
-						</v-radio-group>
 						<TagChooser v-model="model.tags"></TagChooser>
+						<div class="d-flex justify-center">
+							<v-radio-group v-model="model.isCompleted" row mandatory>
+								<v-radio label="En cours" :value="false"></v-radio>
+								<v-radio label="Accompli" :value="true"></v-radio>
+							</v-radio-group>
+						</div>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
