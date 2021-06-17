@@ -25,7 +25,10 @@ export default {
 		TagList,
 	},
 	props: {
-		itemData: Note,
+		itemData: {
+			type: Note,
+			required: true
+		}
 	},
 	methods: {
 		onOptionSelected(value) {

@@ -25,7 +25,10 @@ export default {
 		TagList,
 	},
 	props: {
-		itemData: Location
+		itemData: {
+			type: Location,
+			required: true
+		}
 	},
 	methods: {
 		onOptionSelected(value) {

@@ -41,7 +41,10 @@ export default {
 		TagList
 	},
 	props: {
-		itemData: Character
+		itemData: {
+			type: Character,
+			required: true
+		}
 	},
 	data() {
 		return {

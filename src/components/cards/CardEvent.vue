@@ -32,7 +32,10 @@ export default {
 		TagList
 	},
 	props: {
-		itemData: Event,
+		itemData: {
+			type: Event,
+			required: true
+		},
 		showIcon: Boolean
 	},
 	data() {

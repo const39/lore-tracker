@@ -33,7 +33,10 @@ export default {
 		TagList,
 	},
 	props: {
-		itemData: Objective,
+		itemData: {
+			type: Objective,
+			required: true
+		}
 	},
 	data() {
 		return {
