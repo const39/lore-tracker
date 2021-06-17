@@ -14,6 +14,7 @@
 							v-model="model.name"
 						></v-text-field>
 						<v-textarea outlined label="Description" v-model="model.desc"></v-textarea>
+						<TagChooser v-model="model.tags"></TagChooser>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -31,11 +32,16 @@
 import { Location } from '../../js/model.js';
 import storage from "../../js/storage.js";
 
+import TagChooser from "../TagChooser.vue";
+
 export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
 		id: Number,
 		edit: Boolean
+	},
+	components: {
+		TagChooser
 	},
 	data() {
 		return {
@@ -115,5 +121,3 @@ export default {
 	},
 };
 </script>
-
-<style></style>

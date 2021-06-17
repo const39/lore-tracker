@@ -14,63 +14,25 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<v-row>
-							<v-col cols="12" sm="6">
-								<v-autocomplete
-									chips
-									label="Localité"
-									v-model="model.locationId"
-									:items="locations"
-									item-text="name"
-									item-value="id"
-								>
-									<template v-slot:selection="data">
-										<v-chip>
-											<v-icon left>{{ icons.location }}</v-icon>
-											{{ data.item.name }}
-										</v-chip>
-									</template>
-								</v-autocomplete>
-							</v-col>
-							<v-col cols="12" sm="6">
-								<v-autocomplete
-									chips
-									label="Type d'événement*"
-									v-model="model.type"
-									:rules="requiredRule"
-									:items="eventTypes"
-								>
-									<template v-slot:selection="data">
-										<v-chip>
-											<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
-											{{ data.item.text }}
-										</v-chip>
-									</template>
-									<template v-slot:item="data">
-										<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
-										{{ data.item.text }}
-									</template>
-								</v-autocomplete>
-							</v-col>
-						</v-row>
 						<v-autocomplete
 							chips
-							deletable-chips
-							multiple
-							label="Personnages impliqués"
-							v-model="model.charactersIds"
-							:items="characters"
-							item-text="name"
-							item-value="id"
+							label="Type d'événement*"
+							v-model="model.type"
+							:rules="requiredRule"
+							:items="eventTypes"
 						>
 							<template v-slot:selection="data">
 								<v-chip>
-									<v-icon left v-if="data.item.isNPC">{{ icons.npc }}</v-icon>
-									<v-icon left v-else>{{ icons.player }}</v-icon>
-									{{ data.item.name }}
+									<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
+									{{ data.item.text }}
 								</v-chip>
 							</template>
+							<template v-slot:item="data">
+								<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
+								{{ data.item.text }}
+							</template>
 						</v-autocomplete>
+						<TagChooser v-model="model.tags"></TagChooser>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -87,13 +49,18 @@
 <script>
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
-import { Event } from '../../js/model.js';
+import { Event } from "../../js/model.js";
+
+import TagChooser from "../TagChooser.vue";
 
 export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
 		id: Number,
-		edit: Boolean
+		edit: Boolean,
+	},
+	components: {
+		TagChooser,
 	},
 	data() {
 		return {
@@ -101,8 +68,6 @@ export default {
 			requiredRule: [(v) => !!v || "Champ requis"],
 			icons: icons,
 			model: this.initModel(),
-			locations: storage.data.locations,
-			characters: storage.data.characters,
 			eventTypes: [
 				{
 					id: storage.eventTypes[0],
@@ -132,18 +97,16 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-
 				// In edit mode
-				if(this.edit) {
-
-					let index = storage.data.events.findIndex(entry => entry.id === this.id);
+				if (this.edit) {
+					let index = storage.data.events.findIndex((entry) => entry.id === this.id);
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if(index != -1) this.$set(storage.data.events, index, this.model);
+					if (index != -1) this.$set(storage.data.events, index, this.model);
 					else console.error("Could not save the edit.");
 
-				// In create mode
+					// In create mode
 				} else storage.data.events.push(this.model);
 
 				storage.persist();
@@ -194,13 +157,7 @@ export default {
 		 */
 		id: function() {
 			this.model = this.initModel();
-		}
+		},
 	},
 };
 </script>
-
-<style scoped>
-.custom-border {
-	border-style: dashed;
-}
-</style>

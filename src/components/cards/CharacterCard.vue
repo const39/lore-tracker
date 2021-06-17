@@ -21,6 +21,7 @@
 			</p>
 			<p class="text-subtitle-2 text--primary">{{ identity }}</p>
 			<p class="text--primary">{{ itemData.desc }}</p>
+			<TagList :items="itemData.tags"></TagList>
 		</v-card-text>
 	</v-card>
 </template>
@@ -31,11 +32,13 @@ import { Character } from '../../js/model.js';
 import {eventHub, CardEvent} from '../../js/eventHub.js';
 
 import CardOptions from "./CardOptions.vue";
+import TagList from '../TagList.vue';
 
 export default {
 	name: "CharacterCard",
 	components: {
 		CardOptions,
+		TagList
 	},
 	props: {
 		itemData: Character
@@ -62,5 +65,3 @@ export default {
     }
 };
 </script>
-
-<style></style>

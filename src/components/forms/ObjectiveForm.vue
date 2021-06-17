@@ -14,49 +14,12 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<v-row>
-							<v-col cols="12" sm="6">
-								<v-autocomplete
-									chips
-									label="Localité"
-									v-model="model.locationId"
-									:items="locations"
-									item-text="name"
-									item-value="id"
-								>
-									<template v-slot:selection="data">
-										<v-chip>
-											<v-icon left>{{ icons.location }}</v-icon>
-											{{ data.item.name }}
-										</v-chip>
-									</template>
-								</v-autocomplete>
-							</v-col>
-							<v-col cols="12" sm="6">
-								<v-radio-group v-model="model.isCompleted" row mandatory>
-									<v-radio label="En cours" :value="false"></v-radio>
-									<v-radio label="Accompli" :value="true"></v-radio>
-								</v-radio-group>
-							</v-col>
-						</v-row>
-						<v-autocomplete
-							chips
-							deletable-chips
-							multiple
-							label="Personnages impliqués"
-							v-model="model.charactersIds"
-							:items="characters"
-							item-text="name"
-							item-value="id"
-						>
-							<template v-slot:selection="data">
-								<v-chip>
-									<v-icon left v-if="data.item.isNPC">{{ icons.npc }}</v-icon>
-									<v-icon left v-else>{{ icons.player }}</v-icon>
-									{{ data.item.name }}
-								</v-chip>
-							</template>
-						</v-autocomplete>
+						<!-- TODO Tweak style -->
+						<v-radio-group v-model="model.isCompleted" row mandatory>
+							<v-radio label="En cours" :value="false"></v-radio>
+							<v-radio label="Accompli" :value="true"></v-radio>
+						</v-radio-group>
+						<TagChooser v-model="model.tags"></TagChooser>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -75,11 +38,16 @@ import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 
+import TagChooser from "../TagChooser.vue";
+
 export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
 		id: Number,
 		edit: Boolean,
+	},
+	components: {
+		TagChooser
 	},
 	data() {
 		return {
@@ -87,8 +55,6 @@ export default {
 			requiredRule: [(v) => !!v || "Champ requis"],
 			icons: icons,
 			model: this.initModel(),
-			locations: storage.data.locations,
-			characters: storage.data.characters,
 		};
 	},
 	methods: {
@@ -118,7 +84,7 @@ export default {
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Objective(data);
-			} 
+			}
 			return new Objective();
 		},
 	},
@@ -159,5 +125,3 @@ export default {
 	},
 };
 </script>
-
-<style></style>

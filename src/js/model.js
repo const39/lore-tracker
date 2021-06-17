@@ -11,8 +11,7 @@ export class Objective {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
 		this.isCompleted = object?.isCompleted || false;
-		this.locationId = object?.locationId;
-		this.charactersIds = object?.charactersIds || [];
+        this.tags = object?.tags || [];
 	}
 }
 
@@ -23,8 +22,7 @@ export class Event {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
 		this.type = eventTypes.includes(object?.type) || eventTypes.other
-        this.locationId = object?.locationId;
-		this.charactersIds = object?.charactersIds || [];
+        this.tags = object?.tags || [];
 	}
 }
 
@@ -33,6 +31,7 @@ export class Location {
         this.id = object?.id || uid();
         this.name = object?.name || "";
         this.desc = object?.desc || "";
+        this.tags = object?.tags || [];
     }
 }
 
@@ -45,6 +44,7 @@ export class Character {
         this.role = object?.role || "";
         this.isNPC = object?.isNPC || false;
         this.desc = object?.desc || "";
+        this.tags = object?.tags || [];
     }
 }
 
@@ -53,5 +53,6 @@ export class Note {
         this.id = object?.id || uid();
         this.title = object?.title || "";
         this.desc = object?.desc || "";
+        this.tags = object?.tags || [];
     }
 }
