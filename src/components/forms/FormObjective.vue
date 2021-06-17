@@ -14,7 +14,7 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<TagChooser v-model="model.tags"></TagChooser>
+						<TagChooser v-model="model.tags"/>
 						<div class="d-flex justify-center">
 							<v-radio-group v-model="model.isCompleted" row mandatory>
 								<v-radio label="En cours" :value="false"></v-radio>

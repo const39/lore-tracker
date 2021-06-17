@@ -27,15 +27,15 @@
 							v-for="objective in liveData.objectives"
 							:key="objective.id"
 						>
-							<ObjectiveCard class="draggable" :item-data="objective"></ObjectiveCard>
+							<CardObjective class="draggable" :item-data="objective"/>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
-								<AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
+								<CardAdd @add-card-clicked="showObjectiveForm = true"/>
 							</v-col>
 						</template>
 					</draggable>
-					<ObjectiveForm v-model="showObjectiveForm"></ObjectiveForm>
+					<FormObjective v-model="showObjectiveForm"/>
 				</v-container>
 			</v-tab-item>
 			<v-tab-item>
@@ -52,15 +52,15 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="event in liveData.events" :key="event.id">
-							<EventCard class="draggable" :item-data="event" :show-icon="true"></EventCard>
+							<CardEvent class="draggable" :item-data="event" :show-icon="true"/>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
-								<AddCard @add-card-clicked="showEventForm = true"></AddCard>
+								<CardAdd @add-card-clicked="showEventForm = true"/>
 							</v-col>
 						</template>
 					</draggable>
-					<EventForm v-model="showEventForm"></EventForm>
+					<FormEvent v-model="showEventForm"/>
 				</v-container>
 			</v-tab-item>
 			<v-tab-item>
@@ -77,15 +77,15 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="location in liveData.locations" :key="location.id">
-							<LocationCard class="draggable" :item-data="location"></LocationCard>
+							<CardLocation class="draggable" :item-data="location"/>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
-								<AddCard @add-card-clicked="showLocationForm = true"></AddCard>
+								<CardAdd @add-card-clicked="showLocationForm = true"/>
 							</v-col>
 						</template>
 					</draggable>
-					<LocationForm v-model="showLocationForm"></LocationForm>
+					<FormLocation v-model="showLocationForm"/>
 				</v-container>
 			</v-tab-item>
 			<v-tab-item>
@@ -108,15 +108,15 @@
 							v-for="character in liveData.characters"
 							:key="character.id"
 						>
-							<CharacterCard class="draggable" :item-data="character"></CharacterCard>
+							<CardCharacter class="draggable" :item-data="character"/>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
-								<AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
+								<CardAdd @add-card-clicked="showCharacterForm = true"/>
 							</v-col>
 						</template>
 					</draggable>
-					<CharacterForm v-model="showCharacterForm"></CharacterForm>
+					<FormCharacter v-model="showCharacterForm"/>
 				</v-container>
 			</v-tab-item>
 			<v-tab-item>
@@ -133,15 +133,15 @@
 						"
 					>
 						<v-col cols="12" md="4" class="item" v-for="note in liveData.notes" :key="note.id">
-							<NoteCard class="draggable" :item-data="note"></NoteCard>
+							<CardNote class="draggable" :item-data="note"/>
 						</v-col>
 						<template v-slot:footer>
 							<v-col cols="12" md="4">
-								<AddCard @add-card-clicked="showNoteForm = true"></AddCard>
+								<CardAdd @add-card-clicked="showNoteForm = true"/>
 							</v-col>
 						</template>
 					</draggable>
-					<NoteForm v-model="showNoteForm"></NoteForm>
+					<FormNote v-model="showNoteForm"/>
 				</v-container>
 			</v-tab-item>
 		</v-tabs-items>
@@ -149,38 +149,38 @@
 </template>
 
 <script>
-import ObjectiveCard from "./cards/ObjectiveCard.vue";
-import EventCard from "./cards/EventCard.vue";
-import LocationCard from "./cards/LocationCard.vue";
-import CharacterCard from "./cards/CharacterCard.vue";
-import NoteCard from "./cards/NoteCard.vue";
-import AddCard from "./cards/AddCard.vue";
+import CardObjective from "../cards/CardObjective.vue";
+import CardEvent from "../cards/CardEvent.vue";
+import CardLocation from "../cards/CardLocation.vue";
+import CardCharacter from "../cards/CardCharacter.vue";
+import CardNote from "../cards/CardNote.vue";
+import CardAdd from "../cards/CardAdd.vue";
 
-import EventForm from "./forms/EventForm.vue";
-import ObjectiveForm from "./forms/ObjectiveForm.vue";
-import LocationForm from "./forms/LocationForm.vue";
-import CharacterForm from "./forms/CharacterForm.vue";
-import NoteForm from "./forms/NoteForm.vue";
+import FormEvent from "../forms/FormEvent.vue";
+import FormObjective from "../forms/FormObjective.vue";
+import FormLocation from "../forms/FormLocation.vue";
+import FormCharacter from "../forms/FormCharacter.vue";
+import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
 
-import storage from "../js/storage.js";
-import icons from '../js/icons';
+import storage from "../../js/storage.js";
+import icons from '../../js/icons';
 
 export default {
-	name: "TabbedPanels",
+	name: "LayoutTabs",
 	components: {
-		ObjectiveCard,
-		EventCard,
-		LocationCard,
-		CharacterCard,
-		NoteCard,
-		AddCard,
-		EventForm,
-		ObjectiveForm,
-		LocationForm,
-		CharacterForm,
-		NoteForm,
+		CardObjective,
+		CardEvent,
+		CardLocation,
+		CardCharacter,
+		CardNote,
+		CardAdd,
+		FormEvent,
+		FormObjective,
+		FormLocation,
+		FormCharacter,
+		FormNote,
 		draggable,
 	},
 	data() {

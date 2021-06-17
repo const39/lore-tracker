@@ -9,7 +9,7 @@
 					:icon="icons.whichEventIcon(event.type)"
 					fill-dot
 				>
-					<EventCard v-bind="event" :show-icon="false"></EventCard>
+					<CardEvent v-bind="event" :show-icon="false"/>
 				</v-timeline-item>
 			</v-timeline>
 			<p class="text-center" v-else>
@@ -23,11 +23,11 @@
 import storage from "../js/storage.js";
 import icons from "../js/icons.js";
 
-import EventCard from "../components/cards/EventCard.vue";
+import CardEvent from "../components/cards/CardEvent.vue";
 
 export default {
 	components: {
-		EventCard,
+		CardEvent,
 	},
 	data() {
 		return {

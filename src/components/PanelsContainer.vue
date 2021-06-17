@@ -13,16 +13,16 @@
 			</div>
 		</div>
 
-		<!-- Alternative display modes -->
-		<TabbedPanels v-if="selectedDisplay == 'tabbed'"></TabbedPanels>
-		<ColumnPanels v-else-if="selectedDisplay == 'column'"></ColumnPanels>
+		<!-- Alternative layouts -->
+		<LayoutTabs v-if="selectedLayout == 'tabbed'"/>
+		<LayoutColumns v-else-if="selectedLayout == 'column'"/>
 
 		<!-- Global edit form for each panel -->
-		<ObjectiveForm v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id"></ObjectiveForm>
-		<EventForm v-model="eventEditForm.show" edit :id="eventEditForm.id"></EventForm>
-		<CharacterForm v-model="characterEditForm.show" edit :id="characterEditForm.id"></CharacterForm>
-		<LocationForm v-model="locationEditForm.show" edit :id="locationEditForm.id"></LocationForm>
-		<NoteForm v-model="noteEditForm.show" edit :id="noteEditForm.id"></NoteForm>
+		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id"/>
+		<FormEvent v-model="eventEditForm.show" edit :id="eventEditForm.id"/>
+		<FormCharacter v-model="characterEditForm.show" edit :id="characterEditForm.id"/>
+		<FormLocation v-model="locationEditForm.show" edit :id="locationEditForm.id"/>
+		<FormNote v-model="noteEditForm.show" edit :id="noteEditForm.id"/>
 
 		<!-- Global delete form for all panels -->
 		<ConfirmDialog
@@ -30,19 +30,19 @@
 			:title="confirmDialog.title"
 			:message="confirmDialog.message"
 			:acceptAction="confirmDialog.acceptAction"
-		></ConfirmDialog>
+		/>
 	</div>
 </template>
 
 <script>
-import TabbedPanels from "./TabbedPanels.vue";
-import ColumnPanels from "./ColumnPanels.vue";
+import LayoutTabs from "./layouts/LayoutTabs.vue";
+import LayoutColumns from "./layouts/LayoutColumns.vue";
 
-import ObjectiveForm from "./forms/ObjectiveForm.vue";
-import EventForm from "./forms/EventForm.vue";
-import LocationForm from "./forms/LocationForm.vue";
-import CharacterForm from "./forms/CharacterForm.vue";
-import NoteForm from "./forms/NoteForm.vue";
+import FormObjective from "./forms/FormObjective.vue";
+import FormEvent from "./forms/FormEvent.vue";
+import FormLocation from "./forms/FormLocation.vue";
+import FormCharacter from "./forms/FormCharacter.vue";
+import FormNote from "./forms/FormNote.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
 
 import storage from "../js/storage.js";
@@ -51,18 +51,18 @@ import { eventHub } from "../js/eventHub.js";
 export default {
 	name: "PanelsContainer",
 	components: {
-		TabbedPanels,
-		ColumnPanels,
-		ObjectiveForm,
-		EventForm,
-		LocationForm,
-		CharacterForm,
-		NoteForm,
+		LayoutTabs,
+		LayoutColumns,
+		FormObjective,
+		FormEvent,
+		FormLocation,
+		FormCharacter,
+		FormNote,
 		ConfirmDialog,
 	},
 	data() {
 		return {
-			selectedDisplay: "tabbed",
+			selectedLayout: "tabbed",
 
 			objectiveEditForm: {
 				show: false,
@@ -94,10 +94,10 @@ export default {
 	},
 	methods: {
 		onClick(name) {
-			this.selectedDisplay = name;
+			this.selectedLayout = name;
 		},
 		color(name) {
-			return this.selectedDisplay == name ? "primary" : "grey";
+			return this.selectedLayout == name ? "primary" : "grey";
 		},
 	},
 	mounted() {

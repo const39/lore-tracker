@@ -3,39 +3,18 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit">Modifier un personnage</span>
-					<span class="text-h5" v-else>Ajouter un personnage</span>
+					<span class="text-h5" v-if="edit">Modifier une localité</span>
+					<span class="text-h5" v-else>Ajouter une localité</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
-						<v-row>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field
-									label="Nom*"
-									:rules="requiredRule"
-									v-model="model.name"
-								></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Race" v-model="model.race"></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Classes" v-model="model.classes"></v-text-field>
-							</v-col>
-						</v-row>
-						<v-row>
-							<v-col cols="12" sm="6">
-								<v-text-field label="Rôle" v-model="model.role"></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6">
-								<v-radio-group v-model="model.isNPC" row mandatory>
-									<v-radio label="Joueur" :value="false"></v-radio>
-									<v-radio label="Non-joueur" :value="true"></v-radio>
-								</v-radio-group>
-							</v-col>
-						</v-row>
+						<v-text-field
+							label="Nom de la localité*"
+							:rules="requiredRule"
+							v-model="model.name"
+						></v-text-field>
 						<v-textarea outlined label="Description" v-model="model.desc"></v-textarea>
-						<TagChooser v-model="model.tags"></TagChooser>
+						<TagChooser v-model="model.tags"/>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -50,7 +29,7 @@
 </template>
 
 <script>
-import { Character } from '../../js/model.js';
+import { Location } from '../../js/model.js';
 import storage from "../../js/storage.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -59,7 +38,7 @@ export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
 		id: Number,
-		edit: Boolean,
+		edit: Boolean
 	},
 	components: {
 		TagChooser
@@ -76,18 +55,19 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-				
+
 				// In edit mode
-				if (this.edit) {
-					let index = storage.data.characters.findIndex((entry) => entry.id === this.id);
+				if(this.edit) {
+
+					let index = storage.data.locations.findIndex(entry => entry.id === this.id);
 
 					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
 					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if (index != -1) this.$set(storage.data.characters, index, this.model);
+					if(index != -1) this.$set(storage.data.locations, index, this.model);
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else storage.data.characters.push(this.model);
+				} else storage.data.locations.push(this.model);
 
 				storage.persist();
 				this.showDialog = false;
@@ -95,13 +75,13 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = storage.data.characters.find((entry) => entry.id === this.id);
+				let data = storage.data.locations.find((entry) => entry.id === this.id);
 
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return new Character(data);
+				if (data) return new Location(data);
 			}
-			return new Character();
+			return new Location();
 		},
 	},
 	computed: {
@@ -132,8 +112,8 @@ export default {
 		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
-		 * This is allows to use a unique dialog for all character cards edits.
-		 * The parent only have to pass the id of the character to edit. When that id changes, the form gets the relevant data to set the model.
+		 * This is allows to use a unique dialog for all location cards edits.
+		 * The parent only have to pass the id of the location to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		id: function() {
 			this.model = this.initModel();
@@ -141,5 +121,3 @@ export default {
 	},
 };
 </script>
-
-<style></style>

@@ -17,15 +17,15 @@
 									persist();
 								"
 							>
-								<ObjectiveCard
+								<CardObjective
 									class="draggable"
 									v-for="objective in liveData.objectives"
 									:key="objective.id"
 									:item-data="objective"
-								></ObjectiveCard>
+								/>
 							</draggable>
-							<AddCard @add-card-clicked="showObjectiveForm = true"></AddCard>
-							<ObjectiveForm v-model="showObjectiveForm"></ObjectiveForm>
+							<CardAdd @add-card-clicked="showObjectiveForm = true"/>
+							<FormObjective v-model="showObjectiveForm"/>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -46,16 +46,16 @@
 									persist();
 								"
 							>
-								<EventCard
+								<CardEvent
 									class="draggable"
 									v-for="event in liveData.events"
 									:key="event.id"
 									:item-data="event"
 									:show-icon="true"
-								></EventCard>
+								/>
 							</draggable>
-							<AddCard @add-card-clicked="showEventForm = true"></AddCard>
-							<EventForm v-model="showEventForm"></EventForm>
+							<CardAdd @add-card-clicked="showEventForm = true"/>
+							<FormEvent v-model="showEventForm"/>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -76,15 +76,15 @@
 									persist();
 								"
 							>
-								<LocationCard
+								<CardLocation
 									class="draggable"
 									v-for="location in liveData.locations"
 									:key="location.id"
 									:item-data="location"
-								></LocationCard>
+								/>
 							</draggable>
-							<AddCard @add-card-clicked="showLocationForm = true"></AddCard>
-							<LocationForm v-model="showLocationForm"></LocationForm>
+							<CardAdd @add-card-clicked="showLocationForm = true"/>
+							<FormLocation v-model="showLocationForm"/>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -105,15 +105,15 @@
 									persist();
 								"
 							>
-								<CharacterCard
+								<CardCharacter
 									class="draggable"
 									v-for="character in liveData.characters"
 									:key="character.id"
 									:item-data="character"
-								></CharacterCard>
+								/>
 							</draggable>
-							<AddCard @add-card-clicked="showCharacterForm = true"></AddCard>
-							<CharacterForm v-model="showCharacterForm"></CharacterForm>
+							<CardAdd @add-card-clicked="showCharacterForm = true"/>
+							<FormCharacter v-model="showCharacterForm"/>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -134,15 +134,15 @@
 									persist();
 								"
 							>
-								<NoteCard
+								<CardNote
 									class="draggable"
 									v-for="note in liveData.notes"
 									:key="note.id"
 									:item-data="note"
-								></NoteCard>
+								/>
 							</draggable>
-							<AddCard @add-card-clicked="showNoteForm = true"></AddCard>
-							<NoteForm v-model="showNoteForm"></NoteForm>
+							<CardAdd @add-card-clicked="showNoteForm = true"/>
+							<FormNote v-model="showNoteForm"/>
 						</v-expansion-panel-content>
 					</v-expansion-panel>
 				</v-expansion-panels>
@@ -152,37 +152,37 @@
 </template>
 
 <script>
-import ObjectiveCard from "./cards/ObjectiveCard.vue";
-import EventCard from "./cards/EventCard.vue";
-import LocationCard from "./cards/LocationCard.vue";
-import CharacterCard from "./cards/CharacterCard.vue";
-import NoteCard from "./cards/NoteCard.vue";
-import AddCard from "./cards/AddCard.vue";
+import CardObjective from "../cards/CardObjective.vue";
+import CardEvent from "../cards/CardEvent.vue";
+import CardLocation from "../cards/CardLocation.vue";
+import CardCharacter from "../cards/CardCharacter.vue";
+import CardNote from "../cards/CardNote.vue";
+import CardAdd from "../cards/CardAdd.vue";
 
-import EventForm from "./forms/EventForm.vue";
-import ObjectiveForm from "./forms/ObjectiveForm.vue";
-import LocationForm from "./forms/LocationForm.vue";
-import CharacterForm from "./forms/CharacterForm.vue";
-import NoteForm from "./forms/NoteForm.vue";
+import FormEvent from "../forms/FormEvent.vue";
+import FormObjective from "../forms/FormObjective.vue";
+import FormLocation from "../forms/FormLocation.vue";
+import FormCharacter from "../forms/FormCharacter.vue";
+import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
 
-import storage from "../js/storage.js";
+import storage from "../../js/storage.js";
 
 export default {
-	name: "ColumnPanels",
+	name: "LayoutColumns",
 	components: {
-		ObjectiveCard,
-		EventCard,
-		LocationCard,
-		CharacterCard,
-		NoteCard,
-		AddCard,
-		EventForm,
-		ObjectiveForm,
-		LocationForm,
-		CharacterForm,
-		NoteForm,
+		CardObjective,
+		CardEvent,
+		CardLocation,
+		CardCharacter,
+		CardNote,
+		CardAdd,
+		FormEvent,
+		FormObjective,
+		FormLocation,
+		FormCharacter,
+		FormNote,
 		draggable,
 	},
 	data() {

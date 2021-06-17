@@ -1,7 +1,7 @@
 <template>
 	<v-card class="mb-4">
 		<v-card-actions class="float-right">
-			<CardOptions @option-selected="onOptionSelected"></CardOptions>
+			<CardOptions @option-selected="onOptionSelected"/>
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
@@ -10,7 +10,7 @@
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<p class="text--primary">{{ itemData.desc }}</p>
-					<TagList :items="itemData.tags"></TagList>
+					<TagList :items="itemData.tags"/>
 				</v-col>
 			</v-row>
 		</v-card-text>
@@ -26,7 +26,7 @@ import CardOptions from "./CardOptions.vue";
 import TagList from '../TagList.vue';
 
 export default {
-	name: "EventCard",
+	name: "CardEvent",
 	components: {
 		CardOptions,
 		TagList

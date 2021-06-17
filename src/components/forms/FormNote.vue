@@ -15,7 +15,7 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<TagChooser v-model="model.tags"></TagChooser>
+						<TagChooser v-model="model.tags"/>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
