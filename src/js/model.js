@@ -21,7 +21,7 @@ export class Event {
 	constructor(object) {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
-		this.type = eventTypes.includes(object?.type) || eventTypes.other
+		this.type = eventTypes.includes(object?.type) ? object?.type : eventTypes.other
         this.tags = object?.tags || [];
 	}
 }

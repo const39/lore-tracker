@@ -23,12 +23,12 @@
 						>
 							<template v-slot:selection="data">
 								<v-chip>
-									<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
+									<v-icon left>{{ icons.whichEventIcon(data.item.value) }}</v-icon>
 									{{ data.item.text }}
 								</v-chip>
 							</template>
 							<template v-slot:item="data">
-								<v-icon left>{{ icons.whichEventIcon(data.item.id) }}</v-icon>
+								<v-icon left>{{ icons.whichEventIcon(data.item.value) }}</v-icon>
 								{{ data.item.text }}
 							</template>
 						</v-autocomplete>
@@ -41,6 +41,7 @@
 					<v-btn text @click="showDialog = false">Fermer</v-btn>
 					<v-btn color="primary" text :disabled="!valid" @click="submit">Enregistrer</v-btn>
 				</v-card-actions>
+				{{model.type}}
 			</v-card>
 		</v-form>
 	</v-dialog>
@@ -70,23 +71,23 @@ export default {
 			model: this.initModel(),
 			eventTypes: [
 				{
-					id: storage.eventTypes[0],
+					value: storage.eventTypes[0],
 					text: "Combat",
 				},
 				{
-					id: storage.eventTypes[1],
+					value: storage.eventTypes[1],
 					text: "Rencontre",
 				},
 				{
-					id: storage.eventTypes[2],
+					value: storage.eventTypes[2],
 					text: "Découverte",
 				},
 				{
-					id: storage.eventTypes[3],
+					value: storage.eventTypes[3],
 					text: "Voyage",
 				},
 				{
-					id: storage.eventTypes[4],
+					value: storage.eventTypes[4],
 					text: "Autre",
 				},
 			],
