@@ -21,6 +21,7 @@ import LayoutTabContent from "./LayoutTabContent.vue";
 
 import storage from "../../js/storage.js";
 import icons from "../../js/icons";
+import { eventHub } from "../../js/eventHub";
 
 export default {
 	name: "LayoutTabs",
@@ -55,6 +56,33 @@ export default {
 			activeTab: "",
 			liveData: storage.data,
 		};
+	},
+	mounted() {
+		// Catch TagEvent, show the according tab and scroll to the card with the specified id
+		eventHub.$on("tag-selected", (e) => {
+
+			switch (e.type.toLowerCase()) {
+				case "objective":
+					this.activeTab = 0;
+					break;
+				case "event":
+					this.activeTab = 1;
+					break;
+				case "location":
+					this.activeTab = 2;
+					break;
+				case "character":
+					this.activeTab = 3;
+					break;
+				case "note":
+					this.activeTab = 4;
+					break;
+			}
+			document.getElementById(e.id + '-card')?.scrollIntoView({behavior: 'smooth'});
+		});
+	},
+	beforeDestroy() {
+		eventHub.$off("tag-selected");
 	},
 };
 </script>

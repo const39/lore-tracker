@@ -16,6 +16,8 @@ import LayoutColumnContent from "./LayoutColumnContent.vue";
 import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
 
+import { eventHub } from "../../js/eventHub.js";
+
 export default {
 	name: "LayoutColumns",
 	components: {
@@ -48,6 +50,15 @@ export default {
 			liveData: storage.data,
 			icons: icons,
 		};
+	},
+	mounted() {
+		// Catch TagEvent and scroll to the card with the specified id
+		eventHub.$on("tag-selected", (e) => {
+			document.getElementById(e.id + '-card')?.scrollIntoView({behavior: 'smooth'});
+		});
+	},
+	beforeDestroy() {
+		eventHub.$off("tag-selected");
 	},
 };
 </script>

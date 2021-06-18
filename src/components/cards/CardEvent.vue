@@ -1,5 +1,5 @@
 <template>
-	<BaseCard :outlined="outlined">
+	<BaseCard :outlined="outlined" :id="itemData.id + '-card'">
 		<v-card-actions class="float-right">
 			<CardOptions @option-selected="onOptionSelected"/>
 		</v-card-actions>
