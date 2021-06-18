@@ -1,5 +1,5 @@
 <template>
-	<v-card :outlined="outlined" :elevation="elevation" class="mb-4" @mouseenter="hover = true" @mouseleave="hover = false">
+	<v-card height="100%" :outlined="outlined" :elevation="elevation" fill-height class="mb-4" @mouseenter="hover = true" @mouseleave="hover = false">
         <slot></slot>
     </v-card>
 </template>
