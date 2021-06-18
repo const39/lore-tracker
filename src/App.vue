@@ -1,5 +1,5 @@
 <template>
-	<v-app>
+	<v-app :style="background">
 		<v-app-bar app color="primary" dark>
 			<div class="d-flex align-center">
 				<div class="text-xl-h4 text-center">RPG campaign tracker</div>
@@ -25,78 +25,98 @@
 				</v-btn>
 			</router-link> -->
 
-			<v-btn icon @click="switchTheme">
-				<v-icon> {{themeIcon}} </v-icon>
-			</v-btn>
-			<v-btn icon @click="showExportDialog = true">
-				<v-icon > mdi-download </v-icon>
-			</v-btn>
+			<!-- Options menu -->
+			<v-menu bottom left offset-y>
+				<template v-slot:activator="{ on, attrs }">
+					<v-btn icon v-bind="attrs" v-on="on">
+						<v-icon>mdi-cog</v-icon>
+					</v-btn>
+				</template>
+				<v-list dense flat>
+					<v-item-group mandatory>
+						<v-menu offset-x left>
+							<template v-slot:activator="{ on, attrs }">
+								<v-list-item v-on="on" v-bind="attrs">
+									<v-list-item-icon>
+										<v-icon>mdi-chevron-left</v-icon>
+									</v-list-item-icon>
+									<v-list-item-title>Changer de thème</v-list-item-title>
+								</v-list-item>
+							</template>
+							<ThemeSelector />
+						</v-menu>
+						<v-list-item @click="copyToClipboard">
+							<v-list-item-icon>
+								<v-icon>mdi-content-copy</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title>Copier les données</v-list-item-title>
+						</v-list-item>
+					</v-item-group>
+				</v-list>
+			</v-menu>
 		</v-app-bar>
 
+		<!-- Mount point for VueRouter -->
 		<v-main>
 			<v-container>
 				<router-view />
 			</v-container>
 		</v-main>
 
-		<!-- JSON data export dialog -->
-		<v-dialog v-model="showExportDialog" scrollable max-width="600px"> 
-			<v-card>
-				<v-card-title>Exporter les données</v-card-title>
-				<v-card-text>
-					<v-textarea class="code" outlined readonly :value="jsonData"></v-textarea>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer></v-spacer>
-					<v-btn text class="text--primary" @click="showExportDialog = false">Fermer</v-btn>
-					<v-btn text color="primary" @click="copyToClipboard">Copier</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
-
-		<v-snackbar v-model="showSnackbar" timeout="2000">Données copiées dans le presse-papier.</v-snackbar>
+		<!-- Global snackbar -->
+		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
+			Données copiées dans le presse-papier.
+			<template v-slot:action="{ attrs }">
+				<v-btn icon v-bind="attrs" @click="showSnackbar = false">
+					<v-icon>mdi-close</v-icon>
+				</v-btn>
+			</template>
+		</v-snackbar>
 	</v-app>
 </template>
 
 <script>
 import storage from "./js/storage.js";
+import themes from "./plugins/themes.js";
 
-const DARK_THEME_KEY = 'isDarkTheme';
+import ThemeSelector from "./components/ThemeSelector.vue";
 
 export default {
 	name: "App",
+	components: {
+		ThemeSelector,
+	},
 	data() {
 		return {
-			showExportDialog: false,
 			showSnackbar: false,
-		}
+		};
 	},
 	methods: {
-		switchTheme() {
-			this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-			localStorage.setItem(DARK_THEME_KEY, this.$vuetify.theme.dark);
-		},
 		async copyToClipboard() {
 			try {
-				await navigator.clipboard.writeText(this.jsonData);
+				await navigator.clipboard.writeText(JSON.stringify(storage.data));
 				this.showSnackbar = true;
 			} catch (error) {
 				console.error("Copy to clipboard failed.");
 			}
 			this.showExportDialog = false;
-		}
+		},
 	},
 	computed: {
-		themeIcon() {
-			return this.$vuetify.theme.dark ? 'mdi-brightness-4' : 'mdi-brightness-7';
+		background() {
+			return `background: ${this.$vuetify.theme.themes.light.background};`;
 		},
-		jsonData() {
-			return JSON.stringify(storage.data);
-		}
 	},
-	created() {
-		this.$vuetify.theme.dark = (localStorage.getItem(DARK_THEME_KEY) === 'true');
-	}
+	mounted() {
+		let themeName = localStorage.getItem(themes.THEME_KEY) || "light";
+		let theme = {
+			name: themeName,
+			colors: this.$vuetify.theme.defaults[themeName] || themes.custom[themeName],
+		};
+		this.$vuetify.theme.themes.light = theme.colors;
+		this.$vuetify.theme.themes.dark = theme.colors;
+		this.$vuetify.theme.dark = themes.darkThemes.includes(theme.name);
+	},
 };
 </script>
 <style scoped>
@@ -104,5 +124,9 @@ export default {
 	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
 	font-size: 0.75rem;
 	line-height: 1;
+}
+
+.clickable {
+	cursor: pointer;
 }
 </style>
