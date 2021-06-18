@@ -6,18 +6,7 @@
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
 				{{ itemData.name }}
-				<v-tooltip top v-if="itemData.isNPC">
-					<template v-slot:activator="{ on, attrs }">
-						<v-icon v-bind="attrs" v-on="on">{{ icons.npc }}</v-icon>
-					</template>
-					<span>PNJ</span>
-				</v-tooltip>
-				<v-tooltip top v-else>
-					<template v-slot:activator="{ on, attrs }">
-						<v-icon v-bind="attrs" v-on="on">{{ icons.player }}</v-icon>
-					</template>
-					<span>Joueur</span>
-				</v-tooltip>
+				<v-chip label x-small> {{ itemData.isNPC ? 'PNJ' : 'Joueur' }} </v-chip>
 			</p>
 			<p class="text-subtitle-2 text--primary">{{ identity }}</p>
 			<p class="text--primary">{{ itemData.desc }}</p>

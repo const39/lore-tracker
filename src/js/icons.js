@@ -1,4 +1,4 @@
-import { Objective, Event, Character } from "./model";
+import { Event } from "./model";
 
 export default {
 	objective: "mdi-star-circle",
@@ -7,8 +7,6 @@ export default {
 	character: "mdi-account",
 	note: "mdi-note-text",
 	completed: "mdi-check-decagram",
-	player: "mdi-account",
-	npc: "mdi-controller-classic",
 	combat: "mdi-sword-cross",
 	encounter: "mdi-account-group",
 	discovery: "mdi-magnify",
@@ -16,15 +14,13 @@ export default {
 	other: "mdi-help",
 
 	/**
-	 * Decide which icon should be displayed for the specified object. The decision is made regarding the object type and its data.
+	 * Decide which icon should be displayed for the specified object.
 	 * @param {Objective | Event | Location | Character | Note} object the object to decide the icon of
 	 * @returns the relevant icon name
 	 */
 	whichObjectIcon: function(object) {
 		if (object) {
-			if (object instanceof Objective) return object.isCompleted ? this.completed : this.objective;
-			else if (object instanceof Event) return this.whichEventIcon(object.type);
-			else if (object instanceof Character) return object.isNPC ? this.npc : this.player;
+			if (object instanceof Event) return this.whichEventIcon(object.type);
 			else return this[object.constructor.name.toLowerCase()];
 		}
 	},

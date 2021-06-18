@@ -5,7 +5,7 @@
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
-				<v-col class="flex-grow-0 flex-shrink-1" v-if="showIcon">
+				<v-col class="flex-grow-0 flex-shrink-1" v-if="!hideIcon">
 					<v-icon large>{{ icons.whichEventIcon(itemData.type) }}</v-icon>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
@@ -39,7 +39,7 @@ export default {
 			required: true
 		},
 		outlined: Boolean,
-		showIcon: Boolean
+		hideIcon: Boolean,
 	},
 	data() {
 		return {

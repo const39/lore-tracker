@@ -1,19 +1,17 @@
 <template>
 	<BaseCard :outlined="outlined">
 		<v-card-actions class="float-right">
-			<CardOptions @option-selected="onOptionSelected"/>
+			<v-tooltip top v-if="itemData.isCompleted">
+				<template v-slot:activator="{ on, attrs }">
+					<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
+				</template>
+				<span>Accompli</span>
+			</v-tooltip>
+			<CardOptions @option-selected="onOptionSelected" />
 		</v-card-actions>
 		<v-card-text class="pa-3">
-			<p class="text--primary">
-				<v-tooltip top v-if="itemData.isCompleted">
-					<template v-slot:activator="{ on, attrs }">
-						<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
-					</template>
-					<span>Accompli</span>
-				</v-tooltip>
-				{{ itemData.desc }}
-			</p>
-			<TagList :items="itemData.tags"/>
+			<p class="text--primary">{{ itemData.desc }}</p>
+			<TagList :items="itemData.tags" />
 		</v-card-text>
 	</BaseCard>
 </template>
@@ -37,7 +35,7 @@ export default {
 	props: {
 		itemData: {
 			type: Objective,
-			required: true
+			required: true,
 		},
 		outlined: Boolean,
 	},

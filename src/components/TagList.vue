@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-chip class="mx-1" v-for="tag in tags" :key="tag.name">
+		<v-chip v-for="tag in tags" :key="tag.id" class="ma-1" small>
 			<v-icon left>{{ tag.icon }}</v-icon>
 			{{ tag.name }}
 		</v-chip>
@@ -14,7 +14,7 @@ import icons from "../js/icons.js";
 export default {
 	props: {
 		items: {
-			// Must be an array of IDs 
+			// Must be an array of IDs
 			type: Array,
 			default: function() {
 				return [];
@@ -34,16 +34,15 @@ export default {
 			let list = [];
 
 			for (const id of this.items) {
-
 				// For each array of objects in storage
 				for (const key in storage.data) {
-
 					// Check if the current id references an object in it
 					let elem = storage.data[key].find((entry) => entry.id === id);
 
 					// If the object is found, add a tag object with the object text description (name/title/desc) and the relevant icon
 					if (elem) {
 						list.push({
+							id: elem.id,
 							name: elem.name || elem.title || elem.desc,
 							icon: icons.whichObjectIcon(elem),
 						});

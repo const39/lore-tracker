@@ -10,7 +10,7 @@
 					:color="computeColor(event.type)"
 					fill-dot
 				>
-					<CardEvent :item-data="event" :show-icon="false" />
+					<CardEvent :item-data="event" :hide-icon="true"/>
 				</v-timeline-item>
 			</v-timeline>
 			<p class="text-center" v-else>
