@@ -12,6 +12,7 @@
 						<v-textarea
 							outlined
 							label="Description*"
+							hint="Langage Markdown supporté"
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>

@@ -10,7 +10,7 @@
 			<CardOptions @option-selected="onOptionSelected" />
 		</v-card-actions>
 		<v-card-text class="pa-3">
-			<p class="text--primary">{{ itemData.desc }}</p>
+			<MarkdownView :text="itemData.desc"/>
 			<TagList :items="itemData.tags" />
 		</v-card-text>
 	</BaseCard>
@@ -24,6 +24,7 @@ import { eventHub, CardEvent } from "../../js/eventHub.js";
 import BaseCard from "./BaseCard.vue";
 import CardOptions from "./CardOptions.vue";
 import TagList from "../TagList.vue";
+import MarkdownView from "../MarkdownView.vue";
 
 export default {
 	name: "CardObjective",
@@ -31,6 +32,7 @@ export default {
 		BaseCard,
 		CardOptions,
 		TagList,
+		MarkdownView
 	},
 	props: {
 		itemData: {

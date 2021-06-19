@@ -9,7 +9,7 @@
 					<v-icon large>{{ icons.whichEventIcon(itemData.type) }}</v-icon>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
-					<p class="text--primary">{{ itemData.desc }}</p>
+					<MarkdownView :text="itemData.desc"/>
 					<TagList :items="itemData.tags"/>
 				</v-col>
 			</v-row>
@@ -25,13 +25,15 @@ import {eventHub, CardEvent} from '../../js/eventHub.js';
 import BaseCard from "./BaseCard.vue";
 import CardOptions from "./CardOptions.vue";
 import TagList from '../TagList.vue';
+import MarkdownView from "../MarkdownView.vue";
 
 export default {
 	name: "CardEvent",
 	components: {
 		CardOptions,
 		BaseCard,
-		TagList
+		TagList,
+		MarkdownView
 	},
 	props: {
 		itemData: {
