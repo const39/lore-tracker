@@ -1,5 +1,5 @@
 <template>
-	<vue-markdown class="text--primary" :html="false" :source="text"></vue-markdown>
+	<vue-markdown class="text--primary" :html="false" :source="text" v-bind="$attrs"></vue-markdown>
 </template>
 
 <script>

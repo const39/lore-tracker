@@ -18,7 +18,7 @@
 				@click:close="remove(data.item)"
 			>
 				<v-icon left>{{ data.item.icon }}</v-icon>
-				{{ data.item.name }}
+				<MarkdownView :text="data.item.name | truncate" :inline="true"/>
 			</v-chip>
 		</template>
 		<template v-slot:item="data">
@@ -36,7 +36,12 @@
 import storage from "../js/storage.js";
 import icons from "../js/icons.js";
 
+import MarkdownView from "./MarkdownView.vue";
+
 export default {
+	components: {
+		MarkdownView
+	},
 	props: {
 		// Override default v-model
 		value: {
@@ -98,6 +103,12 @@ export default {
 			},
 		},
 	},
+	filters: {
+		truncate(text) {
+			if(text.length > 50) return `${text.substring(0, 50)}...`
+			else return text;
+		}
+	}
 };
 </script>
 

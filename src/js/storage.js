@@ -5,7 +5,9 @@ const DATA_KEY = "DATA";
 function read(key) {
 
 	// Get persisted raw data
-	let rawData = JSON.parse(localStorage.getItem(key));
+	let rawData = localStorage.getItem(key).trim();
+
+	if(rawData) rawData = JSON.parse(rawData);
 
 	// Set data object as default
 	let data = {

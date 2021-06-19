@@ -2,7 +2,7 @@
 	<div>
 		<v-chip v-for="tag in tags" :key="tag.id" class="ma-1" small @click.stop="goToCard(tag.type, tag.id)">
 			<v-icon left>{{ tag.icon }}</v-icon>
-			{{ tag.name }}
+			<MarkdownView class="text-truncate" :text="tag.name | truncate" :inline="true"/>
 		</v-chip>
 	</div>
 </template>
@@ -12,7 +12,12 @@ import storage from "../js/storage.js";
 import icons from "../js/icons.js";
 import { eventHub, TagEvent } from '../js/eventHub.js';
 
+import MarkdownView from "./MarkdownView.vue";
+
 export default {
+	components: {
+		MarkdownView
+	},
 	props: {
 		items: {
 			// Must be an array of IDs
@@ -66,6 +71,12 @@ export default {
 			return list;
 		},
 	},
+	filters: {
+		truncate(text) {
+			if(text.length > 50) return `${text.substring(0, 50)}...`
+			else return text;
+		}
+	}
 };
 </script>
 
