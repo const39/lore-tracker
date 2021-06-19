@@ -37,15 +37,16 @@ export class Location {
 
 export class Character {
     constructor(object) {
-        this.id = object?.id || uid();
-        this.name = object?.name || "";
-        this.race = object?.race || "";
-        this.classes = object?.classes || "";
-        this.role = object?.role || "";
-        this.isNPC = object?.isNPC || false;
-        this.desc = object?.desc || "";
-        this.tags = object?.tags || [];
-    }
+		this.id = object?.id || uid();
+		this.name = object?.name || "";
+		this.race = object?.race || "";
+		this.classes = object?.classes || "";
+		this.role = object?.role || "";
+		this.isNPC = object?.isNPC === false ? false : true; // Defaults to True - Ternary condition to eliminate unwanted values (undefined, null...)
+		this.isAlive = object?.isAlive === false ? false : true; // Defaults to True - Ternary condition to eliminate unwanted values (undefined, null...)
+		this.desc = object?.desc || "";
+		this.tags = object?.tags || [];
+	}
 }
 
 export class Note {

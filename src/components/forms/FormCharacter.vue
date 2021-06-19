@@ -9,33 +9,39 @@
 				<v-card-text>
 					<v-container>
 						<v-row>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field
-									label="Nom*"
-									:rules="requiredRule"
-									v-model="model.name"
-								></v-text-field>
+							<v-col cols="12" sm="12" md="6">
+								<v-text-field label="Nom*" :rules="requiredRule" v-model="model.name"></v-text-field>
 							</v-col>
-							<v-col cols="12" sm="6" md="4">
+							<v-col cols="12" sm="12" md="6">
 								<v-text-field label="Race" v-model="model.race"></v-text-field>
-							</v-col>
-							<v-col cols="12" sm="6" md="4">
-								<v-text-field label="Classes" v-model="model.classes"></v-text-field>
 							</v-col>
 						</v-row>
 						<v-row>
-							<v-col cols="12" sm="6">
+							<v-col cols="12" sm="12" md="6">
+								<v-text-field label="Classes" v-model="model.classes"></v-text-field>
+							</v-col>
+							<v-col cols="12" sm="12" md="6">
 								<v-text-field label="Rôle" v-model="model.role"></v-text-field>
 							</v-col>
-							<v-col cols="12" sm="6">
-								<v-radio-group v-model="model.isNPC" row mandatory>
+						</v-row>
+						<v-row>
+							<v-col cols="12" sm="12" md="6">
+								<v-radio-group v-model="model.isNPC" column mandatory>
 									<v-radio label="Joueur" :value="false"></v-radio>
 									<v-radio label="Non-joueur" :value="true"></v-radio>
 								</v-radio-group>
 							</v-col>
+							<v-col cols="12" sm="12" md="6">
+								<v-checkbox v-model="model.isAlive" label="En vie"></v-checkbox>
+							</v-col>
 						</v-row>
-						<v-textarea outlined label="Description" hint="Langage Markdown supporté" v-model="model.desc"></v-textarea>
-						<TagChooser v-model="model.tags" :exclude-id="model.id"/>
+						<v-textarea
+							outlined
+							label="Description"
+							hint="Langage Markdown supporté"
+							v-model="model.desc"
+						></v-textarea>
+						<TagChooser v-model="model.tags" :exclude-id="model.id" />
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -50,7 +56,7 @@
 </template>
 
 <script>
-import { Character } from '../../js/model.js';
+import { Character } from "../../js/model.js";
 import storage from "../../js/storage.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -62,7 +68,7 @@ export default {
 		edit: Boolean,
 	},
 	components: {
-		TagChooser
+		TagChooser,
 	},
 	data() {
 		return {
@@ -76,7 +82,7 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-				
+
 				// In edit mode
 				if (this.edit) {
 					let index = storage.data.characters.findIndex((entry) => entry.id === this.id);
@@ -86,7 +92,7 @@ export default {
 					if (index != -1) this.$set(storage.data.characters, index, this.model);
 					else console.error("Could not save the edit.");
 
-				// In create mode
+					// In create mode
 				} else storage.data.characters.push(this.model);
 
 				storage.persist();
@@ -127,7 +133,7 @@ export default {
 		 */
 		id: function() {
 			this.model = this.initModel();
-		}
+		},
 	},
 };
 </script>
