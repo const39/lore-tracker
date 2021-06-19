@@ -43,7 +43,7 @@ export default {
 			type: Array,
 			required: true,
 		},
-		excludeType: String,
+		excludeId: Number,
 	},
 	methods: {
 		remove(item) {
@@ -63,23 +63,23 @@ export default {
 				// Compute the object type automatically by removing the 's' of plural on each key
 				let type = key.substr(0, key.length - 1);
 
-				// If the current array is not the excluded one
-				if (type !== this.excludeType) {
+				// Push a header object for the v-autocomplete component to create a header for this group of objects
+				tags.push({ header: key });
 
-					// Push a header object for the v-autocomplete component to create a header for this group of objects
-					tags.push({ header: key });
+				// Create an item for each object found in the array
+				storage.data[key].forEach((element) => {
 
-					// Create an item for each object found in the array
-					storage.data[key].forEach((element) => {
-
+					// If the current element is not the excluded one
+					if (element.id !== this.excludeId) {
+						
 						tags.push({
 							id: element.id,
 							name: element.name || element.title || element.desc,
 							type: type,
 							icon: icons.whichObjectIcon(element),
 						});
-					});
-				}
+					}
+				});
 			}
 
 			return tags;

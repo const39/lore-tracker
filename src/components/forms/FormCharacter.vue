@@ -35,7 +35,7 @@
 							</v-col>
 						</v-row>
 						<v-textarea outlined label="Description" v-model="model.desc"></v-textarea>
-						<TagChooser v-model="model.tags"/>
+						<TagChooser v-model="model.tags" :exclude-id="model.id"/>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>

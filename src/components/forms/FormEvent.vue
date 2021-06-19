@@ -32,7 +32,7 @@
 								{{ data.item.text }}
 							</template>
 						</v-autocomplete>
-						<TagChooser v-model="model.tags"/>
+						<TagChooser v-model="model.tags" :exclude-id="model.id"/>
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
