@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="showDialog" max-width="600px">
+	<v-dialog v-model="showDialog" persistent max-width="600px">
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
@@ -106,16 +106,6 @@ export default {
 		},
 	},
 	watch: {
-		/**
-		 * Observe the showDialog variable to reset the model on dialog close, i.e. when the value changes to False.
-		 * Using a watcher allows to covers all dialog close cases :
-		 * - on submit
-		 * - on explicit close (by clicking on the 'Close' button)
-		 * - on implicit close (by clicking outside the dialog or pressing Esc)
-		 */
-		showDialog: function(newVal) {
-			if (!newVal) this.model = this.initModel();
-		},
 		/**
 		 * Observe the id prop. When the prop changes, we update the model.
 		 * This is allows to use a unique dialog for all objective cards edits.
