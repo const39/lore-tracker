@@ -5,6 +5,7 @@
 				tag="v-row"
 				draggable=".item"
 				v-model="items"
+				v-bind="{animation: 200}"
 				group="items"
 				@start="drag = true"
 				@end="
@@ -74,6 +75,7 @@ export default {
 	data() {
 		return {
 			showForm: false,
+			drag: false,
 		};
 	},
 	methods: {

@@ -11,6 +11,7 @@
 				<v-expansion-panel-content>
 					<draggable
 						v-model="items"
+						v-bind="{animation: 200}"
 						group="items"
 						@start="drag = true"
 						@end="
