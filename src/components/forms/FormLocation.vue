@@ -20,7 +20,7 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text @click="showDialog = false">Fermer</v-btn>
+					<v-btn text @click="close">Fermer</v-btn>
 					<v-btn color="primary" text :disabled="!valid" @click="submit">Enregistrer</v-btn>
 				</v-card-actions>
 			</v-card>
@@ -70,8 +70,12 @@ export default {
 				} else storage.data.locations.push(this.model);
 
 				storage.persist();
-				this.showDialog = false;
+				this.close();
 			}
+		},
+		close() {
+			this.showDialog = false;
+			this.model = this.initModel();
 		},
 		initModel() {
 			if (this.edit && this.id) {
