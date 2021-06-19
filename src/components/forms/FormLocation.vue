@@ -67,7 +67,7 @@ export default {
 					else console.error("Could not save the edit.");
 
 				// In create mode
-				} else storage.data.locations.push(this.model);
+				} else storage.data.locations.unshift(this.model);
 
 				storage.persist();
 				this.close();

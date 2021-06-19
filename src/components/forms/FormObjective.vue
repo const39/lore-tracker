@@ -74,7 +74,7 @@ export default {
 					else console.error("Could not save the edit.");
 
 					// In create mode
-				} else storage.data.objectives.push(this.model);
+				} else storage.data.objectives.unshift(this.model);
 
 				storage.persist();
 				this.close();

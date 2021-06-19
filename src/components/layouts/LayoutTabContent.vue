@@ -13,14 +13,14 @@
 					persist();
 				"
 			>
-				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
-					<component :is="cardComponent" class="draggable" :item-data="item" />
-				</v-col>
-				<template v-slot:footer>
+				<template v-slot:header>
 					<v-col cols="12" md="4">
 						<CardAdd @add-card-clicked="showForm = true" />
 					</v-col>
 				</template>
+				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
+					<component :is="cardComponent" class="draggable" :item-data="item" />
+				</v-col>
 			</draggable>
 			<component :is="formComponent" v-model="showForm" />
 		</v-container>

@@ -9,6 +9,7 @@
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
+					<CardAdd @add-card-clicked="showForm = true" />
 					<draggable
 						v-model="items"
 						v-bind="{animation: 200}"
@@ -21,7 +22,6 @@
 					>
 						<component :is="cardComponent" v-for="item in items" :key="item.id" :item-data="item" outlined class="draggable" />
 					</draggable>
-					<CardAdd @add-card-clicked="showForm = true" />
 					<component :is="formComponent" v-model="showForm" />
 				</v-expansion-panel-content>
 			</v-expansion-panel>

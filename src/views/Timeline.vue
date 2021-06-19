@@ -2,9 +2,9 @@
 	<v-container>
 		<div class="my-3">
 			<div class="text-xl-h4">Frise des événements</div>
-			<v-timeline v-if="liveData.events.length > 0">
+			<v-timeline v-if="reverseArray.length > 0">
 				<v-timeline-item
-					v-for="event in liveData.events"
+					v-for="event in reverseArray"
 					:key="event.id"
 					:icon="icons.whichEventIcon(event.type)"
 					:color="computeColor(event.type)"
@@ -32,7 +32,7 @@ export default {
 	},
 	data() {
 		return {
-			liveData: storage.data,
+			events: storage.data.events,
 			icons: icons,
 		};
 	},
@@ -54,6 +54,12 @@ export default {
 			} else return "grey darken-2";
 		},
 	},
+	computed: {
+		reverseArray() {
+			let copy = this.events.slice();
+			return copy.reverse();
+		}
+	}
 };
 </script>
 

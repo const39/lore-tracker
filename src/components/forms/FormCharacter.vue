@@ -93,7 +93,7 @@ export default {
 					else console.error("Could not save the edit.");
 
 					// In create mode
-				} else storage.data.characters.push(this.model);
+				} else storage.data.characters.unshift(this.model);
 
 				storage.persist();
 				this.close();
