@@ -22,33 +22,30 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
-		findById: (state) => (type, id) => {
+		where: (state) => (id, type) => {
+			// If type is specified, try to search in the specified array first
 			if (type) {
-				let list;
-				switch (type.toString().toLowerCase()) {
-					case "objective":
-						list = state.data.objectives;
-						break;
-					case "event":
-						list = state.data.events;
-						break;
-					case "location":
-						list = state.data.locations;
-						break;
-					case "character":
-						list = state.data.characters;
-						break;
-					case "note":
-						list = state.data.notes;
-						break;
-					default:
-						console.error(type, "is not a valid type.");
-						return;
-				}
+				// Compute key from type
+				const key = type.toString().toLowerCase() + "s";
 
-				let record = list.find((entry) => entry.id === id);
-				if (record) return record;
+				// If key is a valid key in state.data
+				if (Object.keys(state.data).includes(key)) {
+					// Check if the specified id references an object in the array
+					const index = state.data[key].findIndex((entry) => entry.id === id);
+					if (index != -1) return { key, index };
+				}
 			}
+
+			// If the first search has failed or has not been tested, search in each array for an object with the specified id
+			for (const key in state.data) {
+				// Check if the specified id references an object in the array
+				const index = state.data[key].findIndex((entry) => entry.id === id);
+				if (index != -1) return { key, index };
+			}
+		},
+		get: (state, getters) => (id, type) => {
+			const location = getters.where(id, type);
+			if (location) return state.data[location.key][location.index];
 		},
 	},
 	mutations: {
@@ -126,14 +123,15 @@ export default new Vuex.Store({
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			if (index !== -1) {
 				list.splice(index, 1);
+
 				persist(DATA_KEY, state.data);
 			}
 		},
 		updateWholeList(state, payload) {
-			const key = payload.type.toString().toLowerCase() + 's';
+			const key = payload.type.toString().toLowerCase() + "s";
 			state.data[key] = payload.list;
 			persist(DATA_KEY, state.data);
-		}
+		},
 	},
 	actions: {},
 	modules: {},

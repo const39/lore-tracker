@@ -93,7 +93,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = this.$store.getters.findById('character', this.id);
+				let data = this.$store.getters.get(this.id, 'character');
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Character(data);
