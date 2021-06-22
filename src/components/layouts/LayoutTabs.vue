@@ -7,11 +7,11 @@
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
-			<LayoutTabContent v-model="liveData.objectives" type="objective"/>
-			<LayoutTabContent v-model="liveData.events" type="event"/>
-			<LayoutTabContent v-model="liveData.locations" type="location"/>
-			<LayoutTabContent v-model="liveData.characters" type="character"/>
-			<LayoutTabContent v-model="liveData.notes" type="note"/>
+			<LayoutTabContent v-model="items.objectives" type="objective"/>
+			<LayoutTabContent v-model="items.events" type="event"/>
+			<LayoutTabContent v-model="items.locations" type="location"/>
+			<LayoutTabContent v-model="items.characters" type="character"/>
+			<LayoutTabContent v-model="items.notes" type="note"/>
 		</v-tabs-items>
 	</v-container>
 </template>
@@ -27,6 +27,9 @@ export default {
 	name: "LayoutTabs",
 	components: {
 		LayoutTabContent,
+	},
+	props: {
+		items: storage.schema
 	},
 	data() {
 		return {
@@ -54,7 +57,7 @@ export default {
 			],
 
 			activeTab: "",
-			liveData: storage.data,
+			// liveData: storage.data,
 		};
 	},
 	mounted() {

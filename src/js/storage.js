@@ -3,11 +3,10 @@ import { Objective, Event, Character, Location, Note } from "./model.js";
 const DATA_KEY = "DATA";
 
 function read(key) {
-
 	// Get persisted raw data
 	let rawData = localStorage.getItem(key).trim();
 
-	if(rawData) rawData = JSON.parse(rawData);
+	if (rawData) rawData = JSON.parse(rawData);
 
 	// Set data object as default
 	let data = {
@@ -20,26 +19,20 @@ function read(key) {
 
 	// If rawData is exploitable
 	if (rawData) {
-
 		// Convert all raw JS objects as Objective instances
-		for (const entry of rawData.objectives)
-			data.objectives.push(new Objective(entry))
-		
+		for (const entry of rawData.objectives) data.objectives.push(new Objective(entry));
+
 		// Convert all raw JS objects as Event instances
-		for (const entry of rawData.events)
-			data.events.push(new Event(entry))
-		
+		for (const entry of rawData.events) data.events.push(new Event(entry));
+
 		// Convert all raw JS objects as Location instances
-		for (const entry of rawData.locations)
-			data.locations.push(new Location(entry))
-		
+		for (const entry of rawData.locations) data.locations.push(new Location(entry));
+
 		// Convert all raw JS objects as Character instances
-		for (const entry of rawData.characters)
-			data.characters.push(new Character(entry))
-		
+		for (const entry of rawData.characters) data.characters.push(new Character(entry));
+
 		// Convert all raw JS objects as Note instances
-		for (const entry of rawData.notes)
-			data.notes.push(new Note(entry))
+		for (const entry of rawData.notes) data.notes.push(new Note(entry));
 	}
 
 	return data;
@@ -55,6 +48,45 @@ let data = read(DATA_KEY);
 export default {
 	data,
 	eventTypes: ["combat", "encounter", "discovery", "travel", "other"],
+	schema: {
+		type: Object,
+		required: true,
+		validator: function(value) {
+			let isValid = true;
+			const schema = [
+				{
+					key: "objectives",
+					type: Objective,
+				},
+				{
+					key: "events",
+					type: Event,
+				},
+				{
+					key: "locations",
+					type: Location,
+				},
+				{
+					key: "characters",
+					type: Character,
+				},
+				{
+					key: "notes",
+					type: Note,
+				},
+			];
+
+			for (const schemaElem of schema) {
+				const valueElem = value[schemaElem.key];
+				isValid =
+					valueElem &&
+					Array.isArray(valueElem) &&
+					valueElem.every((entry) => entry instanceof schemaElem.type);
+				if (!isValid) return false;
+			}
+			return isValid;
+		},
+	},
 	/**
 	 * Writes current data store to file.
 	 */

@@ -1,11 +1,11 @@
 <template>
 	<v-container>
 		<v-row>
-			<LayoutColumnContent v-model="liveData.objectives" type="objective" title="Objectifs" :icon="icons.objective"/>
-			<LayoutColumnContent v-model="liveData.events" type="event" title="Événements" :icon="icons.event"/>
-			<LayoutColumnContent v-model="liveData.locations" type="location" title="Localités" :icon="icons.location"/>
-			<LayoutColumnContent v-model="liveData.characters" type="character" title="Personnages" :icon="icons.character"/>
-			<LayoutColumnContent v-model="liveData.notes" type="note" title="Notes" :icon="icons.note"/>
+			<LayoutColumnContent v-model="items.objectives" type="objective" title="Objectifs" :icon="icons.objective"/>
+			<LayoutColumnContent v-model="items.events" type="event" title="Événements" :icon="icons.event"/>
+			<LayoutColumnContent v-model="items.locations" type="location" title="Localités" :icon="icons.location"/>
+			<LayoutColumnContent v-model="items.characters" type="character" title="Personnages" :icon="icons.character"/>
+			<LayoutColumnContent v-model="items.notes" type="note" title="Notes" :icon="icons.note"/>
 		</v-row>
 	</v-container>
 </template>
@@ -22,6 +22,9 @@ export default {
 	name: "LayoutColumns",
 	components: {
 		LayoutColumnContent
+	},
+	props: {
+		items: storage.schema
 	},
 	data() {
 		return {
@@ -47,7 +50,7 @@ export default {
 					icon: icons.note,
 				},
 			],
-			liveData: storage.data,
+			// liveData: storage.data,
 			icons: icons,
 		};
 	},

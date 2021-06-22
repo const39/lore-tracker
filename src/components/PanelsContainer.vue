@@ -1,8 +1,13 @@
 <template>
 	<div>
-		<div class="my-3 d-flex">
-			<div class="text-xl-h4">Lore tracker</div>
+		<v-row class="my-3 d-flex">
+			<div class="text-xl-h4">
+				Lore tracker
+			</div>
 			<v-spacer></v-spacer>
+			<!-- TODO filtering not implemented -->
+			<SearchView :items="liveData"/>
+			<v-divider vertical class="ml-3 mr-1"></v-divider>
 			<div class="display-selector">
 				<v-btn icon :color="color('tabbed')" @click="onClick('tabbed')">
 					<v-icon>mdi-tab</v-icon>
@@ -11,18 +16,18 @@
 					<v-icon>mdi-view-column-outline</v-icon>
 				</v-btn>
 			</div>
-		</div>
+		</v-row>
 
 		<!-- Alternative layouts -->
-		<LayoutTabs v-if="selectedLayout == 'tabbed'"/>
-		<LayoutColumns v-else-if="selectedLayout == 'column'"/>
+		<LayoutTabs :items="liveData" v-if="selectedLayout == 'tabbed'" />
+		<LayoutColumns :items="liveData" v-else-if="selectedLayout == 'column'" />
 
 		<!-- Global edit form for each panel -->
-		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id"/>
-		<FormEvent v-model="eventEditForm.show" edit :id="eventEditForm.id"/>
-		<FormCharacter v-model="characterEditForm.show" edit :id="characterEditForm.id"/>
-		<FormLocation v-model="locationEditForm.show" edit :id="locationEditForm.id"/>
-		<FormNote v-model="noteEditForm.show" edit :id="noteEditForm.id"/>
+		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
+		<FormEvent v-model="eventEditForm.show" edit :id="eventEditForm.id" />
+		<FormCharacter v-model="characterEditForm.show" edit :id="characterEditForm.id" />
+		<FormLocation v-model="locationEditForm.show" edit :id="locationEditForm.id" />
+		<FormNote v-model="noteEditForm.show" edit :id="noteEditForm.id" />
 
 		<!-- Global delete form for all panels -->
 		<ConfirmDialog
@@ -47,6 +52,7 @@ import ConfirmDialog from "./ConfirmDialog.vue";
 
 import storage from "../js/storage.js";
 import { eventHub } from "../js/eventHub.js";
+import SearchView from './SearchView.vue';
 
 export default {
 	name: "PanelsContainer",
@@ -59,11 +65,12 @@ export default {
 		FormCharacter,
 		FormNote,
 		ConfirmDialog,
+		SearchView,
 	},
 	data() {
 		return {
+			liveData: storage.data,
 			selectedLayout: "tabbed",
-
 			objectiveEditForm: {
 				show: false,
 				id: undefined,
