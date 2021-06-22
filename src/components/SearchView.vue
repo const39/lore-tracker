@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import storage from "../js/storage";
 import icons from "../js/icons";
 
 import TagChooser from "./TagChooser.vue";
@@ -53,9 +52,6 @@ import TagChooser from "./TagChooser.vue";
 export default {
 	components: {
 		TagChooser,
-	},
-	props: {
-		items: storage.schema
 	},
 	data() {
 		return {

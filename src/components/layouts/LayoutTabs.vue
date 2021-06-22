@@ -7,11 +7,11 @@
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
-			<LayoutTabContent v-model="items.objectives" type="objective"/>
-			<LayoutTabContent v-model="items.events" type="event"/>
-			<LayoutTabContent v-model="items.locations" type="location"/>
-			<LayoutTabContent v-model="items.characters" type="character"/>
-			<LayoutTabContent v-model="items.notes" type="note"/>
+			<LayoutTabContent type="objective"/>
+			<LayoutTabContent type="event"/>
+			<LayoutTabContent type="location"/>
+			<LayoutTabContent type="character"/>
+			<LayoutTabContent type="note"/>
 		</v-tabs-items>
 	</v-container>
 </template>
@@ -19,7 +19,6 @@
 <script>
 import LayoutTabContent from "./LayoutTabContent.vue";
 
-import storage from "../../js/storage.js";
 import icons from "../../js/icons";
 import { eventHub } from "../../js/eventHub";
 
@@ -27,9 +26,6 @@ export default {
 	name: "LayoutTabs",
 	components: {
 		LayoutTabContent,
-	},
-	props: {
-		items: storage.schema
 	},
 	data() {
 		return {
@@ -57,7 +53,6 @@ export default {
 			],
 
 			activeTab: "",
-			// liveData: storage.data,
 		};
 	},
 	mounted() {

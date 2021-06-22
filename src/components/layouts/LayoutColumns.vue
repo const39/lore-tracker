@@ -1,11 +1,11 @@
 <template>
 	<v-container>
 		<v-row>
-			<LayoutColumnContent v-model="items.objectives" type="objective" title="Objectifs" :icon="icons.objective"/>
-			<LayoutColumnContent v-model="items.events" type="event" title="Événements" :icon="icons.event"/>
-			<LayoutColumnContent v-model="items.locations" type="location" title="Localités" :icon="icons.location"/>
-			<LayoutColumnContent v-model="items.characters" type="character" title="Personnages" :icon="icons.character"/>
-			<LayoutColumnContent v-model="items.notes" type="note" title="Notes" :icon="icons.note"/>
+			<LayoutColumnContent type="objective" title="Objectifs" :icon="icons.objective"/>
+			<LayoutColumnContent type="event" title="Événements" :icon="icons.event"/>
+			<LayoutColumnContent type="location" title="Localités" :icon="icons.location"/>
+			<LayoutColumnContent type="character" title="Personnages" :icon="icons.character"/>
+			<LayoutColumnContent type="note" title="Notes" :icon="icons.note"/>
 		</v-row>
 	</v-container>
 </template>
@@ -13,18 +13,13 @@
 <script>
 import LayoutColumnContent from "./LayoutColumnContent.vue";
 
-import storage from "../../js/storage.js";
 import icons from "../../js/icons.js";
-
 import { eventHub } from "../../js/eventHub.js";
 
 export default {
 	name: "LayoutColumns",
 	components: {
 		LayoutColumnContent
-	},
-	props: {
-		items: storage.schema
 	},
 	data() {
 		return {
@@ -50,7 +45,6 @@ export default {
 					icon: icons.note,
 				},
 			],
-			// liveData: storage.data,
 			icons: icons,
 		};
 	},

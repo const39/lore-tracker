@@ -6,7 +6,7 @@
 			</div>
 			<v-spacer></v-spacer>
 			<!-- TODO filtering not implemented -->
-			<SearchView :items="liveData" />
+			<SearchView />
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
 			<div class="display-selector">
 				<v-btn icon :color="color('tabbed')" @click="onClick('tabbed')">
@@ -19,8 +19,8 @@
 		</v-row>
 
 		<!-- Alternative layouts -->
-		<LayoutTabs :items="liveData" v-if="selectedLayout == 'tabbed'" />
-		<LayoutColumns :items="liveData" v-else-if="selectedLayout == 'column'" />
+		<LayoutTabs v-if="selectedLayout == 'tabbed'" />
+		<LayoutColumns v-else-if="selectedLayout == 'column'" />
 
 		<!-- Global edit form for each panel -->
 		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
@@ -104,11 +104,6 @@ export default {
 		},
 		color(name) {
 			return this.selectedLayout == name ? "primary" : "grey";
-		},
-	},
-	computed: {
-		liveData() {
-			return this.$store.state.data;
 		},
 	},
 	mounted() {

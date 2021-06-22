@@ -7,6 +7,10 @@ Vue.use(Vuex);
 
 const DATA_KEY = "DATA";
 
+function persist(key, data) {
+	localStorage.setItem(key, JSON.stringify(data));
+}
+
 export default new Vuex.Store({
 	state: {
 		data: {
@@ -85,6 +89,7 @@ export default new Vuex.Store({
 			}
 
 			list.unshift(payload);
+			persist(DATA_KEY, state.data);
 		},
 		update(state, payload) {
 			let list;
@@ -101,7 +106,10 @@ export default new Vuex.Store({
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
 			// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-			if (index !== -1) Vue.set(list, index, payload);
+			if (index !== -1) {
+				Vue.set(list, index, payload);
+				persist(DATA_KEY, state.data);
+			}
 		},
 		delete(state, payload) {
 			let list;
@@ -116,8 +124,16 @@ export default new Vuex.Store({
 			}
 
 			const index = list.findIndex((entry) => entry.id === payload.id);
-			if (index !== -1) list.splice(index, 1);
+			if (index !== -1) {
+				list.splice(index, 1);
+				persist(DATA_KEY, state.data);
+			}
 		},
+		updateWholeList(state, payload) {
+			const key = payload.type.toString().toLowerCase() + 's';
+			state.data[key] = payload.list;
+			persist(DATA_KEY, state.data);
+		}
 	},
 	actions: {},
 	modules: {},
