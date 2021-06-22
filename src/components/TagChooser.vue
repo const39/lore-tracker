@@ -8,6 +8,7 @@
 		:items="availableTags"
 		item-text="name"
 		item-value="id"
+		v-bind="$attrs"
 	>
 		<template v-slot:selection="data">
 			<v-chip
@@ -16,18 +17,21 @@
 				:input-value="data.selected"
 				@click="data.select"
 				@click:close="remove(data.item)"
+				v-if="overflow ? data.index === 0 : true"
 			>
 				<v-icon left>{{ data.item.icon }}</v-icon>
-				<MarkdownView :text="data.item.name | truncate" :inline="true"/>
+				<MarkdownView :text="data.item.name | truncate" :inline="true" />
 			</v-chip>
+			<span 
+				class="grey--text text-caption"
+				v-else-if="overflow && data.index === 1"
+			>
+				{{ otherSelectionCounter }}
+			</span>
 		</template>
 		<template v-slot:item="data">
-			<v-list-item-avatar>
-				<v-icon left> {{ data.item.icon }} </v-icon>
-			</v-list-item-avatar>
-			<v-list-item-content>
-				<v-list-item-title v-html="data.item.name"></v-list-item-title>
-			</v-list-item-content>
+			<v-icon left small> {{ data.item.icon }} </v-icon>
+			<v-list-item-title v-html="data.item.name"></v-list-item-title>
 		</template>
 	</v-autocomplete>
 </template>
@@ -40,7 +44,7 @@ import MarkdownView from "./MarkdownView.vue";
 
 export default {
 	components: {
-		MarkdownView
+		MarkdownView,
 	},
 	props: {
 		// Override default v-model
@@ -49,6 +53,7 @@ export default {
 			required: true,
 		},
 		excludeId: Number,
+		overflow: Boolean,
 	},
 	methods: {
 		remove(item) {
@@ -73,10 +78,8 @@ export default {
 
 				// Create an item for each object found in the array
 				storage.data[key].forEach((element) => {
-
 					// If the current element is not the excluded one
 					if (element.id !== this.excludeId) {
-						
 						tags.push({
 							id: element.id,
 							name: element.name || element.title || element.desc,
@@ -88,6 +91,12 @@ export default {
 			}
 
 			return tags;
+		},
+		otherSelectionCounter() {
+			let counter = this.selectedTags.length - 1;
+			let message = `+ ${counter} autre`;
+			if (counter > 1) message += "s";
+			return message;
 		},
 		/**
 		 * Overwrite default v-model to bind the TagChooser v-model attribute to the v-autocomplete one.
@@ -105,10 +114,10 @@ export default {
 	},
 	filters: {
 		truncate(text) {
-			if(text.length > 50) return `${text.substring(0, 50)}...`
+			if (text.length > 30) return `${text.substring(0, 30)}...`;
 			else return text;
-		}
-	}
+		},
+	},
 };
 </script>
 

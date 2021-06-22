@@ -73,7 +73,7 @@ export default {
 	},
 	filters: {
 		truncate(text) {
-			if(text.length > 50) return `${text.substring(0, 50)}...`
+			if(text.length > 30) return `${text.substring(0, 30)}...`
 			else return text;
 		}
 	}
