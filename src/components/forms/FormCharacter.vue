@@ -57,7 +57,6 @@
 
 <script>
 import { Character } from "../../js/model.js";
-import storage from "../../js/storage.js";
 
 import TagChooser from "../TagChooser.vue";
 
@@ -80,22 +79,11 @@ export default {
 	methods: {
 		submit() {
 			this.$refs.form.validate();
-
 			if (this.valid) {
 
-				// In edit mode
-				if (this.edit) {
-					let index = storage.data.characters.findIndex((entry) => entry.id === this.id);
+				if(this.edit) this.$store.commit('update', this.model);
+				else this.$store.commit('add', this.model);
 
-					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
-					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if (index != -1) this.$set(storage.data.characters, index, this.model);
-					else console.error("Could not save the edit.");
-
-					// In create mode
-				} else storage.data.characters.unshift(this.model);
-
-				storage.persist();
 				this.close();
 			}
 		},
@@ -105,8 +93,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = storage.data.characters.find((entry) => entry.id === this.id);
-
+				let data = this.$store.getters.findById('character', this.id);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Character(data);

@@ -117,6 +117,10 @@ export default {
 		this.$vuetify.theme.themes.dark = theme.colors;
 		this.$vuetify.theme.dark = themes.darkThemes.includes(theme.name);
 	},
+	created() {
+		// Initialise the store at application start
+		this.$store.commit('initData');
+	}
 };
 </script>
 <style scoped>
