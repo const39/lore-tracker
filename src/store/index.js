@@ -42,8 +42,8 @@ export default new Vuex.Store({
 						return;
 				}
 
-				let record = list.find(entry => entry.id === id);
-				if(record) return record;
+				let record = list.find((entry) => entry.id === id);
+				if (record) return record;
 			}
 		},
 	},

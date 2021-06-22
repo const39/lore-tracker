@@ -1,3 +1,5 @@
+import icons from "./icons";
+
 /**
  * Returns the current timestamp. To be used as a Unique Identifier.
  * @returns the current timestamp
@@ -56,4 +58,18 @@ export class Note {
         this.desc = object?.desc || "";
         this.tags = object?.tags || [];
     }
+}
+
+
+export class Tag {
+	/**
+	 * Create a new Tag from the object it references
+	 * @param {Objective | Event | Location | Character | Note } refObject the object referenced by this tag
+	 */
+	constructor(refObject) {
+		this.id = refObject.id; 
+		this.text = refObject.name || refObject.title || refObject.desc; 
+		this.type = refObject.constructor.name;
+		this.icon = icons.whichObjectIcon(refObject);
+	}
 }

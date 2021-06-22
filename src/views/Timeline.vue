@@ -2,9 +2,9 @@
 	<v-container>
 		<div class="my-3">
 			<div class="text-xl-h4">Frise des événements</div>
-			<v-timeline v-if="reverseArray.length > 0">
+			<v-timeline v-if="events.length > 0">
 				<v-timeline-item
-					v-for="event in reverseArray"
+					v-for="event in events"
 					:key="event.id"
 					:icon="icons.whichEventIcon(event.type)"
 					:color="computeColor(event.type)"
@@ -21,7 +21,6 @@
 	</v-container>
 </template>
 <script>
-import storage from "../js/storage.js";
 import icons from "../js/icons.js";
 
 import CardEvent from "../components/cards/CardEvent.vue";
@@ -32,7 +31,6 @@ export default {
 	},
 	data() {
 		return {
-			events: storage.data.events,
 			icons: icons,
 		};
 	},
@@ -55,8 +53,9 @@ export default {
 		},
 	},
 	computed: {
-		reverseArray() {
-			let copy = this.events.slice();
+		events() {
+			// Get events from store and create a copy of the array to reverse it
+			let copy = this.$store.state.data.events.slice();
 			return copy.reverse();
 		}
 	}

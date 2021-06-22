@@ -20,7 +20,7 @@
 				v-if="overflow ? data.index === 0 : true"
 			>
 				<v-icon left>{{ data.item.icon }}</v-icon>
-				<MarkdownView :text="data.item.name | truncate" :inline="true" />
+				<MarkdownView :text="data.item.text | truncate" :inline="true" />
 			</v-chip>
 			<span 
 				class="grey--text text-caption"
@@ -31,14 +31,13 @@
 		</template>
 		<template v-slot:item="data">
 			<v-icon left small> {{ data.item.icon }} </v-icon>
-			<v-list-item-title v-html="data.item.name"></v-list-item-title>
+			<v-list-item-title v-html="data.item.text"></v-list-item-title>
 		</template>
 	</v-autocomplete>
 </template>
 
 <script>
-import storage from "../js/storage.js";
-import icons from "../js/icons.js";
+import { Tag } from '../js/model.js';
 
 import MarkdownView from "./MarkdownView.vue";
 
@@ -68,25 +67,16 @@ export default {
 		availableTags() {
 			let tags = [];
 
-			// For each array of objects in storage
-			for (const key in storage.data) {
-				// Compute the object type automatically by removing the 's' of plural on each key
-				let type = key.substr(0, key.length - 1);
+			// For each array of objects in the data store
+			for (const key in this.$store.state.data) {
 
 				// Push a header object for the v-autocomplete component to create a header for this group of objects
 				tags.push({ header: key });
 
 				// Create an item for each object found in the array
-				storage.data[key].forEach((element) => {
+				this.$store.state.data[key].forEach((element) => {
 					// If the current element is not the excluded one
-					if (element.id !== this.excludeId) {
-						tags.push({
-							id: element.id,
-							name: element.name || element.title || element.desc,
-							type: type,
-							icon: icons.whichObjectIcon(element),
-						});
-					}
+					if (element.id !== this.excludeId) tags.push(new Tag(element));
 				});
 			}
 
