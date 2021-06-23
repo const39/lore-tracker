@@ -17,6 +17,7 @@
 						group="items"
 						@start="drag = true"
 						@end="drag = false;"
+						:move="onMove"
 					>
 						<component
 							:is="cardComponent"
@@ -92,6 +93,15 @@ export default {
 			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
 			else return "";
 		},
+		onMove(e) {
+			/**
+			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same 
+			 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
+			 * If both elements type are the same, this function will return true and authorize the drag
+			 * If they are different, it will return false to cancel the drag
+			 */
+			return e.draggedContext.element.constructor.name === e.relatedContext.element.constructor.name;
+		}
 	},
 	computed: {
 		cardComponent() {
