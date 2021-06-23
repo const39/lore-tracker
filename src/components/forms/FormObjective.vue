@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 
@@ -76,7 +77,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = this.$store.getters.get(this.id, 'objective');
+				let data = this.$store.getters.get(this.id, constants.objectTypes.OBJECTIVE);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Objective(data);

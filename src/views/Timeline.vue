@@ -6,11 +6,11 @@
 				<v-timeline-item
 					v-for="event in events"
 					:key="event.id"
-					:icon="icons.whichEventIcon(event.type)"
+					:icon="icons[event.type]"
 					:color="computeColor(event.type)"
 					fill-dot
 				>
-					<CardEvent :item-data="event" :hide-icon="true"/>
+					<CardEvent :item-data="event" :hide-icon="true" />
 				</v-timeline-item>
 			</v-timeline>
 			<p class="text-center" v-else>
@@ -21,6 +21,7 @@
 	</v-container>
 </template>
 <script>
+import constants from "../js/constants.js";
 import icons from "../js/icons.js";
 
 import CardEvent from "../components/cards/CardEvent.vue";
@@ -36,20 +37,18 @@ export default {
 	},
 	methods: {
 		computeColor(eventType) {
-			if (eventType) {
-				switch (eventType.toLowerCase()) {
-					case "combat":
-						return "deep-orange darken-1";
-					case "encounter":
-						return "purple darken-1";
-					case "discovery":
-						return "green lighten-1";
-					case "travel":
-						return "indigo";
-					default:
-						return "grey darken-2";
-				}
-			} else return "grey darken-2";
+			switch (eventType) {
+				case constants.eventTypes.COMBAT:
+					return "deep-orange darken-1";
+				case constants.eventTypes.ENCOUNTER:
+					return "purple darken-1";
+				case constants.eventTypes.DISCOVERY:
+					return "green lighten-1";
+				case constants.eventTypes.TRAVEL:
+					return "indigo";
+				default:
+					return "grey darken-2";
+			}
 		},
 	},
 	computed: {
@@ -57,8 +56,8 @@ export default {
 			// Get events from store and create a copy of the array to reverse it
 			let copy = this.$store.state.data.events.slice();
 			return copy.reverse();
-		}
-	}
+		},
+	},
 };
 </script>
 

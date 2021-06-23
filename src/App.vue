@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import storage from "./js/storage.js";
+import constants from './js/constants.js';
 import themes from "./plugins/themes.js";
 
 import ThemeSelector from "./components/ThemeSelector.vue";
@@ -94,7 +94,7 @@ export default {
 	methods: {
 		async copyToClipboard() {
 			try {
-				await navigator.clipboard.writeText(JSON.stringify(storage.data));
+				await navigator.clipboard.writeText(this.$store.state.data);
 				this.showSnackbar = true;
 			} catch (error) {
 				console.error("Copy to clipboard failed.");
@@ -108,7 +108,7 @@ export default {
 		},
 	},
 	mounted() {
-		let themeName = localStorage.getItem(themes.THEME_KEY) || "light";
+		let themeName = localStorage.getItem(constants.localStorageKeys.THEME_KEY) || "light";
 		let theme = {
 			name: themeName,
 			colors: this.$vuetify.theme.defaults[themeName] || themes.custom[themeName],

@@ -50,7 +50,6 @@ export default {
 		cyberpunk
 	},
 	darkThemes: ['dark', 'cyberpunk'],
-	THEME_KEY: 'THEME'
 }
 
 // export default {

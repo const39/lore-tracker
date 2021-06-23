@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import constants from '../js/constants.js';
 import themes from "../plugins/themes.js";
 
 export default {
@@ -45,7 +46,7 @@ export default {
 			this.$vuetify.theme.themes.dark = theme.colors;
 			this.$vuetify.theme.dark = themes.darkThemes.includes(theme.name);
 
-			localStorage.setItem(themes.THEME_KEY, theme.name);
+			localStorage.setItem(constants.localStorageKeys.THEME_KEY, theme.name);
 
 			if (callback) callback();
 		},

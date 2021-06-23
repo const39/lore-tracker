@@ -112,9 +112,8 @@ export default {
 		 */
 
 		eventHub.$on("edit", (e) => {
-			let type = e.type.toString().toLowerCase();
-			this[`${type}EditForm`].id = e.object.id;
-			this[`${type}EditForm`].show = true;
+			this[`${e.type}EditForm`].id = e.object.id;
+			this[`${e.type}EditForm`].show = true;
 		});
 
 		eventHub.$on("delete", (e) => {

@@ -39,6 +39,7 @@ import FormCharacter from "../forms/FormCharacter.vue";
 import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
+import constants from '../../js/constants';
 
 export default {
 	name: "LayoutTabContent",
@@ -83,23 +84,23 @@ export default {
 		},
 		items: {
 			get() {
-				switch (this.type.toString().toLowerCase()) {
-					case "objective":
+				switch (this.type) {
+					case constants.objectTypes.OBJECTIVE:
 						return this.$store.state.data.objectives;
-					case "event":
+					case constants.objectTypes.EVENT:
 						return this.$store.state.data.events;
-					case "location":
+					case constants.objectTypes.LOCATION:
 						return this.$store.state.data.locations;
-					case "character":
+					case constants.objectTypes.CHARACTER:
 						return this.$store.state.data.characters;
-					case "note":
+					case constants.objectTypes.NOTE:
 						return this.$store.state.data.notes;
 					default:
 						return undefined;
 				}
 			},
 			set(list) {
-				this.$store.commit("updateWholeList", { type: this.type.toString().toLowerCase(), list: list });
+				this.$store.commit("updateWholeList", { type: this.type, list: list });
 			},
 		},
 	},

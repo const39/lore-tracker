@@ -20,30 +20,8 @@ export default {
 	 */
 	whichObjectIcon: function(object) {
 		if (object) {
-			if (object instanceof Event) return this.whichEventIcon(object.type);
+			if (object instanceof Event) return this[object.type];
 			else return this[object.constructor.name.toLowerCase()];
 		}
-	},
-
-	/**
-	 * Decide which icon should be displayed for the specified Event type.
-	 * @param {String} eventType the type of event
-	 * @returns the relevant icon name
-	 */
-	whichEventIcon: function(eventType) {
-		if (eventType) {
-			switch (eventType.toLowerCase()) {
-				case "combat":
-					return this.combat;
-				case "encounter":
-					return this.encounter;
-				case "discovery":
-					return this.discovery;
-				case "travel":
-					return this.travel;
-				default:
-					return this.other;
-			}
-		} else return this.other;
 	},
 };

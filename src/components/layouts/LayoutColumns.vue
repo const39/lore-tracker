@@ -1,11 +1,11 @@
 <template>
 	<v-container>
 		<v-row>
-			<LayoutColumnContent type="objective" title="Objectifs" :icon="icons.objective"/>
-			<LayoutColumnContent type="event" title="Événements" :icon="icons.event"/>
-			<LayoutColumnContent type="location" title="Localités" :icon="icons.location"/>
-			<LayoutColumnContent type="character" title="Personnages" :icon="icons.character"/>
-			<LayoutColumnContent type="note" title="Notes" :icon="icons.note"/>
+			<LayoutColumnContent :type="objectTypes.OBJECTIVE" title="Objectifs" :icon="icons.objective"/>
+			<LayoutColumnContent :type="objectTypes.EVENT" title="Événements" :icon="icons.event"/>
+			<LayoutColumnContent :type="objectTypes.LOCATION" title="Localités" :icon="icons.location"/>
+			<LayoutColumnContent :type="objectTypes.CHARACTER" title="Personnages" :icon="icons.character"/>
+			<LayoutColumnContent :type="objectTypes.NOTE" title="Notes" :icon="icons.note"/>
 		</v-row>
 	</v-container>
 </template>
@@ -15,6 +15,7 @@ import LayoutColumnContent from "./LayoutColumnContent.vue";
 
 import icons from "../../js/icons.js";
 import { eventHub } from "../../js/eventHub.js";
+import constants from '../../js/constants';
 
 export default {
 	name: "LayoutColumns",
@@ -46,6 +47,7 @@ export default {
 				},
 			],
 			icons: icons,
+			objectTypes: constants.objectTypes
 		};
 	},
 	mounted() {

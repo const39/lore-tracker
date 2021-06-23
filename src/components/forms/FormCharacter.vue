@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import { Character } from "../../js/model.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -93,7 +94,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = this.$store.getters.get(this.id, 'character');
+				let data = this.$store.getters.get(this.id, constants.objectTypes.CHARACTER);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Character(data);

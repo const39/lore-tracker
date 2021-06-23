@@ -1,3 +1,4 @@
+import constants from "./constants";
 import icons from "./icons";
 
 /**
@@ -17,13 +18,11 @@ export class Objective {
 	}
 }
 
-var eventTypes = ["combat", "encounter", "discovery", "travel", "other"];
-
 export class Event {
 	constructor(object) {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
-		this.type = eventTypes.includes(object?.type) ? object?.type : eventTypes.other
+		this.type = Object.values(constants.eventTypes).includes(object?.type) ? object?.type : constants.eventTypes.other
         this.tags = object?.tags || [];
 	}
 }
@@ -69,7 +68,7 @@ export class Tag {
 	constructor(refObject) {
 		this.id = refObject.id; 
 		this.text = refObject.name || refObject.title || refObject.desc; 
-		this.type = refObject.constructor.name;
+		this.type = constants.objectTypes[refObject.constructor.name.toUpperCase()];
 		this.icon = icons.whichObjectIcon(refObject);
 	}
 }

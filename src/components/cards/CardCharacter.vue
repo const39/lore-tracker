@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import icons from "../../js/icons.js";
 import { Character } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
@@ -53,7 +54,7 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent("character", this.itemData));
+			eventHub.$emit(value, new CardEvent(constants.objectTypes.CHARACTER, this.itemData));
 		},
 	},
 	computed: {

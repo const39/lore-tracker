@@ -1,11 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
+import constants from "../js/constants";
 import { Objective, Event, Location, Character, Note } from "../js/model";
 
 Vue.use(Vuex);
-
-const DATA_KEY = "DATA";
 
 function persist(key, data) {
 	localStorage.setItem(key, JSON.stringify(data));
@@ -26,7 +24,7 @@ export default new Vuex.Store({
 			// If type is specified, try to search in the specified array first
 			if (type) {
 				// Compute key from type
-				const key = type.toString().toLowerCase() + "s";
+				const key = type + "s";
 
 				// If key is a valid key in state.data
 				if (Object.keys(state.data).includes(key)) {
@@ -51,7 +49,7 @@ export default new Vuex.Store({
 	mutations: {
 		initData(state) {
 			// Get persisted raw data
-			let rawData = localStorage.getItem(DATA_KEY).trim();
+			let rawData = localStorage.getItem(constants.localStorageKeys.DATA_KEY);
 
 			if (rawData) rawData = JSON.parse(rawData);
 
@@ -86,7 +84,7 @@ export default new Vuex.Store({
 			}
 
 			list.unshift(payload);
-			persist(DATA_KEY, state.data);
+			persist(constants.localStorageKeys.DATA_KEY, state.data);
 		},
 		update(state, payload) {
 			let list;
@@ -105,7 +103,7 @@ export default new Vuex.Store({
 			// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
 			if (index !== -1) {
 				Vue.set(list, index, payload);
-				persist(DATA_KEY, state.data);
+				persist(constants.localStorageKeys.DATA_KEY, state.data);
 			}
 		},
 		delete(state, payload) {
@@ -124,13 +122,13 @@ export default new Vuex.Store({
 			if (index !== -1) {
 				list.splice(index, 1);
 
-				persist(DATA_KEY, state.data);
+				persist(constants.localStorageKeys.DATA_KEY, state.data);
 			}
 		},
 		updateWholeList(state, payload) {
 			const key = payload.type.toString().toLowerCase() + "s";
 			state.data[key] = payload.list;
-			persist(DATA_KEY, state.data);
+			persist(constants.localStorageKeys.DATA_KEY, state.data);
 		},
 	},
 	actions: {},

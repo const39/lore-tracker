@@ -24,12 +24,12 @@
 						>
 							<template v-slot:selection="data">
 								<v-chip>
-									<v-icon left>{{ icons.whichEventIcon(data.item.value) }}</v-icon>
+									<v-icon left>{{ icons[data.item.value] }}</v-icon>
 									{{ data.item.text }}
 								</v-chip>
 							</template>
 							<template v-slot:item="data">
-								<v-icon left>{{ icons.whichEventIcon(data.item.value) }}</v-icon>
+								<v-icon left>{{ icons[data.item.value] }}</v-icon>
 								{{ data.item.text }}
 							</template>
 						</v-autocomplete>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import storage from "../../js/storage.js";
+import constants from "../../js/constants.js";
 import icons from "../../js/icons.js";
 import { Event } from "../../js/model.js";
 
@@ -71,23 +71,23 @@ export default {
 			model: this.initModel(),
 			eventTypes: [
 				{
-					value: storage.eventTypes[0],
+					value: constants.eventTypes.COMBAT,
 					text: "Combat",
 				},
 				{
-					value: storage.eventTypes[1],
+					value: constants.eventTypes.ENCOUNTER,
 					text: "Rencontre",
 				},
 				{
-					value: storage.eventTypes[2],
+					value: constants.eventTypes.DISCOVERY,
 					text: "Découverte",
 				},
 				{
-					value: storage.eventTypes[3],
+					value: constants.eventTypes.TRAVEL,
 					text: "Voyage",
 				},
 				{
-					value: storage.eventTypes[4],
+					value: constants.eventTypes.OTHER,
 					text: "Autre",
 				},
 			],
@@ -111,7 +111,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = this.$store.getters.get(this.id, 'event');
+				let data = this.$store.getters.get(this.id, constants.objectTypes.EVENT);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Event(data);
