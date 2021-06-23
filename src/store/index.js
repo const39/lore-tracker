@@ -120,8 +120,17 @@ export default new Vuex.Store({
 
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			if (index !== -1) {
-				list.splice(index, 1);
+				// Search in each array for eventual entries referencing the object we're about to delete
+				for (const key in state.data) {
+					state.data[key].forEach((entry) => {
+						// If this entry's tags contain a reference to the object we're about to delete, remove it
+						const referenceIndex = entry.tags.findIndex((event) => event === payload.id);
+						if (referenceIndex != -1) entry.tags.splice(referenceIndex, 1);
+					});
+				}
 
+				// Finally delete the payload object from state
+				list.splice(index, 1);
 				persist(constants.localStorageKeys.DATA_KEY, state.data);
 			}
 		},
