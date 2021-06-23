@@ -9,6 +9,20 @@ function persist(key, data) {
 	localStorage.setItem(key, JSON.stringify(data));
 }
 
+/**
+ * Create the default Filter object
+ * @returns a default Filter object
+ */
+function defaultFilter() {
+	return {
+		isEnabled: false,
+		nbResults: -1,
+		type: constants.objectTypes.ALL,
+		text: undefined,
+		tags: [],
+	};
+}
+
 export default new Vuex.Store({
 	state: {
 		data: {
@@ -18,8 +32,64 @@ export default new Vuex.Store({
 			characters: [],
 			notes: [],
 		},
+		filter: defaultFilter(),
 	},
 	getters: {
+		filteredData: (state) => {
+			// Create another empty data object to avoid modifying the state containing all data
+			let filteredData = {
+				objectives: [],
+				events: [],
+				locations: [],
+				characters: [],
+				notes: [],
+			};
+			state.filter.nbResults = 0;
+			state.filter.text = state.filter.text?.toLowerCase();
+
+			// Browse each array of data
+			for (const key in state.data) {
+
+				// The filter is applied to each relevant key (can be ALL)
+				if (state.filter.type == constants.objectTypes.ALL || `${state.filter.type}s` === key) {
+
+					// Filter out corresponding data from the initial data object 
+					filteredData[key] = state.data[key].filter((entry) => {
+
+						/* The predicate conditions are exclusive : 
+						 * (1) if the first one is not fulfilled, the second one is not evaluated;
+						 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
+						 * In either case, the predicate returns false
+						 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
+						 */
+						let predicate = true;
+
+						// If specified, search for corresponding text in text fields of the current entry
+						if (state.filter.text) {
+							predicate =
+								entry.title?.toLowerCase().includes(state.filter.text) ||
+								entry.name?.toLowerCase().includes(state.filter.text) ||
+								entry.desc?.toLowerCase().includes(state.filter.text);
+						}
+
+						// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
+						// search for the corresponding tags in the current entry tag list
+						if (predicate && state.filter.tags?.length > 0) {
+							for (const tag of state.filter.tags) {
+								predicate &&= entry.tags.includes(tag);
+								// If the condition is false, stop searching and return (see (2)) 
+								if (!predicate) break;
+							}
+						}
+
+						return predicate;
+					});
+					// Store the number of results
+					state.filter.nbResults += filteredData[key].length;
+				}
+			}
+			return filteredData;
+		},
 		where: (state) => (id, type) => {
 			// If type is specified, try to search in the specified array first
 			if (type) {
@@ -136,8 +206,17 @@ export default new Vuex.Store({
 		},
 		updateWholeList(state, payload) {
 			const key = payload.type.toString().toLowerCase() + "s";
-			state.data[key] = payload.list;
+			Vue.set(state.data, key, payload.list);
 			persist(constants.localStorageKeys.DATA_KEY, state.data);
+		},
+		changeFilter(state, payload) {
+			state.filter.isEnabled = true;
+			state.filter.type = payload.type || constants.objectTypes.ALL;
+			state.filter.text = payload.text || undefined;
+			state.filter.tags = payload.tags || [];
+		},
+		resetFilter(state) {
+			Vue.set(state, "filter", defaultFilter());
 		},
 	},
 	actions: {},

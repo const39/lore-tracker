@@ -11,6 +11,7 @@ export default {
 		OTHER: "other",
 	},
 	objectTypes: {
+		ALL: "all",
 		OBJECTIVE: "objective",
 		EVENT: "event",
 		LOCATION: "location",

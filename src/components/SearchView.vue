@@ -6,11 +6,20 @@
 		</v-btn>
 		<v-snackbar light top max-width="70%" transition="scroll-y-transition" :timeout="-1" v-model="shown">
 			<v-row class="d-flex pt-3">
+				<v-text-field
+					solo
+					dense
+					class="mx-2 flex-grow-1 flex-shrink-1"
+					label="Contenant"
+					hint="Contenant"
+					v-model="textToContain"
+				></v-text-field>
+				<TagChooser solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
 				<v-select
 					outlined
 					dense
 					class="mx-2 flex-grow-0 flex-shrink-1"
-					label="Type"
+					label="Dans"
 					v-model="selectedType"
 					:items="types"
 				>
@@ -23,23 +32,17 @@
 						{{ data.item.text }}
 					</template>
 				</v-select>
-				<v-text-field
-					solo
-					dense
-					class="mx-2 flex-grow-1 flex-shrink-1"
-					label="Contient"
-					hint="Contient"
-					v-model="contains"
-				></v-text-field>
-				<TagChooser solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
-				<v-btn icon @click="search">
-					<v-icon>mdi-magnify</v-icon>
-				</v-btn>
+			</v-row>
+			<div class="d-flex">
+				<span class="grey--text text-caption"> {{ resultsNumber }} carte(s) affichée(s) </span>
+				<v-spacer></v-spacer>
+				<span class="grey--text text-caption">Tri des cartes désactivé pendant la recherche.</span>
+			</div>
+			<template v-slot:action>
 				<v-btn icon @click="shown = false">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
-			</v-row>
-			<!-- <span class="grey--text text-caption">15 résultats</span> -->
+			</template>
 		</v-snackbar>
 	</span>
 </template>
@@ -59,7 +62,7 @@ export default {
 			shown: false,
 			types: [
 				{
-					value: "all",
+					value: constants.objectTypes.ALL,
 					text: "Tous",
 					icon: undefined,
 				},
@@ -89,21 +92,47 @@ export default {
 					icon: icons.note,
 				},
 			],
-			selectedType: "all",
-			contains: undefined,
+			selectedType: constants.objectTypes.ALL,
+			textToContain: undefined,
 			selectedTags: [],
 		};
 	},
 	methods: {
 		search() {
-			// TODO
-		}
+			this.$store.commit("changeFilter", {
+				type: this.selectedType,
+				text: this.textToContain,
+				tags: this.selectedTags,
+			});
+		},
 	},
 	computed: {
 		style() {
 			return this.shown ? "display: block;" : "display: none;";
 		},
+		resultsNumber() {
+			return this.$store.state.filter.nbResults;
+		},
+	},
+	watch: {
+		/**
+		 * Reset filter once the search view is closed
+		 */
+		shown(newValue) {
+			if (!newValue) this.$store.commit("resetFilter");
+		},
+		/**
+		 * Trigger search as soon as a field changes
+		 */
+		selectedType() {
+			this.search();
+		},
+		textToContain() {
+			this.search();
+		},
+		selectedTags() {
+			this.search();
+		},
 	},
 };
 </script>
-

@@ -5,7 +5,6 @@
 				Lore tracker
 			</div>
 			<v-spacer></v-spacer>
-			<!-- TODO filtering not implemented -->
 			<SearchView />
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
 			<div class="display-selector">

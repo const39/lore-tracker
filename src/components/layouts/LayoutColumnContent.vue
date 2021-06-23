@@ -11,6 +11,7 @@
 				<v-expansion-panel-content>
 					<CardAdd @add-card-clicked="showForm = true" />
 					<draggable
+						:disabled="isSortDisabled"
 						v-model="items"
 						v-bind="{ animation: 200 }"
 						group="items"
@@ -23,7 +24,7 @@
 							:key="item.id"
 							:item-data="item"
 							outlined
-							class="draggable"
+							:class="{'draggable': !isSortDisabled}"
 						/>
 					</draggable>
 					<component :is="formComponent" v-model="showForm" />
@@ -99,19 +100,22 @@ export default {
 		formComponent() {
 			return `Form${this.capitalize(this.type)}`;
 		},
+		isSortDisabled() {
+			return this.$store.state.filter.isEnabled;
+		},
 		items: {
 			get() {
 				switch (this.type) {
 					case constants.objectTypes.OBJECTIVE:
-						return this.$store.state.data.objectives;
+						return this.$store.getters.filteredData.objectives;
 					case constants.objectTypes.EVENT:
-						return this.$store.state.data.events;
+						return this.$store.getters.filteredData.events;
 					case constants.objectTypes.LOCATION:
-						return this.$store.state.data.locations;
+						return this.$store.getters.filteredData.locations;
 					case constants.objectTypes.CHARACTER:
-						return this.$store.state.data.characters;
+						return this.$store.getters.filteredData.characters;
 					case constants.objectTypes.NOTE:
-						return this.$store.state.data.notes;
+						return this.$store.getters.filteredData.notes;
 					default:
 						return undefined;
 				}
