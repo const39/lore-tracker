@@ -6,7 +6,7 @@
 		label="Liens"
 		v-model="selectedTags"
 		:items="availableTags"
-		item-text="name"
+		item-text="text"
 		item-value="id"
 		v-bind="$attrs"
 	>
