@@ -10,6 +10,20 @@ function persist(key, data) {
 }
 
 /**
+ * Create the default Data object
+ * @returns a default Data object
+ */
+function defaultData() {
+	return {
+		objectives: [],
+		events: [],
+		locations: [],
+		characters: [],
+		notes: [],
+	};
+}
+
+/**
  * Create the default Filter object
  * @returns a default Filter object
  */
@@ -25,25 +39,13 @@ function defaultFilter() {
 
 export default new Vuex.Store({
 	state: {
-		data: {
-			objectives: [],
-			events: [],
-			locations: [],
-			characters: [],
-			notes: [],
-		},
+		data: defaultData(),
 		filter: defaultFilter(),
 	},
 	getters: {
 		filteredData: (state) => {
 			// Create another empty data object to avoid modifying the state containing all data
-			let filteredData = {
-				objectives: [],
-				events: [],
-				locations: [],
-				characters: [],
-				notes: [],
-			};
+			let filteredData = defaultData();
 			state.filter.nbResults = 0;
 			state.filter.text = state.filter.text?.toLowerCase();
 
@@ -207,6 +209,10 @@ export default new Vuex.Store({
 		updateWholeList(state, payload) {
 			const key = payload.type.toString().toLowerCase() + "s";
 			Vue.set(state.data, key, payload.list);
+			persist(constants.localStorageKeys.DATA_KEY, state.data);
+		},
+		resetData(state) {
+			Vue.set(state, "data", defaultData());
 			persist(constants.localStorageKeys.DATA_KEY, state.data);
 		},
 		changeFilter(state, payload) {

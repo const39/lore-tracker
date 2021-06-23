@@ -51,6 +51,13 @@
 							</v-list-item-icon>
 							<v-list-item-title>Copier les données</v-list-item-title>
 						</v-list-item>
+						<v-divider></v-divider>
+						<v-list-item @click="showConfirmDialog">
+							<v-list-item-icon>
+								<v-icon color="red">mdi-delete</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title class="red--text">Effacer les données</v-list-item-title>
+						</v-list-item>
 					</v-item-group>
 				</v-list>
 			</v-menu>
@@ -62,6 +69,14 @@
 				<router-view />
 			</v-container>
 		</v-main>
+
+		<!-- Global confirm dialog for options -->
+		<ConfirmDialog
+			v-model="confirmDialog.show"
+			:title="confirmDialog.title"
+			:message="confirmDialog.message"
+			:acceptAction="confirmDialog.acceptAction"
+		/>
 
 		<!-- Global snackbar -->
 		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
@@ -76,19 +91,27 @@
 </template>
 
 <script>
-import constants from './js/constants.js';
+import constants from "./js/constants.js";
 import themes from "./plugins/themes.js";
 
+import ConfirmDialog from "./components/ConfirmDialog.vue";
 import ThemeSelector from "./components/ThemeSelector.vue";
 
 export default {
 	name: "App",
 	components: {
+		ConfirmDialog,
 		ThemeSelector,
 	},
 	data() {
 		return {
 			showSnackbar: false,
+			confirmDialog: {
+				show: false,
+				title: undefined,
+				message: undefined,
+				acceptAction: undefined,
+			},
 		};
 	},
 	methods: {
@@ -101,6 +124,12 @@ export default {
 			}
 			this.showExportDialog = false;
 		},
+		showConfirmDialog() {
+			this.confirmDialog.title = "Effacer les données ?";
+			this.confirmDialog.message = "Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.";
+			this.confirmDialog.acceptAction = () => this.$store.commit('resetData');
+			this.confirmDialog.show = true;
+		}
 	},
 	computed: {
 		background() {
@@ -119,8 +148,8 @@ export default {
 	},
 	created() {
 		// Initialise the store at application start
-		this.$store.commit('initData');
-	}
+		this.$store.commit("initData");
+	},
 };
 </script>
 <style scoped>
