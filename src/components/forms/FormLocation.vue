@@ -29,8 +29,8 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import { Location } from '../../js/model.js';
-import storage from "../../js/storage.js";
 
 import TagChooser from "../TagChooser.vue";
 
@@ -56,20 +56,9 @@ export default {
 
 			if (this.valid) {
 
-				// In edit mode
-				if(this.edit) {
+				if(this.edit) this.$store.commit('update', this.model);
+				else this.$store.commit('add', this.model);
 
-					let index = storage.data.locations.findIndex(entry => entry.id === this.id);
-
-					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
-					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if(index != -1) this.$set(storage.data.locations, index, this.model);
-					else console.error("Could not save the edit.");
-
-				// In create mode
-				} else storage.data.locations.unshift(this.model);
-
-				storage.persist();
 				this.close();
 			}
 		},
@@ -79,8 +68,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = storage.data.locations.find((entry) => entry.id === this.id);
-
+				let data = this.$store.getters.get(this.id, constants.objectTypes.LOCATION);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Location(data);

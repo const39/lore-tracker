@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import storage from "../../js/storage.js";
+import constants from '../../js/constants.js';
 import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 
@@ -64,19 +64,10 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-				// In edit mode
-				if (this.edit) {
-					let index = storage.data.objectives.findIndex((entry) => entry.id === this.id);
 
-					// We use this.$set() to replace the object at index with our new model while allowing Vue to still track changes to that object
-					// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
-					if (index != -1) this.$set(storage.data.objectives, index, this.model);
-					else console.error("Could not save the edit.");
+				if(this.edit) this.$store.commit('update', this.model);
+				else this.$store.commit('add', this.model);
 
-					// In create mode
-				} else storage.data.objectives.unshift(this.model);
-
-				storage.persist();
 				this.close();
 			}
 		},
@@ -86,7 +77,7 @@ export default {
 		},
 		initModel() {
 			if (this.edit && this.id) {
-				let data = storage.data.objectives.find((entry) => entry.id === this.id);
+				let data = this.$store.getters.get(this.id, constants.objectTypes.OBJECTIVE);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Objective(data);

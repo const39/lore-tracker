@@ -5,13 +5,10 @@
 				tag="v-row"
 				draggable=".item"
 				v-model="items"
-				v-bind="{animation: 200}"
+				v-bind="{ animation: 200 }"
 				group="items"
 				@start="drag = true"
-				@end="
-					drag = false;
-					persist();
-				"
+				@end="drag = false;"
 			>
 				<template v-slot:header>
 					<v-col cols="12" md="4">
@@ -42,17 +39,11 @@ import FormCharacter from "../forms/FormCharacter.vue";
 import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
-
-import storage from "../../js/storage.js";
+import constants from '../../js/constants';
 
 export default {
 	name: "LayoutTabContent",
 	props: {
-		// Override v-model
-		value: {
-			type: Array,
-			required: true,
-		},
 		type: {
 			type: String,
 			required: true,
@@ -83,28 +74,34 @@ export default {
 			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
 			else return "";
 		},
-		persist() {
-			storage.persist();
-		},
 	},
 	computed: {
-		/**
-		 * Overwrite default v-model to bind this component's v-model attribute to the v-for.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		items: {
-			get() {
-				return this.value;
-			},
-			set(value) {
-				this.$emit("input", value);
-			},
-		},
 		cardComponent() {
 			return `Card${this.capitalize(this.type)}`;
 		},
 		formComponent() {
 			return `Form${this.capitalize(this.type)}`;
+		},
+		items: {
+			get() {
+				switch (this.type) {
+					case constants.objectTypes.OBJECTIVE:
+						return this.$store.state.data.objectives;
+					case constants.objectTypes.EVENT:
+						return this.$store.state.data.events;
+					case constants.objectTypes.LOCATION:
+						return this.$store.state.data.locations;
+					case constants.objectTypes.CHARACTER:
+						return this.$store.state.data.characters;
+					case constants.objectTypes.NOTE:
+						return this.$store.state.data.notes;
+					default:
+						return undefined;
+				}
+			},
+			set(list) {
+				this.$store.commit("updateWholeList", { type: this.type, list: list });
+			},
 		},
 	},
 };

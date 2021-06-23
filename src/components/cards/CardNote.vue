@@ -17,6 +17,7 @@ import CardOptions from "./CardOptions.vue";
 import TagList from '../TagList.vue';
 import MarkdownView from "../MarkdownView.vue";
 
+import constants from '../../js/constants';
 import { Note } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
 
@@ -37,7 +38,7 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent('note', this.itemData))
+			eventHub.$emit(value, new CardEvent(constants.objectTypes.NOTE, this.itemData))
 		},
 	},
 };

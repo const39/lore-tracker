@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
@@ -48,7 +49,7 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent("objective", this.itemData));
+			eventHub.$emit(value, new CardEvent(constants.objectTypes.OBJECTIVE, this.itemData));
 		},
 	},
 };

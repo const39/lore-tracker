@@ -6,7 +6,7 @@
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1" v-if="!hideIcon">
-					<v-icon large>{{ icons.whichEventIcon(itemData.type) }}</v-icon>
+					<v-icon large>{{ icons[itemData.type] }}</v-icon>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc"/>
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import constants from '../../js/constants.js';
 import icons from "../../js/icons.js";
 import { Event } from '../../js/model.js';
 import {eventHub, CardEvent} from '../../js/eventHub.js';
@@ -50,11 +51,8 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent('event', this.itemData))
+			eventHub.$emit(value, new CardEvent(constants.objectTypes.EVENT, this.itemData))
 		},
 	},
-	computed: {
-
-	}
 };
 </script>

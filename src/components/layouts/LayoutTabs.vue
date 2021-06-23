@@ -7,11 +7,11 @@
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
-			<LayoutTabContent v-model="items.objectives" type="objective"/>
-			<LayoutTabContent v-model="items.events" type="event"/>
-			<LayoutTabContent v-model="items.locations" type="location"/>
-			<LayoutTabContent v-model="items.characters" type="character"/>
-			<LayoutTabContent v-model="items.notes" type="note"/>
+			<LayoutTabContent :type="objectTypes.OBJECTIVE"/>
+			<LayoutTabContent :type="objectTypes.EVENT"/>
+			<LayoutTabContent :type="objectTypes.LOCATION"/>
+			<LayoutTabContent :type="objectTypes.CHARACTER"/>
+			<LayoutTabContent :type="objectTypes.NOTE"/>
 		</v-tabs-items>
 	</v-container>
 </template>
@@ -19,17 +19,14 @@
 <script>
 import LayoutTabContent from "./LayoutTabContent.vue";
 
-import storage from "../../js/storage.js";
 import icons from "../../js/icons";
+import constants from "../../js/constants";
 import { eventHub } from "../../js/eventHub";
 
 export default {
 	name: "LayoutTabs",
 	components: {
 		LayoutTabContent,
-	},
-	props: {
-		items: storage.schema
 	},
 	data() {
 		return {
@@ -55,29 +52,29 @@ export default {
 					icon: icons.note,
 				},
 			],
-
 			activeTab: "",
-			// liveData: storage.data,
+			objectTypes: constants.objectTypes
 		};
 	},
 	mounted() {
 		// Catch TagEvent, show the according tab and scroll to the card with the specified id
 		eventHub.$on("tag-selected", (e) => {
+			console.log(e);
 
-			switch (e.type.toLowerCase()) {
-				case "objective":
+			switch (e.type) {
+				case this.objectTypes.OBJECTIVE:
 					this.activeTab = 0;
 					break;
-				case "event":
+				case this.objectTypes.EVENT:
 					this.activeTab = 1;
 					break;
-				case "location":
+				case this.objectTypes.LOCATION:
 					this.activeTab = 2;
 					break;
-				case "character":
+				case this.objectTypes.CHARACTER:
 					this.activeTab = 3;
 					break;
-				case "note":
+				case this.objectTypes.NOTE:
 					this.activeTab = 4;
 					break;
 			}

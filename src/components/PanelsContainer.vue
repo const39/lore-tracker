@@ -6,7 +6,7 @@
 			</div>
 			<v-spacer></v-spacer>
 			<!-- TODO filtering not implemented -->
-			<SearchView :items="liveData"/>
+			<SearchView />
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
 			<div class="display-selector">
 				<v-btn icon :color="color('tabbed')" @click="onClick('tabbed')">
@@ -19,8 +19,8 @@
 		</v-row>
 
 		<!-- Alternative layouts -->
-		<LayoutTabs :items="liveData" v-if="selectedLayout == 'tabbed'" />
-		<LayoutColumns :items="liveData" v-else-if="selectedLayout == 'column'" />
+		<LayoutTabs v-if="selectedLayout == 'tabbed'" />
+		<LayoutColumns v-else-if="selectedLayout == 'column'" />
 
 		<!-- Global edit form for each panel -->
 		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
@@ -50,9 +50,9 @@ import FormCharacter from "./forms/FormCharacter.vue";
 import FormNote from "./forms/FormNote.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
 
-import storage from "../js/storage.js";
+import { Objective, Event, Character, Location, Note } from "../js/model.js";
 import { eventHub } from "../js/eventHub.js";
-import SearchView from './SearchView.vue';
+import SearchView from "./SearchView.vue";
 
 export default {
 	name: "PanelsContainer",
@@ -69,7 +69,6 @@ export default {
 	},
 	data() {
 		return {
-			liveData: storage.data,
 			selectedLayout: "tabbed",
 			objectiveEditForm: {
 				show: false,
@@ -113,47 +112,31 @@ export default {
 		 */
 
 		eventHub.$on("edit", (e) => {
-			let type = e.type.toString().toLowerCase();
-			this[`${type}EditForm`].id = e.object.id;
-			this[`${type}EditForm`].show = true;
+			this[`${e.type}EditForm`].id = e.object.id;
+			this[`${e.type}EditForm`].show = true;
 		});
 
 		eventHub.$on("delete", (e) => {
-			let type = e.type.toString().toLowerCase();
-			let objectToDelete = storage.data[`${type}s`].find((entry) => entry.id === e.object.id);
 
-			if (objectToDelete) {
-				switch (type) {
-					case "objective":
-						this.confirmDialog.title = `Supprimer "${objectToDelete.desc}" ?`;
-						this.confirmDialog.message = "Voulez-vous vraiment supprimer cet objectif ?";
-						this.confirmDialog.acceptAction = () => storage.deleteObjective(e.object.id);
-						break;
-					case "event":
-						this.confirmDialog.title = `Supprimer "${objectToDelete.desc}" ?`;
-						this.confirmDialog.message =
-							"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.";
-						this.confirmDialog.acceptAction = () => storage.deleteEvent(e.object.id);
-						break;
-					case "character":
-						this.confirmDialog.title = `Supprimer "${objectToDelete.name}" ?`;
-						this.confirmDialog.message = "Voulez-vous vraiment supprimer ce personnage ?";
-						this.confirmDialog.acceptAction = () => storage.deleteCharacter(e.object.id);
-						break;
-					case "location":
-						this.confirmDialog.title = `Supprimer "${objectToDelete.name}" ?`;
-						this.confirmDialog.message = "Voulez-vous vraiment supprimer cette localité ?";
-						this.confirmDialog.acceptAction = () => storage.deleteLocation(e.object.id);
-						break;
-					case "note":
-						this.confirmDialog.title = `Supprimer "${objectToDelete.title || objectToDelete.desc}" ?`;
-						this.confirmDialog.message = "Voulez-vous vraiment supprimer cette note ?";
-						this.confirmDialog.acceptAction = () => storage.deleteNote(e.object.id);
-						break;
-				}
-
-				this.confirmDialog.show = true;
+			if (e.object instanceof Objective)
+				this.confirmDialog.message = "Voulez-vous vraiment supprimer cet objectif ?";
+			else if (e.object instanceof Event)
+				this.confirmDialog.message =
+					"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.";
+			else if (e.object instanceof Location)
+				this.confirmDialog.message = "Voulez-vous vraiment supprimer ce personnage ?";
+			else if (e.object instanceof Character)
+				this.confirmDialog.message = "Voulez-vous vraiment supprimer cette localité ?";
+			else if (e.object instanceof Note)
+				this.confirmDialog.message = "Voulez-vous vraiment supprimer cette note ?";
+			else {
+				console.error(e.object, "is not an instance of an accepted object.");
+				return;
 			}
+
+			this.confirmDialog.title = `Supprimer "${e.object.title || e.object.name || e.object.desc}" ?`;
+			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.object);
+			this.confirmDialog.show = true;
 		});
 	},
 	beforeDestroy() {

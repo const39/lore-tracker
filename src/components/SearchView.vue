@@ -45,17 +45,14 @@
 </template>
 
 <script>
-import storage from "../js/storage";
 import icons from "../js/icons";
+import constants from "../js/constants";
 
 import TagChooser from "./TagChooser.vue";
 
 export default {
 	components: {
 		TagChooser,
-	},
-	props: {
-		items: storage.schema
 	},
 	data() {
 		return {
@@ -67,27 +64,27 @@ export default {
 					icon: undefined,
 				},
 				{
-					value: "objectives",
+					value: constants.objectTypes.OBJECTIVE,
 					text: "Objectifs",
 					icon: icons.objective,
 				},
 				{
-					value: "events",
+					value: constants.objectTypes.EVENT,
 					text: "Événements",
 					icon: icons.event,
 				},
 				{
-					value: "locations",
+					value: constants.objectTypes.LOCATION,
 					text: "Localités",
 					icon: icons.location,
 				},
 				{
-					value: "characters",
+					value: constants.objectTypes.CHARACTER,
 					text: "Personnages",
 					icon: icons.character,
 				},
 				{
-					value: "notes",
+					value: constants.objectTypes.NOTE,
 					text: "Notes",
 					icon: icons.note,
 				},

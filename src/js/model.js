@@ -1,3 +1,6 @@
+import constants from "./constants";
+import icons from "./icons";
+
 /**
  * Returns the current timestamp. To be used as a Unique Identifier.
  * @returns the current timestamp
@@ -15,13 +18,11 @@ export class Objective {
 	}
 }
 
-var eventTypes = ["combat", "encounter", "discovery", "travel", "other"];
-
 export class Event {
 	constructor(object) {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
-		this.type = eventTypes.includes(object?.type) ? object?.type : eventTypes.other
+		this.type = Object.values(constants.eventTypes).includes(object?.type) ? object?.type : constants.eventTypes.other
         this.tags = object?.tags || [];
 	}
 }
@@ -56,4 +57,18 @@ export class Note {
         this.desc = object?.desc || "";
         this.tags = object?.tags || [];
     }
+}
+
+
+export class Tag {
+	/**
+	 * Create a new Tag from the object it references
+	 * @param {Objective | Event | Location | Character | Note } refObject the object referenced by this tag
+	 */
+	constructor(refObject) {
+		this.id = refObject.id; 
+		this.text = refObject.name || refObject.title || refObject.desc; 
+		this.type = constants.objectTypes[refObject.constructor.name.toUpperCase()];
+		this.icon = icons.whichObjectIcon(refObject);
+	}
 }
