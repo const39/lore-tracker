@@ -1,5 +1,5 @@
 <template>
-	<v-app :style="background">
+	<v-app>
 		<v-app-bar app color="primary" dark>
 			<div class="d-flex align-center">
 				<div class="text-xl-h4 text-center">RPG campaign tracker</div>
@@ -92,7 +92,6 @@
 
 <script>
 import constants from "./js/constants.js";
-import themes from "./plugins/themes.js";
 
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import ThemeSelector from "./components/ThemeSelector.vue";
@@ -126,25 +125,14 @@ export default {
 		},
 		showConfirmDialog() {
 			this.confirmDialog.title = "Effacer les données ?";
-			this.confirmDialog.message = "Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.";
-			this.confirmDialog.acceptAction = () => this.$store.commit('resetData');
+			this.confirmDialog.message =
+				"Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.";
+			this.confirmDialog.acceptAction = () => this.$store.commit("resetData");
 			this.confirmDialog.show = true;
-		}
-	},
-	computed: {
-		background() {
-			return `background: ${this.$vuetify.theme.themes.light.background};`;
 		},
 	},
 	mounted() {
-		let themeName = localStorage.getItem(constants.localStorageKeys.THEME_KEY) || "light";
-		let theme = {
-			name: themeName,
-			colors: this.$vuetify.theme.defaults[themeName] || themes.custom[themeName],
-		};
-		this.$vuetify.theme.themes.light = theme.colors;
-		this.$vuetify.theme.themes.dark = theme.colors;
-		this.$vuetify.theme.dark = themes.darkThemes.includes(theme.name);
+		this.$vuetify.theme.dark = localStorage.getItem(constants.localStorageKeys.THEME_KEY) === "dark";
 	},
 	created() {
 		// Initialise the store at application start
@@ -152,14 +140,3 @@ export default {
 	},
 };
 </script>
-<style scoped>
-.code {
-	font-family: Consolas, Monaco, Andale Mono, Ubuntu Mono, monospace;
-	font-size: 0.75rem;
-	line-height: 1;
-}
-
-.clickable {
-	cursor: pointer;
-}
-</style>

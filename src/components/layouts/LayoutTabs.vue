@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<v-tabs fixed-tabs v-model="activeTab">
+		<v-tabs fixed-tabs color="accent" v-model="activeTab">
 			<v-tab v-for="tab in tabs" :key="tab.name">
 				<v-icon left>{{ tab.icon }}</v-icon>
 				{{ tab.title }}

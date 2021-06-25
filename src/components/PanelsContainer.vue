@@ -7,19 +7,23 @@
 			<v-spacer></v-spacer>
 			<SearchView />
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
-			<div class="display-selector">
-				<v-btn icon :color="color('tabbed')" @click="onClick('tabbed')">
-					<v-icon>mdi-tab</v-icon>
-				</v-btn>
-				<v-btn icon :color="color('column')" @click="onClick('column')">
-					<v-icon>mdi-view-column-outline</v-icon>
-				</v-btn>
-			</div>
+			<v-item-group mandatory v-model="selectedLayout">
+				<v-item v-slot="{ active, toggle }">
+					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
+						<v-icon>mdi-tab</v-icon>
+					</v-btn>
+				</v-item>
+				<v-item v-slot="{ active, toggle }">
+					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
+						<v-icon>mdi-view-column-outline</v-icon>
+					</v-btn>
+				</v-item>
+			</v-item-group>
 		</v-row>
 
 		<!-- Alternative layouts -->
-		<LayoutTabs v-if="selectedLayout == 'tabbed'" />
-		<LayoutColumns v-else-if="selectedLayout == 'column'" />
+		<LayoutTabs v-if="selectedLayout === 0" />
+		<LayoutColumns v-else-if="selectedLayout === 1" />
 
 		<!-- Global edit form for each panel -->
 		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
@@ -68,7 +72,7 @@ export default {
 	},
 	data() {
 		return {
-			selectedLayout: "tabbed",
+			selectedLayout: 0,
 			objectiveEditForm: {
 				show: false,
 				id: undefined,
@@ -97,14 +101,6 @@ export default {
 			},
 		};
 	},
-	methods: {
-		onClick(name) {
-			this.selectedLayout = name;
-		},
-		color(name) {
-			return this.selectedLayout == name ? "primary" : "grey";
-		},
-	},
 	mounted() {
 		/**
 		 * All events catched here must be CardEvent objects (imported from eventHub.js).
@@ -116,7 +112,6 @@ export default {
 		});
 
 		eventHub.$on("delete", (e) => {
-
 			if (e.object instanceof Objective)
 				this.confirmDialog.message = "Voulez-vous vraiment supprimer cet objectif ?";
 			else if (e.object instanceof Event)

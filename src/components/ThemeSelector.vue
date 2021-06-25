@@ -29,7 +29,6 @@
 
 <script>
 import constants from '../js/constants.js';
-import themes from "../plugins/themes.js";
 
 export default {
 	methods: {
@@ -42,10 +41,7 @@ export default {
 			return style;
 		},
 		selectTheme(theme, callback) {
-			this.$vuetify.theme.themes.light = theme.colors;
-			this.$vuetify.theme.themes.dark = theme.colors;
-			this.$vuetify.theme.dark = themes.darkThemes.includes(theme.name);
-
+			this.$vuetify.theme.dark = theme.name === "dark";
 			localStorage.setItem(constants.localStorageKeys.THEME_KEY, theme.name);
 
 			if (callback) callback();
@@ -64,15 +60,6 @@ export default {
 				});
 			}
 
-			// Browse custom themes
-			for (const key in themes.custom) {
-				const theme = themes.custom[key];
-
-				list.push({
-					name: key,
-					colors: theme,
-				});
-			}
 			return list;
 		},
 	},
