@@ -3,6 +3,11 @@
 		<div class="my-3">
 			<div class="text-xl-h4">Frise des événements</div>
 			<v-timeline v-if="events.length > 0">
+				<v-timeline-item icon="mdi-star" color="yellow accent-4" fill-dot>
+					<BaseCard>
+						<v-card-text class="pa-3 text--primary">Début de la campagne</v-card-text>
+					</BaseCard>
+				</v-timeline-item>
 				<v-timeline-item
 					v-for="event in events"
 					:key="event.id"
@@ -25,10 +30,12 @@ import constants from "../js/constants.js";
 import icons from "../js/icons.js";
 
 import CardEvent from "../components/cards/CardEvent.vue";
+import BaseCard from "../components/cards/BaseCard.vue";
 
 export default {
 	components: {
 		CardEvent,
+		BaseCard,
 	},
 	data() {
 		return {
