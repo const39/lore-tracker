@@ -24,11 +24,11 @@
 					:items="types"
 				>
 					<template v-slot:selection="data">
-						<v-icon left small> {{ data.item.icon }} </v-icon>
+						<v-icon left small> {{ icons.iconFromObjectType(data.item.value) }} </v-icon>
 						{{ data.item.text }}
 					</template>
 					<template v-slot:item="data">
-						<v-icon left small> {{ data.item.icon }} </v-icon>
+						<v-icon left small> {{ icons.iconFromObjectType(data.item.value) }} </v-icon>
 						{{ data.item.text }}
 					</template>
 				</v-select>
@@ -60,36 +60,31 @@ export default {
 	data() {
 		return {
 			shown: false,
+			icons: icons,
 			types: [
 				{
 					value: constants.objectTypes.ALL,
 					text: "Tous",
-					icon: undefined,
 				},
 				{
 					value: constants.objectTypes.OBJECTIVE,
 					text: "Objectifs",
-					icon: icons.objective,
 				},
 				{
 					value: constants.objectTypes.EVENT,
 					text: "Événements",
-					icon: icons.event,
 				},
 				{
 					value: constants.objectTypes.LOCATION,
 					text: "Localités",
-					icon: icons.location,
 				},
 				{
 					value: constants.objectTypes.CHARACTER,
 					text: "Personnages",
-					icon: icons.character,
 				},
 				{
 					value: constants.objectTypes.NOTE,
 					text: "Notes",
-					icon: icons.note,
 				},
 			],
 			selectedType: constants.objectTypes.ALL,

@@ -69,6 +69,6 @@ export class Tag {
 		this.id = refObject.id; 
 		this.text = refObject.name || refObject.title || refObject.desc; 
 		this.type = constants.objectTypes[refObject.constructor.name.toUpperCase()];
-		this.icon = icons.whichObjectIcon(refObject);
+		this.icon = icons.iconFromInstance(refObject);
 	}
 }

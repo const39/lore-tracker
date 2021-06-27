@@ -24,28 +24,6 @@ export default {
 	},
 	data() {
 		return {
-			panels: [
-				{
-					title: "Objectifs",
-					icon: icons.objective,
-				},
-				{
-					title: "Événements",
-					icon: icons.event,
-				},
-				{
-					title: "Localités",
-					icon: icons.location,
-				},
-				{
-					title: "Personnages",
-					icon: icons.character,
-				},
-				{
-					title: "Notes",
-					icon: icons.note,
-				},
-			],
 			icons: icons,
 			objectTypes: constants.objectTypes
 		};
