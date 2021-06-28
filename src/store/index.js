@@ -120,6 +120,9 @@ export default new Vuex.Store({
 	},
 	mutations: {
 		initData(state) {
+			// Reset data
+			state.data = defaultData();
+
 			// Get persisted raw data
 			let rawData = localStorage.getItem(constants.localStorageKeys.DATA_KEY);
 
