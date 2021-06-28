@@ -90,15 +90,15 @@ export default {
 			get() {
 				switch (this.type) {
 					case constants.objectTypes.OBJECTIVE:
-						return this.$store.getters.filteredData.objectives;
+						return this.$store.getters.filteredCards.objectives;
 					case constants.objectTypes.EVENT:
-						return this.$store.getters.filteredData.events;
+						return this.$store.getters.filteredCards.events;
 					case constants.objectTypes.LOCATION:
-						return this.$store.getters.filteredData.locations;
+						return this.$store.getters.filteredCards.locations;
 					case constants.objectTypes.CHARACTER:
-						return this.$store.getters.filteredData.characters;
+						return this.$store.getters.filteredCards.characters;
 					case constants.objectTypes.NOTE:
-						return this.$store.getters.filteredData.notes;
+						return this.$store.getters.filteredCards.notes;
 					default:
 						return undefined;
 				}

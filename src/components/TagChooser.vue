@@ -67,14 +67,14 @@ export default {
 		availableTags() {
 			let tags = [];
 
-			// For each array of objects in the data store
-			for (const key in this.$store.state.data) {
+			// For each array of objects in the cards store
+			for (const key in this.$store.state.cards) {
 
 				// Push a header object for the v-autocomplete component to create a header for this group of objects
 				tags.push({ header: key });
 
 				// Create an item for each object found in the array
-				this.$store.state.data[key].forEach((element) => {
+				this.$store.state.cards[key].forEach((element) => {
 					// If the current element is not the excluded one
 					if (element.id !== this.excludeId) tags.push(new Tag(element));
 				});

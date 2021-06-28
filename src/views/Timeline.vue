@@ -61,7 +61,7 @@ export default {
 	computed: {
 		events() {
 			// Get events from store and create a copy of the array to reverse it
-			let copy = this.$store.state.data.events.slice();
+			let copy = this.$store.state.cards.events.slice();
 			return copy.reverse();
 		},
 	},

@@ -128,7 +128,7 @@ export default {
 	methods: {
 		async copyToClipboard() {
 			try {
-				await navigator.clipboard.writeText(this.$store.state.data);
+				await navigator.clipboard.writeText(this.$store.state.cards);
 				this.showSnackbar = true;
 			} catch (error) {
 				console.error("Copy to clipboard failed.");
