@@ -100,6 +100,16 @@ export default {
 				tags: this.selectedTags,
 			});
 		},
+		test(e1, e2)  {
+			console.log(e1);
+			console.log(e2);
+		},
+		/**
+		 * Open/close the Search view when pressing Ctrl+K
+		 */
+		hotkey(e) {
+			if(e.code === "KeyK" && e.ctrlKey) this.shown = !this.shown;
+		}
 	},
 	computed: {
 		style() {
@@ -129,5 +139,11 @@ export default {
 			this.search();
 		},
 	},
+	mounted() {
+		document.addEventListener('keydown', this.hotkey);
+	},
+	beforeDestroy() {
+		document.removeEventListener('keydown', this.hotkey);
+	}
 };
 </script>

@@ -56,11 +56,30 @@ export default {
 			objectTypes: constants.objectTypes
 		};
 	},
+	methods: {
+		/**
+		 * Manage each column hot key :
+		 * - Alt+1 : Show Oebjective tab
+		 * - Alt+2 : Show Event tab
+		 * - Alt+3 : Show Location tab
+		 * - Alt+4 : Show Character tab
+		 * - Alt+5 : Show Note tab
+		 */
+		hotkey(e) {
+
+			if(e.code.startsWith("Digit") && e.altKey) {
+
+				let num = e.code.charAt(5);
+				if(num >= 1 && num <= 5) {
+					e.preventDefault();
+					this.activeTab = num - 1;
+				}
+			}
+		}
+	},
 	mounted() {
 		// Catch TagEvent, show the according tab and scroll to the card with the specified id
 		eventHub.$on("tag-selected", (e) => {
-			console.log(e);
-
 			switch (e.type) {
 				case this.objectTypes.OBJECTIVE:
 					this.activeTab = 0;
@@ -80,9 +99,11 @@ export default {
 			}
 			document.getElementById(e.id + '-card')?.scrollIntoView({behavior: 'smooth'});
 		});
+		document.addEventListener("keydown", this.hotkey);
 	},
 	beforeDestroy() {
 		eventHub.$off("tag-selected");
+		document.removeEventListener("keydown", this.hotkey);
 	},
 };
 </script>

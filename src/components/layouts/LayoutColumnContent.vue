@@ -16,7 +16,7 @@
 						v-bind="{ animation: 200 }"
 						group="items"
 						@start="drag = true"
-						@end="drag = false;"
+						@end="drag = false"
 						:move="onMove"
 					>
 						<component
@@ -25,7 +25,7 @@
 							:key="item.id"
 							:item-data="item"
 							outlined
-							:class="{'draggable': !isSortDisabled}"
+							:class="{ draggable: !isSortDisabled }"
 						/>
 					</draggable>
 					<component :is="formComponent" v-model="showForm" />
@@ -50,7 +50,7 @@ import FormCharacter from "../forms/FormCharacter.vue";
 import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
-import constants from '../../js/constants';
+import constants from "../../js/constants";
 
 export default {
 	name: "LayoutColumnContent",
@@ -95,13 +95,37 @@ export default {
 		},
 		onMove(e) {
 			/**
-			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same 
+			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
 			 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
 			 * If both elements type are the same, this function will return true and authorize the drag
 			 * If they are different, it will return false to cancel the drag
 			 */
 			return e.draggedContext.element.constructor.name === e.relatedContext.element.constructor.name;
-		}
+		},
+		/**
+		 * Manage each column hot key :
+		 * - Alt+1 : Collapse/expand Oebjective tab
+		 * - Alt+2 : Collapse/expand Event tab
+		 * - Alt+3 : Collapse/expand Location tab
+		 * - Alt+4 : Collapse/expand Character tab
+		 * - Alt+5 : Collapse/expand Note tab
+		 */
+		hotkey(e) {
+
+			if(e.altKey) {
+
+				if (
+					(e.code === "Digit1" && this.type === constants.objectTypes.OBJECTIVE) ||
+					(e.code === "Digit2" && this.type === constants.objectTypes.EVENT) ||
+					(e.code === "Digit3" && this.type === constants.objectTypes.LOCATION) ||
+					(e.code === "Digit4" && this.type === constants.objectTypes.CHARACTER) ||
+					(e.code === "Digit5" && this.type === constants.objectTypes.NOTE)
+				) {
+					e.preventDefault();
+					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0 ;
+				}
+			}
+		},
 	},
 	computed: {
 		cardComponent() {
@@ -135,6 +159,12 @@ export default {
 			},
 		},
 	},
+	mounted() {
+		document.addEventListener('keydown', this.hotkey);
+	},
+	beforeDestroy() {
+		document.removeEventListener('keydown', this.hotkey);
+	}
 };
 </script>
 
