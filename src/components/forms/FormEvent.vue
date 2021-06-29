@@ -15,25 +15,39 @@
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<v-autocomplete
-							chips
-							label="Type d'événement*"
-							v-model="model.type"
-							:rules="requiredRule"
-							:items="eventTypes"
-						>
-							<template v-slot:selection="data">
-								<v-chip>
-									<v-icon left>{{ icons[data.item.value] }}</v-icon>
-									{{ data.item.text }}
-								</v-chip>
-							</template>
-							<template v-slot:item="data">
-								<v-icon left>{{ icons[data.item.value] }}</v-icon>
-								{{ data.item.text }}
-							</template>
-						</v-autocomplete>
-						<TagChooser v-model="model.tags" :exclude-id="model.id"/>
+						<v-row>
+							<v-col cols="12" sm="12" md="6">
+								<v-autocomplete
+									chips
+									label="Type d'événement*"
+									v-model="model.type"
+									:rules="requiredRule"
+									:items="eventTypes"
+								>
+									<template v-slot:selection="data">
+										<v-chip>
+											<v-icon left>{{ icons[data.item.value] }}</v-icon>
+											{{ data.item.text }}
+										</v-chip>
+									</template>
+									<template v-slot:item="data">
+										<v-icon left>{{ icons[data.item.value] }}</v-icon>
+										{{ data.item.text }}
+									</template>
+								</v-autocomplete>
+							</v-col>
+							<v-col cols="12" sm="12" md="6">
+								<v-text-field
+									prefix="Jour"
+									label="Date de l'événement"
+									type="number"
+									min="0"
+									v-model="model.day"
+									:rules="[requiredRule[0], dayRange[0]]"
+								></v-text-field>
+							</v-col>
+						</v-row>
+						<TagChooser v-model="model.tags" :exclude-id="model.id" />
 					</v-container>
 					<small>*champ requis</small>
 				</v-card-text>
@@ -67,6 +81,12 @@ export default {
 		return {
 			valid: false,
 			requiredRule: [(v) => !!v || "Champ requis"],
+			dayRange: [
+				(v) => {
+					v = Number(v);
+					return Number.isSafeInteger(v) && v >= 0 || "Jour invalide";
+				},
+			],
 			icons: icons,
 			model: this.initModel(),
 			eventTypes: [
@@ -98,9 +118,11 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
+				// Convert input field value to number
+				this.model.day = Number(this.model.day);
 
-				if(this.edit) this.$store.commit('update', this.model);
-				else this.$store.commit('add', this.model);
+				if (this.edit) this.$store.commit("update", this.model);
+				else this.$store.commit("add", this.model);
 
 				this.close();
 			}
@@ -116,7 +138,8 @@ export default {
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return new Event(data);
 			}
-			return new Event();
+			// If the user creates a new Event, we set the current day as default
+			return new Event({ day: this.$store.state.days });
 		},
 	},
 	computed: {
@@ -143,6 +166,11 @@ export default {
 		id: function() {
 			this.model = this.initModel();
 		},
+	},
+	mounted() {
+		// console.log(5, this.dayRange[0](5));
+		// console.log(-5, this.dayRange[0](-5));
+		// console.log(0, this.dayRange[0](0));
 	},
 };
 </script>

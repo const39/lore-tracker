@@ -23,6 +23,8 @@ export class Event {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
 		this.type = Object.values(constants.eventTypes).includes(object?.type) ? object?.type : constants.eventTypes.other
+		let day = Number(object?.day);
+		this.day = Number.isSafeInteger(day) && day > 0 ? day : 0;
         this.tags = object?.tags || [];
 	}
 }

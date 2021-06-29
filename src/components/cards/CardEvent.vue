@@ -5,8 +5,9 @@
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
-				<v-col class="flex-grow-0 flex-shrink-1" v-if="!hideIcon">
+				<v-col class="flex-grow-0 flex-shrink-1 text-center">
 					<v-icon large>{{ icons[itemData.type] }}</v-icon>
+					<v-chip label x-small outlined>Jour {{itemData.day}}</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc"/>
@@ -42,7 +43,6 @@ export default {
 			required: true
 		},
 		outlined: Boolean,
-		hideIcon: Boolean,
 	},
 	data() {
 		return {
