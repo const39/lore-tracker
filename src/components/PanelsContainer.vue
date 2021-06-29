@@ -1,8 +1,9 @@
 <template>
 	<div>
-		<v-row class="my-3 d-flex">
-			<div class="text-xl-h4">
-				Lore tracker
+		<v-row class="my-3 d-flex align-center">
+			<div>
+				<div class="text-xl-h4 mb-2">Lore tracker</div>
+				<StatusTray />
 			</div>
 			<v-spacer></v-spacer>
 			<SearchView />
@@ -53,9 +54,11 @@ import FormCharacter from "./forms/FormCharacter.vue";
 import FormNote from "./forms/FormNote.vue";
 import ConfirmDialog from "./ConfirmDialog.vue";
 
+import SearchView from "./SearchView.vue";
+import StatusTray from "./StatusTray.vue";
+
 import { Objective, Event, Character, Location, Note } from "../js/model.js";
 import { eventHub } from "../js/eventHub.js";
-import SearchView from "./SearchView.vue";
 
 export default {
 	name: "PanelsContainer",
@@ -69,6 +72,7 @@ export default {
 		FormNote,
 		ConfirmDialog,
 		SearchView,
+		StatusTray,
 	},
 	data() {
 		return {

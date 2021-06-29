@@ -5,9 +5,6 @@ import { Objective, Event, Location, Character, Note } from "../js/model";
 
 Vue.use(Vuex);
 
-function persist(key, cards) {
-	localStorage.setItem(key, JSON.stringify(cards));
-}
 
 /**
  * Create the default Cards object
@@ -40,6 +37,7 @@ function defaultFilter() {
 export default new Vuex.Store({
 	state: {
 		days: 0,
+		season: constants.seasons.SPRING,
 		cards: defaultCards(),
 		filter: defaultFilter(),
 	},
@@ -52,14 +50,11 @@ export default new Vuex.Store({
 
 			// Browse each array of cards
 			for (const key in state.cards) {
-
 				// The filter is applied to each relevant key (can be ALL)
 				if (state.filter.type == constants.objectTypes.ALL || `${state.filter.type}s` === key) {
-
-					// Filter out corresponding cards from the initial cards object 
+					// Filter out corresponding cards from the initial cards object
 					filteredCards[key] = state.cards[key].filter((entry) => {
-
-						/* The predicate conditions are exclusive : 
+						/* The predicate conditions are exclusive :
 						 * (1) if the first one is not fulfilled, the second one is not evaluated;
 						 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
 						 * In either case, the predicate returns false
@@ -80,7 +75,7 @@ export default new Vuex.Store({
 						if (predicate && state.filter.tags?.length > 0) {
 							for (const tag of state.filter.tags) {
 								predicate &&= entry.tags.includes(tag);
-								// If the condition is false, stop searching and return (see (2)) 
+								// If the condition is false, stop searching and return (see (2))
 								if (!predicate) break;
 							}
 						}
@@ -124,28 +119,41 @@ export default new Vuex.Store({
 			// Reset cards
 			state.cards = defaultCards();
 
-			// Get persisted raw cards
-			let rawCards = localStorage.getItem(constants.localStorageKeys.DATA_KEY);
+			// Get persisted raw data
+			let rawData = localStorage.getItem(constants.localStorageKeys.DATA_KEY);
 
-			if (rawCards) rawCards = JSON.parse(rawCards);
+			if (rawData) rawData = JSON.parse(rawData);
 
 			// If JSON parsing is exploitable
-			if (rawCards) {
+			if (rawData) {
 				// Convert all raw JS objects as Objective instances
-				for (const entry of rawCards.objectives) state.cards.objectives.push(new Objective(entry));
+				for (const entry of rawData.cards.objectives) state.cards.objectives.push(new Objective(entry));
 
 				// Convert all raw JS objects as Event instances
-				for (const entry of rawCards.events) state.cards.events.push(new Event(entry));
+				for (const entry of rawData.cards.events) state.cards.events.push(new Event(entry));
 
 				// Convert all raw JS objects as Location instances
-				for (const entry of rawCards.locations) state.cards.locations.push(new Location(entry));
+				for (const entry of rawData.cards.locations) state.cards.locations.push(new Location(entry));
 
 				// Convert all raw JS objects as Character instances
-				for (const entry of rawCards.characters) state.cards.characters.push(new Character(entry));
+				for (const entry of rawData.cards.characters) state.cards.characters.push(new Character(entry));
 
 				// Convert all raw JS objects as Note instances
-				for (const entry of rawCards.notes) state.cards.notes.push(new Note(entry));
+				for (const entry of rawData.cards.notes) state.cards.notes.push(new Note(entry));
+
+				// Set other fields
+				state.days = rawData.days;
+				state.season = rawData.season;
 			}
+		},
+		persist(state) {
+			const data = {
+				days: state.days,
+				season: state.season,
+				cards: state.cards,
+			};
+
+			localStorage.setItem(constants.localStorageKeys.DATA_KEY, JSON.stringify(data));
 		},
 		add(state, payload) {
 			let list;
@@ -160,7 +168,7 @@ export default new Vuex.Store({
 			}
 
 			list.unshift(payload);
-			persist(constants.localStorageKeys.DATA_KEY, state.cards);
+			this.commit("persist");
 		},
 		update(state, payload) {
 			let list;
@@ -179,7 +187,7 @@ export default new Vuex.Store({
 			// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
 			if (index !== -1) {
 				Vue.set(list, index, payload);
-				persist(constants.localStorageKeys.DATA_KEY, state.cards);
+				this.commit("persist");
 			}
 		},
 		delete(state, payload) {
@@ -207,17 +215,17 @@ export default new Vuex.Store({
 
 				// Finally delete the payload object from state
 				list.splice(index, 1);
-				persist(constants.localStorageKeys.DATA_KEY, state.cards);
+				this.commit("persist");
 			}
 		},
 		updateWholeList(state, payload) {
 			const key = payload.type.toString().toLowerCase() + "s";
 			Vue.set(state.cards, key, payload.list);
-			persist(constants.localStorageKeys.DATA_KEY, state.cards);
+			this.commit("persist");
 		},
 		resetCards(state) {
 			Vue.set(state, "cards", defaultCards());
-			persist(constants.localStorageKeys.DATA_KEY, state.cards);
+			this.commit("persist");
 		},
 		changeFilter(state, payload) {
 			state.filter.isEnabled = true;
@@ -227,6 +235,18 @@ export default new Vuex.Store({
 		},
 		resetFilter(state) {
 			Vue.set(state, "filter", defaultFilter());
+		},
+		changeDaysCount(state, payload) {
+			if (Number.isSafeInteger(payload) && payload > -1) {
+				state.days = payload;
+				this.commit("persist");
+			}
+		},
+		changeSeason(state, payload) {
+			if (Object.values(constants.seasons).includes(payload)) {
+				state.season = payload;
+				this.commit("persist");
+			}
 		},
 	},
 	actions: {},

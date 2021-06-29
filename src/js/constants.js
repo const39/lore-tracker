@@ -18,4 +18,10 @@ export default {
 		CHARACTER: "character",
 		NOTE: "note",
 	},
+	seasons: {
+		SPRING: "spring",
+		SUMMER: "summer",
+		AUTUMN: "autumn",
+		WINTER: "winter"
+	}
 };
