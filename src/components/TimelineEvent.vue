@@ -1,9 +1,6 @@
 <template>
-	<v-timeline-item v-if="nodeInfo.header" class="d-flex" hide-dot>
-		<div class="text--primary font-weight-medium">{{ nodeInfo.header }}</div>
-	</v-timeline-item>
-	<v-timeline-item v-else :icon="nodeInfo.icon" :color="nodeInfo.color" class="d-flex" fill-dot>
-		<div class="text--primary">{{ nodeInfo.text }}</div>
+	<v-timeline-item :icon="node.icon" :color="node.color" class="d-flex align-center" :small="node.isHeader" :fill-dot="!node.isHeader">
+		<div class="text--primary" :class="{'font-weight-medium': node.isHeader}">{{ node.text }}</div>
 	</v-timeline-item>
 </template>
 
@@ -23,7 +20,7 @@ export default {
         /**
          * Return a custom object with the node's data, depending on the item prop type.
          */
-		nodeInfo() {
+		node() {
 			let info = {};
 
             /**
@@ -51,7 +48,12 @@ export default {
 						info.color = "grey darken-2";
 						break;
 				}
-			} else info.header = this.item;
+			} else {
+				info.isHeader = true;
+				info.text = this.item;
+				info.icon = '';
+				info.color = "black";
+			} 
 
 			return info;
 		},
