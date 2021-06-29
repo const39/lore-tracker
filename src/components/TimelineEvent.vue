@@ -52,7 +52,7 @@ export default {
 				info.isHeader = true;
 				info.text = this.item;
 				info.icon = '';
-				info.color = "black";
+				info.color = this.$vuetify.theme.dark ? "white" : "black";
 			} 
 
 			return info;

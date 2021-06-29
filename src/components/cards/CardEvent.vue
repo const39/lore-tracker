@@ -6,8 +6,13 @@
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
-					<v-icon large>{{ icons[itemData.type] }}</v-icon>
-					<v-chip label x-small outlined>Jour {{itemData.day}}</v-chip>
+					<v-tooltip top>
+						<template v-slot:activator="{ on, attrs }">
+							<v-icon large v-on="on" v-bind="attrs">{{ icons[itemData.type] }}</v-icon>
+						</template>
+						{{eventTypes[itemData.type]}}
+					</v-tooltip>
+					<v-chip label x-small outlined>Jour {{ itemData.day }}</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc"/>
@@ -51,7 +56,18 @@ export default {
 	},
 	methods: {
 		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent(constants.objectTypes.EVENT, this.itemData))
+			eventHub.$emit(value, new CardEvent(constants.objectTypes.EVENT, this.itemData));
+		},
+	},
+	computed: {
+		eventTypes() {
+			let types = {};
+			types[constants.eventTypes.COMBAT] = "Combat";
+			types[constants.eventTypes.ENCOUNTER] = "Rencontre";
+			types[constants.eventTypes.DISCOVERY] = "Découverte";
+			types[constants.eventTypes.TRAVEL] = "Voyage";
+			types[constants.eventTypes.OTHER] = "Autre";
+			return types;
 		},
 	},
 };
