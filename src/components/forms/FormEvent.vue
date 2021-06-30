@@ -3,15 +3,15 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit">Modifier un événement</span>
-					<span class="text-h5" v-else>Ajouter un événement</span>
+					<span class="text-h5" v-if="edit">{{ $t("dialogs.editEvent") }}</span>
+					<span class="text-h5" v-else>{{ $t("dialogs.addEvent") }}</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
 						<v-textarea
 							outlined
-							label="Description*"
-							hint="Langage Markdown supporté"
+							:label="$t('fields.desc') + '*'"
+							:hint="$t('fields.mdSupport')"
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
@@ -19,27 +19,27 @@
 							<v-col cols="12" sm="12" md="6">
 								<v-autocomplete
 									chips
-									label="Type d'événement*"
+									:label="$t('fields.eventType') + '*'"
 									v-model="model.type"
 									:rules="requiredRule"
 									:items="eventTypes"
 								>
 									<template v-slot:selection="data">
 										<v-chip>
-											<v-icon left>{{ icons[data.item.value] }}</v-icon>
-											{{ data.item.text }}
+											<v-icon left>{{ icons[data.item] }}</v-icon>
+										{{ $t(`eventTypes.${data.item}`) }}
 										</v-chip>
 									</template>
 									<template v-slot:item="data">
-										<v-icon left>{{ icons[data.item.value] }}</v-icon>
-										{{ data.item.text }}
+										<v-icon left>{{ icons[data.item] }}</v-icon>
+										{{ $t(`eventTypes.${data.item}`) }}
 									</template>
 								</v-autocomplete>
 							</v-col>
 							<v-col cols="12" sm="12" md="6">
 								<v-text-field
-									prefix="Jour"
-									label="Date de l'événement"
+									:prefix="$t('status.day')"
+									:label="$t('fields.eventDay') + '*'"
 									type="number"
 									min="0"
 									v-model="model.day"
@@ -49,12 +49,12 @@
 						</v-row>
 						<TagChooser v-model="model.tags" :exclude-id="model.id" />
 					</v-container>
-					<small>*champ requis</small>
+					<small>{{ "*" + $t("fields.requiredField") }}</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text @click="close">Fermer</v-btn>
-					<v-btn color="primary" text :disabled="!valid" @click="submit">Enregistrer</v-btn>
+					<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
+					<v-btn color="primary" text :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-form>
@@ -80,37 +80,16 @@ export default {
 	data() {
 		return {
 			valid: false,
-			requiredRule: [(v) => !!v || "Champ requis"],
+			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
 			dayRange: [
 				(v) => {
 					v = Number(v);
-					return Number.isSafeInteger(v) && v >= 0 || "Jour invalide";
+					return (Number.isSafeInteger(v) && v >= 0) || this.$t("fields.dayNotValid");
 				},
 			],
 			icons: icons,
 			model: this.initModel(),
-			eventTypes: [
-				{
-					value: constants.eventTypes.COMBAT,
-					text: "Combat",
-				},
-				{
-					value: constants.eventTypes.ENCOUNTER,
-					text: "Rencontre",
-				},
-				{
-					value: constants.eventTypes.DISCOVERY,
-					text: "Découverte",
-				},
-				{
-					value: constants.eventTypes.TRAVEL,
-					text: "Voyage",
-				},
-				{
-					value: constants.eventTypes.OTHER,
-					text: "Autre",
-				},
-			],
+			eventTypes: Object.values(constants.eventTypes),
 		};
 	},
 	methods: {
@@ -166,11 +145,6 @@ export default {
 		id: function() {
 			this.model = this.initModel();
 		},
-	},
-	mounted() {
-		// console.log(5, this.dayRange[0](5));
-		// console.log(-5, this.dayRange[0](-5));
-		// console.log(0, this.dayRange[0](0));
 	},
 };
 </script>

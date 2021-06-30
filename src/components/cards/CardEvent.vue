@@ -1,7 +1,7 @@
 <template>
 	<BaseCard :outlined="outlined" :id="itemData.id + '-card'">
 		<v-card-actions class="float-right">
-			<CardOptions @option-selected="onOptionSelected"/>
+			<CardOptions @option-selected="onOptionSelected" />
 		</v-card-actions>
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
@@ -10,13 +10,13 @@
 						<template v-slot:activator="{ on, attrs }">
 							<v-icon large v-on="on" v-bind="attrs">{{ icons[itemData.type] }}</v-icon>
 						</template>
-						{{eventTypes[itemData.type]}}
+						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
-					<v-chip label x-small outlined>Jour {{ itemData.day }}</v-chip>
+					<v-chip label x-small outlined>{{ $t("status.day") + itemData.day }}</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
-					<MarkdownView :text="itemData.desc"/>
-					<TagList :items="itemData.tags"/>
+					<MarkdownView :text="itemData.desc" />
+					<TagList :items="itemData.tags" />
 				</v-col>
 			</v-row>
 		</v-card-text>
@@ -24,14 +24,14 @@
 </template>
 
 <script>
-import constants from '../../js/constants.js';
+import constants from "../../js/constants.js";
 import icons from "../../js/icons.js";
-import { Event } from '../../js/model.js';
-import {eventHub, CardEvent} from '../../js/eventHub.js';
+import { Event } from "../../js/model.js";
+import { eventHub, CardEvent } from "../../js/eventHub.js";
 
 import BaseCard from "./BaseCard.vue";
 import CardOptions from "./CardOptions.vue";
-import TagList from '../TagList.vue';
+import TagList from "../TagList.vue";
 import MarkdownView from "../MarkdownView.vue";
 
 export default {
@@ -40,12 +40,12 @@ export default {
 		CardOptions,
 		BaseCard,
 		TagList,
-		MarkdownView
+		MarkdownView,
 	},
 	props: {
 		itemData: {
 			type: Event,
-			required: true
+			required: true,
 		},
 		outlined: Boolean,
 	},
@@ -57,17 +57,6 @@ export default {
 	methods: {
 		onOptionSelected(value) {
 			eventHub.$emit(value, new CardEvent(constants.objectTypes.EVENT, this.itemData));
-		},
-	},
-	computed: {
-		eventTypes() {
-			let types = {};
-			types[constants.eventTypes.COMBAT] = "Combat";
-			types[constants.eventTypes.ENCOUNTER] = "Rencontre";
-			types[constants.eventTypes.DISCOVERY] = "Découverte";
-			types[constants.eventTypes.TRAVEL] = "Voyage";
-			types[constants.eventTypes.OTHER] = "Autre";
-			return types;
 		},
 	},
 };

@@ -4,7 +4,7 @@
 			<v-item-group mandatory>
 				<v-container>
 					<v-row class="d-flex justify-space-between">
-						<div class="text-center text--primary" v-for="theme in themeList" :key="theme.name">
+						<div class="text-center text--primary" v-for="theme in themeList" :key="theme.key">
 							<v-item v-slot="{ active, toggle }">
 								<div>
 									<v-sheet
@@ -14,7 +14,7 @@
 										:style="
 											computeSheetStyle(theme.colors.primary, theme.colors.background, active)
 										"
-										@click.stop="selectTheme(theme, toggle)"
+										@click.stop="selectTheme(theme.key, toggle)"
 									></v-sheet>
 									<span> {{ theme.name }} </span>
 								</div>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import constants from '../js/constants.js';
+import constants from "../js/constants.js";
 
 export default {
 	methods: {
@@ -40,9 +40,9 @@ export default {
 			if (isActive) style += `border: 4px solid ${p};`;
 			return style;
 		},
-		selectTheme(theme, callback) {
-			this.$vuetify.theme.dark = theme.name === "dark";
-			localStorage.setItem(constants.localStorageKeys.THEME_KEY, theme.name);
+		selectTheme(themeKey, callback) {
+			this.$vuetify.theme.dark = themeKey === "dark";
+			localStorage.setItem(constants.localStorageKeys.THEME_KEY, themeKey);
 
 			if (callback) callback();
 		},
@@ -55,7 +55,8 @@ export default {
 			for (const key in this.$vuetify.theme.defaults) {
 				const theme = this.$vuetify.theme.defaults[key];
 				list.push({
-					name: key,
+					key: key,
+					name: this.$t(`options.themes.${key}`),
 					colors: theme,
 				});
 			}

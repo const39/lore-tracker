@@ -9,12 +9,12 @@
 
 			<router-link to="/">
 				<v-btn text>
-					<span class="mr-2">Lore tracker</span>
+					<span class="mr-2">{{ $t("pages.loreTracker") }}</span>
 				</v-btn>
 			</router-link>
 			<router-link to="/timeline">
 				<v-btn text>
-					<span class="mr-2">Frise des événements</span>
+					<span class="mr-2">{{ $t("pages.timeline") }}</span>
 				</v-btn>
 			</router-link>
 			<!-- *** Non-implemented routes *** -->
@@ -40,7 +40,7 @@
 									<v-list-item-icon>
 										<v-icon>mdi-chevron-left</v-icon>
 									</v-list-item-icon>
-									<v-list-item-title>Changer de thème</v-list-item-title>
+									<v-list-item-title>{{ $t("options.themes.optionName") }}</v-list-item-title>
 								</v-list-item>
 							</template>
 							<ThemeSelector />
@@ -49,19 +49,21 @@
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title>Afficher les raccourcis</v-list-item-title>
+							<v-list-item-title>{{ $t("options.hotkeys.optionName") }}</v-list-item-title>
 						</v-list-item>
 						<v-list-item @click="copyToClipboard">
 							<v-list-item-icon>
 								<v-icon>mdi-content-copy</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title>Copier les données</v-list-item-title>
+							<v-list-item-title>{{ $t("options.copyData.optionName") }}</v-list-item-title>
 						</v-list-item>
 						<v-list-item @click="showConfirmDialog">
 							<v-list-item-icon>
 								<v-icon color="red">mdi-delete</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title class="red--text">Effacer les données</v-list-item-title>
+							<v-list-item-title class="red--text">{{
+								$t("options.deleteData.optionName")
+							}}</v-list-item-title>
 						</v-list-item>
 					</v-item-group>
 				</v-list>
@@ -88,7 +90,7 @@
 
 		<!-- Global snackbar -->
 		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
-			Données copiées dans le presse-papier.
+			{{ $t("options.copyData.success") }}
 			<template v-slot:action="{ attrs }">
 				<v-btn icon v-bind="attrs" @click="showSnackbar = false">
 					<v-icon>mdi-close</v-icon>
@@ -136,9 +138,8 @@ export default {
 			this.showExportDialog = false;
 		},
 		showConfirmDialog() {
-			this.confirmDialog.title = "Effacer les données ?";
-			this.confirmDialog.message =
-				"Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.";
+			this.confirmDialog.title = this.$t("options.deleteData.title");
+			this.confirmDialog.message = this.$t("options.deleteData.message");
 			this.confirmDialog.acceptAction = () => this.$store.commit("resetData");
 			this.confirmDialog.show = true;
 		},

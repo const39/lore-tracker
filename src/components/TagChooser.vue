@@ -3,7 +3,7 @@
 		chips
 		deletable-chips
 		multiple
-		label="Liens"
+		:label="$t('fields.tags')"
 		v-model="selectedTags"
 		:items="availableTags"
 		item-text="text"
@@ -22,11 +22,8 @@
 				<v-icon left>{{ data.item.icon }}</v-icon>
 				<MarkdownView :text="data.item.text | truncate" :inline="true" />
 			</v-chip>
-			<span 
-				class="grey--text text-caption"
-				v-else-if="overflow && data.index === 1"
-			>
-				{{ otherSelectionCounter }}
+			<span class="grey--text text-caption" v-else-if="overflow && data.index === 1">
+				{{ $t("fields.otherCounter") }}
 			</span>
 		</template>
 		<template v-slot:item="data">
@@ -37,7 +34,7 @@
 </template>
 
 <script>
-import { Tag } from '../js/model.js';
+import { Tag } from "../js/model.js";
 
 import MarkdownView from "./MarkdownView.vue";
 
@@ -69,7 +66,6 @@ export default {
 
 			// For each array of objects in the cards store
 			for (const key in this.$store.state.cards) {
-
 				// Push a header object for the v-autocomplete component to create a header for this group of objects
 				tags.push({ header: key });
 
@@ -81,12 +77,6 @@ export default {
 			}
 
 			return tags;
-		},
-		otherSelectionCounter() {
-			let counter = this.selectedTags.length - 1;
-			let message = `+ ${counter} autre`;
-			if (counter > 1) message += "s";
-			return message;
 		},
 		/**
 		 * Overwrite default v-model to bind the TagChooser v-model attribute to the v-autocomplete one.

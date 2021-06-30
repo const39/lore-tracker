@@ -3,27 +3,27 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit">Modifier une note</span>
-					<span class="text-h5" v-else>Ajouter une note</span>
+					<span class="text-h5" v-if="edit">{{ $t("dialogs.editNote") }}</span>
+					<span class="text-h5" v-else>{{ $t("dialogs.addNote") }}</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
-						<v-text-field label="Titre" v-model="model.title"></v-text-field>
+						<v-text-field :label="$t('fields.title')" v-model="model.title"></v-text-field>
 						<v-textarea
 							outlined
-							label="Description*"
-							hint="Langage Markdown supporté"
+							:label="$t('fields.desc')"
+							:hint="$t('fields.mdSupport')"
 							:rules="requiredRule"
 							v-model="model.desc"
 						></v-textarea>
-						<TagChooser v-model="model.tags" :exclude-id="model.id"/>
+						<TagChooser v-model="model.tags" :exclude-id="model.id" />
 					</v-container>
-					<small>*champ requis</small>
+					<small>{{ "*" + $t("fields.requiredField") }}</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text @click="close">Fermer</v-btn>
-					<v-btn color="primary" text :disabled="!valid" @click="submit">Enregistrer</v-btn>
+					<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
+					<v-btn color="primary" text :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-form>
@@ -31,8 +31,8 @@
 </template>
 
 <script>
-import constants from '../../js/constants.js';
-import { Note } from '../../js/model.js';
+import constants from "../../js/constants.js";
+import { Note } from "../../js/model.js";
 
 import TagChooser from "../TagChooser.vue";
 
@@ -40,15 +40,15 @@ export default {
 	props: {
 		value: Boolean, // Default v-model overwrite
 		id: Number,
-		edit: Boolean
+		edit: Boolean,
 	},
 	components: {
-		TagChooser
+		TagChooser,
 	},
 	data() {
 		return {
 			valid: false,
-			requiredRule: [(v) => !!v || "Champ requis"],
+			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
 			model: this.initModel(),
 		};
 	},
@@ -57,9 +57,8 @@ export default {
 			this.$refs.form.validate();
 
 			if (this.valid) {
-
-				if(this.edit) this.$store.commit('update', this.model);
-				else this.$store.commit('add', this.model);
+				if (this.edit) this.$store.commit("update", this.model);
+				else this.$store.commit("add", this.model);
 
 				this.close();
 			}
@@ -101,7 +100,7 @@ export default {
 		 */
 		id: function() {
 			this.model = this.initModel();
-		}
+		},
 	},
 };
 </script>

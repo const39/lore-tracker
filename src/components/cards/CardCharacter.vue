@@ -10,9 +10,9 @@
 					<template v-slot:activator="{ on, attrs }">
 						<v-icon v-bind="attrs" v-on="on">mdi-skull</v-icon>
 					</template>
-					<span>Mort</span>
+					<span>{{ $t("fields.dead") }}</span>
 				</v-tooltip>
-				<v-chip label x-small> {{ itemData.isNPC ? "PNJ" : "Joueur" }} </v-chip>
+				<v-chip label x-small> {{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }} </v-chip>
 			</p>
 			<p class="text-subtitle-2 text--primary text-truncate">{{ identity }}</p>
 			<MarkdownView :text="itemData.desc" />
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import constants from '../../js/constants.js';
+import constants from "../../js/constants.js";
 import icons from "../../js/icons.js";
 import { Character } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
@@ -59,9 +59,9 @@ export default {
 	},
 	computed: {
 		identity() {
-			let race = this.itemData.race || "Race inconnue";
-			let classes = this.itemData.classes || "Classe inconnue";
-			let role = this.itemData.role || "Rôle inconnu";
+			let race = this.itemData.race || this.$t("fields.unknownRace");
+			let classes = this.itemData.classes || this.$t("fields.unknownClass");
+			let role = this.itemData.role || this.$t("fields.unknownRole");
 
 			return `${race} - ${classes} (${role})`;
 		},

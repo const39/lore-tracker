@@ -3,52 +3,56 @@
 		<v-form v-model="valid" ref="form">
 			<v-card>
 				<v-card-title>
-					<span class="text-h5" v-if="edit">Modifier un personnage</span>
-					<span class="text-h5" v-else>Ajouter un personnage</span>
+					<span class="text-h5" v-if="edit">{{ $t("dialogs.editCharacter") }}</span>
+					<span class="text-h5" v-else>{{ $t("dialogs.addCharacter") }}</span>
 				</v-card-title>
 				<v-card-text>
 					<v-container>
 						<v-row>
 							<v-col cols="12" sm="12" md="6">
-								<v-text-field label="Nom*" :rules="requiredRule" v-model="model.name"></v-text-field>
+								<v-text-field
+									:label="$t('fields.name') + '*'"
+									:rules="requiredRule"
+									v-model="model.name"
+								></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="12" md="6">
-								<v-text-field label="Race" v-model="model.race"></v-text-field>
+								<v-text-field :label="$t('fields.race')" v-model="model.race"></v-text-field>
 							</v-col>
 						</v-row>
 						<v-row>
 							<v-col cols="12" sm="12" md="6">
-								<v-text-field label="Classes" v-model="model.classes"></v-text-field>
+								<v-text-field :label="$t('fields.class')" v-model="model.classes"></v-text-field>
 							</v-col>
 							<v-col cols="12" sm="12" md="6">
-								<v-text-field label="Rôle" v-model="model.role"></v-text-field>
+								<v-text-field :label="$t('fields.role')" v-model="model.role"></v-text-field>
 							</v-col>
 						</v-row>
 						<v-row>
 							<v-col cols="12" sm="12" md="6">
 								<v-radio-group v-model="model.isNPC" column mandatory>
-									<v-radio label="Joueur" :value="false"></v-radio>
-									<v-radio label="Non-joueur" :value="true"></v-radio>
+									<v-radio :label="$t('fields.player')" :value="false"></v-radio>
+									<v-radio :label="$t('fields.npc')" :value="true"></v-radio>
 								</v-radio-group>
 							</v-col>
 							<v-col cols="12" sm="12" md="6">
-								<v-checkbox v-model="model.isAlive" label="En vie"></v-checkbox>
+								<v-checkbox v-model="model.isAlive" :label="$t('fields.alive')"></v-checkbox>
 							</v-col>
 						</v-row>
 						<v-textarea
 							outlined
-							label="Description"
-							hint="Langage Markdown supporté"
+							:label="$t('fields.desc')"
+							:hint="$t('fields.mdSupport')"
 							v-model="model.desc"
 						></v-textarea>
 						<TagChooser v-model="model.tags" :exclude-id="model.id" />
 					</v-container>
-					<small>*champ requis</small>
+					<small>{{ "*" + $t("fields.requiredField") }}</small>
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text @click="close">Fermer</v-btn>
-					<v-btn color="primary" text :disabled="!valid" @click="submit">Enregistrer</v-btn>
+					<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
+					<v-btn color="primary" text :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-form>
@@ -56,7 +60,7 @@
 </template>
 
 <script>
-import constants from '../../js/constants.js';
+import constants from "../../js/constants.js";
 import { Character } from "../../js/model.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -73,7 +77,7 @@ export default {
 	data() {
 		return {
 			valid: false,
-			requiredRule: [(v) => !!v || "Champ requis"],
+			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
 			model: this.initModel(),
 		};
 	},
@@ -81,9 +85,8 @@ export default {
 		submit() {
 			this.$refs.form.validate();
 			if (this.valid) {
-
-				if(this.edit) this.$store.commit('update', this.model);
-				else this.$store.commit('add', this.model);
+				if (this.edit) this.$store.commit("update", this.model);
+				else this.$store.commit("add", this.model);
 
 				this.close();
 			}

@@ -5,7 +5,7 @@
 				<v-expansion-panel-header>
 					<div class="text-h5 text--primary">
 						<v-icon left>{{ icon }}</v-icon>
-						{{ title }}
+						{{ $t(`objectTypes.${type}`) }}
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
@@ -59,10 +59,6 @@ export default {
 			type: String,
 			required: true,
 		},
-		title: {
-			type: String,
-			required: true,
-		},
 		icon: {
 			type: String,
 			required: true,
@@ -111,9 +107,7 @@ export default {
 		 * - Alt+5 : Collapse/expand Note tab
 		 */
 		hotkey(e) {
-
-			if(e.altKey) {
-
+			if (e.altKey) {
 				if (
 					(e.code === "Digit1" && this.type === constants.objectTypes.OBJECTIVE) ||
 					(e.code === "Digit2" && this.type === constants.objectTypes.EVENT) ||
@@ -122,7 +116,7 @@ export default {
 					(e.code === "Digit5" && this.type === constants.objectTypes.NOTE)
 				) {
 					e.preventDefault();
-					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0 ;
+					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0;
 				}
 			}
 		},
@@ -160,11 +154,11 @@ export default {
 		},
 	},
 	mounted() {
-		document.addEventListener('keydown', this.hotkey);
+		document.addEventListener("keydown", this.hotkey);
 	},
 	beforeDestroy() {
-		document.removeEventListener('keydown', this.hotkey);
-	}
+		document.removeEventListener("keydown", this.hotkey);
+	},
 };
 </script>
 

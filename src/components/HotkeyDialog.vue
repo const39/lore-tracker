@@ -1,21 +1,21 @@
 <template>
 	<v-dialog v-model="showDialog" max-width="850px">
 		<v-card>
-			<v-card-title>Raccourcis clavier</v-card-title>
+			<v-card-title>{{ $t("options.hotkeys.title") }}</v-card-title>
 			<v-card-text>
 				<v-row class="d-flex">
 					<v-col cols="12" md="6">
-						<HotkeyList title="Pages" :hotkeys="hotkeysDisplay.pages" />
-						<HotkeyList title="Divers" :hotkeys="hotkeysDisplay.misc" />
+						<HotkeyList :title="$t('options.hotkeys.pages.title')" :hotkeys="hotkeysDisplay.pages" />
+						<HotkeyList :title="$t('options.hotkeys.misc.title')" :hotkeys="hotkeysDisplay.misc" />
 					</v-col>
 					<v-col cols="12" md="6">
-						<HotkeyList title="Contenu" :hotkeys="hotkeysDisplay.content" />
+						<HotkeyList :title="$t('options.hotkeys.content.title')" :hotkeys="hotkeysDisplay.content" />
 					</v-col>
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn text color="primary" @click="showDialog = false">Fermer</v-btn>
+				<v-btn text color="primary" @click="showDialog = false">{{ $t("actions.close") }}</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -28,56 +28,51 @@ export default {
 	components: {
 		HotkeyList,
 	},
-    props: {
+	props: {
 		value: Boolean, // Default v-model overwrite
-    },
+	},
 	data() {
 		return {
 			hotkeysDisplay: {
 				pages: [
 					{
-						text: "Naviguer vers le Lore Tracker",
+						text: this.$t("options.hotkeys.pages.toLoreTracker"),
 						command: "F1",
 					},
 					{
-						text: "Naviguer vers la Frise des événements",
+						text: this.$t("options.hotkeys.pages.toTimeline"),
 						command: "F2",
 					},
 				],
 				content: [
 					{
-						text:
-							"Afficher l'onglet/la colonne Objectifs",
+						text: this.$t("options.hotkeys.content.showTabObjective"),
 						command: "Alt+1",
 					},
 					{
-						text:
-							"Afficher l'onglet/la colonne Événement",
+						text: this.$t("options.hotkeys.content.showTabEvent"),
 						command: "Alt+2",
 					},
 					{
-						text:
-							"Afficher l'onglet/la colonne Localités",
+						text: this.$t("options.hotkeys.content.showTabLocation"),
 						command: "Alt+3",
 					},
 					{
-						text:
-							"Afficher l'onglet/la colonne Personnages",
+						text: this.$t("options.hotkeys.content.showTabCharacter"),
 						command: "Alt+4",
 					},
 					{
-						text:
-							"Afficher l'onglet/la colonne Notes",
+						text: this.$t("options.hotkeys.content.showTabNote"),
 						command: "Alt+5",
 					},
 				],
 				misc: [
 					{
-						text: "Ouvrir/fermer la fenêtre de recherche",
+						text: this.$t("options.hotkeys.misc.openSearch"),
 						command: "Ctrl+K",
 					},
 					{
-						text: "Ouvrir/fermer le menu des options",
+						text: this.$t("options.hotkeys.misc.openOptions"),
 						command: "ESC",
 					},
 				],

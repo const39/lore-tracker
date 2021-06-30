@@ -2,7 +2,7 @@
 	<span>
 		<v-btn @click="shown = !shown">
 			<v-icon>mdi-magnify</v-icon>
-			Rechercher
+			{{ $t("search.search") }}
 		</v-btn>
 		<v-snackbar light top max-width="70%" transition="scroll-y-transition" :timeout="-1" v-model="shown">
 			<v-row class="d-flex pt-3">
@@ -10,8 +10,8 @@
 					solo
 					dense
 					class="mx-2 flex-grow-1 flex-shrink-1"
-					label="Contenant"
-					hint="Contenant"
+					:label="$t('search.containing')"
+					:hint="$t('search.containing')"
 					v-model="textToContain"
 				></v-text-field>
 				<TagChooser solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
@@ -19,24 +19,24 @@
 					outlined
 					dense
 					class="mx-2 flex-grow-0 flex-shrink-1"
-					label="Dans"
+					:label="$t('search.in')"
 					v-model="selectedType"
 					:items="types"
 				>
 					<template v-slot:selection="data">
-						<v-icon left small> {{ icons.iconFromObjectType(data.item.value) }} </v-icon>
-						{{ data.item.text }}
+						<v-icon left small> {{ icons.iconFromObjectType(data.item) }} </v-icon>
+						{{ $t(`objectTypes.${data.item}`) }}
 					</template>
 					<template v-slot:item="data">
-						<v-icon left small> {{ icons.iconFromObjectType(data.item.value) }} </v-icon>
-						{{ data.item.text }}
+						<v-icon left small> {{ icons.iconFromObjectType(data.item) }} </v-icon>
+						{{ $t(`objectTypes.${data.item}`) }}
 					</template>
 				</v-select>
 			</v-row>
 			<div class="d-flex">
-				<span class="grey--text text-caption"> {{ resultsNumber }} carte(s) affichée(s) </span>
+				<span class="grey--text text-caption"> {{ resultsNumber + $t("search.cardsShown") }} </span>
 				<v-spacer></v-spacer>
-				<span class="grey--text text-caption">Tri des cartes désactivé pendant la recherche.</span>
+				<span class="grey--text text-caption">{{ $t("search.sortDisabled") }}</span>
 			</div>
 			<template v-slot:action>
 				<v-btn icon @click="shown = false">
@@ -61,32 +61,7 @@ export default {
 		return {
 			shown: false,
 			icons: icons,
-			types: [
-				{
-					value: constants.objectTypes.ALL,
-					text: "Tous",
-				},
-				{
-					value: constants.objectTypes.OBJECTIVE,
-					text: "Objectifs",
-				},
-				{
-					value: constants.objectTypes.EVENT,
-					text: "Événements",
-				},
-				{
-					value: constants.objectTypes.LOCATION,
-					text: "Localités",
-				},
-				{
-					value: constants.objectTypes.CHARACTER,
-					text: "Personnages",
-				},
-				{
-					value: constants.objectTypes.NOTE,
-					text: "Notes",
-				},
-			],
+			types: Object.values(constants.objectTypes),
 			selectedType: constants.objectTypes.ALL,
 			textToContain: undefined,
 			selectedTags: [],
@@ -100,7 +75,7 @@ export default {
 				tags: this.selectedTags,
 			});
 		},
-		test(e1, e2)  {
+		test(e1, e2) {
 			console.log(e1);
 			console.log(e2);
 		},
@@ -108,8 +83,8 @@ export default {
 		 * Open/close the Search view when pressing Ctrl+K
 		 */
 		hotkey(e) {
-			if(e.code === "KeyK" && e.ctrlKey) this.shown = !this.shown;
-		}
+			if (e.code === "KeyK" && e.ctrlKey) this.shown = !this.shown;
+		},
 	},
 	computed: {
 		style() {
@@ -140,10 +115,10 @@ export default {
 		},
 	},
 	mounted() {
-		document.addEventListener('keydown', this.hotkey);
+		document.addEventListener("keydown", this.hotkey);
 	},
 	beforeDestroy() {
-		document.removeEventListener('keydown', this.hotkey);
-	}
+		document.removeEventListener("keydown", this.hotkey);
+	},
 };
 </script>

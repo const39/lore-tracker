@@ -8,6 +8,10 @@ import store from './store'
 import { VRow } from "vuetify/lib";
 Vue.component("v-row", VRow);
 
+/* Set translation function as global function */
+import translation from "./js/translation";
+Vue.prototype.$t = translation.t;
+
 new Vue({
     router,
     vuetify,

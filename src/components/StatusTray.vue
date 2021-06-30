@@ -4,7 +4,7 @@
 			<div class="d-inline text-body-2" v-on="on" v-bind="attrs">
 				<span class="clickable" @click.left="daysCounter++" @click.right="daysCounter--">
 					<v-icon small>mdi-white-balance-sunny</v-icon>
-					Jour {{ daysCounter }}
+					{{ $t("status.day") + daysCounter }}
 				</span>
 				|
 				<span class="clickable" @click.left="nextSeason" @click.right="previousSeason">
@@ -13,7 +13,7 @@
 				</span>
 			</div>
 		</template>
-        Cliquez pour augmenter ou diminuer
+		{{ $t("status.action") }}
 	</v-tooltip>
 </template>
 
@@ -50,17 +50,7 @@ export default {
 		},
 		currentSeason: {
 			get() {
-				switch (this.$store.state.season) {
-					case constants.seasons.SPRING:
-						return "Printemps";
-					case constants.seasons.SUMMER:
-						return "Été";
-					case constants.seasons.AUTUMN:
-						return "Automne";
-					case constants.seasons.WINTER:
-						return "Hiver";
-				}
-				return "";
+				return this.$t(`status.seasons.${this.$store.state.season}`);
 			},
 			set(val) {
 				this.$store.commit("changeSeason", val);
@@ -71,6 +61,6 @@ export default {
 </script>
 <style scoped>
 .clickable:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 </style>

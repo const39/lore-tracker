@@ -1,17 +1,17 @@
 <template>
 	<v-container>
 		<v-tabs fixed-tabs color="accent" v-model="activeTab">
-			<v-tab v-for="tab in tabs" :key="tab.name">
+			<v-tab v-for="tab in tabs" :key="tab.title">
 				<v-icon left>{{ tab.icon }}</v-icon>
 				{{ tab.title }}
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
-			<LayoutTabContent :type="objectTypes.OBJECTIVE"/>
-			<LayoutTabContent :type="objectTypes.EVENT"/>
-			<LayoutTabContent :type="objectTypes.LOCATION"/>
-			<LayoutTabContent :type="objectTypes.CHARACTER"/>
-			<LayoutTabContent :type="objectTypes.NOTE"/>
+			<LayoutTabContent :type="objectTypes.OBJECTIVE" />
+			<LayoutTabContent :type="objectTypes.EVENT" />
+			<LayoutTabContent :type="objectTypes.LOCATION" />
+			<LayoutTabContent :type="objectTypes.CHARACTER" />
+			<LayoutTabContent :type="objectTypes.NOTE" />
 		</v-tabs-items>
 	</v-container>
 </template>
@@ -32,28 +32,28 @@ export default {
 		return {
 			tabs: [
 				{
-					title: "Objectifs",
+					title: this.$t("objectTypes.objective"),
 					icon: icons.objective,
 				},
 				{
-					title: "Événements",
+					title: this.$t("objectTypes.event"),
 					icon: icons.event,
 				},
 				{
-					title: "Localités",
+					title: this.$t("objectTypes.location"),
 					icon: icons.location,
 				},
 				{
-					title: "Personnages",
+					title: this.$t("objectTypes.character"),
 					icon: icons.character,
 				},
 				{
-					title: "Notes",
+					title: this.$t("objectTypes.note"),
 					icon: icons.note,
 				},
 			],
 			activeTab: "",
-			objectTypes: constants.objectTypes
+			objectTypes: constants.objectTypes,
 		};
 	},
 	methods: {
@@ -66,16 +66,14 @@ export default {
 		 * - Alt+5 : Show Note tab
 		 */
 		hotkey(e) {
-
-			if(e.code.startsWith("Digit") && e.altKey) {
-
+			if (e.code.startsWith("Digit") && e.altKey) {
 				let num = e.code.charAt(5);
-				if(num >= 1 && num <= 5) {
+				if (num >= 1 && num <= 5) {
 					e.preventDefault();
 					this.activeTab = num - 1;
 				}
 			}
-		}
+		},
 	},
 	mounted() {
 		// Catch TagEvent, show the according tab and scroll to the card with the specified id
@@ -97,7 +95,7 @@ export default {
 					this.activeTab = 4;
 					break;
 			}
-			document.getElementById(e.id + '-card')?.scrollIntoView({behavior: 'smooth'});
+			document.getElementById(e.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 		});
 		document.addEventListener("keydown", this.hotkey);
 	},

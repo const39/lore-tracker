@@ -2,7 +2,7 @@
 	<div>
 		<v-row class="my-3 d-flex align-center">
 			<div>
-				<div class="text-xl-h4 mb-2">Lore tracker</div>
+				<div class="text-xl-h4 mb-2">{{ $t("pages.loreTracker") }}</div>
 				<StatusTray />
 			</div>
 			<v-spacer></v-spacer>
@@ -116,23 +116,19 @@ export default {
 		});
 
 		eventHub.$on("delete", (e) => {
-			if (e.object instanceof Objective)
-				this.confirmDialog.message = "Voulez-vous vraiment supprimer cet objectif ?";
-			else if (e.object instanceof Event)
-				this.confirmDialog.message =
-					"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.";
-			else if (e.object instanceof Location)
-				this.confirmDialog.message = "Voulez-vous vraiment supprimer ce personnage ?";
-			else if (e.object instanceof Character)
-				this.confirmDialog.message = "Voulez-vous vraiment supprimer cette localité ?";
-			else if (e.object instanceof Note)
-				this.confirmDialog.message = "Voulez-vous vraiment supprimer cette note ?";
+			if (e.object instanceof Objective) this.confirmDialog.message = this.$t("dialogs.deleteObjective");
+			else if (e.object instanceof Event) this.confirmDialog.message = this.$t("dialogs.deleteEvent");
+			else if (e.object instanceof Location) this.confirmDialog.message = this.$t("dialogs.deleteLocation");
+			else if (e.object instanceof Character) this.confirmDialog.message = this.$t("dialogs.deleteCharacter");
+			else if (e.object instanceof Note) this.confirmDialog.message = this.$t("dialogs.deleteNote");
 			else {
 				console.error(e.object, "is not an instance of an accepted object.");
 				return;
 			}
 
-			this.confirmDialog.title = `Supprimer "${e.object.title || e.object.name || e.object.desc}" ?`;
+			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${e.object.title ||
+				e.object.name ||
+				e.object.desc}" ?`;
 			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.object);
 			this.confirmDialog.show = true;
 		});

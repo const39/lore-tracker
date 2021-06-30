@@ -1,21 +1,17 @@
 <template>
 	<v-container>
 		<div class="my-3">
-			<div class="text-xl-h4">Frise des événements</div>
+			<div class="text-xl-h4">{{ $t("pages.timeline") }}</div>
 			<v-timeline dense class="mx-16 my-6" v-if="nodes.length > 0">
-				<v-timeline-item
-					icon="mdi-star"
-					color="yellow darken-1"
-					class="d-flex align-center"
-					fill-dot
-				>
-					<div class="text--primary font-weight-medium">Début de la campagne</div>
+				<v-timeline-item icon="mdi-star" color="yellow darken-1" class="d-flex align-center" fill-dot>
+					<div class="text--primary font-weight-medium">{{ $t("timeline.campaignStart") }}</div>
 				</v-timeline-item>
 				<TimelineEvent v-for="node in nodes" :key="node.id || node" :item="node" />
 			</v-timeline>
 			<p class="text-center" v-else>
-				Aucun événement enregistré. Vous pouvez en ajouter sur le
-				<router-link to="/">Lore Tracker</router-link>.
+				{{ $t("timeline.noEvent") }}
+				<router-link to="/">{{ $t("pages.loreTracker") }}</router-link
+				>.
 			</p>
 		</div>
 	</v-container>
@@ -43,12 +39,12 @@ export default {
 				indexedByDay[index].push(event);
 			}
 
-			// Build final array of nodes by joining each indexed array and adding header nodes between them  
+			// Build final array of nodes by joining each indexed array and adding header nodes between them
 			// We then obtain the full nodes array with events sorted in chronological order
 			let nodes = [];
 			for (const index in indexedByDay) {
 				// Push a header for the current day
-				nodes.push("Jour " + index);
+				nodes.push(`${this.$t("status.day")} ${index}`);
 
 				// Add all events that happened this day, keeping the order defined by the user
 				nodes = nodes.concat(indexedByDay[index]);

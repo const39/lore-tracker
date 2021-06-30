@@ -5,19 +5,19 @@
 				<template v-slot:activator="{ on, attrs }">
 					<v-icon v-bind="attrs" v-on="on">{{ icons.completed }}</v-icon>
 				</template>
-				<span>Accompli</span>
+				<span>{{ $t("fields.completed") }}</span>
 			</v-tooltip>
 			<CardOptions @option-selected="onOptionSelected" />
 		</v-card-actions>
 		<v-card-text class="pa-3">
-			<MarkdownView :text="itemData.desc"/>
+			<MarkdownView :text="itemData.desc" />
 			<TagList :items="itemData.tags" />
 		</v-card-text>
 	</BaseCard>
 </template>
 
 <script>
-import constants from '../../js/constants.js';
+import constants from "../../js/constants.js";
 import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
@@ -33,7 +33,7 @@ export default {
 		BaseCard,
 		CardOptions,
 		TagList,
-		MarkdownView
+		MarkdownView,
 	},
 	props: {
 		itemData: {
