@@ -1,4 +1,4 @@
-# rpg-campaign-tracker
+# Lore Tracker
 
 ## Project setup
 ```

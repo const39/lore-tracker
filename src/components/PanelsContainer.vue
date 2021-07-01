@@ -2,7 +2,7 @@
 	<div>
 		<v-row class="my-3 d-flex align-center">
 			<div>
-				<div class="text-xl-h4 mb-2">{{ $t("pages.loreTracker") }}</div>
+				<div class="text-xl-h4 mb-2">{{ $t("pages.home") }}</div>
 				<StatusTray />
 			</div>
 			<v-spacer></v-spacer>

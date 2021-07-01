@@ -2,14 +2,14 @@
 	<v-app>
 		<v-app-bar app color="primary" dark>
 			<div class="d-flex align-center">
-				<div class="text-xl-h4 text-center">RPG campaign tracker</div>
+				<div class="text-xl-h4 text-center">Lore Tracker</div>
 			</div>
 
 			<v-spacer></v-spacer>
 
 			<router-link :to="{name: 'Home'}">
 				<v-btn text>
-					<span class="mr-2">{{ $t("pages.loreTracker") }}</span>
+					<span class="mr-2">{{ $t("pages.home") }}</span>
 				</v-btn>
 			</router-link>
 			<router-link :to="{name: 'Timeline'}">
@@ -138,7 +138,7 @@ export default {
 		/**
 		 * Manage this component's hotkeys :
 		 * - On ESC press : Open/close options menu
-		 * - On F1 press : Navigate to Lore Tracker page
+		 * - On F1 press : Navigate to Home page
 		 * - On F2 press : Navigate to Timeline page
 		 */
 		hotkey(e) {

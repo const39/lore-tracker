@@ -1,6 +1,6 @@
 export default {
 	pages: {
-		loreTracker: "Lore Tracker",
+		home: "Accueil",
 		timeline: "Frise des événements",
 	},
 
@@ -27,7 +27,7 @@ export default {
 	},
 
 	status: {
-		day: "Jour",
+		day: "Jour ",
 		seasons: {
 			spring: "Printemps",
 			summer: "Été",
@@ -125,7 +125,7 @@ export default {
 			title: "Raccourcis clavier",
 			pages: {
 				title: "Pages",
-				toLoreTracker: "Naviguer vers le Lore Tracker",
+				toHome: "Naviguer vers l'Accueil",
 				toTimeline: "Naviguer vers la Frise des événements",
 			},
 			content: {

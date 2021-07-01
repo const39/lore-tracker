@@ -1,6 +1,6 @@
 export default {
 	pages: {
-		loreTracker: "Lore Tracker",
+		home: "Home",
 		timeline: "Timeline",
 	},
 
@@ -124,7 +124,7 @@ export default {
 			title: "Hotkeys",
 			pages: {
 				title: "Pages",
-				toLoreTracker: "Navigate to Lore Tracker",
+				toHome: "Navigate to Home",
 				toTimeline: "Navigate to Timeline",
 			},
 			content: {

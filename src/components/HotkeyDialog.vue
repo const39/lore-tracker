@@ -36,7 +36,7 @@ export default {
 			hotkeysDisplay: {
 				pages: [
 					{
-						text: this.$t("options.hotkeys.pages.toLoreTracker"),
+						text: this.$t("options.hotkeys.pages.toHome"),
 						command: "F1",
 					},
 					{
