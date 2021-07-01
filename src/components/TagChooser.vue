@@ -8,6 +8,7 @@
 		:items="availableTags"
 		item-text="text"
 		item-value="id"
+		:menu-props="{'max-width': '30%'}"
 		v-bind="$attrs"
 	>
 		<template v-slot:selection="data">
@@ -28,7 +29,7 @@
 		</template>
 		<template v-slot:item="data">
 			<v-icon left small> {{ data.item.icon }} </v-icon>
-			<v-list-item-title v-html="data.item.text"></v-list-item-title>
+			<v-list-item-title>{{data.item.text}}</v-list-item-title>
 		</template>
 	</v-autocomplete>
 </template>
@@ -66,8 +67,12 @@ export default {
 
 			// For each array of objects in the cards store
 			for (const key in this.$store.state.cards) {
+
+				// Get the object type constant by removing the 's' of plural from the data key
+				const header = key.substring(0, key.length - 1);
+
 				// Push a header object for the v-autocomplete component to create a header for this group of objects
-				tags.push({ header: key });
+				tags.push({ header: this.$t(`objectTypes.${header}`) });
 
 				// Create an item for each object found in the array
 				this.$store.state.cards[key].forEach((element) => {
