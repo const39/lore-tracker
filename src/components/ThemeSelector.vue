@@ -1,50 +1,43 @@
 <template>
-	<v-card>
-		<v-card-text>
-			<v-item-group mandatory>
-				<v-container>
-					<v-row class="d-flex justify-space-between">
-						<div class="text-center text--primary" v-for="theme in themeList" :key="theme.key">
-							<v-item v-slot="{ active, toggle }">
-								<div>
-									<v-sheet
-										height="96"
-										width="96"
-										class="clickable"
-										:style="
-											computeSheetStyle(theme.colors.primary, theme.colors.background, active)
-										"
-										@click.stop="selectTheme(theme.key, toggle)"
-									></v-sheet>
-									<span> {{ theme.name }} </span>
-								</div>
-							</v-item>
-						</div>
-					</v-row>
-				</v-container>
-			</v-item-group>
-		</v-card-text>
-	</v-card>
+	<SelectorActivator :title="$t('options.themes.optionName')">
+		<BaseSelector :items="themeList" @change="selectTheme">
+			<template v-slot:default="item">
+				<div>
+					<v-sheet
+						height="96"
+						width="96"
+						class="clickable"
+						:style="computeSheetStyle(item.colors.primary, item.colors.background)"
+					></v-sheet>
+					<span> {{ item.name }} </span>
+				</div>
+			</template>
+		</BaseSelector>
+	</SelectorActivator>
 </template>
 
 <script>
 import constants from "../js/constants.js";
 
+import BaseSelector from "./BaseSelector.vue";
+import SelectorActivator from "./SelectorActivator.vue";
+
 export default {
+	components: {
+		BaseSelector,
+		SelectorActivator,
+	},
 	methods: {
-		computeSheetStyle(primary, background, isActive) {
+		computeSheetStyle(primary, background) {
 			let p = primary?.base || primary;
 			let b = background?.base || background;
 
-			let style = `background: linear-gradient(45deg, ${b} 50%, ${p} 50%); `;
-			if (isActive) style += `border: 4px solid ${p};`;
-			return style;
+			return `background: linear-gradient(45deg, ${b} 50%, ${p} 50%); `;
 		},
-		selectTheme(themeKey, callback) {
+		selectTheme(themeKey) {
+			console.log(themeKey);
 			this.$vuetify.theme.dark = themeKey === "dark";
 			localStorage.setItem(constants.localStorageKeys.THEME_KEY, themeKey);
-
-			if (callback) callback();
 		},
 	},
 	computed: {
@@ -66,5 +59,3 @@ export default {
 	},
 };
 </script>
-
-<style></style>
