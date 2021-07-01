@@ -34,17 +34,9 @@
 				</template>
 				<v-list dense flat>
 					<v-item-group mandatory ref="options-list">
-						<v-menu offset-x left>
-							<template v-slot:activator="{ on, attrs }">
-								<v-list-item v-on="on" v-bind="attrs">
-									<v-list-item-icon>
-										<v-icon>mdi-chevron-left</v-icon>
-									</v-list-item-icon>
-									<v-list-item-title>{{ $t("options.themes.optionName") }}</v-list-item-title>
-								</v-list-item>
-							</template>
-							<ThemeSelector />
-						</v-menu>
+						<!-- TODO Language change not fully implemented -->
+						<!-- <LangSelector /> -->
+						<ThemeSelector />
 						<v-list-item @click="showHotkeysDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
