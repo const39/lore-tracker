@@ -7,12 +7,12 @@
 
 			<v-spacer></v-spacer>
 
-			<router-link to="/">
+			<router-link :to="{name: 'Home'}">
 				<v-btn text>
 					<span class="mr-2">{{ $t("pages.loreTracker") }}</span>
 				</v-btn>
 			</router-link>
-			<router-link to="/timeline">
+			<router-link :to="{name: 'Timeline'}">
 				<v-btn text>
 					<span class="mr-2">{{ $t("pages.timeline") }}</span>
 				</v-btn>
@@ -144,7 +144,7 @@ export default {
 		hotkey(e) {
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
 			else if (e.code === "F1") this.$router.push({ name: "Home" });
-			else if (e.code === "F2") this.$router.push("timeline");
+			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
 		},
 	},
 	mounted() {
