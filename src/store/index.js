@@ -36,6 +36,7 @@ function defaultFilter() {
 
 export default new Vuex.Store({
 	state: {
+		name: 'Campaign',
 		days: 0,
 		season: constants.seasons.SPRING,
 		cards: defaultCards(),
@@ -142,12 +143,14 @@ export default new Vuex.Store({
 				for (const entry of rawData.cards.notes) state.cards.notes.push(new Note(entry));
 
 				// Set other fields
-				state.days = rawData.days;
-				state.season = rawData.season;
+				if(rawData.name) state.name = rawData.name;
+				if(rawData.days) state.days = rawData.days;
+				if(rawData.season) state.season = rawData.season;
 			}
 		},
 		persist(state) {
 			const data = {
+				name: state.name,
 				days: state.days,
 				season: state.season,
 				cards: state.cards,
@@ -235,6 +238,12 @@ export default new Vuex.Store({
 		},
 		resetFilter(state) {
 			Vue.set(state, "filter", defaultFilter());
+		},
+		changeName(state, payload) {
+			if(payload) {
+				state.name = payload
+				this.commit("persist");
+			}
 		},
 		changeDaysCount(state, payload) {
 			if (Number.isSafeInteger(payload) && payload > -1) {
