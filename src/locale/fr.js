@@ -34,7 +34,7 @@ export default {
 			autumn: "Automne",
 			winter: "Hiver",
 		},
-		action: "Cliquez pour augmenter ou diminuer"
+		action: "Cliquez pour augmenter ou diminuer",
 	},
 
 	fields: {
@@ -106,6 +106,9 @@ export default {
 			optionName: "Changer de thème",
 			light: "Clair",
 			dark: "Sombre",
+		},
+		lang: {
+			optionName: "Changer de langue",
 		},
 		copyData: {
 			optionName: "Copier les données",

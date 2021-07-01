@@ -106,6 +106,9 @@ export default {
 			light: "Light",
 			dark: "Dark",
 		},
+		lang: {
+			optionName: "Change language"
+		},
 		copyData: {
 			optionName: "Copy data",
 			success: "Data copied in clipboard",
