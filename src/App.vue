@@ -122,7 +122,7 @@ export default {
 	methods: {
 		async copyToClipboard() {
 			try {
-				await navigator.clipboard.writeText(this.$store.state.cards);
+				await navigator.clipboard.writeText(this.$store.getters.getJsonData);
 				this.showSnackbar = true;
 			} catch (error) {
 				console.error("Copy to clipboard failed.");

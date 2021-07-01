@@ -114,6 +114,14 @@ export default new Vuex.Store({
 			const location = getters.where(id, type);
 			if (location) return state.cards[location.key][location.index];
 		},
+		getJsonData: (state) => {
+			return JSON.stringify({
+				name: state.name,
+				days: state.days,
+				season: state.season,
+				cards: state.cards,
+			});
+		}
 	},
 	mutations: {
 		initData(state) {
@@ -148,15 +156,8 @@ export default new Vuex.Store({
 				if(rawData.season) state.season = rawData.season;
 			}
 		},
-		persist(state) {
-			const data = {
-				name: state.name,
-				days: state.days,
-				season: state.season,
-				cards: state.cards,
-			};
-
-			localStorage.setItem(constants.localStorageKeys.DATA_KEY, JSON.stringify(data));
+		persist() {
+			localStorage.setItem(constants.localStorageKeys.DATA_KEY, this.getters.getJsonData);
 		},
 		add(state, payload) {
 			let list;
