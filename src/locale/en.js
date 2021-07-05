@@ -107,7 +107,7 @@ export default {
 			dark: "Dark",
 		},
 		lang: {
-			optionName: "Change language"
+			optionName: "Change language",
 		},
 		copyData: {
 			optionName: "Copy data",
@@ -116,8 +116,12 @@ export default {
 		deleteData: {
 			optionName: "Delete data",
 			title: "Delete data ?",
-			message:
-				"All saved data will be lost. Please consider backup your data first.",
+			message: "All saved data will be lost. Please consider backup your data first.",
+		},
+		about: {
+			optionName: "About",
+			title: "About Lore Tracker",
+			link: "Source code"
 		},
 		hotkeys: {
 			optionName: "Show hotkeys",

@@ -75,10 +75,6 @@ export default {
 				tags: this.selectedTags,
 			});
 		},
-		test(e1, e2) {
-			console.log(e1);
-			console.log(e2);
-		},
 		/**
 		 * Open/close the Search view when pressing Ctrl+K
 		 */

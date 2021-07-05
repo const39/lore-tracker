@@ -35,7 +35,6 @@ export default {
 			return `background: linear-gradient(45deg, ${b} 50%, ${p} 50%); `;
 		},
 		selectTheme(themeKey) {
-			console.log(themeKey);
 			this.$vuetify.theme.dark = themeKey === "dark";
 			localStorage.setItem(constants.localStorageKeys.THEME_KEY, themeKey);
 		},

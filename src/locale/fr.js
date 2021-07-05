@@ -120,6 +120,11 @@ export default {
 			message:
 				"Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.",
 		},
+		about: {
+			optionName: "A propos",
+			title: "A propos de Lore Tracker",
+			link: "Code source",
+		},
 		hotkeys: {
 			optionName: "Afficher les raccourcis",
 			title: "Raccourcis clavier",

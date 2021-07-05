@@ -11,12 +11,12 @@
 
 			<v-spacer></v-spacer>
 
-			<router-link :to="{name: 'Home'}">
+			<router-link :to="{ name: 'Home' }">
 				<v-btn text>
 					<span class="mr-2">{{ $t("pages.home") }}</span>
 				</v-btn>
 			</router-link>
-			<router-link :to="{name: 'Timeline'}">
+			<router-link :to="{ name: 'Timeline' }">
 				<v-btn text>
 					<span class="mr-2">{{ $t("pages.timeline") }}</span>
 				</v-btn>
@@ -57,9 +57,15 @@
 							<v-list-item-icon>
 								<v-icon color="red">mdi-delete</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title class="red--text">{{
-								$t("options.deleteData.optionName")
-							}}</v-list-item-title>
+							<v-list-item-title class="red--text">
+								{{ $t("options.deleteData.optionName") }}
+							</v-list-item-title>
+						</v-list-item>
+						<v-list-item @click="showAboutDialog = true">
+							<v-list-item-icon>
+								<v-icon>mdi-information-outline</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title>{{ $t("options.about.optionName") }}</v-list-item-title>
 						</v-list-item>
 					</v-item-group>
 				</v-list>
@@ -83,6 +89,27 @@
 
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
+
+		<!-- About dialog -->
+		<v-dialog v-model="showAboutDialog" max-width="450px">
+			<v-card>
+				<v-card-title>{{ $t("options.about.title") }}</v-card-title>
+				<v-card-text class="justify-left text--primary">
+					<v-container class="py-0">
+						<v-row class="my-1 font-weight-medium">Lore Tracker</v-row>
+						<v-row class="my-1">© 2021 - Constantin Fleury</v-row>
+						<v-row class="my-1 align-center">
+							<v-icon>mdi-github</v-icon>
+							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{ $t("options.about.link") }}</a>
+						</v-row>
+					</v-container>
+				</v-card-text>
+				<v-card-actions>
+					<v-spacer></v-spacer>
+					<v-btn text color="primary" @click="showAboutDialog = false">{{ $t("actions.close") }}</v-btn>
+				</v-card-actions>
+			</v-card>
+		</v-dialog>
 
 		<!-- Global snackbar -->
 		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
@@ -115,6 +142,7 @@ export default {
 			showMenu: false,
 			showSnackbar: false,
 			showHotkeysDialog: false,
+			showAboutDialog: false,
 			confirmDialog: {
 				show: false,
 				title: undefined,
