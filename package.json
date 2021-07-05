@@ -1,8 +1,16 @@
 {
   "name": "lore-tracker",
-  "version": "0.1.0",
-  "private": true,
+  "description": "Lore Tracker allows you to easily save, manage and visualise story elements for Table-top RPGs.",
+  "homepage": "https://github.com/const39/lore-tracker",
   "license": "GPL-3.0-or-later",
+  "author": {
+    "name": "Constantin Fleury"
+  },
+  "repository": {
+    "url": "https://github.com/const39/lore-tracker"
+  },
+  "version": "1.0.0",
+  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

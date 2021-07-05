@@ -96,7 +96,7 @@
 				<v-card-title>{{ $t("options.about.title") }}</v-card-title>
 				<v-card-text class="justify-left text--primary">
 					<v-container class="py-0">
-						<v-row class="my-1 font-weight-medium">Lore Tracker</v-row>
+						<v-row class="my-1 font-weight-medium">Lore Tracker {{version}}</v-row>
 						<v-row class="my-1">© 2021 - Constantin Fleury</v-row>
 						<v-row class="my-1 align-center">
 							<v-icon>mdi-github</v-icon>
@@ -139,6 +139,7 @@ export default {
 	},
 	data() {
 		return {
+			version: constants.VERSION,
 			showMenu: false,
 			showSnackbar: false,
 			showHotkeysDialog: false,

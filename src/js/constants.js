@@ -1,4 +1,5 @@
 export default {
+	VERSION: "1.0.0",
 	localStorageKeys: {
 		DATA_KEY: "DATA",
 		THEME_KEY: "THEME",
