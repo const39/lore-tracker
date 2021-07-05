@@ -1,6 +1,10 @@
 <template>
 	<v-app>
 		<v-app-bar app color="primary" dark>
+			<div class="ma-2">
+				<v-img max-width="48px" max-height="48px" src="./assets/logo.svg"></v-img>
+			</div>
+
 			<div class="d-flex align-center">
 				<div class="text-xl-h4 text-center">Lore Tracker</div>
 			</div>
