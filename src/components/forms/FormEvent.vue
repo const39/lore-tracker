@@ -43,7 +43,7 @@
 									type="number"
 									min="0"
 									v-model="model.day"
-									:rules="[requiredRule[0], dayRange[0]]"
+									:rules="dayRange"
 								></v-text-field>
 							</v-col>
 						</v-row>
