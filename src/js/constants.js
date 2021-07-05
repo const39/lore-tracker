@@ -2,6 +2,7 @@ export default {
 	localStorageKeys: {
 		DATA_KEY: "DATA",
 		THEME_KEY: "THEME",
+		LANG_KEY: "LANG"
 	},
 	eventTypes: {
 		COMBAT: "combat",

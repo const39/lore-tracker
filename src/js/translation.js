@@ -1,11 +1,12 @@
 // TODO language change not fully implemented yet
 
-// import en from "../locale/en";
+import constants from "./constants";
+import en from "../locale/en";
 import fr from "../locale/fr";
 
-const locales = {fr};
-const fallback = 'fr';
-let current = 'fr';
+const locales = {fr, en};
+const fallback = 'en';
+let current = localStorage.getItem(constants.localStorageKeys.LANG_KEY) || fallback;
 
 function getNestedProperty(object, property) {
 	const props = property.split(".");
