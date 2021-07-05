@@ -8,7 +8,7 @@
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
 					<v-tooltip top>
 						<template v-slot:activator="{ on, attrs }">
-							<v-icon large v-on="on" v-bind="attrs">{{ icons[itemData.type] }}</v-icon>
+							<v-icon large v-on="on" v-bind="attrs">{{ itemData.getIcon() }}</v-icon>
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
@@ -25,7 +25,6 @@
 
 <script>
 import constants from "../../js/constants.js";
-import icons from "../../js/icons.js";
 import { Event } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
 
@@ -48,11 +47,6 @@ export default {
 			required: true,
 		},
 		outlined: Boolean,
-	},
-	data() {
-		return {
-			icons: icons,
-		};
 	},
 	methods: {
 		onOptionSelected(value) {

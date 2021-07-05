@@ -24,11 +24,11 @@
 					:items="types"
 				>
 					<template v-slot:selection="data">
-						<v-icon left small> {{ icons.iconFromObjectType(data.item) }} </v-icon>
+						<v-icon left small> {{ icons[data.item] }} </v-icon>
 						{{ $t(`objectTypes.${data.item}`) }}
 					</template>
 					<template v-slot:item="data">
-						<v-icon left small> {{ icons.iconFromObjectType(data.item) }} </v-icon>
+						<v-icon left small> {{ icons[data.item] }} </v-icon>
 						{{ $t(`objectTypes.${data.item}`) }}
 					</template>
 				</v-select>
@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import icons from "../js/icons";
 import constants from "../js/constants";
 
 import TagChooser from "./TagChooser.vue";
@@ -60,7 +59,7 @@ export default {
 	data() {
 		return {
 			shown: false,
-			icons: icons,
+			icons: constants.icons,
 			types: Object.values(constants.objectTypes),
 			selectedType: constants.objectTypes.ALL,
 			textToContain: undefined,

@@ -4,7 +4,7 @@
 			<v-expansion-panel>
 				<v-expansion-panel-header>
 					<div class="text-h5 text--primary">
-						<v-icon left>{{ icon }}</v-icon>
+						<v-icon left>{{ icons[type] }}</v-icon>
 						{{ $t(`objectTypes.${type}`) }}
 					</div>
 				</v-expansion-panel-header>
@@ -58,10 +58,9 @@ export default {
 		type: {
 			type: String,
 			required: true,
-		},
-		icon: {
-			type: String,
-			required: true,
+			validator: function(value) {
+				return Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) && value !== constants.objectTypes.ALL;				
+			}
 		},
 	},
 	components: {
@@ -82,6 +81,7 @@ export default {
 		return {
 			showForm: false,
 			isCollapsed: 0,
+			icons: constants.icons
 		};
 	},
 	methods: {

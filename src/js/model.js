@@ -1,5 +1,4 @@
 import constants from "./constants";
-import icons from "./icons";
 
 /**
  * Returns the current timestamp. To be used as a Unique Identifier.
@@ -14,7 +13,11 @@ export class Objective {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
 		this.isCompleted = object?.isCompleted || false;
-        this.tags = object?.tags || [];
+		this.tags = object?.tags || [];
+	}
+
+	getIcon() {
+		return constants.icons.objective;
 	}
 }
 
@@ -22,24 +25,34 @@ export class Event {
 	constructor(object) {
 		this.id = object?.id || uid();
 		this.desc = object?.desc;
-		this.type = Object.values(constants.eventTypes).includes(object?.type) ? object?.type : constants.eventTypes.other
+		this.type = Object.values(constants.eventTypes).includes(object?.type)
+			? object?.type
+			: constants.eventTypes.other;
 		let day = Number(object?.day);
 		this.day = Number.isSafeInteger(day) && day > 0 ? day : 0;
-        this.tags = object?.tags || [];
+		this.tags = object?.tags || [];
+	}
+
+	getIcon() {
+		return constants.icons[this.type] || constants.icons.other;
 	}
 }
 
 export class Location {
-    constructor(object) {
-        this.id = object?.id || uid();
-        this.name = object?.name || "";
-        this.desc = object?.desc || "";
-        this.tags = object?.tags || [];
-    }
+	constructor(object) {
+		this.id = object?.id || uid();
+		this.name = object?.name || "";
+		this.desc = object?.desc || "";
+		this.tags = object?.tags || [];
+	}
+
+	getIcon() {
+		return constants.icons.location;
+	}
 }
 
 export class Character {
-    constructor(object) {
+	constructor(object) {
 		this.id = object?.id || uid();
 		this.name = object?.name || "";
 		this.race = object?.race || "";
@@ -50,17 +63,24 @@ export class Character {
 		this.desc = object?.desc || "";
 		this.tags = object?.tags || [];
 	}
+
+	getIcon() {
+		return constants.icons.character;
+	}
 }
 
 export class Note {
-    constructor(object) {
-        this.id = object?.id || uid();
-        this.title = object?.title || "";
-        this.desc = object?.desc || "";
-        this.tags = object?.tags || [];
-    }
-}
+	constructor(object) {
+		this.id = object?.id || uid();
+		this.title = object?.title || "";
+		this.desc = object?.desc || "";
+		this.tags = object?.tags || [];
+	}
 
+	getIcon() {
+		return constants.icons.note;
+	}
+}
 
 export class Tag {
 	/**
@@ -68,9 +88,9 @@ export class Tag {
 	 * @param {Objective | Event | Location | Character | Note } refObject the object referenced by this tag
 	 */
 	constructor(refObject) {
-		this.id = refObject.id; 
-		this.text = refObject.name || refObject.title || refObject.desc; 
+		this.id = refObject.id;
+		this.text = refObject.name || refObject.title || refObject.desc;
 		this.type = constants.objectTypes[refObject.constructor.name.toUpperCase()];
-		this.icon = icons.iconFromInstance(refObject);
+		this.icon = refObject.getIcon();
 	}
 }

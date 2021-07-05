@@ -2,7 +2,7 @@ export default {
 	localStorageKeys: {
 		DATA_KEY: "DATA",
 		THEME_KEY: "THEME",
-		LANG_KEY: "LANG"
+		LANG_KEY: "LANG",
 	},
 	eventTypes: {
 		COMBAT: "combat",
@@ -23,6 +23,19 @@ export default {
 		SPRING: "spring",
 		SUMMER: "summer",
 		AUTUMN: "autumn",
-		WINTER: "winter"
-	}
+		WINTER: "winter",
+	},
+	icons: {
+		objective: "mdi-star-circle",
+		event: "mdi-sword-cross",
+		location: "mdi-home",
+		character: "mdi-account",
+		note: "mdi-note-text",
+		completed: "mdi-check-decagram",
+		combat: "mdi-sword-cross",
+		encounter: "mdi-account-group",
+		discovery: "mdi-magnify",
+		travel: "mdi-horseshoe",
+		other: "mdi-help",
+	},
 };

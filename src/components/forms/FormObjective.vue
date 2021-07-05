@@ -37,7 +37,6 @@
 
 <script>
 import constants from "../../js/constants.js";
-import icons from "../../js/icons.js";
 import { Objective } from "../../js/model.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -55,7 +54,6 @@ export default {
 		return {
 			valid: false,
 			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
-			icons: icons,
 			model: this.initModel(),
 		};
 	},

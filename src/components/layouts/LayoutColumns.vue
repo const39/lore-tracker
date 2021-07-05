@@ -1,11 +1,11 @@
 <template>
 	<v-container>
 		<v-row>
-			<LayoutColumnContent :type="objectTypes.OBJECTIVE" :icon="icons.objective" />
-			<LayoutColumnContent :type="objectTypes.EVENT" :icon="icons.event" />
-			<LayoutColumnContent :type="objectTypes.LOCATION" :icon="icons.location" />
-			<LayoutColumnContent :type="objectTypes.CHARACTER" :icon="icons.character" />
-			<LayoutColumnContent :type="objectTypes.NOTE" :icon="icons.note" />
+			<LayoutColumnContent :type="objectTypes.OBJECTIVE" />
+			<LayoutColumnContent :type="objectTypes.EVENT" />
+			<LayoutColumnContent :type="objectTypes.LOCATION" />
+			<LayoutColumnContent :type="objectTypes.CHARACTER" />
+			<LayoutColumnContent :type="objectTypes.NOTE" />
 		</v-row>
 	</v-container>
 </template>
@@ -13,7 +13,6 @@
 <script>
 import LayoutColumnContent from "./LayoutColumnContent.vue";
 
-import icons from "../../js/icons.js";
 import { eventHub } from "../../js/eventHub.js";
 import constants from "../../js/constants";
 
@@ -24,7 +23,6 @@ export default {
 	},
 	data() {
 		return {
-			icons: icons,
 			objectTypes: constants.objectTypes,
 		};
 	},

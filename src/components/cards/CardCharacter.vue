@@ -23,7 +23,6 @@
 
 <script>
 import constants from "../../js/constants.js";
-import icons from "../../js/icons.js";
 import { Character } from "../../js/model.js";
 import { eventHub, CardEvent } from "../../js/eventHub.js";
 
@@ -49,7 +48,6 @@ export default {
 	},
 	data() {
 		return {
-			icons: icons,
 		};
 	},
 	methods: {

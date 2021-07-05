@@ -2,8 +2,8 @@
 	<v-container>
 		<v-tabs fixed-tabs color="accent" v-model="activeTab">
 			<v-tab v-for="tab in tabs" :key="tab.title">
-				<v-icon left>{{ tab.icon }}</v-icon>
-				{{ tab.title }}
+				<v-icon left>{{ icons[tab] }}</v-icon>
+				{{ $t(`objectTypes.${tab}`) }}
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
@@ -19,7 +19,6 @@
 <script>
 import LayoutTabContent from "./LayoutTabContent.vue";
 
-import icons from "../../js/icons";
 import constants from "../../js/constants";
 import { eventHub } from "../../js/eventHub";
 
@@ -31,27 +30,13 @@ export default {
 	data() {
 		return {
 			tabs: [
-				{
-					title: this.$t("objectTypes.objective"),
-					icon: icons.objective,
-				},
-				{
-					title: this.$t("objectTypes.event"),
-					icon: icons.event,
-				},
-				{
-					title: this.$t("objectTypes.location"),
-					icon: icons.location,
-				},
-				{
-					title: this.$t("objectTypes.character"),
-					icon: icons.character,
-				},
-				{
-					title: this.$t("objectTypes.note"),
-					icon: icons.note,
-				},
+				constants.objectTypes.OBJECTIVE,
+				constants.objectTypes.EVENT,
+				constants.objectTypes.LOCATION,
+				constants.objectTypes.CHARACTER,
+				constants.objectTypes.NOTE,
 			],
+			icons: constants.icons,
 			activeTab: "",
 			objectTypes: constants.objectTypes,
 		};

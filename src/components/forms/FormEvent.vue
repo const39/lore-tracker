@@ -63,7 +63,6 @@
 
 <script>
 import constants from "../../js/constants.js";
-import icons from "../../js/icons.js";
 import { Event } from "../../js/model.js";
 
 import TagChooser from "../TagChooser.vue";
@@ -87,7 +86,7 @@ export default {
 					return (Number.isSafeInteger(v) && v >= 0) || this.$t("fields.dayNotValid");
 				},
 			],
-			icons: icons,
+			icons: constants.icons,
 			model: this.initModel(),
 			eventTypes: Object.values(constants.eventTypes),
 		};

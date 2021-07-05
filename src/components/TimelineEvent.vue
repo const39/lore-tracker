@@ -6,7 +6,6 @@
 
 <script>
 import constants from "../js/constants";
-import icons from "../js/icons";
 import { Event } from "../js/model";
 
 export default {
@@ -29,7 +28,7 @@ export default {
              */
 			if (this.item instanceof Event) {
 				info.text = this.item.desc;
-				info.icon = icons[this.item.type];
+				info.icon = this.item.getIcon();
 
 				switch (this.item.type) {
 					case constants.eventTypes.COMBAT:
