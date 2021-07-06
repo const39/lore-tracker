@@ -17,6 +17,8 @@ You can't remember the name of that NPC you met six months ago ? Lore Tracker ha
 * Light and dark themes
 * Navigation hotkeys
 
+*Lore Tracker is only available on Windows 10 for now.*
+
 ### Upcoming
 
 * French translation
@@ -48,4 +50,4 @@ npm run electron:build
 
 This program is licensed under the GNU General Public License v3.0.
 
-© 2021 - Constantin Fleury
+© 2021 - const39

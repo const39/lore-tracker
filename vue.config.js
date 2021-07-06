@@ -4,15 +4,19 @@ module.exports = {
 		electronBuilder: {
 			builderOptions: {
 				appId: "com.electron.lore-tracker",
+				productName: "Lore Tracker",
 				win: {
-					target: [
-						{
-							target: "nsis",
-						},
-						{
-							target: "portable",
-						},
-					],
+					target: ["nsis", "portable"],
+				},
+				nsis: {
+					license: "LICENSE",
+					artifactName: "${productName}_${version}_Installer.${ext}",
+					oneClick: false,
+					perMachine: false,
+					allowToChangeInstallationDirectory: true
+				},
+				portable: {
+					artifactName: "${productName}_${version}_Portable.${ext}",
 				},
 			},
 		},

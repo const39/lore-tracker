@@ -97,7 +97,7 @@
 				<v-card-text class="justify-left text--primary">
 					<v-container class="py-0">
 						<v-row class="my-1 font-weight-medium">Lore Tracker {{version}}</v-row>
-						<v-row class="my-1">© 2021 - Constantin Fleury</v-row>
+						<v-row class="my-1">© 2021 - const39</v-row>
 						<v-row class="my-1 align-center">
 							<v-icon>mdi-github</v-icon>
 							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{ $t("options.about.link") }}</a>
