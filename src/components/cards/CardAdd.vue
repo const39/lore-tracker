@@ -1,7 +1,8 @@
 <template>
 	<v-hover v-slot="{ hover }">
 		<v-card outlined class="my-1 custom-border" :class="{'grey': hover, 'lighten-3': !isDarkTheme, 'darken-3': isDarkTheme}">
-			<v-card-text class="text-center clickable" icon @click="onClick">
+			<!-- Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action. -->
+			<v-card-text class="text-center clickable" icon @click="$emit('click')">
 				<v-icon>mdi-plus</v-icon>
 			</v-card-text>
 		</v-card>
@@ -10,15 +11,6 @@
 
 <script>
 export default {
-    methods: {
-        /**
-         * Send a custom event to the parent component to allow this AddCard component to update some attribute.
-         * This is used to allow this component to act as an external activator for a custom dialog component.
-         */
-        onClick() {
-            this.$emit('add-card-clicked')
-        },
-    },
     computed: {
         isDarkTheme() {
             return this.$vuetify.theme.dark;
