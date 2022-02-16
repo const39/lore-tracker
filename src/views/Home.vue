@@ -46,13 +46,6 @@
 		<LayoutTabs v-if="selectedLayout === 0" />
 		<LayoutColumns v-else-if="selectedLayout === 1" />
 
-		<!-- Global edit form for each panel -->
-		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
-		<FormEvent v-model="eventEditForm.show" edit :id="eventEditForm.id" />
-		<FormCharacter v-model="characterEditForm.show" edit :id="characterEditForm.id" />
-		<FormLocation v-model="locationEditForm.show" edit :id="locationEditForm.id" />
-		<FormNote v-model="noteEditForm.show" edit :id="noteEditForm.id" />
-
 		<!-- Global delete form for all panels -->
 		<ConfirmDialog
 			v-model="confirmDialog.show"
@@ -67,11 +60,6 @@
 import LayoutTabs from "../components/layouts/LayoutTabs.vue";
 import LayoutColumns from "../components/layouts/LayoutColumns.vue";
 
-import FormObjective from "../components/forms/FormObjective.vue";
-import FormEvent from "../components/forms/FormEvent.vue";
-import FormLocation from "../components/forms/FormLocation.vue";
-import FormCharacter from "../components/forms/FormCharacter.vue";
-import FormNote from "../components/forms/FormNote.vue";
 import ConfirmDialog from "../components/ConfirmDialog.vue";
 
 import SearchView from "../components/SearchView.vue";
@@ -85,11 +73,6 @@ export default {
 	components: {
 		LayoutTabs,
 		LayoutColumns,
-		FormObjective,
-		FormEvent,
-		FormLocation,
-		FormCharacter,
-		FormNote,
 		ConfirmDialog,
 		SearchView,
 		StatusTray,
@@ -98,26 +81,6 @@ export default {
 		return {
 			selectedLayout: 0,
 			editName: false,
-			objectiveEditForm: {
-				show: false,
-				id: undefined,
-			},
-			eventEditForm: {
-				show: false,
-				id: undefined,
-			},
-			locationEditForm: {
-				show: false,
-				id: undefined,
-			},
-			characterEditForm: {
-				show: false,
-				id: undefined,
-			},
-			noteEditForm: {
-				show: false,
-				id: undefined,
-			},
 			confirmDialog: {
 				show: false,
 				title: undefined,
@@ -145,11 +108,6 @@ export default {
 		 * All events catched here must be CardEvent objects (imported from eventHub.js).
 		 */
 
-		eventHub.$on("edit", (e) => {
-			this[`${e.type}EditForm`].id = e.object.id;
-			this[`${e.type}EditForm`].show = true;
-		});
-
 		eventHub.$on("delete", (e) => {
 			if (e.object instanceof Objective) this.confirmDialog.message = this.$t("dialogs.deleteObjective");
 			else if (e.object instanceof Event) this.confirmDialog.message = this.$t("dialogs.deleteEvent");
@@ -169,7 +127,6 @@ export default {
 		});
 	},
 	beforeDestroy() {
-		eventHub.$off("edit");
 		eventHub.$off("delete");
 	},
 };

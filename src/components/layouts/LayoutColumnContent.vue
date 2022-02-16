@@ -9,7 +9,7 @@
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
-					<CardAdd @add-card-clicked="showForm = true" />
+					<CardAdd :type="type" />
 					<draggable
 						:disabled="isSortDisabled"
 						v-model="items"
@@ -19,16 +19,8 @@
 						@end="drag = false"
 						:move="onMove"
 					>
-						<component
-							:is="cardComponent"
-							v-for="item in items"
-							:key="item.id"
-							:item-data="item"
-							outlined
-							:class="{ draggable: !isSortDisabled }"
-						/>
+						<CardContainer v-for="item in items" :key="item.id" outlined :item-data="item"></CardContainer>
 					</draggable>
-					<component :is="formComponent" v-model="showForm" />
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 		</v-expansion-panels>
@@ -36,18 +28,8 @@
 </template>
 
 <script>
-import CardObjective from "../cards/CardObjective.vue";
-import CardEvent from "../cards/CardEvent.vue";
-import CardLocation from "../cards/CardLocation.vue";
-import CardCharacter from "../cards/CardCharacter.vue";
-import CardNote from "../cards/CardNote.vue";
+import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
-
-import FormObjective from "../forms/FormObjective.vue";
-import FormEvent from "../forms/FormEvent.vue";
-import FormLocation from "../forms/FormLocation.vue";
-import FormCharacter from "../forms/FormCharacter.vue";
-import FormNote from "../forms/FormNote.vue";
 
 import draggable from "vuedraggable";
 import constants from "../../js/constants";
@@ -59,36 +41,25 @@ export default {
 			type: String,
 			required: true,
 			validator: function(value) {
-				return Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) && value !== constants.objectTypes.ALL;				
-			}
+				return (
+					Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
+					value !== constants.objectTypes.ALL
+				);
+			},
 		},
 	},
 	components: {
-		CardObjective,
-		CardEvent,
-		CardLocation,
-		CardCharacter,
-		CardNote,
+		CardContainer,
 		CardAdd,
-		FormEvent,
-		FormObjective,
-		FormLocation,
-		FormCharacter,
-		FormNote,
 		draggable,
 	},
 	data() {
 		return {
-			showForm: false,
 			isCollapsed: 0,
-			icons: constants.icons
+			icons: constants.icons,
 		};
 	},
 	methods: {
-		capitalize(str) {
-			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
-			else return "";
-		},
 		onMove(e) {
 			/**
 			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
@@ -122,12 +93,6 @@ export default {
 		},
 	},
 	computed: {
-		cardComponent() {
-			return `Card${this.capitalize(this.type)}`;
-		},
-		formComponent() {
-			return `Form${this.capitalize(this.type)}`;
-		},
 		isSortDisabled() {
 			return this.$store.state.filter.isEnabled;
 		},

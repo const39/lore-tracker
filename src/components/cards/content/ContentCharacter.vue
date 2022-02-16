@@ -1,8 +1,6 @@
 <template>
-	<BaseCard :outlined="outlined" :id="itemData.id + '-card'">
-		<v-card-actions class="float-right">
-			<CardOptions @option-selected="onOptionSelected" />
-		</v-card-actions>
+	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
+	<div>
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">
 				{{ itemData.name }}
@@ -18,24 +16,18 @@
 			<MarkdownView :text="itemData.desc" />
 			<TagList :items="itemData.tags" />
 		</v-card-text>
-	</BaseCard>
+	</div>
 </template>
 
 <script>
-import constants from "../../js/constants.js";
-import { Character } from "../../js/model.js";
-import { eventHub, CardEvent } from "../../js/eventHub.js";
+import { Character } from "../../../js/model.js";
 
-import BaseCard from "./BaseCard.vue";
-import CardOptions from "./CardOptions.vue";
-import TagList from "../TagList.vue";
-import MarkdownView from "../MarkdownView.vue";
+import TagList from "../../TagList.vue";
+import MarkdownView from "../../MarkdownView.vue";
 
 export default {
-	name: "CardCharacter",
+	name: "ContentCharacter",
 	components: {
-		BaseCard,
-		CardOptions,
 		TagList,
 		MarkdownView,
 	},
@@ -43,16 +35,6 @@ export default {
 		itemData: {
 			type: Character,
 			required: true,
-		},
-		outlined: Boolean,
-	},
-	data() {
-		return {
-		};
-	},
-	methods: {
-		onOptionSelected(value) {
-			eventHub.$emit(value, new CardEvent(constants.objectTypes.CHARACTER, this.itemData));
 		},
 	},
 	computed: {

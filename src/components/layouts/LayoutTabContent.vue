@@ -9,38 +9,27 @@
 				v-bind="{ animation: 200 }"
 				group="items"
 				@start="drag = true"
-				@end="drag = false;"
+				@end="drag = false"
 			>
 				<template v-slot:header>
 					<v-col cols="12" md="4">
-						<CardAdd @add-card-clicked="showForm = true" />
+						<CardAdd :type="type" />
 					</v-col>
 				</template>
 				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
-					<component :is="cardComponent" :class="{'draggable': !isSortDisabled}" :item-data="item" />
+					<CardContainer :item-data="item"></CardContainer>
 				</v-col>
 			</draggable>
-			<component :is="formComponent" v-model="showForm" />
 		</v-container>
 	</v-tab-item>
 </template>
 
 <script>
-import CardObjective from "../cards/CardObjective.vue";
-import CardEvent from "../cards/CardEvent.vue";
-import CardLocation from "../cards/CardLocation.vue";
-import CardCharacter from "../cards/CardCharacter.vue";
-import CardNote from "../cards/CardNote.vue";
+import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
-import FormObjective from "../forms/FormObjective.vue";
-import FormEvent from "../forms/FormEvent.vue";
-import FormLocation from "../forms/FormLocation.vue";
-import FormCharacter from "../forms/FormCharacter.vue";
-import FormNote from "../forms/FormNote.vue";
-
 import draggable from "vuedraggable";
-import constants from '../../js/constants';
+import constants from "../../js/constants";
 
 export default {
 	name: "LayoutTabContent",
@@ -48,25 +37,21 @@ export default {
 		type: {
 			type: String,
 			required: true,
+			validator: function(value) {
+				return (
+					Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
+					value !== constants.objectTypes.ALL
+				);
+			},
 		},
 	},
 	components: {
-		CardObjective,
-		CardEvent,
-		CardLocation,
-		CardCharacter,
-		CardNote,
+		CardContainer,
 		CardAdd,
-		FormEvent,
-		FormObjective,
-		FormLocation,
-		FormCharacter,
-		FormNote,
 		draggable,
 	},
 	data() {
 		return {
-			showForm: false,
 			drag: false,
 		};
 	},
@@ -77,12 +62,6 @@ export default {
 		},
 	},
 	computed: {
-		cardComponent() {
-			return `Card${this.capitalize(this.type)}`;
-		},
-		formComponent() {
-			return `Form${this.capitalize(this.type)}`;
-		},
 		isSortDisabled() {
 			return this.$store.state.filter.isEnabled;
 		},
