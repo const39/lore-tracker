@@ -98,6 +98,7 @@ export default {
 		no: "No",
 		edit: "Edit",
 		delete: "Delete",
+		quickNote: "Quick note",
 	},
 
 	options: {
@@ -121,7 +122,7 @@ export default {
 		about: {
 			optionName: "About",
 			title: "About Lore Tracker",
-			link: "Source code"
+			link: "Source code",
 		},
 		hotkeys: {
 			optionName: "Show hotkeys",

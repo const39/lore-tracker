@@ -99,6 +99,7 @@ export default {
 		no: "Non",
 		edit: "Modifier",
 		delete: "Supprimer",
+		quickNote: "Note rapide",
 	},
 
 	options: {

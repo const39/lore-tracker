@@ -79,6 +79,11 @@
 			</v-container>
 		</v-main>
 
+		<!-- Quick note - Floating expanding text area -->
+		<div class="ma-4 quick-note-wrapper">
+			<QuickNote></QuickNote>
+		</div>
+
 		<!-- Global confirm dialog for options -->
 		<ConfirmDialog
 			v-model="confirmDialog.show"
@@ -96,11 +101,13 @@
 				<v-card-title>{{ $t("options.about.title") }}</v-card-title>
 				<v-card-text class="justify-left text--primary">
 					<v-container class="py-0">
-						<v-row class="my-1 font-weight-medium">Lore Tracker {{version}}</v-row>
+						<v-row class="my-1 font-weight-medium">Lore Tracker {{ version }}</v-row>
 						<v-row class="my-1">© 2021 - const39</v-row>
 						<v-row class="my-1 align-center">
 							<v-icon>mdi-github</v-icon>
-							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{ $t("options.about.link") }}</a>
+							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{
+								$t("options.about.link")
+							}}</a>
 						</v-row>
 					</v-container>
 				</v-card-text>
@@ -129,6 +136,7 @@ import constants from "./js/constants.js";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import HotkeyDialog from "./components/HotkeyDialog.vue";
 import ThemeSelector from "./components/ThemeSelector.vue";
+import QuickNote from "./components/QuickNote.vue";
 
 export default {
 	name: "App",
@@ -136,6 +144,7 @@ export default {
 		ConfirmDialog,
 		HotkeyDialog,
 		ThemeSelector,
+		QuickNote
 	},
 	data() {
 		return {
@@ -193,3 +202,11 @@ export default {
 	},
 };
 </script>
+
+<style scoped>
+.quick-note-wrapper {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+}
+</style>

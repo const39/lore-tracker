@@ -5,7 +5,6 @@ import { Objective, Event, Location, Character, Note } from "../js/model";
 
 Vue.use(Vuex);
 
-
 /**
  * Create the default Cards object
  * @returns a default Cards object
@@ -36,11 +35,12 @@ function defaultFilter() {
 
 export default new Vuex.Store({
 	state: {
-		name: 'Campaign',
+		name: "Campaign",
 		days: 0,
 		season: constants.seasons.SPRING,
 		cards: defaultCards(),
 		filter: defaultFilter(),
+		quickNote: "",
 	},
 	getters: {
 		filteredCards: (state) => {
@@ -120,8 +120,9 @@ export default new Vuex.Store({
 				days: state.days,
 				season: state.season,
 				cards: state.cards,
+				quickNote: state.quickNote,
 			});
-		}
+		},
 	},
 	mutations: {
 		initData(state) {
@@ -151,9 +152,10 @@ export default new Vuex.Store({
 				for (const entry of rawData.cards.notes) state.cards.notes.push(new Note(entry));
 
 				// Set other fields
-				if(rawData.name) state.name = rawData.name;
-				if(rawData.days) state.days = rawData.days;
-				if(rawData.season) state.season = rawData.season;
+				if (rawData.name) state.name = rawData.name;
+				if (rawData.days) state.days = rawData.days;
+				if (rawData.season) state.season = rawData.season;
+				if (rawData.quickNote) state.quickNote = rawData.quickNote;
 			}
 		},
 		persist() {
@@ -241,8 +243,8 @@ export default new Vuex.Store({
 			Vue.set(state, "filter", defaultFilter());
 		},
 		changeName(state, payload) {
-			if(payload) {
-				state.name = payload
+			if (payload) {
+				state.name = payload;
 				this.commit("persist");
 			}
 		},
@@ -257,6 +259,10 @@ export default new Vuex.Store({
 				state.season = payload;
 				this.commit("persist");
 			}
+		},
+		changeQuickNote(state, payload) {
+			state.quickNote = payload;
+			this.commit("persist");
 		},
 	},
 	actions: {},
