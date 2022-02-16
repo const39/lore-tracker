@@ -65,7 +65,6 @@ import ConfirmDialog from "../components/ConfirmDialog.vue";
 import SearchView from "../components/SearchView.vue";
 import StatusTray from "../components/StatusTray.vue";
 
-import { Objective, Event, Character, Location, Note } from "../js/model.js";
 import { eventHub } from "../js/eventHub.js";
 
 export default {
@@ -109,19 +108,8 @@ export default {
 		 */
 
 		eventHub.$on("delete", (e) => {
-			if (e.object instanceof Objective) this.confirmDialog.message = this.$t("dialogs.deleteObjective");
-			else if (e.object instanceof Event) this.confirmDialog.message = this.$t("dialogs.deleteEvent");
-			else if (e.object instanceof Location) this.confirmDialog.message = this.$t("dialogs.deleteLocation");
-			else if (e.object instanceof Character) this.confirmDialog.message = this.$t("dialogs.deleteCharacter");
-			else if (e.object instanceof Note) this.confirmDialog.message = this.$t("dialogs.deleteNote");
-			else {
-				console.error(e.object, "is not an instance of an accepted object.");
-				return;
-			}
-
-			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${e.object.title ||
-				e.object.name ||
-				e.object.desc}" ?`;
+			this.confirmDialog.message = this.$t(`dialogs.delete${e.object.constructor.name}`)
+			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${e.object.title || e.object.name || e.object.desc}" ?`;
 			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.object);
 			this.confirmDialog.show = true;
 		});

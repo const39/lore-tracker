@@ -1,5 +1,5 @@
 <template>
-	<BaseCard :with-options="!showForm" :outlined="outlined" @edit="showForm = true" @delete="onDelete">
+	<BaseCard :with-options="!showForm" :outlined="outlined" :id="itemData.id + '-card'" @edit="showForm = true" @delete="onDelete">
 		<v-expand-transition>
 			<!-- Dynamic Form component -->
 			<component v-if="showForm" :is="formComponent" :edit="itemData.id" @close="showForm = false" />
@@ -11,6 +11,7 @@
 
 <script>
 import { Character, Event, Location, Note, Objective } from "../../js/model";
+import { eventHub, CardEvent } from '../../js/eventHub';
 
 import BaseCard from "./BaseCard.vue";
 
@@ -54,9 +55,8 @@ export default {
 		};
 	},
 	methods: {
-		// TODO manage 'delete' event
 		onDelete() {
-			// eventHub.$emit('delete', new CardEvent(######, this.itemData));
+			eventHub.$emit('delete', new CardEvent(this.itemData));
 		},
 	},
 	computed: {
