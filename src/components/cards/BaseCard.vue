@@ -1,5 +1,5 @@
 <template>
-	<v-card height="100%" :outlined="outlined" :elevation="elevation" fill-height class="mb-4" @mouseenter="hover = true" @mouseleave="hover = false">
+	<v-card height="100%" :outlined="outlined" :elevation="elevation" fill-height class="mb-4" @mouseenter="hover = true" @mouseleave="hover = false" @dblclick="$emit('edit')">
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
 			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" />
