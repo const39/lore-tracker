@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import HotkeyList from "./HotkeyList.vue";
+import HotkeyList from "../hotkeys/HotkeyList.vue";
 
 export default {
 	components: {

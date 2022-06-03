@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import { Tag, Objective, Event, Location, Character, Note } from "../js/model.js";
-import { eventHub, TagEvent } from "../js/eventHub.js";
-import constants from "../js/constants.js";
+import { Tag, Objective, Event, Location, Character, Note } from "../../../js/model.js";
+import { eventHub, TagEvent } from "../../../js/eventHub.js";
+import constants from "../../../js/constants.js";
 
 export default {
 	props: {

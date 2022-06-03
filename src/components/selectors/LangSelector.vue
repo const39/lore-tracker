@@ -14,9 +14,8 @@
 </template>
 
 <script>
-import constants from "../js/constants.js";
-import { eventHub } from '../js/eventHub.js';
-import translation from "../js/translation.js";
+import constants from "../../js/constants.js";
+import translation from "../../js/translation.js";
 
 import BaseSelector from "./BaseSelector.vue";
 import SelectorActivator from "./SelectorActivator.vue";

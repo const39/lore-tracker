@@ -134,8 +134,8 @@
 import constants from "./js/constants.js";
 
 import ConfirmDialog from "./components/ConfirmDialog.vue";
-import HotkeyDialog from "./components/HotkeyDialog.vue";
-import ThemeSelector from "./components/ThemeSelector.vue";
+import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
+import ThemeSelector from "./components/selectors/ThemeSelector.vue";
 import QuickNote from "./components/QuickNote.vue";
 
 export default {

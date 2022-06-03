@@ -30,7 +30,7 @@
 import constants from "../../../js/constants.js";
 import { Note } from "../../../js/model.js";
 
-import TagChooser from "../../TagChooser.vue";
+import TagChooser from "../tags/TagChooser.vue";
 
 export default {
 	props: {

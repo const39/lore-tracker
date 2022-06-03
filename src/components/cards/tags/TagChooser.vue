@@ -35,9 +35,9 @@
 </template>
 
 <script>
-import { Tag } from "../js/model.js";
+import { Tag } from "../../../js/model.js";
 
-import MarkdownView from "./MarkdownView.vue";
+import MarkdownView from "../../MarkdownView.vue";
 
 export default {
 	components: {

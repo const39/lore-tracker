@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import constants from "../js/constants.js";
+import constants from "../../js/constants.js";
 
 import BaseSelector from "./BaseSelector.vue";
 import SelectorActivator from "./SelectorActivator.vue";

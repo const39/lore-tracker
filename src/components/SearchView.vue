@@ -50,7 +50,7 @@
 <script>
 import constants from "../js/constants";
 
-import TagChooser from "./TagChooser.vue";
+import TagChooser from "./cards/tags/TagChooser.vue";
 
 export default {
 	components: {

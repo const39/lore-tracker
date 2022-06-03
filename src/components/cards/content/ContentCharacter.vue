@@ -22,7 +22,7 @@
 <script>
 import { Character } from "../../../js/model.js";
 
-import TagList from "../../TagList.vue";
+import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
 export default {

@@ -59,7 +59,7 @@
 import constants from "../../../js/constants.js";
 import { Character } from "../../../js/model.js";
 
-import TagChooser from "../../TagChooser.vue";
+import TagChooser from "../tags/TagChooser.vue";
 
 export default {
 	props: {

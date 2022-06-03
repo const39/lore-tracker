@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import TagList from "../../TagList.vue";
+import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
 import { Location } from "../../../js/model.js";
