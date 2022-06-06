@@ -6,7 +6,7 @@
 					<div class="text-xl-h4 mb-2">
 						<v-form v-if="editName">
 							<v-text-field
-							autofocus
+								autofocus
 								v-model="campaignName"
 								counter
 								maxlength="30"
@@ -56,18 +56,21 @@
 	</v-container>
 </template>
 
-<script>
-import LayoutTabs from "../components/layouts/LayoutTabs.vue";
-import LayoutColumns from "../components/layouts/LayoutColumns.vue";
+<script lang="ts">
+import Vue from "vue";
+import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
+import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
 
-import ConfirmDialog from "../components/ConfirmDialog.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
-import SearchView from "../components/SearchView.vue";
-import StatusTray from "../components/StatusTray.vue";
+import SearchView from "@/components/SearchView.vue";
+import StatusTray from "@/components/StatusTray.vue";
 
-import { eventHub } from "../js/eventHub.js";
+import { CardEvent, eventHub } from "@/js/eventHub";
+import { CardCategory } from "@/js/types";
+import utilities from "../js/utilities";
 
-export default {
+export default Vue.extend({
 	name: "PanelsContainer",
 	components: {
 		LayoutTabs,
@@ -82,14 +85,14 @@ export default {
 			editName: false,
 			confirmDialog: {
 				show: false,
-				title: undefined,
-				message: undefined,
-				acceptAction: undefined,
+				title: "",
+				message: "",
+				acceptAction: () => {},
 			},
 			rules: {
-				required: v => !!v || this.$t('fields.requiredField'),
-				counter: v => v.length <= 30 || '30 max.'
-			}
+				required: (v:string) => !!v || this.$t("fields.requiredField"),
+				counter: (v:string) => v.length <= 30 || "30 max.",
+			},
 		};
 	},
 	computed: {
@@ -104,20 +107,33 @@ export default {
 	},
 	mounted() {
 		/**
-		 * All events catched here must be CardEvent objects (imported from eventHub.js).
+		 * All events catched here must be CardEvent objects (imported from eventHub).
 		 */
 
-		eventHub.$on("delete", (e) => {
-			this.confirmDialog.message = this.$t(`dialogs.delete${e.object.constructor.name}`)
-			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${e.object.title || e.object.name || e.object.desc}" ?`;
-			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.object);
+		eventHub.$on("delete", (e: CardEvent) => {
+			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
+			let title: string;
+			switch (e.card._category) {
+				case CardCategory.Character:
+				case CardCategory.Location:
+					title = e.card.name;
+					break;
+				case CardCategory.Note:
+					title = e.card.title;
+					break;
+				default:
+					title = e.card.desc;
+					break;
+			}
+			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${title}" ?`;
+			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.card);
 			this.confirmDialog.show = true;
 		});
 	},
 	beforeDestroy() {
 		eventHub.$off("delete");
 	},
-};
+});
 </script>
 
 <style></style>

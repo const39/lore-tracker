@@ -9,13 +9,14 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from "vue";
 import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
-import { Location } from "../../../js/model.js";
+import { Location } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	name: "ContentLocation",
 	components: {
 		TagList,
@@ -23,9 +24,9 @@ export default {
 	},
 	props: {
 		itemData: {
-			type: Location,
+			type: Object as PropType<Location>,
 			required: true,
 		},
 	},
-};
+});
 </script>

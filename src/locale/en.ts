@@ -18,7 +18,7 @@ export default {
 	},
 
 	objectTypes: {
-		all: "All",
+		all: "Any",
 		objective: "Objective",
 		event: "Event",
 		location: "Location",

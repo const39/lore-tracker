@@ -29,13 +29,15 @@
 	</v-form>
 </template>
 
-<script>
-import constants from "../../../js/constants.js";
-import { Location } from "../../../js/model.js";
+<script lang="ts">
+import Vue from 'vue';
+import utilities from '@/js/utilities';
+import { CardCategory } from "@/js/types";
+import { Location } from "@/js/types";
 
 import TagChooser from "../tags/TagChooser.vue";
 
-export default {
+export default Vue.extend({
 	props: {
 		value: Boolean, // Default v-model overwrite
 		edit: Number,
@@ -46,12 +48,12 @@ export default {
 	data() {
 		return {
 			valid: false,
-			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
+			requiredRule: [(v: string) => !!v || this.$t("fields.requiredField")],
 			model: this.initModel(),
 		};
 	},
 	methods: {
-		submit() {
+		submit(): void {
 			this.$refs.form.validate();
 
 			if (this.valid) {
@@ -61,19 +63,25 @@ export default {
 				this.close();
 			}
 		},
-		close() {
+		close(): void {
 			this.model = this.initModel();
 			// Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action.
 			this.$emit("close");
 		},
-		initModel() {
+		initModel(): Location {
 			if (this.edit !== undefined) {
-				let data = this.$store.getters.get(this.edit, constants.objectTypes.LOCATION);
+				let data = this.$store.getters.get(this.edit, CardCategory.Location);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return new Location(data);
+				if (data) return {...data};
 			}
-			return new Location();
+			return {
+				_category: CardCategory.Location,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				name: ""
+			};
 		},
 	},
 	watch: {
@@ -82,9 +90,9 @@ export default {
 		 * This is allows to use a unique dialog for all location cards edits.
 		 * The parent only have to pass the id of the location to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
-		edit: function() {
+		edit: function(): void {
 			this.model = this.initModel();
 		},
 	},
-};
+});
 </script>

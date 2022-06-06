@@ -4,12 +4,12 @@
 			<v-expansion-panel>
 				<v-expansion-panel-header>
 					<div class="text-h5 text--primary">
-						<v-icon left>{{ icons[type] }}</v-icon>
-						{{ $t(`objectTypes.${type}`) }}
+						<v-icon left>{{ icons[category] }}</v-icon>
+						{{ $t(`objectTypes.${category}`) }}
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
-					<CardAdd :type="type" />
+					<CardAdd :category="category" />
 					<draggable
 						:disabled="isSortDisabled"
 						v-model="items"
@@ -27,25 +27,26 @@
 	</v-col>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from "vue";
 import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
 import draggable from "vuedraggable";
-import constants from "../../js/constants";
+import {Icon, CardCategory} from "@/js/types";
 
-export default {
+export default Vue.extend({
 	name: "LayoutColumnContent",
 	props: {
-		type: {
-			type: String,
+		category: {
+			type: String as PropType<CardCategory>,
 			required: true,
-			validator: function(value) {
-				return (
-					Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
-					value !== constants.objectTypes.ALL
-				);
-			},
+			// validator: (value) => {
+			// 	return (
+			// 		Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
+			// 		value !== constants.objectTypes.ALL
+			// 	);
+			// },
 		},
 	},
 	components: {
@@ -56,11 +57,11 @@ export default {
 	data() {
 		return {
 			isCollapsed: 0,
-			icons: constants.icons,
+			icons: Icon,
 		};
 	},
 	methods: {
-		onMove(e) {
+		onMove(e: any) {
 			/**
 			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
 			 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
@@ -77,14 +78,15 @@ export default {
 		 * - Alt+4 : Collapse/expand Character tab
 		 * - Alt+5 : Collapse/expand Note tab
 		 */
-		hotkey(e) {
+		hotkey(e: KeyboardEvent) {
+			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case 
 			if (e.altKey) {
 				if (
-					(e.code === "Digit1" && this.type === constants.objectTypes.OBJECTIVE) ||
-					(e.code === "Digit2" && this.type === constants.objectTypes.EVENT) ||
-					(e.code === "Digit3" && this.type === constants.objectTypes.LOCATION) ||
-					(e.code === "Digit4" && this.type === constants.objectTypes.CHARACTER) ||
-					(e.code === "Digit5" && this.type === constants.objectTypes.NOTE)
+					(e.code === "Digit1" && this.category === CardCategory.Objective) ||
+					(e.code === "Digit2" && this.category === CardCategory.Event) ||
+					(e.code === "Digit3" && this.category === CardCategory.Location) ||
+					(e.code === "Digit4" && this.category === CardCategory.Character) ||
+					(e.code === "Digit5" && this.category === CardCategory.Note)
 				) {
 					e.preventDefault();
 					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0;
@@ -98,23 +100,23 @@ export default {
 		},
 		items: {
 			get() {
-				switch (this.type) {
-					case constants.objectTypes.OBJECTIVE:
+				switch (this.category) {
+					case CardCategory.Objective:
 						return this.$store.getters.filteredCards.objectives;
-					case constants.objectTypes.EVENT:
+					case CardCategory.Event:
 						return this.$store.getters.filteredCards.events;
-					case constants.objectTypes.LOCATION:
+					case CardCategory.Location:
 						return this.$store.getters.filteredCards.locations;
-					case constants.objectTypes.CHARACTER:
+					case CardCategory.Character:
 						return this.$store.getters.filteredCards.characters;
-					case constants.objectTypes.NOTE:
+					case CardCategory.Note:
 						return this.$store.getters.filteredCards.notes;
 					default:
 						return undefined;
 				}
 			},
 			set(list) {
-				this.$store.commit("updateWholeList", { type: this.type, list: list });
+				this.$store.commit("updateWholeList", { category: this.category, list: list });
 			},
 		},
 	},
@@ -124,7 +126,7 @@ export default {
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);
 	},
-};
+});
 </script>
 
 <style scoped>

@@ -13,7 +13,7 @@
 			>
 				<template v-slot:header>
 					<v-col cols="12" md="4">
-						<CardAdd :type="type" />
+						<CardAdd :category="category" />
 					</v-col>
 				</template>
 				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
@@ -24,25 +24,26 @@
 	</v-tab-item>
 </template>
 
-<script>
+<script lang="ts">
+import Vue, { PropType } from "vue";
 import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
 import draggable from "vuedraggable";
-import constants from "../../js/constants";
+import { CardCategory } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	name: "LayoutTabContent",
 	props: {
-		type: {
-			type: String,
+		category: {
+			type: String as PropType<CardCategory>,
 			required: true,
-			validator: function(value) {
-				return (
-					Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
-					value !== constants.objectTypes.ALL
-				);
-			},
+			// validator: (value) => {
+			// 	return (
+			// 		Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
+			// 		value !== constants.objectTypes.ALL
+			// 	);
+			// },
 		},
 	},
 	components: {
@@ -55,39 +56,33 @@ export default {
 			drag: false,
 		};
 	},
-	methods: {
-		capitalize(str) {
-			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
-			else return "";
-		},
-	},
 	computed: {
 		isSortDisabled() {
 			return this.$store.state.filter.isEnabled;
 		},
 		items: {
 			get() {
-				switch (this.type) {
-					case constants.objectTypes.OBJECTIVE:
+				switch (this.category) {
+					case CardCategory.Objective:
 						return this.$store.getters.filteredCards.objectives;
-					case constants.objectTypes.EVENT:
+					case CardCategory.Event:
 						return this.$store.getters.filteredCards.events;
-					case constants.objectTypes.LOCATION:
+					case CardCategory.Location:
 						return this.$store.getters.filteredCards.locations;
-					case constants.objectTypes.CHARACTER:
+					case CardCategory.Character:
 						return this.$store.getters.filteredCards.characters;
-					case constants.objectTypes.NOTE:
+					case CardCategory.Note:
 						return this.$store.getters.filteredCards.notes;
 					default:
 						return undefined;
 				}
 			},
 			set(list) {
-				this.$store.commit("updateWholeList", { type: this.type, list: list });
+				this.$store.commit("updateWholeList", { category: this.category, list: list });
 			},
 		},
 	},
-};
+});
 </script>
 
 <style scoped>

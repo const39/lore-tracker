@@ -35,8 +35,10 @@
 	</div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue from "vue";
+
+export default Vue.extend({
 	data() {
 		return {
 			open: false,
@@ -50,8 +52,8 @@ export default {
 		};
 	},
 	methods: {
-		onHold(e) {
-			const element = document.getElementById("resizable");
+		onHold(e: MouseEvent) {
+			const element = document.getElementById("resizable") as HTMLElement;
 			e.preventDefault();
 			this.originalW = Number.parseFloat(
 				getComputedStyle(element, null)
@@ -70,8 +72,8 @@ export default {
 
 			this.resizing = true;
 		},
-		resize(e) {
-			const element = document.getElementById("resizable");
+		resize(e: MouseEvent) {
+			const element = document.getElementById("resizable") as HTMLElement;
 			const MIN_SIZE = 20;
 			if (this.resizing) {
 				const width = this.originalW - (e.pageX - this.originalMouseX);
@@ -97,7 +99,7 @@ export default {
 			},
 		},
 	},
-};
+});
 </script>
 
 <style scoped>

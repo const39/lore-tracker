@@ -17,13 +17,14 @@
 	</v-tooltip>
 </template>
 
-<script>
-import constants from "../js/constants";
+<script lang="ts">
+import Vue from "vue";
+import { Season } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	methods: {
 		previousSeason() {
-			const values = Object.values(constants.seasons);
+			const values = Object.values(Season);
 			const index = values.findIndex((entry) => entry === this.$store.state.season);
 			if (index > -1) {
 				if (index > 0) this.currentSeason = values[index - 1];
@@ -31,7 +32,7 @@ export default {
 			}
 		},
 		nextSeason() {
-			const values = Object.values(constants.seasons);
+			const values = Object.values(Season);
 			let index = values.findIndex((entry) => entry === this.$store.state.season);
 			if (index > -1) {
 				if (index < values.length - 1) this.currentSeason = values[index + 1];
@@ -57,7 +58,7 @@ export default {
 			},
 		},
 	},
-};
+});
 </script>
 <style scoped>
 .clickable:hover {

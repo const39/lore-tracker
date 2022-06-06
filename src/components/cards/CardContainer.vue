@@ -9,9 +9,10 @@
 	</BaseCard>
 </template>
 
-<script>
-import { Character, Event, Location, Note, Objective } from "../../js/model";
-import { eventHub, CardEvent } from '../../js/eventHub';
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+import { CardTypes } from "@/js/types";
+import { eventHub, CardEvent } from '@/js/eventHub';
 
 import BaseCard from "./BaseCard.vue";
 
@@ -26,8 +27,9 @@ import FormEvent from "./forms/FormEvent.vue";
 import FormLocation from "./forms/FormLocation.vue";
 import FormCharacter from "./forms/FormCharacter.vue";
 import FormNote from "./forms/FormNote.vue";
+import utilities from '@/js/utilities';
 
-export default {
+export default Vue.extend({
 	components: {
 		BaseCard,
 		FormObjective,
@@ -43,7 +45,8 @@ export default {
 	},
 	props: {
 		itemData: {
-			type: [Character, Event, Location, Note, Objective],
+			// type: [Character, Event, Location, Note, Objective],
+			type: Object as PropType<CardTypes>,
 			required: true,
 		},
 		outlined: Boolean,
@@ -60,17 +63,17 @@ export default {
 		},
 	},
 	computed: {
-		contentComponent() {
-			return `Content${this.itemData.constructor.name}`;
+		contentComponent(): string {
+			return `Content${utilities.capitalize(this.itemData._category)}`;
 		},
-		formComponent() {
-			return `Form${this.itemData.constructor.name}`;
+		formComponent(): string {
+			return `Form${utilities.capitalize(this.itemData._category)}`;
 		},
-		isSortDisabled() {
+		isSortDisabled(): boolean {
 			return this.$store.state.filter.isEnabled;
 		},
 	},
-};
+});
 </script>
 
 <style></style>

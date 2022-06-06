@@ -6,7 +6,7 @@
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
 					<v-tooltip top>
 						<template v-slot:activator="{ on, attrs }">
-							<v-icon large v-on="on" v-bind="attrs">{{ itemData.getIcon() }}</v-icon>
+							<v-icon large v-on="on" v-bind="attrs">{{ getIcon(itemData) }}</v-icon>
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
@@ -21,13 +21,15 @@
 	</div>
 </template>
 
-<script>
-import { Event } from "../../../js/model.js";
+<script lang="ts">
+import Vue, { PropType } from "vue";
+import { Event } from "@/js/types";
 
 import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
+import utilities from '@/js/utilities';
 
-export default {
+export default Vue.extend({
 	name: "ContentEvent",
 	components: {
 		TagList,
@@ -35,9 +37,12 @@ export default {
 	},
 	props: {
 		itemData: {
-			type: Event,
+			type: Object as PropType<Event>,
 			required: true,
 		},
 	},
-};
+	methods: {
+		getIcon: utilities.getIcon
+	}
+});
 </script>

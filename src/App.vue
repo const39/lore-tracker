@@ -130,15 +130,16 @@
 	</v-app>
 </template>
 
-<script>
-import constants from "./js/constants.js";
+<script lang="ts">
+import Vue from "vue";
+import {VERSION, LocalStorageKey} from "./js/types";
 
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
 import ThemeSelector from "./components/selectors/ThemeSelector.vue";
 import QuickNote from "./components/QuickNote.vue";
 
-export default {
+export default Vue.extend({
 	name: "App",
 	components: {
 		ConfirmDialog,
@@ -148,16 +149,16 @@ export default {
 	},
 	data() {
 		return {
-			version: constants.VERSION,
+			version: VERSION,
 			showMenu: false,
 			showSnackbar: false,
 			showHotkeysDialog: false,
 			showAboutDialog: false,
 			confirmDialog: {
 				show: false,
-				title: undefined,
-				message: undefined,
-				acceptAction: undefined,
+				title: "",
+				message: "",
+				acceptAction: () => {},
 			},
 		};
 	},
@@ -169,7 +170,6 @@ export default {
 			} catch (error) {
 				console.error("Copy to clipboard failed.");
 			}
-			this.showExportDialog = false;
 		},
 		showConfirmDialog() {
 			this.confirmDialog.title = this.$t("options.deleteData.title");
@@ -183,14 +183,14 @@ export default {
 		 * - On F1 press : Navigate to Home page
 		 * - On F2 press : Navigate to Timeline page
 		 */
-		hotkey(e) {
+		hotkey(e: KeyboardEvent) {
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
 			else if (e.code === "F1") this.$router.push({ name: "Home" });
 			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
 		},
 	},
 	mounted() {
-		this.$vuetify.theme.dark = localStorage.getItem(constants.localStorageKeys.THEME_KEY) === "dark";
+		this.$vuetify.theme.dark = localStorage.getItem(LocalStorageKey.THEME_KEY) === "dark";
 		document.addEventListener("keydown", this.hotkey);
 	},
 	created() {
@@ -200,7 +200,7 @@ export default {
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);
 	},
-};
+});
 </script>
 
 <style scoped>

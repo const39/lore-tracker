@@ -16,14 +16,14 @@
 	</div>
 </template>
 
-<script>
-import constants from "../../../js/constants.js";
-import { Objective } from "../../../js/model.js";
+<script lang="ts">
+import Vue, { PropType } from "vue";
+import { Icon, Objective } from "@/js/types";
 
 import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
-export default {
+export default Vue.extend({
 	name: "ContentObjective",
 	components: {
 		TagList,
@@ -31,14 +31,14 @@ export default {
 	},
 	props: {
 		itemData: {
-			type: Objective,
+			type: Object as PropType<Objective>,
 			required: true,
 		},
 	},
 	data() {
 		return {
-			icons: constants.icons,
+			icons: Icon,
 		};
 	},
-};
+});
 </script>

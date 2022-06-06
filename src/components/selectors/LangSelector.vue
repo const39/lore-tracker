@@ -13,41 +13,40 @@
 	</SelectorActivator>
 </template>
 
-<script>
-import constants from "../../js/constants.js";
-import translation from "../../js/translation.js";
+<script lang="ts">
+import Vue from "vue";
+import { SupportedLanguages } from "@/js/translation";
+import translation from "@/js/translation";
 
 import BaseSelector from "./BaseSelector.vue";
 import SelectorActivator from "./SelectorActivator.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		BaseSelector,
 		SelectorActivator,
 	},
 	methods: {
-		selectLang(lang) {
+		selectLang(lang: SupportedLanguages) {
 			this.$vuetify.lang.current = lang;
-			translation.setLocale(lang);
-
-			localStorage.setItem(constants.localStorageKeys.LANG_KEY, lang);
+			translation.setLanguage(lang);
 		},
 	},
 	computed: {
 		langList() {
 			return [
 				{
-					key: "fr",
+					key: SupportedLanguages.FRENCH,
 					name: "Français",
 				},
 				{
-					key: "en",
+					key: SupportedLanguages.ENGLISH,
 					name: "English",
 				},
 			];
 		},
 	},
-};
+});
 </script>
 
 <style></style>

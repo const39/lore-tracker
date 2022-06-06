@@ -19,13 +19,14 @@
 	</div>
 </template>
 
-<script>
-import { Character } from "../../../js/model.js";
+<script lang="ts">
+import Vue, { PropType } from "vue";
+import { Character } from "@/js/types";
 
 import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
-export default {
+export default Vue.extend({
 	name: "ContentCharacter",
 	components: {
 		TagList,
@@ -33,12 +34,12 @@ export default {
 	},
 	props: {
 		itemData: {
-			type: Character,
+			type: Object as PropType<Character>,
 			required: true,
 		},
 	},
 	computed: {
-		identity() {
+		identity(): string {
 			let race = this.itemData.race || this.$t("fields.unknownRace");
 			let classes = this.itemData.classes || this.$t("fields.unknownClass");
 			let role = this.itemData.role || this.$t("fields.unknownRole");
@@ -46,5 +47,5 @@ export default {
 			return `${race} - ${classes} (${role})`;
 		},
 	},
-};
+});
 </script>

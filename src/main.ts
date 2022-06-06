@@ -15,6 +15,6 @@ Vue.prototype.$t = translation.t;
 new Vue({
     router,
     vuetify,
-    store,
+    store: store.original,
     render: (h) => h(App)
 }).$mount("#app");

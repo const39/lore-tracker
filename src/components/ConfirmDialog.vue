@@ -12,21 +12,23 @@
 	</v-dialog>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue, { PropType } from "vue";
+
+export default Vue.extend({
 	props: {
 		value: Boolean, // Default v-model overwrite
 		title: String,
 		message: String,
-		acceptAction: Function,
-		cancelAction: Function,
+		acceptAction: Function as PropType<() => void>,
+		cancelAction: Function as PropType<() => void>,
 	},
 	methods: {
-		cancel() {
+		cancel(): void {
 			if (this.cancelAction) this.cancelAction();
 			this.showDialog = false;
 		},
-		accept() {
+		accept(): void {
 			if (this.acceptAction) this.acceptAction();
 			this.showDialog = false;
 		},
@@ -41,12 +43,12 @@ export default {
 			get() {
 				return this.value;
 			},
-			set(value) {
+			set(value): void {
 				this.$emit("input", value);
 			},
 		},
 	},
-};
+});
 </script>
 
 <style></style>

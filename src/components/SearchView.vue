@@ -20,8 +20,8 @@
 					dense
 					class="mx-2 flex-grow-0 flex-shrink-1"
 					:label="$t('search.in')"
-					v-model="selectedType"
-					:items="types"
+					v-model="selectedCategory"
+					:items="categories"
 				>
 					<template v-slot:selection="data">
 						<v-icon left small> {{ icons[data.item] }} </v-icon>
@@ -47,29 +47,29 @@
 	</span>
 </template>
 
-<script>
-import constants from "../js/constants";
-
+<script lang="ts">
+import Vue from "vue";
+import { CategoryFilter, Icon } from "@/js/types";
 import TagChooser from "./cards/tags/TagChooser.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		TagChooser,
 	},
 	data() {
 		return {
 			shown: false,
-			icons: constants.icons,
-			types: Object.values(constants.objectTypes),
-			selectedType: constants.objectTypes.ALL,
-			textToContain: undefined,
+			icons: Icon,
+			categories: Object.values(CategoryFilter),
+			selectedCategory: CategoryFilter.ALL,
+			textToContain: "",
 			selectedTags: [],
 		};
 	},
 	methods: {
 		search() {
 			this.$store.commit("changeFilter", {
-				type: this.selectedType,
+				category: this.selectedCategory,
 				text: this.textToContain,
 				tags: this.selectedTags,
 			});
@@ -77,12 +77,12 @@ export default {
 		/**
 		 * Open/close the Search view when pressing Ctrl+K
 		 */
-		hotkey(e) {
+		hotkey(e: KeyboardEvent) {
 			if (e.code === "KeyK" && e.ctrlKey) this.shown = !this.shown;
 		},
 	},
 	computed: {
-		style() {
+		style(): string {
 			return this.shown ? "display: block;" : "display: none;";
 		},
 		resultsNumber() {
@@ -99,7 +99,7 @@ export default {
 		/**
 		 * Trigger search as soon as a field changes
 		 */
-		selectedType() {
+		selectedCategory() {
 			this.search();
 		},
 		textToContain() {
@@ -115,5 +115,5 @@ export default {
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);
 	},
-};
+});
 </script>

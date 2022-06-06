@@ -57,13 +57,14 @@
 	</v-form>
 </template>
 
-<script>
-import constants from "../../../js/constants.js";
-import { Event } from "../../../js/model.js";
+<script lang="ts">
+import Vue from "vue";
+import utilities from "@/js/utilities";
+import { Icon, CardCategory, EventType, Event } from "@/js/types";
 
 import TagChooser from "../tags/TagChooser.vue";
 
-export default {
+export default Vue.extend({
 	props: {
 		value: Boolean, // Default v-model overwrite
 		edit: Number,
@@ -74,20 +75,20 @@ export default {
 	data() {
 		return {
 			valid: false,
-			requiredRule: [(v) => !!v || this.$t("fields.requiredField")],
+			requiredRule: [(v: string) => !!v || this.$t("fields.requiredField")],
 			dayRange: [
-				(v) => {
-					v = Number(v);
-					return (Number.isSafeInteger(v) && v >= 0) || this.$t("fields.dayNotValid");
+				(v: string) => {
+					const val = Number(v);
+					return (Number.isSafeInteger(val) && val >= 0) || this.$t("fields.dayNotValid");
 				},
 			],
-			icons: constants.icons,
+			icons: Icon,
 			model: this.initModel(),
-			eventTypes: Object.values(constants.eventTypes),
+			eventTypes: Object.values(EventType),
 		};
 	},
 	methods: {
-		submit() {
+		submit(): void {
 			this.$refs.form.validate();
 
 			if (this.valid) {
@@ -100,20 +101,27 @@ export default {
 				this.close();
 			}
 		},
-		close() {			
+		close(): void {
 			this.model = this.initModel();
 			// Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action.
 			this.$emit("close");
 		},
-		initModel() {
+		initModel(): Event {
 			if (this.edit !== undefined) {
-				let data = this.$store.getters.get(this.edit, constants.objectTypes.EVENT);
+				let data = this.$store.getters.get(this.edit, CardCategory.Event);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return new Event(data);
+				if (data) return { ...data };
 			}
 			// If the user creates a new Event, we set the current day as default
-			return new Event({ day: this.$store.state.days });
+			return {
+				_category: CardCategory.Event,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				type: EventType.OTHER,
+				day: this.$store.state.days,
+			};
 		},
 	},
 	watch: {
@@ -122,9 +130,9 @@ export default {
 		 * This is allows to use a unique dialog for all event cards edits.
 		 * The parent only have to pass the id of the event to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
-		edit: function() {
+		edit: function(): void {
 			this.model = this.initModel();
 		},
 	},
-};
+});
 </script>

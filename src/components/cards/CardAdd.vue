@@ -17,7 +17,8 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import BaseCard from "./BaseCard.vue";
 
 import FormObjective from "./forms/FormObjective.vue";
@@ -26,7 +27,9 @@ import FormLocation from "./forms/FormLocation.vue";
 import FormCharacter from "./forms/FormCharacter.vue";
 import FormNote from "./forms/FormNote.vue";
 
-export default {
+import utilities from "@/js/utilities";
+
+export default Vue.extend({
 	components: {
 		BaseCard,
 		FormObjective,
@@ -36,7 +39,7 @@ export default {
 		FormNote,
 	},
 	props: {
-		type: {
+		category: {
 			type: String,
 			required: true,
 		},
@@ -47,20 +50,17 @@ export default {
 		};
 	},
 	methods: {
-		capitalize(str) {
-			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
-			else return "";
-		},
+
 	},
 	computed: {
-		formComponent() {
-			return `Form${this.capitalize(this.type)}`;
+		formComponent(): string {
+			return `Form${utilities.capitalize(this.category)}`;
 		},
-		isDarkTheme() {
+		isDarkTheme(): boolean {
 			return this.$vuetify.theme.dark;
 		},
 	},
-};
+});
 </script>
 
 <style scoped>

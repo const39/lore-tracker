@@ -21,10 +21,11 @@
 	</v-dialog>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		HotkeyList,
 	},
@@ -94,5 +95,5 @@ export default {
 			},
 		},
 	},
-};
+});
 </script>

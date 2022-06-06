@@ -1,41 +1,42 @@
 <template>
 	<div class="pa-3">
-		<v-row v-for="(list, type) in tags" :key="type">
-			<v-icon small>{{icons[type]}}</v-icon>
-			<v-chip v-for="tag in list" :key="tag.id" class="ma-1" small outlined @click.stop="goToCard(tag.type, tag.id)">
-				{{tag.text | truncate}}
+		<v-row v-for="(list, category) in tags" :key="category">
+			<v-icon small>{{ icons[category] }}</v-icon>
+			<v-chip v-for="tag in list" :key="tag.id" class="ma-1" small outlined @click.stop="goToCard(tag)">
+				{{ tag.text | truncate }}
 			</v-chip>
 		</v-row>
 	</div>
 </template>
 
-<script>
-import { Tag, Objective, Event, Location, Character, Note } from "../../../js/model.js";
-import { eventHub, TagEvent } from "../../../js/eventHub.js";
-import constants from "../../../js/constants.js";
+<script lang="ts">
+import Vue, { PropType } from "vue";
+import { Tag, Icon } from "@/js/types";
+import { eventHub, TagEvent } from "@/js/eventHub";
+import utilities from "@/js/utilities";
 
-export default {
+export default Vue.extend({
 	props: {
 		items: {
 			// Must be an array of IDs
-			type: Array,
-			default: function() {
+			type: Array as PropType<number[]>,
+			default: () => {
 				return [];
 			},
 		},
 	},
 	data() {
 		return {
-			icons: constants.icons
-		}
+			icons: Icon,
+		};
 	},
 	methods: {
 		/**
 		 * Send an event to the eventHub indicating that a tag referencing a card has been clicked.
 		 * This event can be used by layout components to redirect the user to the according card.
 		 */
-		goToCard(type, id) {
-			eventHub.$emit("tag-selected", new TagEvent(type, id));
+		goToCard(tag: Tag) {
+			eventHub.$emit("tag-selected", new TagEvent(tag));
 		},
 	},
 	computed: {
@@ -43,41 +44,30 @@ export default {
 		 * Create a Tag for each object whose ID is given
 		 */
 		tags() {
-			let tagsList = {};
+			let tagsList: any = {};
 
 			for (const id of this.items) {
 				const elem = this.$store.getters.get(id);
 
 				// If the object is found, create a tag object from the element's data
 				if (elem) {
-					let key = undefined;
-					if (elem instanceof Objective) key = constants.objectTypes.OBJECTIVE;
-					else if (elem instanceof Event) key = constants.objectTypes.EVENT;
-					else if (elem instanceof Location) key = constants.objectTypes.LOCATION;
-					else if (elem instanceof Character) key = constants.objectTypes.CHARACTER;
-					else if (elem instanceof Note) key = constants.objectTypes.NOTE;
-					else {
-						console.error(elem, "is not an instance of an accepted object.");
-						return;
-					}
+					let key = elem._category;
 
 					// Create a key of the object's type if there is none yet
-					if(!(key in tagsList)) tagsList[key] = []
+					if (!(key in tagsList)) tagsList[key] = [];
 
 					// Add the tag in the list of its type
 					tagsList[key].push(new Tag(elem));
-				}
+
+				} else console.error(`TagList: No card with id ${id} found.`);
 			}
 			return tagsList;
 		},
 	},
 	filters: {
-		truncate(text) {
-			if (text.length > 30) return `${text.substring(0, 30)}...`;
-			else return text;
-		},
+		truncate: (text: string) => utilities.truncate(text, 30),
 	},
-};
+});
 </script>
 
 <style></style>

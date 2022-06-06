@@ -1,16 +1,11 @@
 {
   "name": "lore-tracker",
+  "version": "1.0.0",
+  "private": true,
   "description": "Lore Tracker allows you to easily save, manage and visualise story elements for Table-top RPGs.",
-  "homepage": "https://github.com/const39/lore-tracker",
-  "license": "GPL-3.0-or-later",
   "author": {
     "name": "const39"
   },
-  "repository": {
-    "url": "https://github.com/const39/lore-tracker"
-  },
-  "version": "1.0.0",
-  "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -20,10 +15,11 @@
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
-  "main": "background.js",
+  "main": "background.ts",
   "dependencies": {
     "@adapttive/vue-markdown": "^4.0.1",
     "core-js": "^3.6.5",
+    "direct-vuex": "^0.12.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuedraggable": "^2.24.3",
@@ -31,11 +27,15 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
     "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-typescript": "~4.5.13",
     "@vue/cli-plugin-vuex": "^4.5.13",
     "@vue/cli-service": "~4.5.0",
+    "@vue/eslint-config-typescript": "^7.0.0",
     "babel-eslint": "^10.1.0",
     "electron": "^12.2.3",
     "electron-devtools-installer": "^3.1.0",
@@ -43,9 +43,15 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
+    "typescript": "~4.1.5",
     "vue-cli-plugin-electron-builder": "~2.0.0",
     "vue-cli-plugin-vuetify": "~2.4.1",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.7.0"
+  },
+  "homepage": "https://github.com/const39/lore-tracker",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "url": "https://github.com/const39/lore-tracker"
   }
 }

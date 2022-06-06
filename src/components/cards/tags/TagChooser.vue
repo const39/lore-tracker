@@ -34,12 +34,14 @@
 	</v-autocomplete>
 </template>
 
-<script>
-import { Tag } from "../../../js/model.js";
+<script lang="ts">
+import Vue from 'vue';
+import utilities from '@/js/utilities';
+import { Tag } from "@/js/types";
 
 import MarkdownView from "../../MarkdownView.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		MarkdownView,
 	},
@@ -62,7 +64,8 @@ export default {
 		/**
 		 * Browse the store to create a tag for each object (excluding the specified object type, if given)
 		 */
-		availableTags() {
+		availableTags(): Tag | {header: string} {
+			// TODO simplify algo using new '_category' property
 			let tags = [];
 
 			// For each array of objects in the cards store
@@ -98,12 +101,9 @@ export default {
 		},
 	},
 	filters: {
-		truncate(text) {
-			if (text.length > 30) return `${text.substring(0, 30)}...`;
-			else return text;
-		},
+		truncate: (text: string) => utilities.truncate(text, 30),
 	},
-};
+});
 </script>
 
 <style></style>

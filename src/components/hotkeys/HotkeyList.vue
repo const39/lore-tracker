@@ -7,10 +7,11 @@
     </v-card>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import HotkeyElement from "./HotkeyElement.vue";
 
-export default {
+export default Vue.extend({
     components: {
         HotkeyElement
     },
@@ -24,5 +25,5 @@ export default {
             required: true
         }
     },
-}
+});
 </script>

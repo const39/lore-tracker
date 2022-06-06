@@ -9,10 +9,11 @@
     </v-card>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import CardOptions from "./CardOptions.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		CardOptions
 	},
@@ -26,14 +27,14 @@ export default {
 		};
 	},
 	computed: {
-		elevation() {
+		elevation(): number {
 			let elevation = this.outlined ? 0 : 1;
 			if (this.hover) elevation++;
 
 			return elevation;
 		},
 	},
-};
+});
 </script>
 
 <style></style>

@@ -18,15 +18,21 @@
 	</v-card>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue, { PropType } from 'vue';
+
+interface IndexableObject {
+	key: object
+}
+
+export default Vue.extend({
 	props: {
 		items: {
-			type: Array,
+			type: Array as PropType<IndexableObject[]>,
 			required: true,
 		},
 	},
-};
+});
 </script>
 <style scoped>
 .active {
