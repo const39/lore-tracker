@@ -2,7 +2,7 @@
 	<BaseCard :with-options="!showForm" :outlined="outlined" :id="itemData.id + '-card'" @edit="showForm = true" @delete="onDelete">
 		<v-expand-transition>
 			<!-- Dynamic Form component -->
-			<component v-if="showForm" :is="formComponent" :edit="itemData.id" @close="showForm = false" />
+			<component v-if="showForm" :is="formComponent" :category="itemData._category" :edit="itemData.id" @close="showForm = false" />
 			<!-- Dynamic Card content component -->
 			<component v-else :is="contentComponent" :class="{ draggable: !isSortDisabled }" :item-data="itemData" />
 		</v-expand-transition>

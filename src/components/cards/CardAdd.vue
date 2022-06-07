@@ -3,7 +3,7 @@
 		<!-- Dynamic Form component ("Add" version) -->
 		<v-expand-transition>
 			<BaseCard v-if="showForm">
-				<component :is="formComponent" @close="showForm = false" />
+				<component :is="formComponent" :category="category" @close="showForm = false" />
 			</BaseCard>
 		</v-expand-transition>
 		<!-- "Add" clickable card button -->
