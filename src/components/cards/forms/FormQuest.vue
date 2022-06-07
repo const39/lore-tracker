@@ -2,7 +2,7 @@
 	<v-form v-model="valid" ref="form">
 		<!-- Show title if "Add" form version -->
 		<v-card-title v-if="edit === undefined">
-			<span class="text-h5">{{ $t("dialogs.addObjective") }}</span>
+			<span class="text-h5">{{ $t("dialogs.addQuest") }}</span>
 		</v-card-title>
 		<v-card-text>
 			<v-container>

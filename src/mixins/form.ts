@@ -45,9 +45,9 @@ export default Vue.extend({
 		},
 		createEmptyCardObject(category: CardCategory): CardTypes {
 			switch (category) {
-				case CardCategory.Objective:
+				case CardCategory.Quest:
 					return {
-						_category: CardCategory.Objective,
+						_category: CardCategory.Quest,
 						id: utilities.uid(),
 						tags: [],
 						title: "",
@@ -97,8 +97,8 @@ export default Vue.extend({
 	watch: {
 		/**
 		 * Observe the edit prop. When the prop changes, we update the model.
-		 * This is allows to use a unique dialog for all objective cards edits.
-		 * The parent only have to pass the id of the objective to edit. When that id changes, the form gets the relevant data to set the model.
+		 * This is allows to use a unique dialog for all quest cards edits.
+		 * The parent only have to pass the id of the quest to edit. When that id changes, the form gets the relevant data to set the model.
 		 */
 		edit: function(): void {
 			this.model = this.initModel();

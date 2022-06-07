@@ -34,7 +34,7 @@ export default Vue.extend({
 	methods: {
 		/**
 		 * Manage each column hot key :
-		 * - Alt+1 : Show Objective tab
+		 * - Alt+1 : Show Quest tab
 		 * - Alt+2 : Show Event tab
 		 * - Alt+3 : Show Location tab
 		 * - Alt+4 : Show Character tab
@@ -55,7 +55,7 @@ export default Vue.extend({
 		eventHub.$on("tag-selected", (e: TagEvent) => {
 			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case
 			switch (e.tag.category) {
-				case CardCategory.Objective:
+				case CardCategory.Quest:
 					this.activeTab = 0;
 					break;
 				case CardCategory.Event:

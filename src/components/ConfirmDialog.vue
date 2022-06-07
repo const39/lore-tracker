@@ -35,7 +35,7 @@ export default Vue.extend({
 	},
 	computed: {
 		/**
-		 * Overwrite default v-model to bind the ObjectiveForm v-model attribute to the v-dialog one.
+		 * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
 		 * This allows to use a custom component as an external activator for the v-dialog.
 		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
 		 */

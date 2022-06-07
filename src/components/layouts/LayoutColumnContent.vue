@@ -82,7 +82,7 @@ export default Vue.extend({
 			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case 
 			if (e.altKey) {
 				if (
-					(e.code === "Digit1" && this.category === CardCategory.Objective) ||
+					(e.code === "Digit1" && this.category === CardCategory.Quest) ||
 					(e.code === "Digit2" && this.category === CardCategory.Event) ||
 					(e.code === "Digit3" && this.category === CardCategory.Location) ||
 					(e.code === "Digit4" && this.category === CardCategory.Character) ||
@@ -101,8 +101,8 @@ export default Vue.extend({
 		items: {
 			get() {
 				switch (this.category) {
-					case CardCategory.Objective:
-						return this.$store.getters.filteredCards.objectives;
+					case CardCategory.Quest:
+						return this.$store.getters.filteredCards.quests;
 					case CardCategory.Event:
 						return this.$store.getters.filteredCards.events;
 					case CardCategory.Location:

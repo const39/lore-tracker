@@ -21,7 +21,7 @@
 import Vue from "vue";
 import BaseCard from "./BaseCard.vue";
 
-import FormObjective from "./forms/FormObjective.vue";
+import FormQuest from "./forms/FormQuest.vue";
 import FormEvent from "./forms/FormEvent.vue";
 import FormLocation from "./forms/FormLocation.vue";
 import FormCharacter from "./forms/FormCharacter.vue";
@@ -32,7 +32,7 @@ import utilities from "@/js/utilities";
 export default Vue.extend({
 	components: {
 		BaseCard,
-		FormObjective,
+		FormQuest,
 		FormEvent,
 		FormLocation,
 		FormCharacter,

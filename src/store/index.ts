@@ -11,7 +11,7 @@ Vue.use(Vuex);
  */
 function defaultCards(): CardsStore {
 	return {
-		objectives: [],
+		quests: [],
 		events: [],
 		locations: [],
 		characters: [],
@@ -86,7 +86,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 								case CardCategory.Location:
 									predicate = entry.name.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
 									break;
-								case CardCategory.Objective:
+								case CardCategory.Quest:
 									predicate = entry.title.toLowerCase().includes(state.filter.text);
 									predicate ||= entry.tasks.some(task => task.desc.toLowerCase().includes(state.filter.text));	// Check if at least one task contains the text filter
 									break;
@@ -171,8 +171,8 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 				const parsedData: SaveFormat = JSON.parse(rawData);
 				state.cards = parsedData.cards;
 
-				// // Convert all raw JS objects as Objective instances
-				// for (const entry of rawData.cards.objectives) state.cards.objectives.push(new Objective(entry));
+				// // Convert all raw JS objects as Quest instances
+				// for (const entry of rawData.cards.quests) state.cards.quests.push(new Quest(entry));
 
 				// // Convert all raw JS objects as Event instances
 				// for (const entry of rawData.cards.events) state.cards.events.push(new Event(entry));
@@ -195,7 +195,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		},
 		add(state, payload: CardTypes) {
 			let list: CardTypes[];
-			if (payload._category === CardCategory.Objective) list = state.cards.objectives;
+			if (payload._category === CardCategory.Quest) list = state.cards.quests;
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;
@@ -210,7 +210,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		},
 		update(state, payload: CardTypes) {
 			let list: CardTypes[];
-			if (payload._category === CardCategory.Objective) list = state.cards.objectives;
+			if (payload._category === CardCategory.Quest) list = state.cards.quests;
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;
@@ -230,7 +230,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		},
 		delete(state, payload: CardTypes) {
 			let list: CardTypes[];
-			if (payload._category === CardCategory.Objective) list = state.cards.objectives;
+			if (payload._category === CardCategory.Quest) list = state.cards.quests;
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;

@@ -8,7 +8,7 @@ You can't remember the name of that NPC you met six months ago ? Lore Tracker ha
 ![characters page](screenshots/timeline.png)
 ## Features
 
-* Add, edit and delete story elements ("cards") such as Objectives, Events, Locations, Characters... 
+* Add, edit and delete story elements ("cards") such as Quests, Events, Locations, Characters... 
 * Markdown language support for texts
 * Link cards together with tags
 * Sort cards with Drag & drop

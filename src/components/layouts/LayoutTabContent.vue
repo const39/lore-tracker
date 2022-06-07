@@ -63,8 +63,8 @@ export default Vue.extend({
 		items: {
 			get() {
 				switch (this.category) {
-					case CardCategory.Objective:
-						return this.$store.getters.filteredCards.objectives;
+					case CardCategory.Quest:
+						return this.$store.getters.filteredCards.quests;
 					case CardCategory.Event:
 						return this.$store.getters.filteredCards.events;
 					case CardCategory.Location:

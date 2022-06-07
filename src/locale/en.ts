@@ -19,7 +19,7 @@ export default {
 
 	objectTypes: {
 		all: "Any",
-		objective: "Objective",
+		quest: "Quest",
 		event: "Event",
 		location: "Location",
 		character: "Character",
@@ -65,20 +65,20 @@ export default {
 	},
 
 	dialogs: {
-		addObjective: "Add an objective",
+		addQuest: "Add a quest",
 		addEvent: "Add an event",
 		addLocation: "Add a location",
 		addCharacter: "Add a character",
 		addNote: "Add a note",
 
-		editObjective: "Edit an objective",
+		editQuest: "Edit a quest",
 		editEvent: "Edit an event",
 		editLocation: "Edit a location",
 		editCharacter: "Edit a character",
 		editNote: "Edit a note",
 
 		deleteTitle: "Delete ",
-		deleteObjective: "Do you really want to delete this objective ?",
+		deleteQuest: "Do you really want to delete this quest ?",
 		deleteEvent: "Do you really want to delete this event ? This will also change the timeline.",
 		deleteLocation: "Do you really want to delete this location ?",
 		deleteCharacter: "Do you really want to delete this character ?",
@@ -137,7 +137,7 @@ export default {
 			content: {
 				title: "Content",
 				// showTabPrefix: "Afficher l'onglet/la colonne ",
-				showTabObjective: "Show Objective tab/column",
+				showTabQuest: "Show Quest tab/column",
 				showTabEvent: "Show Event tab/column",
 				showTabLocation: "Show Location tab/column",
 				showTabCharacter: "Show Character tab/column",

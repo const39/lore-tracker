@@ -4,7 +4,7 @@
 		<v-card-actions class="float-right">
 			<v-tooltip top v-if="fullyComplete">
 				<template v-slot:activator="{ on, attrs }">
-					<v-icon v-bind="attrs" v-on="on">{{ icons.objectiveCompleted }}</v-icon>
+					<v-icon v-bind="attrs" v-on="on">{{ icons.questCompleted }}</v-icon>
 				</template>
 				<span>{{ $t("fields.completed") }}</span>
 			</v-tooltip>
@@ -31,18 +31,18 @@
 
 <script lang="ts">
 import Vue, { PropType } from "vue";
-import { Icon, Objective } from "@/js/types";
+import { Icon, Quest } from "@/js/types";
 
 import TagList from "../tags/TagList.vue";
 
 export default Vue.extend({
-	name: "ContentObjective",
+	name: "ContentQuest",
 	components: {
 		TagList,
 	},
 	props: {
 		itemData: {
-			type: Object as PropType<Objective>,
+			type: Object as PropType<Quest>,
 			required: true,
 		},
 	},

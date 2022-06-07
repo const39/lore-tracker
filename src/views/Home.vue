@@ -118,7 +118,7 @@ export default Vue.extend({
 				case CardCategory.Location:
 					title = e.card.name;
 					break;
-				case CardCategory.Objective:
+				case CardCategory.Quest:
 				case CardCategory.Note:
 					title = e.card.title;
 					break;

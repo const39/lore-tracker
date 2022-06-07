@@ -21,9 +21,9 @@ export enum Season {
 // ***** Model *****
 // *****************
 export type ID = number;
-export type CardTypes = Objective | Event | Location | Character | Note;
+export type CardTypes = Quest | Event | Location | Character | Note;
 export enum CardCategory {
-	Objective = "objective",
+	Quest = "quest",
 	Event = "event",
 	Location = "location",
 	Character = "character",
@@ -52,8 +52,8 @@ export interface Card {
 	tags: ID[];
 }
 
-export interface Objective extends Card {
-	readonly _category: CardCategory.Objective;
+export interface Quest extends Card {
+	readonly _category: CardCategory.Quest;
 	title: string;
 	tasks: Task[];
 }
@@ -88,7 +88,7 @@ export interface Note extends Card, Describable {
 // ***** View ******
 // *****************
 export enum Icon {
-	objective = "mdi-star-circle",
+	quest = "mdi-star-circle",
 	event = "mdi-sword-cross",
 	location = "mdi-home",
 	character = "mdi-account",
@@ -98,7 +98,7 @@ export enum Icon {
 	discovery = "mdi-magnify",
 	travel = "mdi-horseshoe",
 	other = "mdi-help",
-	objectiveCompleted = "mdi-check-decagram",
+	questCompleted = "mdi-check-decagram",
 	taskCompleted = "mdi-star-check",
 	taskOngoing = "mdi-star-outline",
 }
@@ -117,7 +117,7 @@ export class Tag {
 			case CardCategory.Location:
 				this.text = refObject.name;
 				break;
-			case CardCategory.Objective:
+			case CardCategory.Quest:
 			case CardCategory.Note:
 				this.text = refObject.title;
 				break;
@@ -135,7 +135,7 @@ export class Tag {
 // ***** Store/Save ******
 // ***********************
 export interface CardsStore {
-	objectives: Objective[];
+	quests: Quest[];
 	events: Event[];
 	locations: Location[];
 	characters: Character[];
@@ -144,7 +144,7 @@ export interface CardsStore {
 
 export enum CategoryFilter {
 	ALL = "all",
-	OBJECTIVE = "objective",
+	QUEST = "quest",
 	EVENT = "event",
 	LOCATION = "location",
 	CHARACTER = "character",

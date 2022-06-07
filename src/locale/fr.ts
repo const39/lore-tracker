@@ -19,7 +19,7 @@ export default {
 
 	objectTypes: {
 		all: "Tous",
-		objective: "Objectif",
+		quest: "Quête",
 		event: "Événement",
 		location: "Localité",
 		character: "Personnage",
@@ -65,20 +65,20 @@ export default {
 	},
 
 	dialogs: {
-		addObjective: "Ajouter un objectif",
+		addQuest: "Ajouter une quête",
 		addEvent: "Ajouter un événement",
 		addLocation: "Ajouter une localité",
 		addCharacter: "Ajouter un personnage",
 		addNote: "Ajouter une note",
 
-		editObjective: "Modifier un objectif",
+		editQuest: "Modifier une quête",
 		editEvent: "Modifier un événement",
 		editLocation: "Modifier une localité",
 		editCharacter: "Modifier un personnage",
 		editNote: "Modifier une note",
 
 		deleteTitle: "Supprimer ",
-		deleteObjective: "Voulez-vous vraiment supprimer cet objectif ?",
+		deleteQuest: "Voulez-vous vraiment supprimer cette quête ?",
 		deleteEvent:
 			"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.",
 		deleteLocation: "Voulez-vous vraiment supprimer cette localité ?",
@@ -139,8 +139,8 @@ export default {
 			content: {
 				title: "Contenu",
 				// showTabPrefix: "Afficher l'onglet/la colonne ",
-				showTabObjective: "Afficher l'onglet/la colonne Objectifs",
-				showTabEvent: "Afficher l'onglet/la colonne Événement",
+				showTabQuest: "Afficher l'onglet/la colonne Quêtes",
+				showTabEvent: "Afficher l'onglet/la colonne Événements",
 				showTabLocation: "Afficher l'onglet/la colonne Localités",
 				showTabCharacter: "Afficher l'onglet/la colonne Personnages",
 				showTabNote: "Afficher l'onglet/la colonne Notes",
