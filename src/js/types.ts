@@ -38,30 +38,38 @@ export enum EventType {
 	OTHER = "other",
 }
 
+interface Describable {
+	desc: string;
+}
+
+export interface Task extends Describable {
+	isCompleted: boolean;
+}
+
 export interface Card {
 	readonly _category: CardCategory;
 	readonly id: ID;
-	desc: string;
 	tags: ID[];
 }
 
 export interface Objective extends Card {
 	readonly _category: CardCategory.Objective;
-	isCompleted: boolean;
+	title: string;
+	tasks: Task[];
 }
 
-export interface Event extends Card {
+export interface Event extends Card, Describable {
 	readonly _category: CardCategory.Event;
 	type: EventType;
-	day: number; // perte du check > 0
+	day: number;
 }
 
-export interface Location extends Card {
+export interface Location extends Card, Describable {
 	readonly _category: CardCategory.Location;
 	name: string;
 }
 
-export interface Character extends Card {
+export interface Character extends Card, Describable {
 	readonly _category: CardCategory.Character;
 	name: string;
 	race: string;
@@ -71,7 +79,7 @@ export interface Character extends Card {
 	isAlive: boolean;
 }
 
-export interface Note extends Card {
+export interface Note extends Card, Describable {
 	readonly _category: CardCategory.Note;
 	title: string;
 }
@@ -85,12 +93,14 @@ export enum Icon {
 	location = "mdi-home",
 	character = "mdi-account",
 	note = "mdi-note-text",
-	completed = "mdi-check-decagram",
 	combat = "mdi-sword-cross",
 	encounter = "mdi-account-group",
 	discovery = "mdi-magnify",
 	travel = "mdi-horseshoe",
 	other = "mdi-help",
+	objectiveCompleted = "mdi-check-decagram",
+	taskCompleted = "mdi-star-check",
+	taskOngoing = "mdi-star-outline",
 }
 
 export class Tag {
@@ -107,6 +117,7 @@ export class Tag {
 			case CardCategory.Location:
 				this.text = refObject.name;
 				break;
+			case CardCategory.Objective:
 			case CardCategory.Note:
 				this.text = refObject.title;
 				break;

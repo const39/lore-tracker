@@ -39,7 +39,7 @@ export default Vue.extend({
 				const data = this.$store.getters.get(this.edit, this.category);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
-				if (data) return { ...data };
+				if (data) return utilities.deepCopy(data) as CardTypes;
 			}
 			return this.createEmptyCardObject(this.category);
 		},
@@ -49,9 +49,9 @@ export default Vue.extend({
 					return {
 						_category: CardCategory.Objective,
 						id: utilities.uid(),
-						desc: "",
 						tags: [],
-						isCompleted: false,
+						title: "",
+						tasks: []
 					};
 				case CardCategory.Event:
 					return {

@@ -44,6 +44,8 @@ export default {
 		tags: "Liens",
 		mdSupport: "Langage Markdown supporté",
 		otherCounter: " autre(s)",
+		tasks: "Tâches",
+		noTask: "Aucune tâche ajoutée",
 		ongoing: "En cours",
 		completed: "Accompli",
 		eventType: "Type d'événement",

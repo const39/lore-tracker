@@ -80,22 +80,23 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 						// If specified, search for corresponding text in text fields of the current entry
 						if (state.filter.text) {
-							// Search first in name/title field (for entries that have such fields)
+							// Search first in each text field (depending on the category)
 							switch (entry._category) {
 								case CardCategory.Character:
 								case CardCategory.Location:
-									predicate = entry.name.toLowerCase().includes(state.filter.text);
+									predicate = entry.name.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
+									break;
+								case CardCategory.Objective:
+									predicate = entry.title.toLowerCase().includes(state.filter.text);
+									predicate ||= entry.tasks.some(task => task.desc.toLowerCase().includes(state.filter.text));	// Check if at least one task contains the text filter
 									break;
 								case CardCategory.Note:
-									predicate = entry.title.toLowerCase().includes(state.filter.text);
+									predicate = entry.title.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
 									break;
 								default:
-									predicate = false;
+									predicate = entry.desc.toLowerCase().includes(state.filter.text);
 									break;
-								}
-
-							// Search then in desc field for all entries
-							predicate ||= entry.desc.toLowerCase().includes(state.filter.text);
+							}
 						}
 
 						// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
