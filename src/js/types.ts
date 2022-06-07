@@ -170,3 +170,160 @@ export interface SaveFormat {
 export interface State extends SaveFormat {
 	filter: Filter;
 }
+
+// ***********************
+// ***** Translation *****
+// ***********************
+export interface Locale {
+	pages: {
+		home: string;
+		timeline: string;
+	};
+
+	timeline: {
+		campaignStart: string;
+		noEvent: string;
+	};
+
+	eventTypes: {
+		combat: string;
+		encounter: string;
+		discovery: string;
+		travel: string;
+		other: string;
+	};
+
+	categories: {
+		all: string;
+		quest: string;
+		event: string;
+		location: string;
+		character: string;
+		note: string;
+	};
+
+	status: {
+		day: string;
+		seasons: {
+			spring: string;
+			summer: string;
+			autumn: string;
+			winter: string;
+		};
+		action: string;
+	};
+
+	fields: {
+		name: string;
+		title: string;
+		desc: string;
+		tags: string;
+		mdSupport: string;
+		otherCounter: string;
+		tasks: string;
+		noTask: string;
+		ongoing: string;
+		completed: string;
+		eventType: string;
+		eventDay: string;
+		race: string;
+		class: string;
+		role: string;
+		npc: string;
+		player: string;
+		alive: string;
+		dead: string;
+		unknownRace: string;
+		unknownClass: string;
+		unknownRole: string;
+		requiredField: string;
+		dayNotValid: string;
+	};
+
+	dialogs: {
+		addQuest: string;
+		addEvent: string;
+		addLocation: string;
+		addCharacter: string;
+		addNote: string;
+
+		editQuest: string;
+		editEvent: string;
+		editLocation: string;
+		editCharacter: string;
+		editNote: string;
+
+		deleteTitle: string;
+		deleteQuest: string;
+		deleteEvent: string;
+		deleteLocation: string;
+		deleteCharacter: string;
+		deleteNote: string;
+	};
+
+	search: {
+		search: string;
+		containing: string;
+		in: string;
+		cardsShown: string;
+		sortDisabled: string;
+	};
+
+	actions: {
+		close: string;
+		save: string;
+		yes: string;
+		no: string;
+		edit: string;
+		delete: string;
+		quickNote: string;
+	};
+
+	options: {
+		themes: {
+			optionName: string;
+			light: string;
+			dark: string;
+		};
+		lang: {
+			optionName: string;
+		};
+		copyData: {
+			optionName: string;
+			success: string;
+		};
+		deleteData: {
+			optionName: string;
+			title: string;
+			message: string;
+		};
+		about: {
+			optionName: string;
+			title: string;
+			link: string;
+		};
+		hotkeys: {
+			optionName: string;
+			title: string;
+			pages: {
+				title: string;
+				toHome: string;
+				toTimeline: string;
+			};
+			content: {
+				title: string;
+				// showTabPrefix:string,
+				showTabQuest: string;
+				showTabEvent: string;
+				showTabLocation: string;
+				showTabCharacter: string;
+				showTabNote: string;
+			};
+			misc: {
+				title: string;
+				openSearch: string;
+				openOptions: string;
+			};
+		};
+	};
+}

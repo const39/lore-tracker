@@ -75,7 +75,7 @@ export default Vue.extend({
 				const header = key.substring(0, key.length - 1);
 
 				// Push a header object for the v-autocomplete component to create a header for this group of objects
-				tags.push({ header: this.$t(`objectTypes.${header}`) });
+				tags.push({ header: this.$t(`categories.${header}`) });
 
 				// Create an item for each object found in the array
 				this.$store.state.cards[key].forEach((element) => {

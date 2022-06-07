@@ -3,7 +3,7 @@
 		<v-tabs fixed-tabs color="accent" v-model="activeTab">
 			<v-tab v-for="tab in tabs" :key="tab">
 				<v-icon left>{{ icons[tab] }}</v-icon>
-				{{ $t(`objectTypes.${tab}`) }}
+				{{ $t(`categories.${tab}`) }}
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">

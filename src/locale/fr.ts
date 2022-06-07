@@ -1,4 +1,6 @@
-export default {
+import { Locale } from "@/js/types";
+
+const fr: Locale = {
 	pages: {
 		home: "Accueil",
 		timeline: "Frise des événements",
@@ -17,7 +19,7 @@ export default {
 		other: "Autre",
 	},
 
-	objectTypes: {
+	categories: {
 		all: "Tous",
 		quest: "Quête",
 		event: "Événement",
@@ -153,3 +155,4 @@ export default {
 		},
 	},
 };
+export default fr;

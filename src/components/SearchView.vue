@@ -25,11 +25,11 @@
 				>
 					<template v-slot:selection="data">
 						<v-icon left small> {{ icons[data.item] }} </v-icon>
-						{{ $t(`objectTypes.${data.item}`) }}
+						{{ $t(`categories.${data.item}`) }}
 					</template>
 					<template v-slot:item="data">
 						<v-icon left small> {{ icons[data.item] }} </v-icon>
-						{{ $t(`objectTypes.${data.item}`) }}
+						{{ $t(`categories.${data.item}`) }}
 					</template>
 				</v-select>
 			</v-row>

@@ -38,12 +38,6 @@ export default Vue.extend({
 		category: {
 			type: String as PropType<CardCategory>,
 			required: true,
-			// validator: (value) => {
-			// 	return (
-			// 		Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) &&
-			// 		value !== constants.objectTypes.ALL
-			// 	);
-			// },
 		},
 	},
 	components: {
