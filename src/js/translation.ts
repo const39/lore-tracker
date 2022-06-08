@@ -5,13 +5,22 @@ import en from "../locale/en";
 import fr from "../locale/fr";
 
 export enum SupportedLanguages {
-	FRENCH = 'fr',
-	ENGLISH = 'en'
+	FRENCH = "fr",
+	ENGLISH = "en",
 }
 
-const locales : any = { fr, en };
-const fallback = "en";
-const current = localStorage.getItem(LocalStorageKey.LANG_KEY) || fallback;
+const locales: any = { fr, en };
+const fallback = SupportedLanguages.ENGLISH;
+const current = getLanguage();
+
+function setLanguage(lang: SupportedLanguages) {
+	localStorage.setItem(LocalStorageKey.LANG_KEY, lang);
+}
+
+function getLanguage(): SupportedLanguages {
+	const val = localStorage.getItem(LocalStorageKey.LANG_KEY) as any;
+	return Object.values(SupportedLanguages).includes(val) ? val as SupportedLanguages : fallback;
+}
 
 function getNestedProperty(object: any, property: string): string {
 	const props = property.split(".");
@@ -37,7 +46,6 @@ export default {
 				);
 		}
 	},
-	setLanguage: function(lang:SupportedLanguages) {
-		localStorage.setItem(LocalStorageKey.LANG_KEY, lang);
-	}
+	setLanguage,
+	getLanguage,
 };

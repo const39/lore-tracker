@@ -30,30 +30,29 @@
 			</router-link> -->
 
 			<!-- Options menu -->
-			<v-menu bottom left offset-y v-model="showMenu" ref="options-menu">
+			<v-menu bottom left offset-y v-model="showMenu">
 				<template v-slot:activator="{ on, attrs }">
 					<v-btn icon v-bind="attrs" v-on="on">
 						<v-icon>mdi-cog</v-icon>
 					</v-btn>
 				</template>
-				<v-list dense flat>
-					<v-item-group mandatory ref="options-list">
-						<!-- TODO Language change not fully implemented -->
-						<!-- <LangSelector /> -->
+				<v-list dense>
+					<v-item-group mandatory>
 						<ThemeSelector />
-						<v-list-item @click="showHotkeysDialog = true">
+						<LangSelector />
+						<v-list-item link @click="showHotkeysDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title>{{ $t("options.hotkeys.optionName") }}</v-list-item-title>
 						</v-list-item>
-						<v-list-item @click="copyToClipboard">
+						<v-list-item link @click="copyToClipboard">
 							<v-list-item-icon>
 								<v-icon>mdi-content-copy</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title>{{ $t("options.copyData.optionName") }}</v-list-item-title>
 						</v-list-item>
-						<v-list-item @click="showConfirmDialog">
+						<v-list-item link @click="showConfirmDialog">
 							<v-list-item-icon>
 								<v-icon color="red">mdi-delete</v-icon>
 							</v-list-item-icon>
@@ -61,7 +60,7 @@
 								{{ $t("options.deleteData.optionName") }}
 							</v-list-item-title>
 						</v-list-item>
-						<v-list-item @click="showAboutDialog = true">
+						<v-list-item link @click="showAboutDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-information-outline</v-icon>
 							</v-list-item-icon>
@@ -137,6 +136,7 @@ import { VERSION, LocalStorageKey } from "./js/types";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
 import ThemeSelector from "./components/selectors/ThemeSelector.vue";
+import LangSelector from "./components/selectors/LangSelector.vue";
 import QuickNote from "./components/QuickNote.vue";
 
 export default Vue.extend({
@@ -145,6 +145,7 @@ export default Vue.extend({
 		ConfirmDialog,
 		HotkeyDialog,
 		ThemeSelector,
+		LangSelector,
 		QuickNote,
 	},
 	data() {

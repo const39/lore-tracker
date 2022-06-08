@@ -1,36 +1,32 @@
 <template>
-	<SelectorActivator :title="$t('options.lang.optionName')">
-		<BaseSelector :items="langList" @change="selectLang">
-			<template v-slot:default="item">
-				<div>
-					<v-sheet height="64" width="64" class="clickable">
-						<v-img :src="require(`../assets/${item.key}.png`)"></v-img>
-					</v-sheet>
-					<span> {{ item.name }} </span>
-				</div>
-			</template>
-		</BaseSelector>
+	<SelectorActivator :title="$t('options.lang.optionName')" icon="mdi-translate">
+		<v-list dense>
+			<v-list-item-group mandatory v-model="selectedLang">
+				<v-list-item v-for="lang in langList" :key="lang.key" :value="lang.key">
+					<v-list-item-icon>
+						<v-img max-width="32" max-height="32" :src="require(`@/assets/${lang.key}.png`)"></v-img>
+					</v-list-item-icon>
+					<v-list-item-title>{{ lang.name }}</v-list-item-title>
+				</v-list-item>
+			</v-list-item-group>
+		</v-list>
 	</SelectorActivator>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-import { SupportedLanguages } from "@/js/translation";
-import translation from "@/js/translation";
+import translation, { SupportedLanguages } from "@/js/translation";
 
-import BaseSelector from "./BaseSelector.vue";
 import SelectorActivator from "./SelectorActivator.vue";
 
 export default Vue.extend({
 	components: {
-		BaseSelector,
 		SelectorActivator,
 	},
-	methods: {
-		selectLang(lang: SupportedLanguages) {
-			this.$vuetify.lang.current = lang;
-			translation.setLanguage(lang);
-		},
+	data() {
+		return {
+			selectedLang: translation.getLanguage(),
+		};
 	},
 	computed: {
 		langList() {
@@ -44,6 +40,12 @@ export default Vue.extend({
 					name: "English",
 				},
 			];
+		},
+	},
+	watch: {
+		selectedLang(val: SupportedLanguages) {
+			translation.setLanguage(val);
+			window.location.reload();
 		},
 	},
 });

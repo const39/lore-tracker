@@ -3,12 +3,12 @@
 		<template v-slot:activator="{ on, attrs }">
 			<v-list-item v-on="on" v-bind="attrs">
 				<v-list-item-icon>
-					<v-icon>mdi-chevron-left</v-icon>
+					<v-icon>{{ icon }}</v-icon>
 				</v-list-item-icon>
 				<v-list-item-title>{{ title }}</v-list-item-title>
 			</v-list-item>
 		</template>
-        <slot></slot>
+		<slot></slot>
 	</v-menu>
 </template>
 
@@ -16,11 +16,12 @@
 import Vue from "vue";
 
 export default Vue.extend({
-    props: {
-        title: {
-            type: String,
-            required: true
-        },
-    }
+	props: {
+		title: {
+			type: String,
+			required: true,
+		},
+		icon: String, // Optional icon
+	},
 });
 </script>
