@@ -20,12 +20,14 @@ import ContentQuest from "./content/ContentQuest.vue";
 import ContentEvent from "./content/ContentEvent.vue";
 import ContentLocation from "./content/ContentLocation.vue";
 import ContentCharacter from "./content/ContentCharacter.vue";
+import ContentFaction from "./content/ContentFaction.vue";
 import ContentNote from "./content/ContentNote.vue";
 
 import FormQuest from "./forms/FormQuest.vue";
 import FormEvent from "./forms/FormEvent.vue";
 import FormLocation from "./forms/FormLocation.vue";
 import FormCharacter from "./forms/FormCharacter.vue";
+import FormFaction from "./forms/FormFaction.vue";
 import FormNote from "./forms/FormNote.vue";
 import utilities from '@/js/utilities';
 
@@ -36,16 +38,17 @@ export default Vue.extend({
 		FormEvent,
 		FormLocation,
 		FormCharacter,
+		FormFaction,
 		FormNote,
 		ContentQuest,
 		ContentEvent,
 		ContentLocation,
 		ContentCharacter,
+		ContentFaction,
 		ContentNote,
 	},
 	props: {
 		itemData: {
-			// type: [Character, Event, Location, Note, Quest],
 			type: Object as PropType<CardTypes>,
 			required: true,
 		},

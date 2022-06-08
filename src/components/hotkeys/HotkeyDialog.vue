@@ -63,8 +63,12 @@ export default Vue.extend({
 						command: "Alt+4",
 					},
 					{
-						text: this.$t("options.hotkeys.content.showTabNote"),
+						text: this.$t("options.hotkeys.content.showTabFaction"),
 						command: "Alt+5",
+					},
+					{
+						text: this.$t("options.hotkeys.content.showTabNote"),
+						command: "Alt+6",
 					},
 				],
 				misc: [

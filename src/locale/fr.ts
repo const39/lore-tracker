@@ -25,6 +25,7 @@ const fr: Locale = {
 		event: "Événement",
 		location: "Localité",
 		character: "Personnage",
+		faction: "Faction",
 		note: "Note",
 	},
 
@@ -71,13 +72,8 @@ const fr: Locale = {
 		addEvent: "Ajouter un événement",
 		addLocation: "Ajouter une localité",
 		addCharacter: "Ajouter un personnage",
+		addFaction: "Ajouter une faction",
 		addNote: "Ajouter une note",
-
-		editQuest: "Modifier une quête",
-		editEvent: "Modifier un événement",
-		editLocation: "Modifier une localité",
-		editCharacter: "Modifier un personnage",
-		editNote: "Modifier une note",
 
 		deleteTitle: "Supprimer ",
 		deleteQuest: "Voulez-vous vraiment supprimer cette quête ?",
@@ -85,6 +81,7 @@ const fr: Locale = {
 			"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.",
 		deleteLocation: "Voulez-vous vraiment supprimer cette localité ?",
 		deleteCharacter: "Voulez-vous vraiment supprimer ce personnage ?",
+		deleteFaction: "Voulez-vous vraiment supprimer cette faction ?",
 		deleteNote: "Voulez-vous vraiment supprimer cette note ?",
 	},
 
@@ -145,6 +142,7 @@ const fr: Locale = {
 				showTabEvent: "Afficher l'onglet/la colonne Événements",
 				showTabLocation: "Afficher l'onglet/la colonne Localités",
 				showTabCharacter: "Afficher l'onglet/la colonne Personnages",
+				showTabFaction: "Afficher l'onglet/la colonne Factions",
 				showTabNote: "Afficher l'onglet/la colonne Notes",
 			},
 			misc: {

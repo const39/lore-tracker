@@ -65,6 +65,8 @@ export default Vue.extend({
 						return this.$store.getters.filteredCards.locations;
 					case CardCategory.Character:
 						return this.$store.getters.filteredCards.characters;
+					case CardCategory.Faction:
+						return this.$store.getters.filteredCards.factions;
 					case CardCategory.Note:
 						return this.$store.getters.filteredCards.notes;
 					default:

@@ -38,7 +38,8 @@ export default Vue.extend({
 		 * - Alt+2 : Show Event tab
 		 * - Alt+3 : Show Location tab
 		 * - Alt+4 : Show Character tab
-		 * - Alt+5 : Show Note tab
+		 * - Alt+5 : Show Faction tab
+		 * - Alt+6 : Show Note tab
 		 */
 		hotkey(e: KeyboardEvent) {
 			if (e.code.startsWith("Digit") && e.altKey) {
@@ -67,8 +68,11 @@ export default Vue.extend({
 				case CardCategory.Character:
 					this.activeTab = 3;
 					break;
-				case CardCategory.Note:
+				case CardCategory.Faction:
 					this.activeTab = 4;
+					break;
+				case CardCategory.Note:
+					this.activeTab = 5;
 					break;
 			}
 			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });

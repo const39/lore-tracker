@@ -25,6 +25,7 @@ const en: Locale = {
 		event: "Event",
 		location: "Location",
 		character: "Character",
+		faction: "Faction",
 		note: "Note",
 	},
 
@@ -71,19 +72,15 @@ const en: Locale = {
 		addEvent: "Add an event",
 		addLocation: "Add a location",
 		addCharacter: "Add a character",
+		addFaction: "Add a faction",
 		addNote: "Add a note",
-
-		editQuest: "Edit a quest",
-		editEvent: "Edit an event",
-		editLocation: "Edit a location",
-		editCharacter: "Edit a character",
-		editNote: "Edit a note",
 
 		deleteTitle: "Delete ",
 		deleteQuest: "Do you really want to delete this quest ?",
 		deleteEvent: "Do you really want to delete this event ? This will also change the timeline.",
 		deleteLocation: "Do you really want to delete this location ?",
 		deleteCharacter: "Do you really want to delete this character ?",
+		deleteFaction: "Do you really want to delete this faction ?",
 		deleteNote: "Do you really want to delete this note ?",
 	},
 
@@ -143,6 +140,7 @@ const en: Locale = {
 				showTabEvent: "Show Event tab/column",
 				showTabLocation: "Show Location tab/column",
 				showTabCharacter: "Show Character tab/column",
+				showTabFaction: "Show Faction tab/column",
 				showTabNote: "Show Note tab/column",
 			},
 			misc: {

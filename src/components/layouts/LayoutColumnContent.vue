@@ -70,7 +70,8 @@ export default Vue.extend({
 		 * - Alt+2 : Collapse/expand Event tab
 		 * - Alt+3 : Collapse/expand Location tab
 		 * - Alt+4 : Collapse/expand Character tab
-		 * - Alt+5 : Collapse/expand Note tab
+		 * - Alt+5 : Collapse/expand Faction tab
+		 * - Alt+6 : Collapse/expand Note tab
 		 */
 		hotkey(e: KeyboardEvent) {
 			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case 
@@ -80,7 +81,8 @@ export default Vue.extend({
 					(e.code === "Digit2" && this.category === CardCategory.Event) ||
 					(e.code === "Digit3" && this.category === CardCategory.Location) ||
 					(e.code === "Digit4" && this.category === CardCategory.Character) ||
-					(e.code === "Digit5" && this.category === CardCategory.Note)
+					(e.code === "Digit5" && this.category === CardCategory.Faction) ||
+					(e.code === "Digit6" && this.category === CardCategory.Note)
 				) {
 					e.preventDefault();
 					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0;
@@ -103,6 +105,8 @@ export default Vue.extend({
 						return this.$store.getters.filteredCards.locations;
 					case CardCategory.Character:
 						return this.$store.getters.filteredCards.characters;
+					case CardCategory.Faction:
+						return this.$store.getters.filteredCards.factions;
 					case CardCategory.Note:
 						return this.$store.getters.filteredCards.notes;
 					default:

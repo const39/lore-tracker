@@ -83,6 +83,14 @@ export default Vue.extend({
 						isAlive: true,
 						isNPC: true,
 					};
+				case CardCategory.Faction:
+					return {
+						_category: CardCategory.Faction,
+						id: utilities.uid(),
+						desc: "",
+						tags: [],
+						name: "",
+					};
 				case CardCategory.Note:
 					return {
 						_category: CardCategory.Note,

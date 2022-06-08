@@ -25,6 +25,7 @@ import FormQuest from "./forms/FormQuest.vue";
 import FormEvent from "./forms/FormEvent.vue";
 import FormLocation from "./forms/FormLocation.vue";
 import FormCharacter from "./forms/FormCharacter.vue";
+import FormFaction from "./forms/FormFaction.vue";
 import FormNote from "./forms/FormNote.vue";
 
 import utilities from "@/js/utilities";
@@ -36,6 +37,7 @@ export default Vue.extend({
 		FormEvent,
 		FormLocation,
 		FormCharacter,
+		FormFaction,
 		FormNote,
 	},
 	props: {

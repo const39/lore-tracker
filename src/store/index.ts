@@ -15,6 +15,7 @@ function defaultCards(): CardsStore {
 		events: [],
 		locations: [],
 		characters: [],
+		factions: [],
 		notes: [],
 	};
 }
@@ -84,6 +85,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 							switch (entry._category) {
 								case CardCategory.Character:
 								case CardCategory.Location:
+								case CardCategory.Faction:
 									predicate = entry.name.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
 									break;
 								case CardCategory.Quest:
@@ -169,22 +171,14 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			// If JSON parsing is exploitable
 			if (rawData) {
 				const parsedData: SaveFormat = JSON.parse(rawData);
-				state.cards = parsedData.cards;
 
-				// // Convert all raw JS objects as Quest instances
-				// for (const entry of rawData.cards.quests) state.cards.quests.push(new Quest(entry));
-
-				// // Convert all raw JS objects as Event instances
-				// for (const entry of rawData.cards.events) state.cards.events.push(new Event(entry));
-
-				// // Convert all raw JS objects as Location instances
-				// for (const entry of rawData.cards.locations) state.cards.locations.push(new Location(entry));
-
-				// // Convert all raw JS objects as Character instances
-				// for (const entry of rawData.cards.characters) state.cards.characters.push(new Character(entry));
-
-				// // Convert all raw JS objects as Note instances
-				// for (const entry of rawData.cards.notes) state.cards.notes.push(new Note(entry));
+				// Set cards
+				for (const entry of parsedData.cards.quests || []) state.cards.quests.push(entry);
+				for (const entry of parsedData.cards.events || []) state.cards.events.push(entry);
+				for (const entry of parsedData.cards.locations || []) state.cards.locations.push(entry);
+				for (const entry of parsedData.cards.characters || []) state.cards.characters.push(entry);
+				for (const entry of parsedData.cards.factions || []) state.cards.factions.push(entry);
+				for (const entry of parsedData.cards.notes || []) state.cards.notes.push(entry);
 
 				// Set other fields
 				if (parsedData.name) state.name = parsedData.name;
@@ -199,6 +193,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;
+			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
 			else if (payload._category === CardCategory.Note) list = state.cards.notes;
 			else {
 				console.error(payload, "is not an instance of an accepted object.");
@@ -214,6 +209,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;
+			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
 			else if (payload._category === CardCategory.Note) list = state.cards.notes;
 			else {
 				console.error(payload, "is not an instance of an accepted object.");
@@ -234,6 +230,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			else if (payload._category === CardCategory.Event) list = state.cards.events;
 			else if (payload._category === CardCategory.Location) list = state.cards.locations;
 			else if (payload._category === CardCategory.Character) list = state.cards.characters;
+			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
 			else if (payload._category === CardCategory.Note) list = state.cards.notes;
 			else {
 				console.error(payload, "is not an instance of an accepted object.");

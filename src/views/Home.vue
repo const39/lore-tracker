@@ -116,6 +116,7 @@ export default Vue.extend({
 			switch (e.card._category) {
 				case CardCategory.Character:
 				case CardCategory.Location:
+				case CardCategory.Faction:
 					title = e.card.name;
 					break;
 				case CardCategory.Quest:

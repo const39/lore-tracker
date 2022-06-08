@@ -21,12 +21,13 @@ export enum Season {
 // ***** Model *****
 // *****************
 export type ID = number;
-export type CardTypes = Quest | Event | Location | Character | Note;
+export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 export enum CardCategory {
 	Quest = "quest",
 	Event = "event",
 	Location = "location",
 	Character = "character",
+	Faction = "faction",
 	Note = "note",
 }
 
@@ -79,6 +80,11 @@ export interface Character extends Card, Describable {
 	isAlive: boolean;
 }
 
+export interface Faction extends Card, Describable {
+	readonly _category: CardCategory.Faction;
+	name: string;
+}
+
 export interface Note extends Card, Describable {
 	readonly _category: CardCategory.Note;
 	title: string;
@@ -92,6 +98,7 @@ export enum Icon {
 	event = "mdi-sword-cross",
 	location = "mdi-home",
 	character = "mdi-account",
+	faction = "mdi-crown",
 	note = "mdi-note-text",
 	combat = "mdi-sword-cross",
 	encounter = "mdi-account-group",
@@ -115,6 +122,7 @@ export class Tag {
 		switch (refObject._category) {
 			case CardCategory.Character:
 			case CardCategory.Location:
+			case CardCategory.Faction:
 				this.text = refObject.name;
 				break;
 			case CardCategory.Quest:
@@ -139,6 +147,7 @@ export interface CardsStore {
 	events: Event[];
 	locations: Location[];
 	characters: Character[];
+	factions: Faction[];
 	notes: Note[];
 }
 
@@ -148,6 +157,7 @@ export enum CategoryFilter {
 	EVENT = "event",
 	LOCATION = "location",
 	CHARACTER = "character",
+	FACTION = "faction",
 	NOTE = "note",
 }
 
@@ -199,6 +209,7 @@ export interface Locale {
 		event: string;
 		location: string;
 		character: string;
+		faction: string;
 		note: string;
 	};
 
@@ -245,19 +256,15 @@ export interface Locale {
 		addEvent: string;
 		addLocation: string;
 		addCharacter: string;
+		addFaction: string;
 		addNote: string;
-
-		editQuest: string;
-		editEvent: string;
-		editLocation: string;
-		editCharacter: string;
-		editNote: string;
 
 		deleteTitle: string;
 		deleteQuest: string;
 		deleteEvent: string;
 		deleteLocation: string;
 		deleteCharacter: string;
+		deleteFaction: string;
 		deleteNote: string;
 	};
 
@@ -317,6 +324,7 @@ export interface Locale {
 				showTabEvent: string;
 				showTabLocation: string;
 				showTabCharacter: string;
+				showTabFaction: string;
 				showTabNote: string;
 			};
 			misc: {
