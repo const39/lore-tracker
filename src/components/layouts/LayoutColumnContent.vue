@@ -9,7 +9,7 @@
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
-					<CardAdd :category="category" />
+					<CardAdd :category="category" :fill-height="false" />
 					<draggable
 						:disabled="isSortDisabled"
 						v-model="items"
@@ -33,7 +33,7 @@ import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
 import draggable from "vuedraggable";
-import {Icon, CardCategory} from "@/js/types";
+import { Icon, CardCategory, CardTypes } from "@/js/types";
 
 export default Vue.extend({
 	name: "LayoutColumnContent",
@@ -74,7 +74,7 @@ export default Vue.extend({
 		 * - Alt+6 : Collapse/expand Note tab
 		 */
 		hotkey(e: KeyboardEvent) {
-			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case 
+			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case
 			if (e.altKey) {
 				if (
 					(e.code === "Digit1" && this.category === CardCategory.Quest) ||
@@ -91,11 +91,11 @@ export default Vue.extend({
 		},
 	},
 	computed: {
-		isSortDisabled() {
+		isSortDisabled(): boolean {
 			return this.$store.state.filter.isEnabled;
 		},
 		items: {
-			get() {
+			get(): CardTypes[] | undefined {
 				switch (this.category) {
 					case CardCategory.Quest:
 						return this.$store.getters.filteredCards.quests;
@@ -113,8 +113,8 @@ export default Vue.extend({
 						return undefined;
 				}
 			},
-			set(list) {
-				this.$store.commit("updateWholeList", { category: this.category, list: list });
+			set(list: CardTypes[]) {
+				this.$store.commit("updateWholeList", { category: this.category, list });
 			},
 		},
 	},

@@ -1,15 +1,13 @@
 <template>
 	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
 	<div>
-		<v-card-actions class="float-right">
+		<v-card-text class="pa-3">
 			<v-tooltip top v-if="fullyComplete">
 				<template v-slot:activator="{ on, attrs }">
-					<v-icon v-bind="attrs" v-on="on">{{ icons.questCompleted }}</v-icon>
+					<v-icon class="float-right" v-bind="attrs" v-on="on">{{ icons.questCompleted }}</v-icon>
 				</template>
 				<span>{{ $t("fields.completed") }}</span>
 			</v-tooltip>
-		</v-card-actions>
-		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">{{ itemData.title }}</p>
 			<div class="pa-3">
 				<v-row v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">

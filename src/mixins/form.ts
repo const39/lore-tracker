@@ -102,6 +102,11 @@ export default Vue.extend({
 			}
 		},
 	},
+	computed: {
+		categoryIcon(): string {
+			return utilities.getIcon(this.model);
+		}
+	},
 	watch: {
 		/**
 		 * Observe the edit prop. When the prop changes, we update the model.

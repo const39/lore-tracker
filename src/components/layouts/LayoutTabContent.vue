@@ -13,7 +13,7 @@
 			>
 				<template v-slot:header>
 					<v-col cols="12" md="4">
-						<CardAdd :category="category" />
+						<CardAdd :category="category" fill-height />
 					</v-col>
 				</template>
 				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
@@ -30,7 +30,7 @@ import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
 import draggable from "vuedraggable";
-import { CardCategory } from "@/js/types";
+import { CardCategory, CardTypes } from "@/js/types";
 
 export default Vue.extend({
 	name: "LayoutTabContent",
@@ -51,11 +51,11 @@ export default Vue.extend({
 		};
 	},
 	computed: {
-		isSortDisabled() {
+		isSortDisabled(): boolean {
 			return this.$store.state.filter.isEnabled;
 		},
 		items: {
-			get() {
+			get(): CardTypes[] | undefined {
 				switch (this.category) {
 					case CardCategory.Quest:
 						return this.$store.getters.filteredCards.quests;
@@ -73,8 +73,8 @@ export default Vue.extend({
 						return undefined;
 				}
 			},
-			set(list) {
-				this.$store.commit("updateWholeList", { category: this.category, list: list });
+			set(list: CardTypes[]) {
+				this.$store.commit("updateWholeList", { category: this.category, list });
 			},
 		},
 	},

@@ -102,12 +102,12 @@
 				<v-card-text class="justify-left text--primary">
 					<v-container class="py-0">
 						<v-row class="my-1 font-weight-medium">Lore Tracker {{ version }}</v-row>
-						<v-row class="my-1">© 2021 - const39</v-row>
+						<v-row class="my-1">{{ copyrightText }}</v-row>
 						<v-row class="my-1 align-center">
 							<v-icon>mdi-github</v-icon>
-							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{
-								$t("options.about.link")
-							}}</a>
+							<a class="mx-1" href="https://github.com/const39/lore-tracker">
+								{{ $t("options.about.link") }}
+							</a>
 						</v-row>
 					</v-container>
 				</v-card-text>
@@ -132,7 +132,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import {VERSION, LocalStorageKey} from "./js/types";
+import { VERSION, LocalStorageKey } from "./js/types";
 
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
@@ -145,7 +145,7 @@ export default Vue.extend({
 		ConfirmDialog,
 		HotkeyDialog,
 		ThemeSelector,
-		QuickNote
+		QuickNote,
 	},
 	data() {
 		return {
@@ -187,6 +187,11 @@ export default Vue.extend({
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
 			else if (e.code === "F1") this.$router.push({ name: "Home" });
 			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
+		},
+	},
+	computed: {
+		copyrightText(): string {
+			return `© 2021-${new Date().getUTCFullYear()} const39`;
 		},
 	},
 	mounted() {

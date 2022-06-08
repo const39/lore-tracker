@@ -1,19 +1,26 @@
 <template>
-	<div>
-		<!-- Dynamic Form component ("Add" version) -->
+	<div :class="{ 'fill-height': fillHeight }">
 		<v-expand-transition>
+			<!-- Dynamic Form component ("Add" version) -->
 			<BaseCard v-if="showForm">
-				<component :is="formComponent" :category="category" @close="showForm = false" />
+				<component :is="formComponent" :category="category" @close="closeForm" />
 			</BaseCard>
 		</v-expand-transition>
-		<!-- "Add" clickable card button -->
-		<v-hover v-if="!showForm" v-slot="{ hover }">
-			<v-card outlined class="my-1 custom-border" :class="{ grey: hover, 'lighten-3': !isDarkTheme, 'darken-3': isDarkTheme }">
-				<v-card-text class="text-center clickable" icon @click="showForm = true">
-					<v-icon>mdi-plus</v-icon>
+		<v-fade-transition>
+			<!-- "Add" clickable card button -->
+			<v-card
+				v-if="showAdd"
+				outlined
+				@mouseenter="hover = true"
+				@mouseleave="hover = false"
+				class="my-1 custom-border"
+				:class="{ 'fill-height': fillHeight, grey: hover, 'lighten-3': !isDarkTheme, 'darken-3': isDarkTheme }"
+			>
+				<v-card-text class="text-center clickable" :class="{ 'fill-height': fillHeight }" @click="openForm">
+					<v-icon large>mdi-plus</v-icon>
 				</v-card-text>
 			</v-card>
-		</v-hover>
+		</v-fade-transition>
 	</div>
 </template>
 
@@ -45,14 +52,25 @@ export default Vue.extend({
 			type: String,
 			required: true,
 		},
+		fillHeight: Boolean, // Optional style prop
 	},
 	data() {
 		return {
 			showForm: false,
+			showAdd: true,
+			hover: false,
 		};
 	},
 	methods: {
-
+		openForm(): void {
+			this.showForm = true;
+			this.showAdd = false;
+		},
+		closeForm(): void {
+			this.showForm = false;
+			// HACK: Delay display of 'Add' clickable card to after the form transition completion
+			setTimeout(() => (this.showAdd = true), 300);
+		},
 	},
 	computed: {
 		formComponent(): string {
@@ -68,6 +86,11 @@ export default Vue.extend({
 <style scoped>
 .custom-border {
 	border-style: dashed;
+}
+.clickable {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .clickable:hover {
 	cursor: pointer;
