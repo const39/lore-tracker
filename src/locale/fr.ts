@@ -45,6 +45,7 @@ const fr: Locale = {
 		title: "Titre",
 		desc: "Description",
 		tags: "Liens",
+		noTag: "Aucun lien ajouté",
 		mdSupport: "Langage Markdown supporté",
 		otherCounter: " autre(s)",
 		tasks: "Tâches",
@@ -101,6 +102,7 @@ const fr: Locale = {
 		edit: "Modifier",
 		delete: "Supprimer",
 		quickNote: "Note rapide",
+		changeCategory: "Cliquer pour changer de catégorie",
 	},
 
 	options: {

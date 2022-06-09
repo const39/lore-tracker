@@ -44,7 +44,7 @@
 					:hint="$t('fields.mdSupport')"
 					v-model="model.desc"
 				></v-textarea>
-				<TagChooser v-model="model.tags" :exclude-id="model.id" />
+				<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 			</v-container>
 			<small>{{ "*" + $t("fields.requiredField") }}</small>
 		</v-card-text>

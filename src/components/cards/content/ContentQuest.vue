@@ -22,7 +22,7 @@
 					<p class="ma-2 text--primary">{{ task.desc }}</p>
 				</v-row>
 			</div>
-			<TagList :items="itemData.tags" />
+			<TagList class="mt-2" v-model="itemData.tags" />
 		</v-card-text>
 	</div>
 </template>

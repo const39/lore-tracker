@@ -12,38 +12,36 @@
 					:rules="requiredRule"
 					v-model="model.title"
 				></v-text-field>
-				<v-card outlined>
-					<v-card-actions class="float-right">
+				<ListPanel
+					:title="$t('fields.tasks')"
+					:empty-content-text="$t('fields.noTask')"
+					:is-filled="model.tasks.length > 0"
+				>
+					<template v-slot:action>
 						<v-btn icon @click="addTask">
 							<v-icon>mdi-plus</v-icon>
 						</v-btn>
-					</v-card-actions>
-					<v-card-title class="text-subtitle-1 text--primary">{{ $t("fields.tasks") }}</v-card-title>
-					<v-card-text v-if="model.tasks.length > 0">
-						<v-text-field
-							v-for="(task, idx) in model.tasks"
-							:key="idx"
-							v-model="task.desc"
-							append-icon="mdi-close"
-							@click:append="remove(idx)"
-						>
-							<template v-slot:prepend>
-								<v-tooltip bottom>
-									<template v-slot:activator="{ on }">
-										<v-icon v-on="on" @click="complete(idx)">
-											{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
-										</v-icon>
-									</template>
-									{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
-								</v-tooltip>
-							</template>
-						</v-text-field>
-					</v-card-text>
-					<v-card-text v-else>
-						<p class="mb-0 text--secondary">{{ $t("fields.noTask") }}</p>
-					</v-card-text>
-				</v-card>
-				<TagChooser v-model="model.tags" :exclude-id="model.id" />
+					</template>
+					<v-text-field
+						v-for="(task, idx) in model.tasks"
+						:key="idx"
+						v-model="task.desc"
+						append-icon="mdi-close"
+						@click:append="remove(idx)"
+					>
+						<template v-slot:prepend>
+							<v-tooltip bottom>
+								<template v-slot:activator="{ on }">
+									<v-icon v-on="on" @click="complete(idx)">
+										{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
+									</v-icon>
+								</template>
+								{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+							</v-tooltip>
+						</template>
+					</v-text-field>
+				</ListPanel>
+				<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 			</v-container>
 			<small>{{ "*" + $t("fields.requiredField") }}</small>
 		</v-card-text>
@@ -69,8 +67,13 @@ import Vue from "vue";
 import form from "@/mixins/form";
 import { Icon, Task } from "@/js/types";
 
+import ListPanel from "@/components/ListPanel.vue";
+
 export default Vue.extend({
 	mixins: [form],
+	components: {
+		ListPanel,
+	},
 	data() {
 		return {
 			icons: Icon,

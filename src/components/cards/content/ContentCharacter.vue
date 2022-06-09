@@ -14,7 +14,7 @@
 			</p>
 			<p class="text-subtitle-2 text--primary text-truncate">{{ identity }}</p>
 			<MarkdownView :text="itemData.desc" />
-			<TagList :items="itemData.tags" />
+			<TagList v-model="itemData.tags" />
 		</v-card-text>
 	</div>
 </template>

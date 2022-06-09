@@ -4,7 +4,7 @@
 		<v-card-text class="pa-3">
 			<p class="text-h6 text--primary">{{ itemData.title }}</p>
 			<MarkdownView :text="itemData.desc" />
-			<TagList :items="itemData.tags" />
+			<TagList v-model="itemData.tags" />
 		</v-card-text>
 	</div>
 </template>

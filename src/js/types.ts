@@ -229,6 +229,7 @@ export interface Locale {
 		title: string;
 		desc: string;
 		tags: string;
+		noTag: string;
 		mdSupport: string;
 		otherCounter: string;
 		tasks: string;
@@ -284,6 +285,7 @@ export interface Locale {
 		edit: string;
 		delete: string;
 		quickNote: string;
+		changeCategory: string;
 	};
 
 	options: {

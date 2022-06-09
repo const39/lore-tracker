@@ -1,7 +1,7 @@
 import Vue, { PropType } from "vue";
 import { CardCategory, CardTypes, EventType } from "@/js/types";
 import utilities from "@/js/utilities";
-import TagChooser from "@/components/cards/tags/TagChooser.vue";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 
 export default Vue.extend({
 	props: {
@@ -9,7 +9,7 @@ export default Vue.extend({
 		edit: Number, // [Optional] leave undefined to use the "Add" form instead of "Edit" form
 	},
 	components: {
-		TagChooser,
+		TagListPanel,
 	},
 	data: function() {
 		return {
@@ -110,8 +110,7 @@ export default Vue.extend({
 	watch: {
 		/**
 		 * Observe the edit prop. When the prop changes, we update the model.
-		 * This is allows to use a unique dialog for all quest cards edits.
-		 * The parent only have to pass the id of the quest to edit. When that id changes, the form gets the relevant data to set the model.
+		 * The parent only have to pass the card ID to edit its data. When that ID changes, the form gets the relevant data to set the model.
 		 */
 		edit: function(): void {
 			this.model = this.initModel();

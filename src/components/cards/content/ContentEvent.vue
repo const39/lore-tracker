@@ -14,7 +14,7 @@
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc" />
-					<TagList :items="itemData.tags" />
+					<TagList v-model="itemData.tags" />
 				</v-col>
 			</v-row>
 		</v-card-text>

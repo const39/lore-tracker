@@ -14,7 +14,7 @@
 					:hint="$t('search.containing')"
 					v-model="textToContain"
 				></v-text-field>
-				<TagChooser solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
+				<TagListPanel solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
 				<v-select
 					outlined
 					dense
@@ -50,11 +50,11 @@
 <script lang="ts">
 import Vue from "vue";
 import { CategoryFilter, Icon } from "@/js/types";
-import TagChooser from "./cards/tags/TagChooser.vue";
+import TagListPanel from "./cards/tags/TagListPanel.vue";
 
 export default Vue.extend({
 	components: {
-		TagChooser,
+		TagListPanel,
 	},
 	data() {
 		return {
