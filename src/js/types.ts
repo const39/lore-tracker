@@ -225,6 +225,7 @@ export interface Locale {
 	};
 
 	fields: {
+		category: string;
 		name: string;
 		title: string;
 		desc: string;
@@ -272,8 +273,8 @@ export interface Locale {
 	search: {
 		search: string;
 		containing: string;
-		in: string;
-		cardsShown: string;
+		taggedWith: string;
+		cardsMatching: string;
 		sortDisabled: string;
 	};
 

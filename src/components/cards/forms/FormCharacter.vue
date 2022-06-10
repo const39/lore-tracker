@@ -40,6 +40,7 @@
 				</v-row>
 				<v-textarea
 					outlined
+					auto-grow
 					:label="$t('fields.desc')"
 					:hint="$t('fields.mdSupport')"
 					v-model="model.desc"

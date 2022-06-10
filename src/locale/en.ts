@@ -41,15 +41,16 @@ const en: Locale = {
 	},
 
 	fields: {
+		category: "Catégorie",
 		name: "Name",
 		title: "Title",
 		desc: "Description",
 		tags: "Tags",
-		noTag: "No tag added yet",
+		noTag: "No tag",
 		mdSupport: "Markdown language supported",
 		otherCounter: " other",
 		tasks: "Tasks",
-		noTask: "No task added yet",
+		noTask: "No task",
 		ongoing: "On-going",
 		completed: "Completed",
 		eventType: "Event type",
@@ -88,8 +89,8 @@ const en: Locale = {
 	search: {
 		search: "Search",
 		containing: "Containing",
-		in: "In",
-		cardsShown: " cards shown",
+		taggedWith: "Tagged with",
+		cardsMatching: " cards match the search.",
 		sortDisabled: "Card sort disabled during search.",
 	},
 

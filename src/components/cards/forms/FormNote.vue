@@ -10,6 +10,7 @@
 				<v-text-field :label="$t('fields.title')" v-model="model.title"></v-text-field>
 				<v-textarea
 					outlined
+					auto-grow
 					:label="$t('fields.desc')"
 					:hint="$t('fields.mdSupport')"
 					:rules="requiredRule"

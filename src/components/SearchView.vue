@@ -1,50 +1,37 @@
 <template>
-	<span>
-		<v-btn @click="shown = !shown">
+	<div>
+		<v-btn @click="open = !open">
 			<v-icon>mdi-magnify</v-icon>
 			{{ $t("search.search") }}
 		</v-btn>
-		<v-snackbar light top max-width="70%" transition="scroll-y-transition" :timeout="-1" v-model="shown">
-			<v-row class="d-flex pt-3">
-				<v-text-field
-					solo
-					dense
-					class="mx-2 flex-grow-1 flex-shrink-1"
-					:label="$t('search.containing')"
-					:hint="$t('search.containing')"
-					v-model="textToContain"
-				></v-text-field>
-				<TagListPanel solo dense class="mx-2 flex-grow-0 flex-shrink-1" :overflow="true" v-model="selectedTags" />
-				<v-select
-					outlined
-					dense
-					class="mx-2 flex-grow-0 flex-shrink-1"
-					:label="$t('search.in')"
-					v-model="selectedCategory"
-					:items="categories"
-				>
-					<template v-slot:selection="data">
-						<v-icon left small> {{ icons[data.item] }} </v-icon>
-						{{ $t(`categories.${data.item}`) }}
-					</template>
-					<template v-slot:item="data">
-						<v-icon left small> {{ icons[data.item] }} </v-icon>
-						{{ $t(`categories.${data.item}`) }}
-					</template>
-				</v-select>
-			</v-row>
-			<div class="d-flex">
-				<span class="grey--text text-caption"> {{ resultsNumber + $t("search.cardsShown") }} </span>
+		<v-navigation-drawer v-if="open" app right width="320" class="pa-2">
+			<v-row class="d-flex mx-2 my-5">
+				<span class="text-h5 text--primary">{{ $t("search.search") }}</span>
 				<v-spacer></v-spacer>
-				<span class="grey--text text-caption">{{ $t("search.sortDisabled") }}</span>
-			</div>
-			<template v-slot:action>
-				<v-btn icon @click="shown = false">
+				<v-btn icon @click="open = false">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
-			</template>
-		</v-snackbar>
-	</span>
+			</v-row>
+			<v-subheader>{{ $t("fields.category") }}</v-subheader>
+			<v-select outlined dense class="mx-2" v-model="selectedCategory" :items="categories">
+				<template v-slot:selection="data">
+					<v-icon left small> {{ icons[data.item] }} </v-icon>
+					{{ $t(`categories.${data.item}`) }}
+				</template>
+				<template v-slot:item="data">
+					<v-icon left small> {{ icons[data.item] }} </v-icon>
+					{{ $t(`categories.${data.item}`) }}
+				</template>
+			</v-select>
+			<v-subheader>{{ $t("search.containing") }}</v-subheader>
+			<v-textarea outlined dense class="mx-2" v-model="textToContain"></v-textarea>
+			<v-subheader>{{ $t("search.taggedWith") }}</v-subheader>
+			<TagListPanel class="mx-2" v-model="selectedTags" />
+			<span class="mx-2 grey--text text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
+			<br />
+			<span class="mx-2 grey--text text-caption">{{ $t("search.sortDisabled") }}</span>
+		</v-navigation-drawer>
+	</div>
 </template>
 
 <script lang="ts">
@@ -58,7 +45,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
-			shown: false,
+			open: false,
 			icons: Icon,
 			categories: Object.values(CategoryFilter),
 			selectedCategory: CategoryFilter.ALL,
@@ -78,12 +65,12 @@ export default Vue.extend({
 		 * Open/close the Search view when pressing Ctrl+K
 		 */
 		hotkey(e: KeyboardEvent) {
-			if (e.code === "KeyK" && e.ctrlKey) this.shown = !this.shown;
+			if (e.code === "KeyK" && e.ctrlKey) this.open = !this.open;
 		},
 	},
 	computed: {
 		style(): string {
-			return this.shown ? "display: block;" : "display: none;";
+			return this.open ? "display: block;" : "display: none;";
 		},
 		resultsNumber() {
 			return this.$store.state.filter.nbResults;
@@ -93,7 +80,7 @@ export default Vue.extend({
 		/**
 		 * Reset filter once the search view is closed
 		 */
-		shown(newValue) {
+		open(newValue) {
 			if (!newValue) this.$store.commit("resetFilter");
 		},
 		/**
