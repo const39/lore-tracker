@@ -41,15 +41,16 @@ const fr: Locale = {
 	},
 
 	fields: {
+		category: "Catégorie",
 		name: "Nom",
 		title: "Titre",
 		desc: "Description",
 		tags: "Liens",
-		noTag: "Aucun lien ajouté",
+		noTag: "Aucun lien",
 		mdSupport: "Langage Markdown supporté",
 		otherCounter: " autre(s)",
 		tasks: "Tâches",
-		noTask: "Aucune tâche ajoutée",
+		noTask: "Aucune tâche",
 		ongoing: "En cours",
 		completed: "Accompli",
 		eventType: "Type d'événement",
@@ -87,10 +88,10 @@ const fr: Locale = {
 	},
 
 	search: {
-		search: "Rechercher",
+		search: "Recherche",
 		containing: "Contenant",
-		in: "Dans",
-		cardsShown: " carte(s) affichée(s)",
+		taggedWith: "Lié à",
+		cardsMatching: " carte(s) correspondent à la recherche.",
 		sortDisabled: "Tri des cartes désactivé pendant la recherche.",
 	},
 

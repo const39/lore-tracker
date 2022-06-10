@@ -9,6 +9,7 @@
 			<v-container>
 				<v-textarea
 					outlined
+					auto-grow
 					:label="$t('fields.desc') + '*'"
 					:hint="$t('fields.mdSupport')"
 					:rules="requiredRule"
