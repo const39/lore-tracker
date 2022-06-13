@@ -55,23 +55,8 @@ export default Vue.extend({
 			return this.$store.state.filter.isEnabled;
 		},
 		items: {
-			get(): CardTypes[] | undefined {
-				switch (this.category) {
-					case CardCategory.Quest:
-						return this.$store.getters.filteredCards.quests;
-					case CardCategory.Event:
-						return this.$store.getters.filteredCards.events;
-					case CardCategory.Location:
-						return this.$store.getters.filteredCards.locations;
-					case CardCategory.Character:
-						return this.$store.getters.filteredCards.characters;
-					case CardCategory.Faction:
-						return this.$store.getters.filteredCards.factions;
-					case CardCategory.Note:
-						return this.$store.getters.filteredCards.notes;
-					default:
-						return undefined;
-				}
+			get(): CardTypes[] {
+				return this.$store.getters.filteredCards[this.category];
 			},
 			set(list: CardTypes[]) {
 				this.$store.commit("updateWholeList", { category: this.category, list });

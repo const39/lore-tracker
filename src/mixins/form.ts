@@ -36,7 +36,7 @@ export default Vue.extend({
 		},
 		initModel(): CardTypes {
 			if (typeof this.edit !== "undefined") {
-				const data = this.$store.getters.get(this.edit, this.category);
+				const data = this.$store.getters.getByIdInCategory(this.edit, this.category);
 				// We return a clone of the object to avoid modifying directly the store
 				// Helpful when the user cancels their changes because we don't have to rollback
 				if (data) return utilities.deepCopy(data) as CardTypes;

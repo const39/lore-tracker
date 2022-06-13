@@ -76,9 +76,7 @@ export default Vue.extend({
 		 * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
 		 */
 		availableTags(): Tag[] {
-			const key = this.category + "s";
-
-			let tags = this.$store.state.cards[key]
+			let tags = this.$store.state.cards[this.category]
 				.filter((card: CardTypes) => (this.excludeIds ? !this.excludeIds.includes(card.id) : true))
 				.map((card: CardTypes) => new Tag(card));
 

@@ -5,25 +5,14 @@ import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, SaveFormat
 
 Vue.use(Vuex);
 
-/**
- * Create the default Cards object
- * @returns a default Cards object
- */
+
 function defaultCards(): CardsStore {
-	return {
-		quests: [],
-		events: [],
-		locations: [],
-		characters: [],
-		factions: [],
-		notes: [],
-	};
+	// Generate automatically the CardsStore using the CardCategory enum values as keys
+	const cards = {} as CardsStore;
+	for(const category of Object.values(CardCategory)) cards[category] = [];
+	return cards;
 }
 
-/**
- * Create the default Filter object
- * @returns a default Filter object
- */
 function defaultFilter(): Filter {
 	return {
 		isEnabled: false,
@@ -59,7 +48,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 				const key = field as keyof typeof state.cards;
 
 				// The filter is applied to each relevant key (can be ALL)
-				if (state.filter.category === CategoryFilter.ALL || `${state.filter.category}s` === key) {
+				if (state.filter.category === CategoryFilter.ALL || state.filter.category === key) {
 					// Filter out corresponding cards from the initial cards object
 
 					(filteredCards[key] as CardTypes[]) = (state.cards[key] as CardTypes[]).filter((entry) => {
@@ -111,35 +100,16 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}			
 			return filteredCards;
 		},
-		where: (state) => (id: ID, category?: CardCategory): { key: string; index: number } | undefined => {
-			// TODO refactor both search sequences in a single internal function
-
-			// If category is specified, try to search in the specified array first
-			if (category) {
-				// Compute key from category
-				const key = category + "s";
-
-				// If key is a valid key in state.cards
-				if (key in state.cards) {
-					// Check if the specified id references an object in the array
-					const index = state.cards[key as keyof typeof state.cards].findIndex((entry: CardTypes) => entry.id === id);
-					if (index != -1) return { key, index };
-				}
-			}
-
-			// If the first search has failed or has not been tested, search in each array for an object with the specified id
+		getByIdInCategory: (state) => (id: ID, category: CardCategory): CardTypes | undefined => {
+			const idx = state.cards[category].findIndex((entry: CardTypes) => entry.id === id);
+			return idx != -1 ? state.cards[category][idx] : undefined;
+		},
+		getById: (state, getters) => (id: ID): CardTypes | undefined => {
 			for (const key in state.cards) {
-				// Check if the specified id references an object in the array
-				const index = state.cards[key as keyof typeof state.cards].findIndex((entry: CardTypes) => entry.id === id);
-				if (index != -1) return { key, index };
+				const ret = getters.getByIdInCategory(id, key);
+				if(ret) return ret;
 			}
 			return undefined;
-		},
-		get: (state, getters) => (id: ID, category?: CardCategory): CardTypes | undefined => {
-			// TODO transform to generic type function + create 2nd function to get a content of any category
-			const location = getters.where(id, category);
-			if (location) return state.cards[location.key as keyof typeof state.cards][location.index];
-			else return undefined;
 		},
 		getJsonData: (state) => {
 			const data: SaveFormat = {
@@ -173,12 +143,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 				const parsedData: SaveFormat = JSON.parse(rawData);
 
 				// Set cards
-				for (const entry of parsedData.cards.quests || []) state.cards.quests.push(entry);
-				for (const entry of parsedData.cards.events || []) state.cards.events.push(entry);
-				for (const entry of parsedData.cards.locations || []) state.cards.locations.push(entry);
-				for (const entry of parsedData.cards.characters || []) state.cards.characters.push(entry);
-				for (const entry of parsedData.cards.factions || []) state.cards.factions.push(entry);
-				for (const entry of parsedData.cards.notes || []) state.cards.notes.push(entry);
+				for (const category of Object.values(CardCategory)) state.cards[category] = parsedData.cards[category] || [];
 
 				// Set other fields
 				if (parsedData.name) state.name = parsedData.name;
@@ -188,34 +153,11 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 		},
 		add(state, payload: CardTypes) {
-			let list: CardTypes[];
-			if (payload._category === CardCategory.Quest) list = state.cards.quests;
-			else if (payload._category === CardCategory.Event) list = state.cards.events;
-			else if (payload._category === CardCategory.Location) list = state.cards.locations;
-			else if (payload._category === CardCategory.Character) list = state.cards.characters;
-			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
-			else if (payload._category === CardCategory.Note) list = state.cards.notes;
-			else {
-				console.error(payload, "is not an instance of an accepted object.");
-				return;
-			}
-
-			list.unshift(payload);
+			state.cards[payload._category].unshift(payload);
 			this.dispatch('save');
 		},
 		update(state, payload: CardTypes) {
-			let list: CardTypes[];
-			if (payload._category === CardCategory.Quest) list = state.cards.quests;
-			else if (payload._category === CardCategory.Event) list = state.cards.events;
-			else if (payload._category === CardCategory.Location) list = state.cards.locations;
-			else if (payload._category === CardCategory.Character) list = state.cards.characters;
-			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
-			else if (payload._category === CardCategory.Note) list = state.cards.notes;
-			else {
-				console.error(payload, "is not an instance of an accepted object.");
-				return;
-			}
-
+			const list: CardTypes[] = state.cards[payload._category];
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
 			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
@@ -225,18 +167,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 		},
 		delete(state, payload: CardTypes) {
-			let list: CardTypes[];
-			if (payload._category === CardCategory.Quest) list = state.cards.quests;
-			else if (payload._category === CardCategory.Event) list = state.cards.events;
-			else if (payload._category === CardCategory.Location) list = state.cards.locations;
-			else if (payload._category === CardCategory.Character) list = state.cards.characters;
-			else if (payload._category === CardCategory.Faction) list = state.cards.factions;
-			else if (payload._category === CardCategory.Note) list = state.cards.notes;
-			else {
-				console.error(payload, "is not an instance of an accepted object.");
-				return;
-			}
-
+			const list: CardTypes[] = state.cards[payload._category];
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			if (index !== -1) {
 				// Search in each array for eventual entries referencing the object we're about to delete
@@ -254,15 +185,15 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 		},
 		updateWholeList(state, payload: {category: CardCategory, list: CardTypes[]}) {
-			const key = payload.category.toString().toLowerCase() + "s";
-			Vue.set(state.cards, key, payload.list);
+			Vue.set(state.cards, payload.category, payload.list);
 			this.dispatch('save');
 		},
 		changeFilter(state, payload: Filter) {
+			const cleanFilter = defaultFilter();
 			state.filter.isEnabled = true;
-			state.filter.category = payload.category || CategoryFilter.ALL;
-			state.filter.text = payload.text || "";
-			state.filter.tags = payload.tags || [];
+			state.filter.category = payload.category || cleanFilter.category;
+			state.filter.text = payload.text || cleanFilter.text;
+			state.filter.tags = payload.tags || cleanFilter.tags;
 		},
 		resetFilter(state) {
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
@@ -300,8 +231,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 				cards: state.cards,
 				quickNote: state.quickNote,
 			};
-			const json = JSON.stringify(data);
-			localStorage.setItem(LocalStorageKey.DATA_KEY, json);
+			localStorage.setItem(LocalStorageKey.DATA_KEY, JSON.stringify(data));
 		},
 		deleteSave() {
 			localStorage.removeItem(LocalStorageKey.DATA_KEY);
