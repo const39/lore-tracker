@@ -143,23 +143,24 @@ export class Tag {
 // ***** Store/Save ******
 // ***********************
 export interface CardsStore {
-	quests: Quest[];
-	events: Event[];
-	locations: Location[];
-	characters: Character[];
-	factions: Faction[];
-	notes: Note[];
+	quest: Quest[];
+	event: Event[];
+	location: Location[];
+	character: Character[];
+	faction: Faction[];
+	note: Note[];
 }
 
-export enum CategoryFilter {
-	ALL = "all",
-	QUEST = "quest",
-	EVENT = "event",
-	LOCATION = "location",
-	CHARACTER = "character",
-	FACTION = "faction",
-	NOTE = "note",
-}
+export const CategoryFilter = {
+	ALL: "all",
+	QUEST: CardCategory.Quest,
+	EVENT: CardCategory.Event,
+	LOCATION: CardCategory.Location,
+	CHARACTER: CardCategory.Character,
+	FACTION: CardCategory.Faction,
+	NOTE: CardCategory.Note
+} as const;
+export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter]; 
 
 export interface Filter {
 	isEnabled: boolean;

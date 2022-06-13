@@ -60,7 +60,7 @@ export default Vue.extend({
 			let tagsList: any = {};
 
 			for (const id of this.model) {
-				const elem = this.$store.getters.get(id);
+				const elem = this.$store.getters.getById(id);
 
 				// If the object is found, create a tag object from the element's data
 				if (elem) {
