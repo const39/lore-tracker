@@ -298,15 +298,16 @@ export interface Locale {
 		lang: {
 			optionName: string;
 		};
-		copyData: {
+		save: {
 			optionName: string;
-			success: string;
-		};
-		deleteData: {
-			optionName: string;
-			title: string;
-			message: string;
-		};
+			downloadText: string;
+			uploadText: string;
+			uploadInputLabel: string;
+			uploadInputHint: string;
+			deleteText: string;
+			deleteDialogTitle: string;
+			deleteDialogMessage: string;
+		},
 		about: {
 			optionName: string;
 			title: string;

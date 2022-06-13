@@ -115,14 +115,15 @@ const fr: Locale = {
 		lang: {
 			optionName: "Changer de langue",
 		},
-		copyData: {
-			optionName: "Copier les données",
-			success: "Données copiées dans le presse-papier",
-		},
-		deleteData: {
-			optionName: "Effacer les données",
-			title: "Effacer les données ?",
-			message:
+		save: {
+			optionName: "Gérer la sauvegarde",
+			downloadText: "Télécharger la sauvegarde",
+			uploadText: "Charger une sauvegarde",
+			uploadInputLabel: "Charger le fichier",
+			uploadInputHint: "Fichier au format JSON requis",
+			deleteText: "Supprimer la sauvegarde",
+			deleteDialogTitle: "Supprimer la sauvegarde ?",
+			deleteDialogMessage:
 				"Vous perdrez toutes les données enregistrées. Si vous souhaitez effacer les données, il est conseillé d'en faire une copie d'abord.",
 		},
 		about: {
