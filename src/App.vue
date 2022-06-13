@@ -40,25 +40,12 @@
 					<v-item-group mandatory>
 						<ThemeSelector />
 						<LangSelector />
+						<SaveSelector />
 						<v-list-item link @click="showHotkeysDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title>{{ $t("options.hotkeys.optionName") }}</v-list-item-title>
-						</v-list-item>
-						<v-list-item link @click="copyToClipboard">
-							<v-list-item-icon>
-								<v-icon>mdi-content-copy</v-icon>
-							</v-list-item-icon>
-							<v-list-item-title>{{ $t("options.copyData.optionName") }}</v-list-item-title>
-						</v-list-item>
-						<v-list-item link @click="showConfirmDialog">
-							<v-list-item-icon>
-								<v-icon color="red">mdi-delete</v-icon>
-							</v-list-item-icon>
-							<v-list-item-title class="red--text">
-								{{ $t("options.deleteData.optionName") }}
-							</v-list-item-title>
 						</v-list-item>
 						<v-list-item link @click="showAboutDialog = true">
 							<v-list-item-icon>
@@ -82,14 +69,6 @@
 		<div class="ma-4 quick-note-wrapper">
 			<QuickNote></QuickNote>
 		</div>
-
-		<!-- Global confirm dialog for options -->
-		<ConfirmDialog
-			v-model="confirmDialog.show"
-			:title="confirmDialog.title"
-			:message="confirmDialog.message"
-			:acceptAction="confirmDialog.acceptAction"
-		/>
 
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
@@ -116,16 +95,6 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
-
-		<!-- Global snackbar -->
-		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
-			{{ $t("options.copyData.success") }}
-			<template v-slot:action="{ attrs }">
-				<v-btn icon v-bind="attrs" @click="showSnackbar = false">
-					<v-icon>mdi-close</v-icon>
-				</v-btn>
-			</template>
-		</v-snackbar>
 	</v-app>
 </template>
 
@@ -133,51 +102,30 @@
 import Vue from "vue";
 import { VERSION, LocalStorageKey } from "./js/types";
 
-import ConfirmDialog from "./components/ConfirmDialog.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
 import ThemeSelector from "./components/selectors/ThemeSelector.vue";
 import LangSelector from "./components/selectors/LangSelector.vue";
+import SaveSelector from "./components/selectors/SaveSelector.vue";
 import QuickNote from "./components/QuickNote.vue";
 
 export default Vue.extend({
 	name: "App",
 	components: {
-		ConfirmDialog,
 		HotkeyDialog,
 		ThemeSelector,
 		LangSelector,
+		SaveSelector,
 		QuickNote,
 	},
 	data() {
 		return {
 			version: VERSION,
 			showMenu: false,
-			showSnackbar: false,
 			showHotkeysDialog: false,
 			showAboutDialog: false,
-			confirmDialog: {
-				show: false,
-				title: "",
-				message: "",
-				acceptAction: () => {},
-			},
 		};
 	},
 	methods: {
-		async copyToClipboard() {
-			try {
-				await navigator.clipboard.writeText(this.$store.getters.getJsonData);
-				this.showSnackbar = true;
-			} catch (error) {
-				console.error("Copy to clipboard failed.");
-			}
-		},
-		showConfirmDialog() {
-			this.confirmDialog.title = this.$t("options.deleteData.title");
-			this.confirmDialog.message = this.$t("options.deleteData.message");
-			this.confirmDialog.acceptAction = () => this.$store.commit("resetData");
-			this.confirmDialog.show = true;
-		},
 		/**
 		 * Manage this component's hotkeys :
 		 * - On ESC press : Open/close options menu
@@ -201,7 +149,8 @@ export default Vue.extend({
 	},
 	created() {
 		// Initialise the store at application start
-		this.$store.commit("initData");
+		this.$store.commit("loadData");
+		// TODO error management
 	},
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);

@@ -34,27 +34,19 @@ function defaultFilter(): Filter {
 	};
 }
 
-function persist(state: State) {
-	const data: SaveFormat = {
-		name: state.name,
-		days: state.days,
-		season: state.season,
-		cards: state.cards,
-		quickNote: state.quickNote,
-	};
-	const json = JSON.stringify(data);
-	localStorage.setItem(LocalStorageKey.DATA_KEY, json);
-}
-
-const { store, rootActionContext, moduleActionContext, rootGetterContext, moduleGetterContext } = createDirectStore({
-	state: (): State => ({
+function defaultState(): State {
+	return {
 		name: "Campaign",
 		days: 0,
 		season: Season.SPRING,
 		cards: defaultCards(),
 		filter: defaultFilter(),
 		quickNote: "",
-	}),
+	}
+}
+
+const { store, rootActionContext, moduleActionContext, rootGetterContext, moduleGetterContext } = createDirectStore({
+	state: defaultState(),
 	getters: {
 		filteredCards: (state) => {
 			// Create another empty cards object to avoid modifying the state containing all cards
@@ -161,12 +153,20 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		},
 	},
 	mutations: {
-		initData(state) {
-			// Reset cards
-			state.cards = defaultCards();
+		resetState(state) {
+			// We use Object.assign() to replace the object at index with our new object while allowing Vue to still track changes to that object
+			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Objects
+			Object.assign(state, defaultState());
+		},
+		loadData(state, payload?: string) {
+			// Reset current state
+			this.commit('resetState');
+			
+			// Get persisted raw data (from payload or from LocalStorage if no payload)
+			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
 
-			// Get persisted raw data
-			const rawData = localStorage.getItem(LocalStorageKey.DATA_KEY);
+			// TODO add JSON Schema validation on rawData
+			// TODO return Promise/throw Exception to inform UI when data is illegal/badly formatted
 
 			// If JSON parsing is exploitable
 			if (rawData) {
@@ -201,7 +201,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 
 			list.unshift(payload);
-			persist(state);
+			this.dispatch('save');
 		},
 		update(state, payload: CardTypes) {
 			let list: CardTypes[];
@@ -218,10 +218,10 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
-			// @see https://vuejs.org/v2/guide/reactivity.html#For-Arrays
+			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
 			if (index !== -1) {
 				Vue.set(list, index, payload);
-				persist(state);
+				this.dispatch('save');
 			}
 		},
 		delete(state, payload: CardTypes) {
@@ -250,17 +250,13 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 				// Finally delete the payload object from state
 				list.splice(index, 1);
-				persist(state);
+				this.dispatch('save');
 			}
 		},
 		updateWholeList(state, payload: {category: CardCategory, list: CardTypes[]}) {
 			const key = payload.category.toString().toLowerCase() + "s";
 			Vue.set(state.cards, key, payload.list);
-			persist(state);
-		},
-		resetCards(state) {
-			Vue.set(state, "cards", defaultCards());
-			persist(state);
+			this.dispatch('save');
 		},
 		changeFilter(state, payload: Filter) {
 			state.filter.isEnabled = true;
@@ -269,30 +265,48 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			state.filter.tags = payload.tags || [];
 		},
 		resetFilter(state) {
+			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
+			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
 			Vue.set(state, "filter", defaultFilter());
 		},
 		changeName(state, payload: string) {
 			if (payload) {
 				state.name = payload;
-				persist(state);
+				this.dispatch('save');
 			}
 		},
 		changeDaysCount(state, payload: number) {
 			if (Number.isSafeInteger(payload) && payload > -1) {
 				state.days = payload;
-				persist(state);
+				this.dispatch('save');
 			}
 		},
 		changeSeason(state, payload: Season) {
 			state.season = payload;
-			persist(state);
+			this.dispatch('save');
 		},
 		changeQuickNote(state, payload: string) {
 			state.quickNote = payload;
-			persist(state);
+			this.dispatch('save');
 		},
 	},
-	actions: {},
+	actions: {
+		save({state}) {
+
+			const data: SaveFormat = {
+				name: state.name,
+				days: state.days,
+				season: state.season,
+				cards: state.cards,
+				quickNote: state.quickNote,
+			};
+			const json = JSON.stringify(data);
+			localStorage.setItem(LocalStorageKey.DATA_KEY, json);
+		},
+		deleteSave() {
+			localStorage.removeItem(LocalStorageKey.DATA_KEY);
+		},
+	},
 	modules: {},
 });
 

@@ -114,14 +114,15 @@ const en: Locale = {
 		lang: {
 			optionName: "Change language",
 		},
-		copyData: {
-			optionName: "Copy data",
-			success: "Data copied in clipboard",
-		},
-		deleteData: {
-			optionName: "Delete data",
-			title: "Delete data ?",
-			message: "All saved data will be lost. Please consider backup your data first.",
+		save: {
+			optionName: "Manage save",
+			downloadText: "Download save file",
+			uploadText: "Load save file",
+			uploadInputLabel: "Upload file",
+			uploadInputHint: "JSON file required",
+			deleteText: "Delete save",
+			deleteDialogTitle: "Delete save?",
+			deleteDialogMessage: "All saved data will be lost. Please consider to backup your data first.",
 		},
 		about: {
 			optionName: "About",
