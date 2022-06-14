@@ -27,7 +27,7 @@ export default Vue.extend({
 	computed: {
 		nodes() {
 			// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-			let events = this.$store.state.cards.events.slice().reverse();
+			let events = this.$store.state.cards.event.slice().reverse();
 
 			// Browse through events to index them by their day field
 			let indexedByDay: any = {};

@@ -110,7 +110,7 @@ export default Vue.extend({
 		 * All events catched here must be CardEvent objects (imported from eventHub).
 		 */
 
-		eventHub.$on("delete", (e: CardEvent) => {
+		eventHub.$on(CardEvent.ID, (e: CardEvent) => {
 			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
 			let title: string;
 			switch (e.card._category) {
@@ -133,7 +133,7 @@ export default Vue.extend({
 		});
 	},
 	beforeDestroy() {
-		eventHub.$off("delete");
+		eventHub.$off(CardEvent.ID);
 	},
 });
 </script>

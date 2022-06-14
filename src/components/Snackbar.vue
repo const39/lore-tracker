@@ -23,12 +23,15 @@ export default Vue.extend({
 		};
 	},
 	created() {
-		eventHub.$on("snackbar", (e: SnackbarEvent) => {
+		eventHub.$on(SnackbarEvent.ID, (e: SnackbarEvent) => {
 			this.message = e.message;
 			this.timeout = e.timeout;
 			this.color = e.color;
 			this.show = true;
 		});
+	},
+	beforeDestroy() {
+		eventHub.$off(SnackbarEvent.ID);
 	},
 });
 </script>

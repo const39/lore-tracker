@@ -46,7 +46,7 @@ export default Vue.extend({
 		 * This event can be used by layout components to redirect the user to the according card.
 		 */
 		goToCard(tag: Tag) {
-			eventHub.$emit("tag-selected", new TagEvent(tag));
+			eventHub.$emit(TagEvent.ID, new TagEvent(tag));
 		},
 	},
 	computed: {
@@ -82,13 +82,13 @@ export default Vue.extend({
 		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
 		 */
 		model: {
-			get() {
+			get(): ID[] {
 				return this.value;
 			},
 			/**
 			 * Create a flat array containing every ID from the various categories 
 			 */
-			set(value) {
+			set(value: ID[]) {
 				console.log(value);
 				
 				const ret = [];

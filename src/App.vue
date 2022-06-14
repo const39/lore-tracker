@@ -156,7 +156,7 @@ export default Vue.extend({
 		} catch (err) {
 			console.error(err);
 			const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.loadBackup");
-			eventHub.$emit("snackbar", new SnackbarEvent(msg, -1, "error"));
+			eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
 		}
 
 		// Set theme if preference saved + register keyboard listener

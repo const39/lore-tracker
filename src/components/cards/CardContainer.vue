@@ -62,7 +62,7 @@ export default Vue.extend({
 	},
 	methods: {
 		onDelete() {
-			eventHub.$emit('delete', new CardEvent(this.itemData));
+			eventHub.$emit(CardEvent.ID, new CardEvent(this.itemData));
 		},
 	},
 	computed: {

@@ -92,11 +92,11 @@ export default Vue.extend({
 					try {
 						this.$store.commit("loadData", value);
 						this.$store.dispatch("save");
-						eventHub.$emit("snackbar", new SnackbarEvent(this.$t("messages.success.saveFileImportSuccessful"), -1, "success"))
+						eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(this.$t("messages.success.saveFileImportSuccessful"), -1, "success"))
 					} catch(err) {
 						console.error(err);
 						const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.saveFileImportCancelled");
-						eventHub.$emit("snackbar", new SnackbarEvent(msg, -1, "error"))
+						eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"))
 					} finally {
 						this.uploadedFile = undefined;
 						this.showUploadDialog = false;
@@ -104,7 +104,7 @@ export default Vue.extend({
 				})
 				.catch((err: any) => {
 					console.error(err);
-					eventHub.$emit("snackbar", new SnackbarEvent(this.$t("messages.errors.saveFileImportFailed"), -1, "error"))
+					eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(this.$t("messages.errors.saveFileImportFailed"), -1, "error"))
 					this.uploadedFile = undefined;
 					this.showUploadDialog = false;
 				});

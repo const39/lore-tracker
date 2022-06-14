@@ -4,23 +4,16 @@ import { CardTypes, Tag } from "./types";
 export const eventHub = new Vue();
 
 export class CardEvent {
-	card: CardTypes;
-	constructor(card: CardTypes) {
-		this.card = card;
-	}
+	static ID = "delete-card";
+	constructor(public card: CardTypes) {}
 }
 
 export class TagEvent {
-	tag: Tag;
-	constructor(tag: Tag) {
-		this.tag = tag;
-	}
+	static ID = "select-tag";
+	constructor(public tag: Tag) {}
 }
 
 export class SnackbarEvent {
-	constructor(
-		public message: string,
-		public timeout: number,
-		public color: string, 
-	) {}
+	static ID = "show-snackbar";
+	constructor(public message: string, public timeout: number, public color: string) {}
 }
