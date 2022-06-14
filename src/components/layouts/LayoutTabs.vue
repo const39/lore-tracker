@@ -53,34 +53,18 @@ export default Vue.extend({
 	},
 	mounted() {
 		// Catch TagEvent, show the according tab and scroll to the card with the specified id
-		eventHub.$on("tag-selected", (e: TagEvent) => {
-			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case
-			switch (e.tag.category) {
-				case CardCategory.Quest:
-					this.activeTab = 0;
-					break;
-				case CardCategory.Event:
-					this.activeTab = 1;
-					break;
-				case CardCategory.Location:
-					this.activeTab = 2;
-					break;
-				case CardCategory.Character:
-					this.activeTab = 3;
-					break;
-				case CardCategory.Faction:
-					this.activeTab = 4;
-					break;
-				case CardCategory.Note:
-					this.activeTab = 5;
-					break;
-			}
+		eventHub.$on(TagEvent.ID, (e: TagEvent) => {
+			// Change active tab dynamically based on index of category in the enum
+			const idx = Object.values(CardCategory).findIndex((val) => val === e.tag.category);
+			this.activeTab = idx !== -1 ? idx : 0;
+			
+			// Scroll to card
 			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 		});
 		document.addEventListener("keydown", this.hotkey);
 	},
 	beforeDestroy() {
-		eventHub.$off("tag-selected");
+		eventHub.$off(TagEvent.ID);
 		document.removeEventListener("keydown", this.hotkey);
 	},
 });

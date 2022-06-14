@@ -25,12 +25,12 @@ export default Vue.extend({
 	},
 	mounted() {
 		// Catch TagEvent and scroll to the card with the specified id
-		eventHub.$on("tag-selected", (e: TagEvent) => {
+		eventHub.$on(TagEvent.ID, (e: TagEvent) => {
 			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 		});
 	},
 	beforeDestroy() {
-		eventHub.$off("tag-selected");
+		eventHub.$off(TagEvent.ID);
 	},
 });
 </script>

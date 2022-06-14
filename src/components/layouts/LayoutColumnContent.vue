@@ -66,7 +66,7 @@ export default Vue.extend({
 		},
 		/**
 		 * Manage each column hot key :
-		 * - Alt+1 : Collapse/expand Oebjective tab
+		 * - Alt+1 : Collapse/expand Objective tab
 		 * - Alt+2 : Collapse/expand Event tab
 		 * - Alt+3 : Collapse/expand Location tab
 		 * - Alt+4 : Collapse/expand Character tab
@@ -74,7 +74,6 @@ export default Vue.extend({
 		 * - Alt+6 : Collapse/expand Note tab
 		 */
 		hotkey(e: KeyboardEvent) {
-			// TODO map 'tabs' array to object (name -> idx), to retrieve index automatically without switch/case
 			if (e.altKey) {
 				if (
 					(e.code === "Digit1" && this.category === CardCategory.Quest) ||
