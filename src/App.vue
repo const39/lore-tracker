@@ -95,6 +95,9 @@
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
+
+		<!-- Global snackbar -->
+		<Snackbar />
 	</v-app>
 </template>
 
@@ -107,6 +110,8 @@ import ThemeSelector from "./components/selectors/ThemeSelector.vue";
 import LangSelector from "./components/selectors/LangSelector.vue";
 import SaveSelector from "./components/selectors/SaveSelector.vue";
 import QuickNote from "./components/QuickNote.vue";
+import Snackbar from "./components/Snackbar.vue";
+import { eventHub, SnackbarEvent } from "./js/eventHub";
 
 export default Vue.extend({
 	name: "App",
@@ -116,6 +121,7 @@ export default Vue.extend({
 		LangSelector,
 		SaveSelector,
 		QuickNote,
+		Snackbar,
 	},
 	data() {
 		return {
@@ -144,13 +150,18 @@ export default Vue.extend({
 		},
 	},
 	mounted() {
+		// Initialise the store at application start
+		try {
+			this.$store.commit("loadData");
+		} catch (err) {
+			console.error(err);
+			const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.loadBackup");
+			eventHub.$emit("snackbar", new SnackbarEvent(msg, -1, "error"));
+		}
+
+		// Set theme if preference saved + register keyboard listener
 		this.$vuetify.theme.dark = localStorage.getItem(LocalStorageKey.THEME_KEY) === "dark";
 		document.addEventListener("keydown", this.hotkey);
-	},
-	created() {
-		// Initialise the store at application start
-		this.$store.commit("loadData");
-		// TODO error management
 	},
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);

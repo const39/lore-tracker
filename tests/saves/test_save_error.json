@@ -1,0 +1,100 @@
+{
+	"objectives": [
+		{ "id": 1623148341274, "desc": "Pan pan kill", "isCompleted": false, "tags": [1623844971797, 1623845009843] },
+		{
+			"id": 1623147196979,
+			"desc": "Retrouver Zyrlat.",
+			"isCompleted": false,
+			"tags": [1623147224831, 1623844971797]
+		},
+		{ "id": 1623844862334, "desc": "Retrouver la BOSS.", "isCompleted": true, "tags": [] },
+		{ "id": 1623844865599, "desc": "Retrouver Zyrlat.", "isCompleted": false, "tags": [] },
+		{
+			"id": 1623261583550,
+			"desc": "Retrouver Zyrlat et les dragons",
+			"isCompleted": true,
+			"tags": [
+				1623075500239,
+				1623844971797,
+				1623845009843,
+				1623147209793,
+				1623844865599,
+				1623844862334,
+				1623147196979,
+				1623148341274,
+				1623948086455,
+				1623261583550
+			]
+		},
+		{ "id": 1623948086455, "desc": "Nouveau objo", "isCompleted": true, "tags": [1623941585775] }
+	],
+	"events": [
+		{
+			"id": 1623147209793,
+			"desc": "Une grande bataille BOOM",
+			"type": "combat",
+			"tags": [1623147224831, 1623844971797]
+		},
+		{
+			"id": 1623844899223,
+			"desc": "Une grande découverte",
+			"type": "travel",
+			"tags": [1623147224831, 1623844971797]
+		},
+		{ "id": 1623844905363, "desc": "Une grande découverte", "tags": [1623844865599] },
+		{ "id": 1623933480996, "desc": "test", "type": "discovery", "tags": [1623261583550] },
+		{ "id": 1623941585775, "desc": "salut *test*", "type": "encounter", "tags": [] }
+	],
+	"locations": [
+		{
+			"id": 1623147217227,
+			"name": "Langdale",
+			"desc": "Un petit village perdu dans une plaine. Une taverne, L'Auberge Noire, s'y trouve. Le village a connu une bataille lorsque...",
+			"tags": [1623844865599, 1623844862334]
+		},
+		{ "id": 1623844922826, "name": "Langdale bis", "desc": "copie conforme de Langdale", "tags": [] },
+		{ "id": 1623075500239, "name": "Davenport", "desc": "un port pa bo", "tags": [] }
+	],
+	"characters": [
+		{
+			"id": 1623147224831,
+			"name": "Acménos",
+			"race": "Tiefflin",
+			"classes": "Roublard",
+			"role": "Marchand",
+			"isNPC": false,
+			"desc": "A rencontré Halvor dans une taverne. <hr>",
+			"tags": []
+		},
+		{
+			"id": 1623844971797,
+			"name": "Halvor",
+			"race": "Humain",
+			"classes": "Guerrier",
+			"role": "Mercenaire",
+			"isNPC": false,
+			"desc": "A rencontré Acménos dans une **taverne**. [salut](https://www.google.com).",
+			"tags": [1623147196979, 1623147217227, 1623075500239]
+		},
+		{
+			"id": 1623845009843,
+			"name": "Alix",
+			"race": "",
+			"classes": "",
+			"role": "",
+			"isNPC": true,
+			"desc": "A rencontré Acménos dans une taverne. <div style=\"background: red;\"></div>",
+			"tags": []
+		}
+	],
+	"notes": [
+		{ "id": 1623147233005, "title": "Lorem ispum.", "desc": "Lorem ispum...", "tags": [] },
+		{
+			"id": 1623845003903,
+			"title": "Une note secrète",
+			"desc": "Lorem ispum...",
+			"tags": [1623844865599, 1623147217227]
+		},
+		{ "id": 1623267830950, "title": "", "desc": "une nouvelle note", "tags": [] }
+	]
+}

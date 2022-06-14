@@ -63,6 +63,7 @@ import Vue from "vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import SelectorActivator from "./SelectorActivator.vue";
+import { eventHub, SnackbarEvent } from "@/js/eventHub";
 
 export default Vue.extend({
 	components: {
@@ -77,27 +78,39 @@ export default Vue.extend({
 		};
 	},
 	methods: {
-		downloadSave() {
+		downloadSave(): void {
 			const a = document.createElement("a");
-			const json = this.$store.getters.getJsonData;
+			const json = this.$store.getters.toJSON;
 			const blob = new Blob([json], { type: "application/json" });
 			a.href = URL.createObjectURL(blob);
 			a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;
 			a.click();
 		},
-		uploadSave() {
+		uploadSave(): void {
 			if (this.uploadedFile) {
-				this.uploadedFile.text().then((value) => {
-					this.$store.commit("loadData", value);
-					this.$store.dispatch("save");
+				this.uploadedFile.text().then((value: string) => {
+					try {
+						this.$store.commit("loadData", value);
+						this.$store.dispatch("save");
+						eventHub.$emit("snackbar", new SnackbarEvent(this.$t("messages.success.saveFileImportSuccessful"), -1, "success"))
+					} catch(err) {
+						console.error(err);
+						const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.saveFileImportCancelled");
+						eventHub.$emit("snackbar", new SnackbarEvent(msg, -1, "error"))
+					} finally {
+						this.uploadedFile = undefined;
+						this.showUploadDialog = false;
+					}
+				})
+				.catch((err: any) => {
+					console.error(err);
+					eventHub.$emit("snackbar", new SnackbarEvent(this.$t("messages.errors.saveFileImportFailed"), -1, "error"))
 					this.uploadedFile = undefined;
 					this.showUploadDialog = false;
 				});
-				// .catch((err) => {});
-				// TODO error management
 			}
 		},
-		deleteSave() {
+		deleteSave(): void {
 			this.$store.commit("resetState");
 			this.$store.dispatch("deleteSave");
 		},

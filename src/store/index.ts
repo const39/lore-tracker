@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { createDirectStore } from "direct-vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, SaveFormat, State, CardCategory, CardTypes, ID } from "@/js/types";
+import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID } from "@/js/types";
+import saves, { SaveVersion } from "@/js/saves";
 
 Vue.use(Vuex);
 
@@ -25,6 +26,10 @@ function defaultFilter(): Filter {
 
 function defaultState(): State {
 	return {
+		_meta: {
+			version: SaveVersion.Latest,
+			lastUpdate: new Date().toISOString()
+		},
 		name: "Campaign",
 		days: 0,
 		season: Season.SPRING,
@@ -111,15 +116,12 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 			return undefined;
 		},
-		getJsonData: (state) => {
-			const data: SaveFormat = {
-				name: state.name,
-				days: state.days,
-				season: state.season,
-				cards: state.cards,
-				quickNote: state.quickNote,
-			};
-			return JSON.stringify(data);
+		toJSON: (state) => {
+			// Split state data to exclude filter from JSON
+			const { filter, ...toSave } = state;
+			// Update date
+			toSave._meta.lastUpdate = new Date().toISOString();
+			return JSON.stringify(toSave);
 		},
 	},
 	mutations: {
@@ -129,28 +131,18 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			Object.assign(state, defaultState());
 		},
 		loadData(state, payload?: string) {
-			// Reset current state
-			this.commit('resetState');
 			
 			// Get persisted raw data (from payload or from LocalStorage if no payload)
-			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
+			const rawData = payload ?? localStorage.getItem(LocalStorageKey.DATA_KEY);
 
-			// TODO add JSON Schema validation on rawData
-			// TODO return Promise/throw Exception to inform UI when data is illegal/badly formatted
+			if(!rawData) throw new Error("No data to load! Both payload and LocalStorage are empty.");
 
-			// If JSON parsing is exploitable
-			if (rawData) {
-				const parsedData: SaveFormat = JSON.parse(rawData);
-
-				// Set cards
-				for (const category of Object.values(CardCategory)) state.cards[category] = parsedData.cards[category] || [];
-
-				// Set other fields
-				if (parsedData.name) state.name = parsedData.name;
-				if (parsedData.days) state.days = parsedData.days;
-				if (parsedData.season) state.season = parsedData.season;
-				if (parsedData.quickNote) state.quickNote = parsedData.quickNote;
-			}
+			// * Validate (and convert if necessary) save format
+			// The conversion method will throw an error if the save cannot be used. If an error is thrown:
+			//  - It is not caught to propagate it to UI
+			//  - Current state is not lost because it has not been cleared
+			const parsedData = saves.convertToLatest(JSON.parse(rawData));
+			Object.assign(state, parsedData);
 		},
 		add(state, payload: CardTypes) {
 			state.cards[payload._category].unshift(payload);
@@ -222,16 +214,8 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		},
 	},
 	actions: {
-		save({state}) {
-
-			const data: SaveFormat = {
-				name: state.name,
-				days: state.days,
-				season: state.season,
-				cards: state.cards,
-				quickNote: state.quickNote,
-			};
-			localStorage.setItem(LocalStorageKey.DATA_KEY, JSON.stringify(data));
+		save({getters}) {
+			localStorage.setItem(LocalStorageKey.DATA_KEY, getters.toJSON);
 		},
 		deleteSave() {
 			localStorage.removeItem(LocalStorageKey.DATA_KEY);

@@ -105,6 +105,18 @@ const en: Locale = {
 		changeCategory: "Click to change category",
 	},
 
+	messages: {
+		success: {
+			saveFileImportSuccessful: "Save file imported.",
+		},
+		errors: {
+			corruptedSave: "Corrupted or incomplete save data.",
+			loadBackup: "Please load a backup version to retrieve your data.",
+			saveFileImportCancelled: "Save file import cancelled.",
+			saveFileImportFailed: "The uploaded save file cannot be read.",
+		},
+	},
+
 	options: {
 		themes: {
 			optionName: "Change theme",

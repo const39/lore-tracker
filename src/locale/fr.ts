@@ -106,6 +106,18 @@ const fr: Locale = {
 		changeCategory: "Cliquer pour changer de catégorie",
 	},
 
+	messages: {
+		success: {
+			saveFileImportSuccessful: "Fichier de sauvegarde importé."
+		},
+		errors: {
+			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
+			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
+			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
+			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible."
+		},
+	},
+
 	options: {
 		themes: {
 			optionName: "Changer de thème",

@@ -16,3 +16,11 @@ export class TagEvent {
 		this.tag = tag;
 	}
 }
+
+export class SnackbarEvent {
+	constructor(
+		public message: string,
+		public timeout: number,
+		public color: string, 
+	) {}
+}
