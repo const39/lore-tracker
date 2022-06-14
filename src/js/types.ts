@@ -1,3 +1,4 @@
+import { SaveVersion } from "./saves";
 import utilities from "./utilities";
 
 // *********************
@@ -17,9 +18,9 @@ export enum Season {
 	WINTER = "winter",
 }
 
-// *****************
-// ***** Model *****
-// *****************
+// **********************
+// ***** Model/Save *****
+// **********************
 export type ID = number;
 export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 export enum CardCategory {
@@ -90,6 +91,58 @@ export interface Note extends Card, Describable {
 	title: string;
 }
 
+export interface CardsStore {
+	quest: Quest[];
+	event: Event[];
+	location: Location[];
+	character: Character[];
+	faction: Faction[];
+	note: Note[];
+}
+
+export interface MetaData {
+	version: SaveVersion.Latest;
+	lastUpdate: string; // ISO date-time format | Format not enforced !
+}
+
+// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
+// *** Update/Create save format converter in saves.ts
+// *** Regenerate JSON Schema on each update :
+// * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
+export interface SaveFormat {
+	_meta: MetaData;
+	name: string;
+	days: number;
+	season: Season;
+	cards: CardsStore;
+	quickNote: string;
+}
+
+// ***************************
+// ***** Store-specific ******
+// ***************************
+export const CategoryFilter = {
+	ALL: "all",
+	QUEST: CardCategory.Quest,
+	EVENT: CardCategory.Event,
+	LOCATION: CardCategory.Location,
+	CHARACTER: CardCategory.Character,
+	FACTION: CardCategory.Faction,
+	NOTE: CardCategory.Note,
+} as const;
+export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
+
+export interface Filter {
+	isEnabled: boolean;
+	nbResults: number;
+	category: CategoryFilter;
+	text: string;
+	tags: ID[];
+}
+export interface State extends SaveFormat {
+	filter: Filter;
+}
+
 // *****************
 // ***** View ******
 // *****************
@@ -137,49 +190,6 @@ export class Tag {
 		this.category = refObject._category;
 		this.icon = utilities.getIcon(refObject);
 	}
-}
-
-// ***********************
-// ***** Store/Save ******
-// ***********************
-export interface CardsStore {
-	quest: Quest[];
-	event: Event[];
-	location: Location[];
-	character: Character[];
-	faction: Faction[];
-	note: Note[];
-}
-
-export const CategoryFilter = {
-	ALL: "all",
-	QUEST: CardCategory.Quest,
-	EVENT: CardCategory.Event,
-	LOCATION: CardCategory.Location,
-	CHARACTER: CardCategory.Character,
-	FACTION: CardCategory.Faction,
-	NOTE: CardCategory.Note
-} as const;
-export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter]; 
-
-export interface Filter {
-	isEnabled: boolean;
-	nbResults: number;
-	category: CategoryFilter;
-	text: string;
-	tags: ID[];
-}
-
-export interface SaveFormat {
-	name: string;
-	days: number;
-	season: Season;
-	cards: CardsStore;
-	quickNote: string;
-}
-
-export interface State extends SaveFormat {
-	filter: Filter;
 }
 
 // ***********************
@@ -289,6 +299,18 @@ export interface Locale {
 		quickNote: string;
 		changeCategory: string;
 	};
+
+	messages: {
+		success: {
+			saveFileImportSuccessful: string;
+		},
+		errors: {
+			corruptedSave: string;
+			loadBackup: string;
+			saveFileImportCancelled: string;
+			saveFileImportFailed: string;
+		},
+	}
 
 	options: {
 		themes: {
