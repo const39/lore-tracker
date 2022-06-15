@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<SelectorActivator :title="$t('options.save.optionName')" icon="mdi-content-save">
+		<MenuActivator :title="$t('options.save.optionName')" icon="mdi-content-save">
 			<v-list dense>
 				<v-list-item-group>
 					<v-list-item @click="downloadSave">
@@ -25,7 +25,7 @@
 					</v-list-item>
 				</v-list-item-group>
 			</v-list>
-		</SelectorActivator>
+		</MenuActivator>
 
 		<!-- Save file upload dialog -->
 		<v-dialog v-model="showUploadDialog" persistent max-width="450">
@@ -62,13 +62,13 @@
 import Vue from "vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import SelectorActivator from "./SelectorActivator.vue";
+import MenuActivator from "./MenuActivator.vue";
 import { eventHub, SnackbarEvent } from "@/js/eventHub";
 
 export default Vue.extend({
 	components: {
 		ConfirmDialog,
-		SelectorActivator,
+		MenuActivator,
 	},
 	data() {
 		return {

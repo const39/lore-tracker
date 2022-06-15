@@ -1,5 +1,5 @@
 <template>
-	<SelectorActivator :title="$t('options.lang.optionName')" icon="mdi-translate">
+	<MenuActivator :title="$t('options.lang.optionName')" icon="mdi-translate">
 		<v-list dense>
 			<v-list-item-group mandatory v-model="selectedLang">
 				<v-list-item v-for="lang in langList" :key="lang.key" :value="lang.key">
@@ -10,18 +10,18 @@
 				</v-list-item>
 			</v-list-item-group>
 		</v-list>
-	</SelectorActivator>
+	</MenuActivator>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import translation, { SupportedLanguages } from "@/js/translation";
 
-import SelectorActivator from "./SelectorActivator.vue";
+import MenuActivator from "./MenuActivator.vue";
 
 export default Vue.extend({
 	components: {
-		SelectorActivator,
+		MenuActivator,
 	},
 	data() {
 		return {
