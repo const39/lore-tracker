@@ -1,5 +1,5 @@
 <template>
-	<SelectorActivator :title="$t('options.themes.optionName')" icon="mdi-brightness-6">
+	<MenuActivator :title="$t('options.themes.optionName')" icon="mdi-brightness-6">
 		<v-card>
 			<v-card-text>
 				<v-item-group mandatory active-class="active" v-model="selectedTheme">
@@ -27,18 +27,18 @@
 				</v-item-group>
 			</v-card-text>
 		</v-card>
-	</SelectorActivator>
+	</MenuActivator>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import { LocalStorageKey } from "@/js/types";
 
-import SelectorActivator from "./SelectorActivator.vue";
+import MenuActivator from "./MenuActivator.vue";
 
 export default Vue.extend({
 	components: {
-		SelectorActivator,
+		MenuActivator,
 	},
 	data() {
 		return {

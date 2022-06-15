@@ -38,9 +38,9 @@
 				</template>
 				<v-list dense>
 					<v-item-group mandatory>
-						<ThemeSelector />
-						<LangSelector />
-						<SaveSelector />
+						<ThemeMenu />
+						<LangMenu />
+						<SaveMenu />
 						<v-list-item link @click="showHotkeysDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
@@ -106,9 +106,9 @@ import Vue from "vue";
 import { VERSION, LocalStorageKey } from "./js/types";
 
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
-import ThemeSelector from "./components/selectors/ThemeSelector.vue";
-import LangSelector from "./components/selectors/LangSelector.vue";
-import SaveSelector from "./components/selectors/SaveSelector.vue";
+import ThemeMenu from "./components/menus/ThemeMenu.vue";
+import LangMenu from "./components/menus/LangMenu.vue";
+import SaveMenu from "./components/menus/SaveMenu.vue";
 import QuickNote from "./components/QuickNote.vue";
 import Snackbar from "./components/Snackbar.vue";
 import { eventHub, SnackbarEvent } from "./js/eventHub";
@@ -117,9 +117,9 @@ export default Vue.extend({
 	name: "App",
 	components: {
 		HotkeyDialog,
-		ThemeSelector,
-		LangSelector,
-		SaveSelector,
+		ThemeMenu,
+		LangMenu,
+		SaveMenu,
 		QuickNote,
 		Snackbar,
 	},

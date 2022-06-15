@@ -1,5 +1,5 @@
 <template>
-	<v-menu offset-x left>
+	<v-menu offset-x left open-on-hover>
 		<template v-slot:activator="{ on, attrs }">
 			<v-list-item v-on="on" v-bind="attrs">
 				<v-list-item-icon>
