@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import { createDirectStore } from "direct-vuex";
 import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID } from "@/js/types";
 import saves, { SaveVersion } from "@/js/saves";
+import utilities from "@/js/utilities";
 
 Vue.use(Vuex);
 
@@ -17,6 +18,7 @@ function defaultCards(): CardsStore {
 function defaultFilter(): Filter {
 	return {
 		isEnabled: false,
+		alphanumericSort: false,
 		nbResults: -1,
 		category: CategoryFilter.ALL,
 		text: "",
@@ -67,24 +69,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 						// If specified, search for corresponding text in text fields of the current entry
 						if (state.filter.text) {
-							// Search first in each text field (depending on the category)
-							switch (entry._category) {
-								case CardCategory.Character:
-								case CardCategory.Location:
-								case CardCategory.Faction:
-									predicate = entry.name.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
-									break;
-								case CardCategory.Quest:
-									predicate = entry.title.toLowerCase().includes(state.filter.text);
-									predicate ||= entry.tasks.some(task => task.desc.toLowerCase().includes(state.filter.text));	// Check if at least one task contains the text filter
-									break;
-								case CardCategory.Note:
-									predicate = entry.title.toLowerCase().includes(state.filter.text) || entry.desc.toLowerCase().includes(state.filter.text);
-									break;
-								default:
-									predicate = entry.desc.toLowerCase().includes(state.filter.text);
-									break;
-							}
+							predicate = utilities.getAllText(entry).some(text => text.toLowerCase().includes(state.filter.text));
 						}
 
 						// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
@@ -102,7 +87,20 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 					// Store the number of results
 					state.filter.nbResults += filteredCards[key].length;
 				}
-			}			
+			}
+
+			// If alphanumeric sort is enabled, perform sort before returning
+			if(state.filter.alphanumericSort) {
+				for (const field in filteredCards) {
+
+					filteredCards[field as keyof typeof filteredCards].sort((a: CardTypes, b: CardTypes) => {
+						const textA = utilities.getText(a).toLowerCase();
+						const textB = utilities.getText(b).toLowerCase();
+						return textA.localeCompare(textB);
+					});
+				}
+			}
+
 			return filteredCards;
 		},
 		getByIdInCategory: (state) => (id: ID, category: CardCategory): CardTypes | undefined => {
@@ -138,7 +136,7 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 		loadData(state, payload?: string) {
 			
 			// Get persisted raw data (from payload or from LocalStorage if no payload)
-			const rawData = payload ?? localStorage.getItem(LocalStorageKey.DATA_KEY);
+			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
 
 			if(!rawData) throw new Error("No data to load! Both payload and LocalStorage are empty.");
 
@@ -186,11 +184,14 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			this.dispatch('save');
 		},
 		changeFilter(state, payload: Filter) {
-			const cleanFilter = defaultFilter();
 			state.filter.isEnabled = true;
-			state.filter.category = payload.category || cleanFilter.category;
-			state.filter.text = payload.text || cleanFilter.text;
-			state.filter.tags = payload.tags || cleanFilter.tags;
+			
+			// If payload does not contain the following properties, leave the current value as is
+			// ! Only check for undefined/null using '??' instead of '||' to allow setting empty strings or booleans  
+			state.filter.alphanumericSort = payload.alphanumericSort ?? state.filter.alphanumericSort;
+			state.filter.category = payload.category ?? state.filter.category;
+			state.filter.text = payload.text ?? state.filter.text;
+			state.filter.tags = payload.tags ?? state.filter.tags;
 		},
 		resetFilter(state) {
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object

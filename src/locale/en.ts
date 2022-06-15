@@ -38,7 +38,13 @@ const en: Locale = {
 			winter: "Winter",
 		},
 		action: "Click to increase or decrease",
-		cardCount: " saved cards"
+		cardCount: " saved cards",
+		selectors: {
+			customOrder: "Custom order",
+			alphanumericOrder: "Alphanumeric order",
+			tabLayout: "Tab layout",
+			columnLayout: "Column layout",
+		},
 	},
 
 	fields: {

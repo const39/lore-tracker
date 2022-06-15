@@ -41,6 +41,12 @@ export interface Locale {
 		};
 		action: string;
 		cardCount: string;
+		selectors: {
+			customOrder: string;
+			alphanumericOrder: string;
+			tabLayout: string;
+			columnLayout: string;
+		};
 	};
 
 	fields: {

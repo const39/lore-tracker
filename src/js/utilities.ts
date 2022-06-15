@@ -1,4 +1,4 @@
-import { CardTypes, Icon } from "./types";
+import { CardCategory, CardTypes, Icon } from "./types";
 
 export default {
 	/**
@@ -21,13 +21,51 @@ export default {
 		else return Icon[content._category];
 	},
 	/**
+	 * Returns the card's main text (i.e. its prominent field (title, name...) if it's not empty or the description as fallback).
+	 * @param card
+	 * @returns the main text of the card
+	 */
+	getText: function(card: CardTypes): string {
+		switch (card._category) {
+			case CardCategory.Character:
+			case CardCategory.Location:
+			case CardCategory.Faction:
+				return card.name || card.desc;
+			case CardCategory.Quest:
+				return card.title;
+			case CardCategory.Note:
+				return card.title || card.desc;
+			default:
+				return card.desc;
+		}
+	},
+	/**
+	 * Returns all text contained in the card as an array of strings.
+	 * @param card
+	 * @returns all texts of the card
+	 */
+	getAllText: function(card: CardTypes): string[] {
+		switch (card._category) {
+			case CardCategory.Character:
+			case CardCategory.Location:
+			case CardCategory.Faction:
+				return [card.name, card.desc];
+			case CardCategory.Quest:
+				return [card.title, ...card.tasks.map((task) => task.desc)];
+			case CardCategory.Note:
+				return [card.title, card.desc];
+			default:
+				return [card.desc];
+		}
+	},
+	/**
 	 * Attempts a deep copy of the specified object literal.
-	 * 
-	 * Note: This function is expected to only work on object literals and only with primitive types (no Set, Date...). 
-	 * 
+	 *
+	 * Note: This function is expected to only work on object literals and only with primitive types (no Set, Date...).
+	 *
 	 * @param obj the object to copy
 	 * @returns a deep copy of obj
-	 * @throws an Error if obj is not an object literal 
+	 * @throws an Error if obj is not an object literal
 	 */
 	deepCopy: function(obj: object): object {
 		if (!Array.isArray(obj) && typeof obj === "object") {

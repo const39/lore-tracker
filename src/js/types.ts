@@ -134,6 +134,7 @@ export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
 
 export interface Filter {
 	isEnabled: boolean;
+	alphanumericSort: boolean;
 	nbResults: number;
 	category: CategoryFilter;
 	text: string;
@@ -171,22 +172,7 @@ export class Tag {
 
 	constructor(refObject: CardTypes) {
 		this.id = refObject.id;
-
-		switch (refObject._category) {
-			case CardCategory.Character:
-			case CardCategory.Location:
-			case CardCategory.Faction:
-				this.text = refObject.name;
-				break;
-			case CardCategory.Quest:
-			case CardCategory.Note:
-				this.text = refObject.title;
-				break;
-			default:
-				this.text = refObject.desc;
-				break;
-		}
-
+		this.text = utilities.getText(refObject);
 		this.category = refObject._category;
 		this.icon = utilities.getIcon(refObject);
 	}
