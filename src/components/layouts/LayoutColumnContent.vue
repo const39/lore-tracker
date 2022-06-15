@@ -19,7 +19,13 @@
 						@end="drag = false"
 						:move="onMove"
 					>
-						<CardContainer v-for="item in items" :key="item.id" outlined :item-data="item"></CardContainer>
+						<CardContainer
+							v-for="item in items"
+							:key="item.id"
+							outlined
+							:class="{ draggable: !isSortDisabled }"
+							:item-data="item"
+						></CardContainer>
 					</draggable>
 				</v-expansion-panel-content>
 			</v-expansion-panel>

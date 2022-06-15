@@ -38,6 +38,7 @@ const en: Locale = {
 			winter: "Winter",
 		},
 		action: "Click to increase or decrease",
+		cardCount: " saved cards"
 	},
 
 	fields: {

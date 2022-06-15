@@ -116,6 +116,11 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			}
 			return undefined;
 		},
+		cardCount: (state) => {
+			let count = 0;
+			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
+			return count;
+		},
 		toJSON: (state) => {
 			// Split state data to exclude filter from JSON
 			const { filter, ...toSave } = state;

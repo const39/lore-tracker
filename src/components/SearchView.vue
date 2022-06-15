@@ -81,7 +81,12 @@ export default Vue.extend({
 		 * Reset filter once the search view is closed
 		 */
 		open(newValue) {
-			if (!newValue) this.$store.commit("resetFilter");
+			if (!newValue) {
+				this.selectedCategory = CategoryFilter.ALL;
+				this.textToContain = "";
+				this.selectedTags = [];
+				this.$store.commit("resetFilter");
+			} 
 		},
 		/**
 		 * Trigger search as soon as a field changes

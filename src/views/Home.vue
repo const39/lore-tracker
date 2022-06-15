@@ -26,7 +26,11 @@
 				<StatusTray />
 			</div>
 			<v-spacer></v-spacer>
-			<SearchView />
+			<div class="text-right">
+				<SearchView class="mt-1 mb-2" />
+				<span class="grey--text text-caption">{{ cardCount + $t("status.cardCount") }}</span>
+			</div>
+
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
 			<v-item-group mandatory v-model="selectedLayout">
 				<v-item v-slot="{ active, toggle }">
@@ -90,12 +94,15 @@ export default Vue.extend({
 				acceptAction: () => {},
 			},
 			rules: {
-				required: (v:string) => !!v || this.$t("fields.requiredField"),
-				counter: (v:string) => v.length <= 30 || "30 max.",
+				required: (v: string) => !!v || this.$t("fields.requiredField"),
+				counter: (v: string) => v.length <= 30 || "30 max.",
 			},
 		};
 	},
 	computed: {
+		cardCount(): number {
+			return this.$store.getters.cardCount;
+		},
 		campaignName: {
 			get() {
 				return this.$store.state.name;
