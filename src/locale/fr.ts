@@ -39,6 +39,12 @@ const fr: Locale = {
 		},
 		action: "Cliquez pour augmenter ou diminuer",
 		cardCount: " carte(s) enregistrée(s)",
+		selectors: {
+			customOrder: "Ordre personnalisé",
+			alphanumericOrder: "Ordre alphanumérique",
+			tabLayout: "Disposition en onglets",
+			columnLayout: "Disposition en colonnes",
+		},
 	},
 
 	fields: {

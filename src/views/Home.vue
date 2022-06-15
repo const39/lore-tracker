@@ -32,18 +32,55 @@
 			</div>
 
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
-			<v-item-group mandatory v-model="selectedLayout">
-				<v-item v-slot="{ active, toggle }">
-					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
-						<v-icon>mdi-tab</v-icon>
-					</v-btn>
-				</v-item>
-				<v-item v-slot="{ active, toggle }">
-					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
-						<v-icon>mdi-view-column-outline</v-icon>
-					</v-btn>
-				</v-item>
-			</v-item-group>
+			<div>
+				<!-- Card ordering selector -->
+				<v-item-group class="d-block" mandatory v-model="selectedOrder">
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip top>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'primary' : ''" @click="toggle">
+									<v-icon v-if="active">mdi-sort-clock-descending</v-icon>
+									<v-icon v-else>mdi-sort-clock-descending-outline</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.customOrder") }}
+						</v-tooltip>
+					</v-item>
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip top>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'primary' : ''" @click="toggle">
+									<v-icon>mdi-sort-alphabetical-variant</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.alphanumericOrder") }}
+						</v-tooltip>
+					</v-item>
+				</v-item-group>
+				<!-- Layout selector -->
+				<v-item-group class="d-block" mandatory v-model="selectedLayout">
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'accent' : ''" @click="toggle">
+									<v-icon>mdi-tab</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.tabLayout") }}
+						</v-tooltip>
+					</v-item>
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'accent' : ''" @click="toggle">
+									<v-icon>mdi-view-column-outline</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.columnLayout") }}
+						</v-tooltip>
+					</v-item>
+				</v-item-group>
+			</div>
 		</v-row>
 
 		<!-- Alternative layouts -->
@@ -71,7 +108,6 @@ import SearchView from "@/components/SearchView.vue";
 import StatusTray from "@/components/StatusTray.vue";
 
 import { CardEvent, eventHub } from "@/js/eventHub";
-import { CardCategory } from "@/js/types";
 import utilities from "../js/utilities";
 
 export default Vue.extend({
@@ -85,6 +121,7 @@ export default Vue.extend({
 	},
 	data() {
 		return {
+			selectedOrder: 0,
 			selectedLayout: 0,
 			editName: false,
 			confirmDialog: {
@@ -112,29 +149,19 @@ export default Vue.extend({
 			},
 		},
 	},
-	mounted() {
+	watch: {
 		/**
-		 * All events catched here must be CardEvent objects (imported from eventHub).
+		 * Update card order when selection changes
 		 */
-
+		selectedOrder(value) {
+			// Set boolean as parameter instead of number
+			this.$store.commit("changeFilter", { alphanumericSort: !!value });
+		},
+	},
+	mounted() {
 		eventHub.$on(CardEvent.ID, (e: CardEvent) => {
 			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
-			let title: string;
-			switch (e.card._category) {
-				case CardCategory.Character:
-				case CardCategory.Location:
-				case CardCategory.Faction:
-					title = e.card.name;
-					break;
-				case CardCategory.Quest:
-				case CardCategory.Note:
-					title = e.card.title;
-					break;
-				default:
-					title = e.card.desc;
-					break;
-			}
-			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${title}" ?`;
+			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
 			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.card);
 			this.confirmDialog.show = true;
 		});
