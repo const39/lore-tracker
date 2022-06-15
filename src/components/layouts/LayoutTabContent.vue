@@ -17,7 +17,7 @@
 					</v-col>
 				</template>
 				<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
-					<CardContainer :item-data="item"></CardContainer>
+					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="item"></CardContainer>
 				</v-col>
 			</draggable>
 		</v-container>

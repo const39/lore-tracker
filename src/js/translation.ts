@@ -40,6 +40,7 @@ export interface Locale {
 			winter: string;
 		};
 		action: string;
+		cardCount: string;
 	};
 
 	fields: {
