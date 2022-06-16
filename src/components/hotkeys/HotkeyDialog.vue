@@ -91,10 +91,10 @@ export default Vue.extend({
 		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
 		 */
 		showDialog: {
-			get() {
+			get(): boolean {
 				return this.value;
 			},
-			set(value) {
+			set(value: boolean) {
 				this.$emit("input", value);
 			},
 		},

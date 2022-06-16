@@ -3,6 +3,9 @@ import { CardCategory, CardTypes, EventType } from "@/js/types";
 import utilities from "@/js/utilities";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 
+// Provide form $ref type to TypeScript
+type VForm = Vue & { validate: () => boolean };
+
 export default Vue.extend({
 	props: {
 		category: String as PropType<CardCategory>,
@@ -11,16 +14,16 @@ export default Vue.extend({
 	components: {
 		TagListPanel,
 	},
-	data: function() {
+	data() {
 		return {
 			valid: false,
 			requiredRule: [(v: string) => !!v || this.$t("fields.requiredField")],
-			model: this.initModel(),
+			model: (this as any).initModel(),	// HACK: Type 'this' as any to avoid TS not finding initModel in the current this value
 		};
 	},
 	methods: {
 		submit(): void {
-			this.$refs.form.validate();
+			(this.$refs.form as VForm).validate();
 
 			if (this.valid) {
 				if (this.edit) this.$store.commit("update", this.model);

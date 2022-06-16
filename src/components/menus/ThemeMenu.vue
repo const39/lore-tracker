@@ -57,13 +57,13 @@ export default Vue.extend({
 		themeList() {
 			let list = [];
 
-			// Browse default themes
-			for (const key in this.$vuetify.theme.defaults) {
-				const theme = this.$vuetify.theme.defaults[key];
+			// Browse Vuetify theme settings
+			const themes = this.$vuetify.theme.themes;
+			for (const key in themes) {
 				list.push({
 					key,
 					name: this.$t(`options.themes.${key}`),
-					colors: theme,
+					colors: themes[key as keyof typeof themes],
 				});
 			}
 
