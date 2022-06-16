@@ -59,7 +59,7 @@ export default Vue.extend({
 				this.$emit("input", value);
 			},
 		},
-		excludeIds() {
+		excludeIds(): ID[] {
 			return [this.excludeId, ...this.model];
 		},
 	},

@@ -14,7 +14,7 @@ protocol.registerSchemesAsPrivileged([{ scheme: "app", privileges: { secure: tru
  * @param e the event
  * @param {string} url the url to open
  */
-const handleRedirect = (e, url) => {
+const handleRedirect = (e: any, url: string) => {
 
 	if (url != e.sender.getURL()) {
 		// Prevent tab from opening in Electron
@@ -34,7 +34,7 @@ async function createWindow() {
 		webPreferences: {
 			// Use pluginOptions.nodeIntegration, leave this alone
 			// See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-			nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+			nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION as any,
 			contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
 		},
 	});
@@ -76,7 +76,7 @@ app.on("ready", async () => {
 		// Install Vue Devtools
 		try {
 			await installExtension(VUEJS_DEVTOOLS);
-		} catch (e) {
+		} catch (e: any) {
 			console.error("Vue Devtools failed to install:", e.toString());
 		}
 	}

@@ -37,9 +37,13 @@ export default Vue.extend({
 		editable: Boolean,
 	},
 	methods: {
+		/**
+		 * Remove the ID matching the specified Tag from the 'value' prop (if any).
+		 * Performs in-place removal, the prop is changed directly.
+		 */
 		remove(tag: Tag) {
-			const index = this.model.indexOf(tag.id);
-			if (index >= 0) this.model.splice(index, 1);
+			const index = this.value.indexOf(tag.id);
+			if (index >= 0) this.value.splice(index, 1);
 		},
 		/**
 		 * Send an event to the eventHub indicating that a tag referencing a card has been clicked.
@@ -59,7 +63,7 @@ export default Vue.extend({
 		tags() {
 			let tagsList: any = {};
 
-			for (const id of this.model) {
+			for (const id of this.value) {
 				const elem = this.$store.getters.getById(id);
 
 				// If the object is found, create a tag object from the element's data
@@ -74,27 +78,6 @@ export default Vue.extend({
 				} else console.error(`TagList: No card with id ${id} found.`);
 			}
 			return tagsList;
-		},
-		/**
-		 * Overwrite default v-model to bind the v-model attribute to the parent.
-		 * This allows the parent component to get a 2-way data bind to this component seamlessly.
-		 * In this case, it allows the TagListPanel > TagList > TagAutocomplete component chain to propagate any data update to the parent/child components.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		model: {
-			get(): ID[] {
-				return this.value;
-			},
-			/**
-			 * Create a flat array containing every ID from the various categories 
-			 */
-			set(value: ID[]) {
-				console.log(value);
-				
-				const ret = [];
-				for (const key in value) ret.push(...value[key]);
-				this.$emit("input", ret);
-			},
 		},
 	},
 	filters: {

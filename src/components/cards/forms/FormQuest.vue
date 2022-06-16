@@ -63,13 +63,13 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue";
 import form from "@/mixins/form";
 import { Icon, Task } from "@/js/types";
 
 import ListPanel from "@/components/ListPanel.vue";
 
-export default Vue.extend({
+// Directly extend from the mixin instead of Vue to provide the mixin types to TypeScript 
+export default form.extend({
 	mixins: [form],
 	components: {
 		ListPanel,
