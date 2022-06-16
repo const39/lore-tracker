@@ -145,7 +145,7 @@ export default Vue.extend({
 				return this.$store.state.name;
 			},
 			set(value) {
-				if (value) this.$store.commit("changeName", value);
+				if (value) this.$store.dispatch("commitAndSave", { commit: "setName", payload: value });
 			},
 		},
 	},
@@ -155,14 +155,15 @@ export default Vue.extend({
 		 */
 		selectedOrder(value) {
 			// Set boolean as parameter instead of number
-			this.$store.commit("changeFilter", { alphanumericSort: !!value });
+			this.$store.commit("updateFilter", { alphanumericSort: !!value });
 		},
 	},
 	mounted() {
 		eventHub.$on(CardEvent.ID, (e: CardEvent) => {
 			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
 			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
-			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.card);
+			this.confirmDialog.acceptAction = () =>
+				this.$store.dispatch("commitAndSave", { commit: "deleteCard", payload: e.card });
 			this.confirmDialog.show = true;
 		});
 	},

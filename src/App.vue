@@ -152,7 +152,7 @@ export default Vue.extend({
 	mounted() {
 		// Initialise the store at application start
 		try {
-			this.$store.commit("loadData");
+			this.$store.dispatch("loadData");
 		} catch (err) {
 			console.error(err);
 			const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.loadBackup");

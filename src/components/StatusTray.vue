@@ -46,7 +46,7 @@ export default Vue.extend({
 				return this.$store.state.days;
 			},
 			set(val) {
-				this.$store.commit("changeDaysCount", val);
+				this.$store.dispatch("commitAndSave", { commit: "setDaysCount", payload: val });
 			},
 		},
 		currentSeason: {
@@ -54,7 +54,7 @@ export default Vue.extend({
 				return this.$t(`status.seasons.${this.$store.state.season}`);
 			},
 			set(val) {
-				this.$store.commit("changeSeason", val);
+				this.$store.dispatch("commitAndSave", { commit: "setSeason", payload: val });
 			},
 		},
 	},

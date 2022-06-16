@@ -59,7 +59,10 @@ export default Vue.extend({
 				return this.$store.getters.filteredCards[this.category];
 			},
 			set(list: CardTypes[]) {
-				this.$store.commit("updateWholeList", { category: this.category, list });
+				this.$store.dispatch("commitAndSave", {
+					commit: "updateWholeList",
+					payload: { category: this.category, list },
+				});
 			},
 		},
 	},

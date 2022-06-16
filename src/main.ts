@@ -13,8 +13,8 @@ import translation from "./js/translation";
 Vue.prototype.$t = translation.t;
 
 new Vue({
-    router,
-    vuetify,
-    store: store.original,
-    render: (h) => h(App)
+	router,
+	vuetify,
+	store,
+	render: (h) => h(App),
 }).$mount("#app");

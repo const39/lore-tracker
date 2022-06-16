@@ -55,7 +55,7 @@ export default Vue.extend({
 	},
 	methods: {
 		search() {
-			this.$store.commit("changeFilter", {
+			this.$store.commit("updateFilter", {
 				category: this.selectedCategory,
 				text: this.textToContain,
 				tags: this.selectedTags,
@@ -73,7 +73,7 @@ export default Vue.extend({
 			return this.open ? "display: block;" : "display: none;";
 		},
 		resultsNumber() {
-			return this.$store.state.filter.nbResults;
+			return this.$store.getters.filteredCardCount;
 		},
 	},
 	watch: {
