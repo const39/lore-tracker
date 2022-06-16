@@ -90,7 +90,7 @@ export default Vue.extend({
 			if (this.uploadedFile) {
 				this.uploadedFile.text().then((value: string) => {
 					try {
-						this.$store.commit("loadData", value);
+						this.$store.dispatch("loadData", value);
 						this.$store.dispatch("save");
 						eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(this.$t("messages.success.saveFileImportSuccessful"), -1, "success"))
 					} catch(err) {

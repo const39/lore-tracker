@@ -18,7 +18,7 @@ export default Vue.extend({
 		return {
 			valid: false,
 			requiredRule: [(v: string) => !!v || this.$t("fields.requiredField")],
-			model: (this as any).initModel(),	// HACK: Type 'this' as any to avoid TS not finding initModel in the current this value
+			model: (this as any).initModel(), // HACK: Type 'this' as any to avoid TS not finding initModel in the current this value
 		};
 	},
 	methods: {
@@ -26,8 +26,8 @@ export default Vue.extend({
 			(this.$refs.form as VForm).validate();
 
 			if (this.valid) {
-				if (this.edit) this.$store.commit("update", this.model);
-				else this.$store.commit("add", this.model);
+				if (this.edit) this.$store.dispatch("commitAndSave", { commit: "updateCard", payload: this.model });
+				else this.$store.dispatch("commitAndSave", { commit: "addCard", payload: this.model });
 
 				this.close();
 			}
@@ -54,7 +54,7 @@ export default Vue.extend({
 						id: utilities.uid(),
 						tags: [],
 						title: "",
-						tasks: []
+						tasks: [],
 					};
 				case CardCategory.Event:
 					return {
@@ -108,7 +108,7 @@ export default Vue.extend({
 	computed: {
 		categoryIcon(): string {
 			return utilities.getIcon(this.model);
-		}
+		},
 	},
 	watch: {
 		/**

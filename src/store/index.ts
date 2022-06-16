@@ -1,7 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { createDirectStore } from "direct-vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID } from "@/js/types";
+import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat } from "@/js/types";
 import saves, { SaveVersion } from "@/js/saves";
 import utilities from "@/js/utilities";
 
@@ -19,7 +18,6 @@ function defaultFilter(): Filter {
 	return {
 		isEnabled: false,
 		alphanumericSort: false,
-		nbResults: -1,
 		category: CategoryFilter.ALL,
 		text: "",
 		tags: [],
@@ -41,14 +39,12 @@ function defaultState(): State {
 	}
 }
 
-const { store, rootActionContext, moduleActionContext, rootGetterContext, moduleGetterContext } = createDirectStore({
+export default new Vuex.Store({
 	state: defaultState(),
 	getters: {
 		filteredCards: (state) => {
 			// Create another empty cards object to avoid modifying the state containing all cards
 			const filteredCards = defaultCards();
-			state.filter.nbResults = 0;
-			state.filter.text = state.filter.text.toLowerCase();
 
 			// Browse each array of cards
 			for (const field in state.cards) {
@@ -84,8 +80,6 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 						return predicate;
 					});
-					// Store the number of results
-					state.filter.nbResults += filteredCards[key].length;
 				}
 			}
 
@@ -119,49 +113,50 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
 			return count;
 		},
+		filteredCardCount: (state, getters) => {
+			let count = 0;
+			for (const key in getters.filteredCards) count += getters.filteredCards[key as keyof typeof getters.filteredCards].length
+			return count;
+		},
 		toJSON: (state) => {
 			// Split state data to exclude filter from JSON
-			const { filter, ...toSave } = state;
+			const { filter, ...toSave } = { ...state };
 			// Update date
 			toSave._meta.lastUpdate = new Date().toISOString();
 			return JSON.stringify(toSave);
 		},
 	},
 	mutations: {
+		// ** Whole state mutations **
 		resetState(state) {
 			// We use Object.assign() to replace the object at index with our new object while allowing Vue to still track changes to that object
 			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Objects
 			Object.assign(state, defaultState());
 		},
-		loadData(state, payload?: string) {
-			
-			// Get persisted raw data (from payload or from LocalStorage if no payload)
-			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
-
-			if(!rawData) throw new Error("No data to load! Both payload and LocalStorage are empty.");
-
-			// * Validate (and convert if necessary) save format
-			// The conversion method will throw an error if the save cannot be used. If an error is thrown:
-			//  - It is not caught to propagate it to UI
-			//  - Current state is not lost because it has not been cleared
-			const parsedData = saves.convertToLatest(JSON.parse(rawData));
-			Object.assign(state, parsedData);
+		/**
+		 * Assign or add new values to the current state properties.
+		 * The current state and the specified payload are merged: 
+		 * 	- Payload new properties are added to the state;
+		 * 	- Colliding properties are overwritten with payload values;
+		 * 	- Pre-existing state properties not set in payload are left unchanged. 
+		 * @param state 
+		 * @param payload Payload to merge with current state. Can be either a State or SaveFormat object.
+		 */
+		setState(state, payload: State | SaveFormat) {
+			Object.assign(state, payload);
 		},
-		add(state, payload: CardTypes) {
-			state.cards[payload._category].unshift(payload);
-			this.dispatch('save');
+		// ** Card mutations **
+		addCard(state, payload: CardTypes) {
+			state.cards[payload._category].unshift(payload as any);
 		},
-		update(state, payload: CardTypes) {
+		updateCard(state, payload: CardTypes) {
 			const list: CardTypes[] = state.cards[payload._category];
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
 			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
-			if (index !== -1) {
-				Vue.set(list, index, payload);
-				this.dispatch('save');
-			}
+			if (index !== -1) Vue.set(list, index, payload);
 		},
-		delete(state, payload: CardTypes) {
+		deleteCard(state, payload: CardTypes) {
 			const list: CardTypes[] = state.cards[payload._category];
 			const index = list.findIndex((entry) => entry.id === payload.id);
 			if (index !== -1) {
@@ -176,21 +171,33 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 
 				// Finally delete the payload object from state
 				list.splice(index, 1);
-				this.dispatch('save');
 			}
 		},
 		updateWholeList(state, payload: {category: CardCategory, list: CardTypes[]}) {
 			Vue.set(state.cards, payload.category, payload.list);
-			this.dispatch('save');
 		},
-		changeFilter(state, payload: Filter) {
+		// ** Other data mutations **
+		setName(state, payload: string) {
+			if (payload) state.name = payload.trim();
+		},
+		setDaysCount(state, payload: number) {
+			if (Number.isSafeInteger(payload) && payload > -1) state.days = payload;
+		},
+		setSeason(state, payload: Season) {
+			if(payload) state.season = payload;
+		},
+		setQuickNote(state, payload: string) {
+			state.quickNote = payload.trim() ?? "";
+		},
+		// ** Filter mutations **
+		updateFilter(state, payload: Filter) {
 			state.filter.isEnabled = true;
 			
 			// If payload does not contain the following properties, leave the current value as is
 			// ! Only check for undefined/null using '??' instead of '||' to allow setting empty strings or booleans  
 			state.filter.alphanumericSort = payload.alphanumericSort ?? state.filter.alphanumericSort;
 			state.filter.category = payload.category ?? state.filter.category;
-			state.filter.text = payload.text ?? state.filter.text;
+			state.filter.text = (payload.text ?? state.filter.text).toLowerCase();
 			state.filter.tags = payload.tags ?? state.filter.tags;
 		},
 		resetFilter(state) {
@@ -198,28 +205,26 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
 			Vue.set(state, "filter", defaultFilter());
 		},
-		changeName(state, payload: string) {
-			if (payload) {
-				state.name = payload;
-				this.dispatch('save');
-			}
-		},
-		changeDaysCount(state, payload: number) {
-			if (Number.isSafeInteger(payload) && payload > -1) {
-				state.days = payload;
-				this.dispatch('save');
-			}
-		},
-		changeSeason(state, payload: Season) {
-			state.season = payload;
-			this.dispatch('save');
-		},
-		changeQuickNote(state, payload: string) {
-			state.quickNote = payload;
-			this.dispatch('save');
-		},
 	},
 	actions: {
+		commitAndSave({commit, dispatch}, obj: { commit: string, payload: object }) {
+			commit(obj.commit, obj.payload);
+			dispatch('save');
+		},
+		// ** Save actions
+		loadData({commit}, payload?: string) {
+			// Get persisted raw data (from payload or from LocalStorage if no payload)
+			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
+
+			if(!rawData) throw new Error("No data to load! Both payload and LocalStorage are empty.");
+
+			// * Validate (and convert if necessary) save format
+			// The conversion method will throw an error if the save cannot be used. If an error is thrown:
+			//  - It is not caught to propagate it to UI
+			//  - Current state is not lost because it has not been cleared
+			const parsedData = saves.convertToLatest(JSON.parse(rawData));
+			commit('setState', parsedData);
+		},
 		save({getters}) {
 			localStorage.setItem(LocalStorageKey.DATA_KEY, getters.toJSON);
 		},
@@ -229,14 +234,3 @@ const { store, rootActionContext, moduleActionContext, rootGetterContext, module
 	},
 	modules: {},
 });
-
-export default store;
-
-export { rootActionContext, moduleActionContext, rootGetterContext, moduleGetterContext };
-
-export type AppStore = typeof store;
-declare module "vuex" {
-	interface Store<S> {
-		direct: AppStore;
-	}
-}

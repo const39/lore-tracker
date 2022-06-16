@@ -135,7 +135,6 @@ export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
 export interface Filter {
 	isEnabled: boolean;
 	alphanumericSort: boolean;
-	nbResults: number;
 	category: CategoryFilter;
 	text: string;
 	tags: ID[];

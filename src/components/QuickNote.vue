@@ -95,7 +95,7 @@ export default Vue.extend({
 				return this.$store.state.quickNote;
 			},
 			set(value) {
-				this.$store.commit("changeQuickNote", value);
+				this.$store.dispatch("commitAndSave", { commit: "setQuickNote", payload: value });
 			},
 		},
 	},

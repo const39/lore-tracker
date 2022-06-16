@@ -4,6 +4,8 @@
 
 <script lang="ts">
 import Vue from "vue";
+// HACK: Force TS to ignore untyped library because all .d.ts declaration attempts did not work 
+//@ts-ignore
 import VueMarkdown from "@adapttive/vue-markdown";
 
 export default Vue.extend({
