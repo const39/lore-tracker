@@ -62,7 +62,7 @@
 <script lang="ts">
 import Vue from "vue";
 import form from "@/mixins/form";
-import { EventType, Icon } from "@/js/types";
+import { Event, EventType, Icon } from "@/js/types";
 
 export default Vue.extend({
 	mixins: [form],
@@ -77,6 +77,15 @@ export default Vue.extend({
 			icons: Icon,
 			eventTypes: Object.values(EventType),
 		};
+	},
+	methods: {
+		/**
+		 * Override of mixin method
+		 */
+		castCardData(card: Event): Event {
+			card.day = Number(card.day);	// Ensure day if a Number and not a string
+			return card;
+		},
 	},
 });
 </script>

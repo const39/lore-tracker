@@ -22,10 +22,19 @@ export default Vue.extend({
 		};
 	},
 	methods: {
+		/**
+		 * TO IMPLEMENT BY CLIENT COMPONENTS if needed
+		 */
+		castCardData(card: CardTypes): CardTypes {
+			return card;
+		},
 		submit(): void {
 			(this.$refs.form as VForm).validate();
 
 			if (this.valid) {
+
+				this.model = this.castCardData(this.model);
+
 				if (this.edit) this.$store.dispatch("commitAndSave", { commit: "updateCard", payload: this.model });
 				else this.$store.dispatch("commitAndSave", { commit: "addCard", payload: this.model });
 
