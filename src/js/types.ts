@@ -5,7 +5,7 @@ import utilities from "./utilities";
 // ***** Constants *****
 // *********************
 
-export const VERSION = "1.0.0";
+export const VERSION = "1.1.0";
 export enum LocalStorageKey {
 	DATA_KEY = "DATA",
 	THEME_KEY = "THEME",

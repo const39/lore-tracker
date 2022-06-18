@@ -16,18 +16,13 @@ You can't remember the name of that NPC you met six months ago ? Lore Tracker ha
 * Events visualisation on a timeline
 * Light and dark themes
 * Navigation hotkeys
+* English and French translation
 
-*Lore Tracker is only available on Windows 10 for now.*
-
-### Upcoming
-
-* French translation
-* Dice roller 
-
+*Lore Tracker is now available on the web.*
 
 ## Dev
 
-This program is written with [Vue.js](https://github.com/vuejs/vue) and embedded in an [Electron](https://www.electronjs.org/) app.
+This program is written with [Vue.js](https://github.com/vuejs/vue).
 
 ### To setup and run the project
 
@@ -38,16 +33,26 @@ npm install
 
 * Compile and hot-reload for development
 ```
-npm run electron:serve
+npm run serve
 ```
 
 * Compile and minify for production
 ```
-npm run electron:build
+npm run build
+```
+
+* Bump version number
+```
+npm --no-git-tag-version version <major|minor|patch>
+```
+
+* Deploy to server **(on `main` branch only)**
+```
+npm run deploy
 ```
 
 ## License
 
 This program is licensed under the GNU General Public License v3.0.
 
-© 2021 - const39
+© 2021-2022 const39
