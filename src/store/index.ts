@@ -216,14 +216,16 @@ export default new Vuex.Store({
 			// Get persisted raw data (from payload or from LocalStorage if no payload)
 			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
 
-			if(!rawData) throw new Error("No data to load! Both payload and LocalStorage are empty.");
-
-			// * Validate (and convert if necessary) save format
-			// The conversion method will throw an error if the save cannot be used. If an error is thrown:
-			//  - It is not caught to propagate it to UI
-			//  - Current state is not lost because it has not been cleared
-			const parsedData = saves.convertToLatest(JSON.parse(rawData));
-			commit('setState', parsedData);
+			// Perform parsing, validation and conversion if there is data
+			// If there is no data to be used, leave the default state as is
+			if(rawData) {
+				// * Validate (and convert if necessary) save format
+				// The conversion method will throw an error if the save cannot be used. If an error is thrown:
+				//  - It is not caught to propagate it to UI
+				//  - Current state is not lost because it has not been cleared
+				const parsedData = saves.convertToLatest(JSON.parse(rawData));
+				commit('setState', parsedData);
+			}
 		},
 		save({getters}) {
 			localStorage.setItem(LocalStorageKey.DATA_KEY, getters.toJSON);
