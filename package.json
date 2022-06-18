@@ -6,6 +6,9 @@
   "author": {
     "name": "const39"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "start": "node server.js",
     "serve": "vue-cli-service serve",
