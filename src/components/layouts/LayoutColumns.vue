@@ -1,39 +1,36 @@
 <template>
 	<v-container>
 		<v-row>
-			<LayoutColumnContent :type="objectTypes.OBJECTIVE" />
-			<LayoutColumnContent :type="objectTypes.EVENT" />
-			<LayoutColumnContent :type="objectTypes.LOCATION" />
-			<LayoutColumnContent :type="objectTypes.CHARACTER" />
-			<LayoutColumnContent :type="objectTypes.NOTE" />
+			<LayoutColumnContent v-for="cat in categories" :key="cat" :category="cat" />
 		</v-row>
 	</v-container>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from "vue";
 import LayoutColumnContent from "./LayoutColumnContent.vue";
 
-import { eventHub } from "../../js/eventHub.js";
-import constants from "../../js/constants";
+import { eventHub, TagEvent } from "@/js/eventHub";
+import { CardCategory } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	name: "LayoutColumns",
 	components: {
 		LayoutColumnContent,
 	},
 	data() {
 		return {
-			objectTypes: constants.objectTypes,
+			categories: CardCategory,
 		};
 	},
 	mounted() {
 		// Catch TagEvent and scroll to the card with the specified id
-		eventHub.$on("tag-selected", (e) => {
-			document.getElementById(e.id + "-card")?.scrollIntoView({ behavior: "smooth" });
+		eventHub.$on(TagEvent.ID, (e: TagEvent) => {
+			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 		});
 	},
 	beforeDestroy() {
-		eventHub.$off("tag-selected");
+		eventHub.$off(TagEvent.ID);
 	},
-};
+});
 </script>

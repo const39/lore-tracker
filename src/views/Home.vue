@@ -6,7 +6,7 @@
 					<div class="text-xl-h4 mb-2">
 						<v-form v-if="editName">
 							<v-text-field
-							autofocus
+								autofocus
 								v-model="campaignName"
 								counter
 								maxlength="30"
@@ -26,32 +26,66 @@
 				<StatusTray />
 			</div>
 			<v-spacer></v-spacer>
-			<SearchView />
+			<div class="text-right">
+				<SearchView class="mt-1 mb-2" />
+				<span class="grey--text text-caption">{{ cardCount + $t("status.cardCount") }}</span>
+			</div>
+
 			<v-divider vertical class="ml-3 mr-1"></v-divider>
-			<v-item-group mandatory v-model="selectedLayout">
-				<v-item v-slot="{ active, toggle }">
-					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
-						<v-icon>mdi-tab</v-icon>
-					</v-btn>
-				</v-item>
-				<v-item v-slot="{ active, toggle }">
-					<v-btn icon :color="active ? 'accent' : ''" @click="toggle">
-						<v-icon>mdi-view-column-outline</v-icon>
-					</v-btn>
-				</v-item>
-			</v-item-group>
+			<div>
+				<!-- Card ordering selector -->
+				<v-item-group class="d-block" mandatory v-model="selectedOrder">
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip top>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'primary' : ''" @click="toggle">
+									<v-icon v-if="active">mdi-sort-clock-descending</v-icon>
+									<v-icon v-else>mdi-sort-clock-descending-outline</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.customOrder") }}
+						</v-tooltip>
+					</v-item>
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip top>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'primary' : ''" @click="toggle">
+									<v-icon>mdi-sort-alphabetical-variant</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.alphanumericOrder") }}
+						</v-tooltip>
+					</v-item>
+				</v-item-group>
+				<!-- Layout selector -->
+				<v-item-group class="d-block" mandatory v-model="selectedLayout">
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'accent' : ''" @click="toggle">
+									<v-icon>mdi-tab</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.tabLayout") }}
+						</v-tooltip>
+					</v-item>
+					<v-item v-slot="{ active, toggle }">
+						<v-tooltip bottom>
+							<template v-slot:activator="{ on, attrs }">
+								<v-btn icon v-bind="attrs" v-on="on" :color="active ? 'accent' : ''" @click="toggle">
+									<v-icon>mdi-view-column-outline</v-icon>
+								</v-btn>
+							</template>
+							{{ $t("status.selectors.columnLayout") }}
+						</v-tooltip>
+					</v-item>
+				</v-item-group>
+			</div>
 		</v-row>
 
 		<!-- Alternative layouts -->
 		<LayoutTabs v-if="selectedLayout === 0" />
 		<LayoutColumns v-else-if="selectedLayout === 1" />
-
-		<!-- Global edit form for each panel -->
-		<FormObjective v-model="objectiveEditForm.show" edit :id="objectiveEditForm.id" />
-		<FormEvent v-model="eventEditForm.show" edit :id="eventEditForm.id" />
-		<FormCharacter v-model="characterEditForm.show" edit :id="characterEditForm.id" />
-		<FormLocation v-model="locationEditForm.show" edit :id="locationEditForm.id" />
-		<FormNote v-model="noteEditForm.show" edit :id="noteEditForm.id" />
 
 		<!-- Global delete form for all panels -->
 		<ConfirmDialog
@@ -63,116 +97,80 @@
 	</v-container>
 </template>
 
-<script>
-import LayoutTabs from "../components/layouts/LayoutTabs.vue";
-import LayoutColumns from "../components/layouts/LayoutColumns.vue";
+<script lang="ts">
+import Vue from "vue";
+import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
+import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
 
-import FormObjective from "../components/forms/FormObjective.vue";
-import FormEvent from "../components/forms/FormEvent.vue";
-import FormLocation from "../components/forms/FormLocation.vue";
-import FormCharacter from "../components/forms/FormCharacter.vue";
-import FormNote from "../components/forms/FormNote.vue";
-import ConfirmDialog from "../components/ConfirmDialog.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
-import SearchView from "../components/SearchView.vue";
-import StatusTray from "../components/StatusTray.vue";
+import SearchView from "@/components/SearchView.vue";
+import StatusTray from "@/components/StatusTray.vue";
 
-import { Objective, Event, Character, Location, Note } from "../js/model.js";
-import { eventHub } from "../js/eventHub.js";
+import { CardEvent, eventHub } from "@/js/eventHub";
+import utilities from "../js/utilities";
 
-export default {
+export default Vue.extend({
 	name: "PanelsContainer",
 	components: {
 		LayoutTabs,
 		LayoutColumns,
-		FormObjective,
-		FormEvent,
-		FormLocation,
-		FormCharacter,
-		FormNote,
 		ConfirmDialog,
 		SearchView,
 		StatusTray,
 	},
 	data() {
 		return {
+			selectedOrder: 0,
 			selectedLayout: 0,
 			editName: false,
-			objectiveEditForm: {
-				show: false,
-				id: undefined,
-			},
-			eventEditForm: {
-				show: false,
-				id: undefined,
-			},
-			locationEditForm: {
-				show: false,
-				id: undefined,
-			},
-			characterEditForm: {
-				show: false,
-				id: undefined,
-			},
-			noteEditForm: {
-				show: false,
-				id: undefined,
-			},
 			confirmDialog: {
 				show: false,
-				title: undefined,
-				message: undefined,
-				acceptAction: undefined,
+				title: "",
+				message: "",
+				acceptAction: () => {},
 			},
 			rules: {
-				required: v => !!v || this.$t('fields.requiredField'),
-				counter: v => v.length <= 30 || '30 max.'
-			}
+				required: (v: string) => !!v || this.$t("fields.requiredField"),
+				counter: (v: string) => v.length <= 30 || "30 max.",
+			},
 		};
 	},
 	computed: {
+		cardCount(): number {
+			return this.$store.getters.cardCount;
+		},
 		campaignName: {
 			get() {
 				return this.$store.state.name;
 			},
 			set(value) {
-				if (value) this.$store.commit("changeName", value);
+				if (value) this.$store.dispatch("commitAndSave", { commit: "setName", payload: value });
 			},
 		},
 	},
-	mounted() {
+	watch: {
 		/**
-		 * All events catched here must be CardEvent objects (imported from eventHub.js).
+		 * Update card order when selection changes
 		 */
-
-		eventHub.$on("edit", (e) => {
-			this[`${e.type}EditForm`].id = e.object.id;
-			this[`${e.type}EditForm`].show = true;
-		});
-
-		eventHub.$on("delete", (e) => {
-			if (e.object instanceof Objective) this.confirmDialog.message = this.$t("dialogs.deleteObjective");
-			else if (e.object instanceof Event) this.confirmDialog.message = this.$t("dialogs.deleteEvent");
-			else if (e.object instanceof Location) this.confirmDialog.message = this.$t("dialogs.deleteLocation");
-			else if (e.object instanceof Character) this.confirmDialog.message = this.$t("dialogs.deleteCharacter");
-			else if (e.object instanceof Note) this.confirmDialog.message = this.$t("dialogs.deleteNote");
-			else {
-				console.error(e.object, "is not an instance of an accepted object.");
-				return;
-			}
-
-			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${e.object.title ||
-				e.object.name ||
-				e.object.desc}" ?`;
-			this.confirmDialog.acceptAction = () => this.$store.commit("delete", e.object);
+		selectedOrder(value) {
+			// Set boolean as parameter instead of number
+			this.$store.commit("updateFilter", { alphanumericSort: !!value });
+		},
+	},
+	mounted() {
+		eventHub.$on(CardEvent.ID, (e: CardEvent) => {
+			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
+			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
+			this.confirmDialog.acceptAction = () =>
+				this.$store.dispatch("commitAndSave", { commit: "deleteCard", payload: e.card });
 			this.confirmDialog.show = true;
 		});
 	},
 	beforeDestroy() {
-		eventHub.$off("edit");
-		eventHub.$off("delete");
+		eventHub.$off(CardEvent.ID);
 	},
-};
+});
 </script>
 
 <style></style>

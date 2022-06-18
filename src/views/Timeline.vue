@@ -16,20 +16,21 @@
 		</div>
 	</v-container>
 </template>
-<script>
+<script lang="ts">
+import Vue from "vue";
 import TimelineEvent from "../components/TimelineEvent.vue";
 
-export default {
+export default Vue.extend({
 	components: {
 		TimelineEvent,
 	},
 	computed: {
 		nodes() {
 			// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-			let events = this.$store.state.cards.events.slice().reverse();
+			let events = this.$store.state.cards.event.slice().reverse();
 
 			// Browse through events to index them by their day field
-			let indexedByDay = {};
+			let indexedByDay: any = {};
 			for (const event of events) {
 				const index = event.day;
 
@@ -41,7 +42,7 @@ export default {
 
 			// Build final array of nodes by joining each indexed array and adding header nodes between them
 			// We then obtain the full nodes array with events sorted in chronological order
-			let nodes = [];
+			let nodes: any = [];
 			for (const index in indexedByDay) {
 				// Push a header for the current day
 				nodes.push(`${this.$t("status.day")} ${index}`);
@@ -53,5 +54,5 @@ export default {
 			return nodes;
 		},
 	},
-};
+});
 </script>

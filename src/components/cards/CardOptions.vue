@@ -8,13 +8,14 @@
 
 		<v-list dense flat>
 			<v-item-group mandatory>
-				<v-list-item @click="fireSelectionEvent('edit')">
+				<!-- Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action. -->
+				<v-list-item @click="$emit('edit')">
 					<v-list-item-icon>
 						<v-icon>mdi-pencil</v-icon>
 					</v-list-item-icon>
 					<v-list-item-title>{{ $t("actions.edit") }}</v-list-item-title>
 				</v-list-item>
-				<v-list-item @click="fireSelectionEvent('delete')">
+				<v-list-item @click="$emit('delete')">
 					<v-list-item-icon>
 						<v-icon>mdi-delete</v-icon>
 					</v-list-item-icon>
@@ -25,18 +26,8 @@
 	</v-menu>
 </template>
 
-<script>
-export default {
-	methods: {
-		/**
-		 * Fire a custom event to the parent component. Event value can either be 'edit' or 'delete'.
-		 * The parent can decide to catch this event to react to the user action (e.g. to open a dialog).
-		 */
-		fireSelectionEvent(selectedValue) {
-			this.$emit("option-selected", selectedValue);
-		},
-	},
-};
+<script lang="ts">
+export default {}
 </script>
 
 <style></style>

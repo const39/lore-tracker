@@ -4,12 +4,12 @@
 			<v-expansion-panel>
 				<v-expansion-panel-header>
 					<div class="text-h5 text--primary">
-						<v-icon left>{{ icons[type] }}</v-icon>
-						{{ $t(`objectTypes.${type}`) }}
+						<v-icon left>{{ icons[category] }}</v-icon>
+						{{ $t(`categories.${category}`) }}
 					</div>
 				</v-expansion-panel-header>
 				<v-expansion-panel-content>
-					<CardAdd @add-card-clicked="showForm = true" />
+					<CardAdd :category="category" :fill-height="false" />
 					<draggable
 						:disabled="isSortDisabled"
 						v-model="items"
@@ -19,77 +19,49 @@
 						@end="drag = false"
 						:move="onMove"
 					>
-						<component
-							:is="cardComponent"
+						<CardContainer
 							v-for="item in items"
 							:key="item.id"
-							:item-data="item"
 							outlined
 							:class="{ draggable: !isSortDisabled }"
-						/>
+							:item-data="item"
+						></CardContainer>
 					</draggable>
-					<component :is="formComponent" v-model="showForm" />
 				</v-expansion-panel-content>
 			</v-expansion-panel>
 		</v-expansion-panels>
 	</v-col>
 </template>
 
-<script>
-import CardObjective from "../cards/CardObjective.vue";
-import CardEvent from "../cards/CardEvent.vue";
-import CardLocation from "../cards/CardLocation.vue";
-import CardCharacter from "../cards/CardCharacter.vue";
-import CardNote from "../cards/CardNote.vue";
+<script lang="ts">
+import Vue, { PropType } from "vue";
+import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
-import FormObjective from "../forms/FormObjective.vue";
-import FormEvent from "../forms/FormEvent.vue";
-import FormLocation from "../forms/FormLocation.vue";
-import FormCharacter from "../forms/FormCharacter.vue";
-import FormNote from "../forms/FormNote.vue";
-
 import draggable from "vuedraggable";
-import constants from "../../js/constants";
+import { Icon, CardCategory, CardTypes } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	name: "LayoutColumnContent",
 	props: {
-		type: {
-			type: String,
+		category: {
+			type: String as PropType<CardCategory>,
 			required: true,
-			validator: function(value) {
-				return Object.values(constants.objectTypes).includes(value.toString().toLowerCase()) && value !== constants.objectTypes.ALL;				
-			}
 		},
 	},
 	components: {
-		CardObjective,
-		CardEvent,
-		CardLocation,
-		CardCharacter,
-		CardNote,
+		CardContainer,
 		CardAdd,
-		FormEvent,
-		FormObjective,
-		FormLocation,
-		FormCharacter,
-		FormNote,
 		draggable,
 	},
 	data() {
 		return {
-			showForm: false,
 			isCollapsed: 0,
-			icons: constants.icons
+			icons: Icon,
 		};
 	},
 	methods: {
-		capitalize(str) {
-			if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
-			else return "";
-		},
-		onMove(e) {
+		onMove(e: any) {
 			/**
 			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
 			 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
@@ -100,20 +72,22 @@ export default {
 		},
 		/**
 		 * Manage each column hot key :
-		 * - Alt+1 : Collapse/expand Oebjective tab
+		 * - Alt+1 : Collapse/expand Objective tab
 		 * - Alt+2 : Collapse/expand Event tab
 		 * - Alt+3 : Collapse/expand Location tab
 		 * - Alt+4 : Collapse/expand Character tab
-		 * - Alt+5 : Collapse/expand Note tab
+		 * - Alt+5 : Collapse/expand Faction tab
+		 * - Alt+6 : Collapse/expand Note tab
 		 */
-		hotkey(e) {
+		hotkey(e: KeyboardEvent) {
 			if (e.altKey) {
 				if (
-					(e.code === "Digit1" && this.type === constants.objectTypes.OBJECTIVE) ||
-					(e.code === "Digit2" && this.type === constants.objectTypes.EVENT) ||
-					(e.code === "Digit3" && this.type === constants.objectTypes.LOCATION) ||
-					(e.code === "Digit4" && this.type === constants.objectTypes.CHARACTER) ||
-					(e.code === "Digit5" && this.type === constants.objectTypes.NOTE)
+					(e.code === "Digit1" && this.category === CardCategory.Quest) ||
+					(e.code === "Digit2" && this.category === CardCategory.Event) ||
+					(e.code === "Digit3" && this.category === CardCategory.Location) ||
+					(e.code === "Digit4" && this.category === CardCategory.Character) ||
+					(e.code === "Digit5" && this.category === CardCategory.Faction) ||
+					(e.code === "Digit6" && this.category === CardCategory.Note)
 				) {
 					e.preventDefault();
 					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0;
@@ -122,34 +96,18 @@ export default {
 		},
 	},
 	computed: {
-		cardComponent() {
-			return `Card${this.capitalize(this.type)}`;
-		},
-		formComponent() {
-			return `Form${this.capitalize(this.type)}`;
-		},
-		isSortDisabled() {
+		isSortDisabled(): boolean {
 			return this.$store.state.filter.isEnabled;
 		},
 		items: {
-			get() {
-				switch (this.type) {
-					case constants.objectTypes.OBJECTIVE:
-						return this.$store.getters.filteredCards.objectives;
-					case constants.objectTypes.EVENT:
-						return this.$store.getters.filteredCards.events;
-					case constants.objectTypes.LOCATION:
-						return this.$store.getters.filteredCards.locations;
-					case constants.objectTypes.CHARACTER:
-						return this.$store.getters.filteredCards.characters;
-					case constants.objectTypes.NOTE:
-						return this.$store.getters.filteredCards.notes;
-					default:
-						return undefined;
-				}
+			get(): CardTypes[] {
+				return this.$store.getters.filteredCards[this.category];
 			},
-			set(list) {
-				this.$store.commit("updateWholeList", { type: this.type, list: list });
+			set(list: CardTypes[]) {
+				this.$store.dispatch("commitAndSave", {
+					commit: "updateWholeList",
+					payload: { category: this.category, list },
+				});
 			},
 		},
 	},
@@ -159,7 +117,7 @@ export default {
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);
 	},
-};
+});
 </script>
 
 <style scoped>

@@ -12,41 +12,43 @@
 	</v-dialog>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import Vue, { PropType } from "vue";
+
+export default Vue.extend({
 	props: {
 		value: Boolean, // Default v-model overwrite
 		title: String,
 		message: String,
-		acceptAction: Function,
-		cancelAction: Function,
+		acceptAction: Function as PropType<() => void>,
+		cancelAction: Function as PropType<() => void>,
 	},
 	methods: {
-		cancel() {
+		cancel(): void {
 			if (this.cancelAction) this.cancelAction();
 			this.showDialog = false;
 		},
-		accept() {
+		accept(): void {
 			if (this.acceptAction) this.acceptAction();
 			this.showDialog = false;
 		},
 	},
 	computed: {
 		/**
-		 * Overwrite default v-model to bind the ObjectiveForm v-model attribute to the v-dialog one.
+		 * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
 		 * This allows to use a custom component as an external activator for the v-dialog.
 		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
 		 */
 		showDialog: {
-			get() {
+			get(): boolean {
 				return this.value;
 			},
-			set(value) {
+			set(value: boolean): void {
 				this.$emit("input", value);
 			},
 		},
 	},
-};
+});
 </script>
 
 <style></style>

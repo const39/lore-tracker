@@ -17,13 +17,14 @@
 	</v-tooltip>
 </template>
 
-<script>
-import constants from "../js/constants";
+<script lang="ts">
+import Vue from "vue";
+import { Season } from "@/js/types";
 
-export default {
+export default Vue.extend({
 	methods: {
 		previousSeason() {
-			const values = Object.values(constants.seasons);
+			const values = Object.values(Season);
 			const index = values.findIndex((entry) => entry === this.$store.state.season);
 			if (index > -1) {
 				if (index > 0) this.currentSeason = values[index - 1];
@@ -31,7 +32,7 @@ export default {
 			}
 		},
 		nextSeason() {
-			const values = Object.values(constants.seasons);
+			const values = Object.values(Season);
 			let index = values.findIndex((entry) => entry === this.$store.state.season);
 			if (index > -1) {
 				if (index < values.length - 1) this.currentSeason = values[index + 1];
@@ -45,7 +46,7 @@ export default {
 				return this.$store.state.days;
 			},
 			set(val) {
-				this.$store.commit("changeDaysCount", val);
+				this.$store.dispatch("commitAndSave", { commit: "setDaysCount", payload: val });
 			},
 		},
 		currentSeason: {
@@ -53,11 +54,11 @@ export default {
 				return this.$t(`status.seasons.${this.$store.state.season}`);
 			},
 			set(val) {
-				this.$store.commit("changeSeason", val);
+				this.$store.dispatch("commitAndSave", { commit: "setSeason", payload: val });
 			},
 		},
 	},
-};
+});
 </script>
 <style scoped>
 .clickable:hover {

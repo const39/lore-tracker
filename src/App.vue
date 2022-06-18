@@ -30,38 +30,24 @@
 			</router-link> -->
 
 			<!-- Options menu -->
-			<v-menu bottom left offset-y v-model="showMenu" ref="options-menu">
+			<v-menu bottom left offset-y v-model="showMenu">
 				<template v-slot:activator="{ on, attrs }">
 					<v-btn icon v-bind="attrs" v-on="on">
 						<v-icon>mdi-cog</v-icon>
 					</v-btn>
 				</template>
-				<v-list dense flat>
-					<v-item-group mandatory ref="options-list">
-						<!-- TODO Language change not fully implemented -->
-						<!-- <LangSelector /> -->
-						<ThemeSelector />
-						<v-list-item @click="showHotkeysDialog = true">
+				<v-list dense>
+					<v-item-group mandatory>
+						<ThemeMenu />
+						<LangMenu />
+						<SaveMenu />
+						<v-list-item link @click="showHotkeysDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-help-circle</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title>{{ $t("options.hotkeys.optionName") }}</v-list-item-title>
 						</v-list-item>
-						<v-list-item @click="copyToClipboard">
-							<v-list-item-icon>
-								<v-icon>mdi-content-copy</v-icon>
-							</v-list-item-icon>
-							<v-list-item-title>{{ $t("options.copyData.optionName") }}</v-list-item-title>
-						</v-list-item>
-						<v-list-item @click="showConfirmDialog">
-							<v-list-item-icon>
-								<v-icon color="red">mdi-delete</v-icon>
-							</v-list-item-icon>
-							<v-list-item-title class="red--text">
-								{{ $t("options.deleteData.optionName") }}
-							</v-list-item-title>
-						</v-list-item>
-						<v-list-item @click="showAboutDialog = true">
+						<v-list-item link @click="showAboutDialog = true">
 							<v-list-item-icon>
 								<v-icon>mdi-information-outline</v-icon>
 							</v-list-item-icon>
@@ -79,13 +65,10 @@
 			</v-container>
 		</v-main>
 
-		<!-- Global confirm dialog for options -->
-		<ConfirmDialog
-			v-model="confirmDialog.show"
-			:title="confirmDialog.title"
-			:message="confirmDialog.message"
-			:acceptAction="confirmDialog.acceptAction"
-		/>
+		<!-- Quick note - Floating expanding text area -->
+		<div class="ma-4 quick-note-wrapper">
+			<QuickNote></QuickNote>
+		</div>
 
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
@@ -96,11 +79,13 @@
 				<v-card-title>{{ $t("options.about.title") }}</v-card-title>
 				<v-card-text class="justify-left text--primary">
 					<v-container class="py-0">
-						<v-row class="my-1 font-weight-medium">Lore Tracker {{version}}</v-row>
-						<v-row class="my-1">© 2021 - const39</v-row>
+						<v-row class="my-1 font-weight-medium">Lore Tracker {{ version }}</v-row>
+						<v-row class="my-1">{{ copyrightText }}</v-row>
 						<v-row class="my-1 align-center">
 							<v-icon>mdi-github</v-icon>
-							<a class="mx-1" href="https://github.com/const39/lore-tracker">{{ $t("options.about.link") }}</a>
+							<a class="mx-1" href="https://github.com/const39/lore-tracker">
+								{{ $t("options.about.link") }}
+							</a>
 						</v-row>
 					</v-container>
 				</v-card-text>
@@ -112,84 +97,83 @@
 		</v-dialog>
 
 		<!-- Global snackbar -->
-		<v-snackbar v-model="showSnackbar" timeout="2000" color="success">
-			{{ $t("options.copyData.success") }}
-			<template v-slot:action="{ attrs }">
-				<v-btn icon v-bind="attrs" @click="showSnackbar = false">
-					<v-icon>mdi-close</v-icon>
-				</v-btn>
-			</template>
-		</v-snackbar>
+		<Snackbar />
 	</v-app>
 </template>
 
-<script>
-import constants from "./js/constants.js";
+<script lang="ts">
+import Vue from "vue";
+import { VERSION, LocalStorageKey } from "./js/types";
 
-import ConfirmDialog from "./components/ConfirmDialog.vue";
-import HotkeyDialog from "./components/HotkeyDialog.vue";
-import ThemeSelector from "./components/ThemeSelector.vue";
+import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
+import ThemeMenu from "./components/menus/ThemeMenu.vue";
+import LangMenu from "./components/menus/LangMenu.vue";
+import SaveMenu from "./components/menus/SaveMenu.vue";
+import QuickNote from "./components/QuickNote.vue";
+import Snackbar from "./components/Snackbar.vue";
+import { eventHub, SnackbarEvent } from "./js/eventHub";
 
-export default {
+export default Vue.extend({
 	name: "App",
 	components: {
-		ConfirmDialog,
 		HotkeyDialog,
-		ThemeSelector,
+		ThemeMenu,
+		LangMenu,
+		SaveMenu,
+		QuickNote,
+		Snackbar,
 	},
 	data() {
 		return {
-			version: constants.VERSION,
+			version: VERSION,
 			showMenu: false,
-			showSnackbar: false,
 			showHotkeysDialog: false,
 			showAboutDialog: false,
-			confirmDialog: {
-				show: false,
-				title: undefined,
-				message: undefined,
-				acceptAction: undefined,
-			},
 		};
 	},
 	methods: {
-		async copyToClipboard() {
-			try {
-				await navigator.clipboard.writeText(this.$store.getters.getJsonData);
-				this.showSnackbar = true;
-			} catch (error) {
-				console.error("Copy to clipboard failed.");
-			}
-			this.showExportDialog = false;
-		},
-		showConfirmDialog() {
-			this.confirmDialog.title = this.$t("options.deleteData.title");
-			this.confirmDialog.message = this.$t("options.deleteData.message");
-			this.confirmDialog.acceptAction = () => this.$store.commit("resetData");
-			this.confirmDialog.show = true;
-		},
 		/**
 		 * Manage this component's hotkeys :
 		 * - On ESC press : Open/close options menu
 		 * - On F1 press : Navigate to Home page
 		 * - On F2 press : Navigate to Timeline page
 		 */
-		hotkey(e) {
+		hotkey(e: KeyboardEvent) {
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
 			else if (e.code === "F1") this.$router.push({ name: "Home" });
 			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
 		},
 	},
-	mounted() {
-		this.$vuetify.theme.dark = localStorage.getItem(constants.localStorageKeys.THEME_KEY) === "dark";
-		document.addEventListener("keydown", this.hotkey);
+	computed: {
+		copyrightText(): string {
+			return `© 2021-${new Date().getUTCFullYear()} const39`;
+		},
 	},
-	created() {
+	mounted() {
 		// Initialise the store at application start
-		this.$store.commit("initData");
+		try {
+			this.$store.dispatch("loadData");
+		} catch (err) {
+			console.error(err);
+			const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.loadBackup");
+			eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
+		}
+
+		// Set theme if preference saved + register keyboard listener
+		this.$vuetify.theme.dark = localStorage.getItem(LocalStorageKey.THEME_KEY) === "dark";
+		document.addEventListener("keydown", this.hotkey);
 	},
 	beforeDestroy() {
 		document.removeEventListener("keydown", this.hotkey);
 	},
-};
+});
 </script>
+
+<style scoped>
+.quick-note-wrapper {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 5;
+}
+</style>
