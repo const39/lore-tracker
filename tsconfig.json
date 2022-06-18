@@ -13,21 +13,12 @@
 		"sourceMap": true,
 		"baseUrl": ".",
 		"types": ["webpack-env", "vuetify"],
-		"typeRoots": [
-			"./node_modules/@types",
-			"./node_modules/vuetify/types",
-		],
+		"typeRoots": ["./node_modules/@types", "./node_modules/vuetify/types"],
 		"paths": {
 			"@/*": ["src/*"]
 		},
 		"lib": ["esnext", "dom", "dom.iterable", "scripthost"]
 	},
-	"include": [
-		"src/**/*.ts",
-		"src/**/*.tsx",
-		"src/**/*.vue",
-		"tests/**/*.ts",
-		"tests/**/*.tsx"
-	],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx", "server.js"],
 	"exclude": ["node_modules"]
 }
