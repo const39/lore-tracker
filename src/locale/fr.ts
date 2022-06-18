@@ -8,7 +8,7 @@ const fr: Locale = {
 
 	timeline: {
 		campaignStart: "Début de la campagne",
-		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le",
+		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur l'",
 	},
 
 	eventTypes: {
