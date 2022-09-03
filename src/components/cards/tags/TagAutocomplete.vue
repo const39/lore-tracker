@@ -5,10 +5,12 @@
 		item-text="text"
 		item-value="id"
 		dense
+		autofocus
 		:menu-props="{ 'max-width': '30%' }"
 		append-outer-icon="mdi-chevron-right"
 		@change="onChange"
 		@click:append-outer="open = false"
+		@keydown="categoryChangeHotkey"
 	>
 		<template v-slot:prepend>
 			<v-menu bottom left>
@@ -17,7 +19,7 @@
 						<template v-slot:activator="{ on: tooltip }">
 							<v-icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">{{ icons[category] }}</v-icon>
 						</template>
-						<span>{{$t('actions.changeCategory')}}</span>
+						<span>{{ $t("actions.changeCategory") }}</span>
 					</v-tooltip>
 				</template>
 				<v-list dense>
@@ -64,6 +66,13 @@ export default Vue.extend({
 				});
 			}
 		},
+		/**
+		 * Change the current category with Ctrl+Left/RightArrow
+		 */
+		categoryChangeHotkey(e: KeyboardEvent) {
+			if (e.ctrlKey && e.code === "ArrowLeft") this.category = this.previousCategory;
+			else if (e.ctrlKey && e.code === "ArrowRight") this.category = this.nextCategory;
+		},
 	},
 	computed: {
 		icons() {
@@ -71,6 +80,18 @@ export default Vue.extend({
 		},
 		categories() {
 			return CardCategory;
+		},
+		previousCategory(): CardCategory {
+			const values = Object.values(this.categories);
+			const currentIdx = values.indexOf(this.category);
+			const prevIdx = currentIdx === 0 ? values.length - 1 : currentIdx - 1;
+			return values[prevIdx];
+		},
+		nextCategory(): CardCategory {
+			const values = Object.values(this.categories);
+			const currentIdx = values.indexOf(this.category);
+			const nextIdx = currentIdx === values.length - 1 ? 0 : currentIdx + 1;
+			return values[nextIdx];
 		},
 		/**
 		 * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)

@@ -110,7 +110,7 @@ const fr: Locale = {
 		edit: "Modifier",
 		delete: "Supprimer",
 		quickNote: "Note rapide",
-		changeCategory: "Cliquer pour changer de catégorie",
+		changeCategory: "Clic ou Ctrl+Gauche/Droite pour changer de catégorie",
 	},
 
 	messages: {
