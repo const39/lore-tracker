@@ -128,6 +128,10 @@ const fr: Locale = {
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
 		},
+		info: {
+			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",
+			updateNotifMessage: "Voir les détails sur GitHub.",
+		},
 	},
 
 	options: {

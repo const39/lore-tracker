@@ -127,6 +127,10 @@ const en: Locale = {
 			saveFileImportCancelled: "Save file import cancelled.",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
 		},
+		info: {
+			updateNotifTitle: "LoreTracker has been updated!",
+			updateNotifMessage: "See update details on GitHub.",
+		},
 	},
 
 	options: {

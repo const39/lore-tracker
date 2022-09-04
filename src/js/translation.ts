@@ -129,6 +129,10 @@ export interface Locale {
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
 		};
+		info: {
+			updateNotifTitle: string; 
+			updateNotifMessage: string; 
+		}
 	};
 
 	options: {
