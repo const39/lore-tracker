@@ -8,6 +8,11 @@ export interface Locale {
 		timeline: string;
 	};
 
+	notFound: {
+		title: string;
+		message: string;
+	},
+
 	timeline: {
 		campaignStart: string;
 		noEvent: string;
