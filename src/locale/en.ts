@@ -6,6 +6,11 @@ const en: Locale = {
 		timeline: "Timeline",
 	},
 
+	notFound: {
+		title: "Page Not Found",
+		message: "Go back to ",
+	},
+
 	timeline: {
 		campaignStart: "Campaign start",
 		noEvent: "No event registered. Add some on the ",
