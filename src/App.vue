@@ -96,6 +96,35 @@
 			</v-card>
 		</v-dialog>
 
+		<!-- Domain name change - TEMPORARY -->
+		<v-snackbar v-model="showDomainNameChangeNotif" multi-line top text timeout="-1">
+			LoreTracker changes location and is now on <a href="https://lore-tracker.app">lore-tracker.app</a>.<br />If
+			you are still on <a href="https://lore-tracker.herokuapp.com">lore-tracker.herokuapp.com</a>, you need to
+			move your data manually before 15 November 2022. See
+			<a href="https://github.com/const39/lore-tracker/releases/tag/v1.2.0" target="_blank">this page</a> to learn
+			how to do it.
+			<template v-slot:action="{ attrs }">
+				<v-btn v-bind="attrs" icon @click="showDomainNameChangeNotif = false">
+					<v-icon>mdi-close</v-icon>
+				</v-btn>
+			</template>
+		</v-snackbar>
+
+		<!-- Update release notification -->
+		<v-snackbar v-model="showUpdateNotif" multi-line outlined text timeout="-1">
+			<div class="text-subtitle-1">{{ $t("messages.info.updateNotifTitle") }}</div>
+			<div class="text-body-2">
+				<a href="https://github.com/const39/lore-tracker/releases/latest" target="_blank">
+					{{ $t("messages.info.updateNotifMessage") }}
+				</a>
+			</div>
+			<template v-slot:action="{ attrs }">
+				<v-btn v-bind="attrs" icon @click="closeUpdateNotif">
+					<v-icon>mdi-close</v-icon>
+				</v-btn>
+			</template>
+		</v-snackbar>
+
 		<!-- Global snackbar -->
 		<Snackbar />
 	</v-app>
@@ -129,6 +158,8 @@ export default Vue.extend({
 			showMenu: false,
 			showHotkeysDialog: false,
 			showAboutDialog: false,
+			showUpdateNotif: localStorage.getItem("VERSION") !== VERSION, // Display notif when version has changed
+			showDomainNameChangeNotif: Date.now() < new Date("2022-11-15T12:00:00").getTime(), // Displays until the 15/11/2022, 12:00
 		};
 	},
 	methods: {
@@ -142,6 +173,11 @@ export default Vue.extend({
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
 			else if (e.code === "F1") this.$router.push({ name: "Home" });
 			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
+		},
+		closeUpdateNotif() {
+			// Update Version number in LocalStorage to not show the notification a second time
+			localStorage.setItem("VERSION", VERSION);
+			this.showUpdateNotif = false;
 		},
 	},
 	computed: {
