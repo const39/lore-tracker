@@ -130,17 +130,22 @@ export const CategoryFilter = {
 	FACTION: CardCategory.Faction,
 	NOTE: CardCategory.Note,
 } as const;
+
+export enum Order {
+	DEFAULT = "default",
+	ALPHANUMERIC = "alphanumeric"
+}
+
 export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
 
 export interface Filter {
-	isEnabled: boolean;
-	alphanumericSort: boolean;
 	category: CategoryFilter;
 	text: string;
 	tags: ID[];
 }
 export interface State extends SaveFormat {
 	filter: Filter;
+	order: Order;
 }
 
 // *****************

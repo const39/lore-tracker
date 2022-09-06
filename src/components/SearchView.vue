@@ -73,7 +73,10 @@ export default Vue.extend({
 			return this.open ? "display: block;" : "display: none;";
 		},
 		resultsNumber() {
-			return this.$store.getters.filteredCardCount;
+			let count = 0;
+			const cards = this.$store.getters.getCards;
+			for (const key in cards) count += cards[key as keyof typeof cards].length
+			return count;
 		},
 	},
 	watch: {
