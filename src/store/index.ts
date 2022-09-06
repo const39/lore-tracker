@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat } from "@/js/types";
+import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order } from "@/js/types";
 import saves, { SaveVersion } from "@/js/saves";
 import utilities from "@/js/utilities";
 
@@ -16,8 +16,6 @@ function defaultCards(): CardsStore {
 
 function defaultFilter(): Filter {
 	return {
-		isEnabled: false,
-		alphanumericSort: false,
 		category: CategoryFilter.ALL,
 		text: "",
 		tags: [],
@@ -35,6 +33,7 @@ function defaultState(): State {
 		season: Season.SPRING,
 		cards: defaultCards(),
 		filter: defaultFilter(),
+		order: Order.DEFAULT,
 		quickNote: "",
 	}
 }
@@ -42,52 +41,76 @@ function defaultState(): State {
 export default new Vuex.Store({
 	state: defaultState(),
 	getters: {
-		filteredCards: (state) => {
-			// Create another empty cards object to avoid modifying the state containing all cards
-			const filteredCards = defaultCards();
+		isFilterActive: (state) => {
+			const defFilter = defaultFilter();
+			// Filter is active if at least one field of the filter is different from the default (blank) filter
+			// ! HARDCODE 'tags' array comparison because it would need a deep equal comparison otherwise
+			return state.filter.category !== defFilter.category || state.filter.text !== defFilter.text || state.filter.tags.length !== 0 
+		},
+		isDefaultOrder: (state) => {
+			return state.order === Order.DEFAULT;
+		},
+		getCards: (state) => {
 
-			// Browse each array of cards
-			for (const field in state.cards) {
-				const key = field as keyof typeof state.cards;
+			/**
+			 * Filter the specified cards using the given filter.
+			 * @param cards cards from the current state
+			 * @param filter filter from the current state
+			 * @returns a new CardsStore object containing the cards, filtered according to the given filter 
+			 */
+			function filterCards(cards:CardsStore, filter: Filter) {
 
-				// The filter is applied to each relevant key (can be ALL)
-				if (state.filter.category === CategoryFilter.ALL || state.filter.category === key) {
-					// Filter out corresponding cards from the initial cards object
+				// Create another empty cards object to avoid modifying the state containing all cards
+				const filteredCards = defaultCards();
 
-					(filteredCards[key] as CardTypes[]) = (state.cards[key] as CardTypes[]).filter((entry) => {
-						/* The predicate conditions are exclusive :
-						 * (1) if the first one is not fulfilled, the second one is not evaluated;
-						 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
-						 * In either case, the predicate returns false
-						 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
-						 */
-						let predicate = true;
-
-						// If specified, search for corresponding text in text fields of the current entry
-						if (state.filter.text) {
-							predicate = utilities.getAllText(entry).some(text => text.toLowerCase().includes(state.filter.text));
-						}
-
-						// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
-						// search for the corresponding tags in the current entry tag list
-						if (predicate && state.filter.tags?.length > 0) {
-							for (const tag of state.filter.tags) {
-								predicate &&= entry.tags.includes(tag);
-								// If the condition is false, stop searching and return (see (2))
-								if (!predicate) break;
+				// Browse each array of cards
+				for (const field in cards) {
+					const key = field as keyof typeof cards;
+	
+					// The filter is applied to each relevant key (can be ALL)
+					if (filter.category === CategoryFilter.ALL || filter.category === key) {
+						// Filter out corresponding cards from the initial cards object
+	
+						(filteredCards[key] as CardTypes[]) = (cards[key] as CardTypes[]).filter((entry) => {
+							/* The predicate conditions are exclusive :
+							 * (1) if the first one is not fulfilled, the second one is not evaluated;
+							 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
+							 * In either case, the predicate returns false
+							 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
+							 */
+							let predicate = true;
+	
+							// If specified, search for corresponding text in text fields of the current entry
+							if (filter.text) {
+								const str = filter.text;
+								predicate = utilities.getAllText(entry).some(text => text.toLowerCase().includes(str));
 							}
-						}
-
-						return predicate;
-					});
+	
+							// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
+							// search for the corresponding tags in the current entry tag list
+							if (predicate && filter?.tags?.length > 0) {
+								for (const tag of filter.tags) {
+									predicate &&= entry.tags.includes(tag);
+									// If the condition is false, stop searching and return (see (2))
+									if (!predicate) break;
+								}
+							}
+	
+							return predicate;
+						});
+					}
 				}
+				return filteredCards;
 			}
 
-			// If alphanumeric sort is enabled, perform sort before returning
-			if(state.filter.alphanumericSort) {
-				for (const field in filteredCards) {
+			/**
+			 * Sort (in-place) the specified cards in the alphanumeric order
+			 * @param cards the cards to sort
+			 */
+			function sortCards(cards:CardsStore) {
 
-					filteredCards[field as keyof typeof filteredCards].sort((a: CardTypes, b: CardTypes) => {
+				for (const field in cards) {
+					cards[field as keyof typeof cards].sort((a: CardTypes, b: CardTypes) => {
 						const textA = utilities.getText(a).toLowerCase();
 						const textB = utilities.getText(b).toLowerCase();
 						return textA.localeCompare(textB);
@@ -95,7 +118,9 @@ export default new Vuex.Store({
 				}
 			}
 
-			return filteredCards;
+			const cards = filterCards(state.cards, state.filter);
+			if(state.order === Order.ALPHANUMERIC) sortCards(cards);
+			return cards;
 		},
 		getByIdInCategory: (state) => (id: ID, category: CardCategory): CardTypes | undefined => {
 			const idx = state.cards[category].findIndex((entry: CardTypes) => entry.id === id);
@@ -113,14 +138,9 @@ export default new Vuex.Store({
 			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
 			return count;
 		},
-		filteredCardCount: (state, getters) => {
-			let count = 0;
-			for (const key in getters.filteredCards) count += getters.filteredCards[key as keyof typeof getters.filteredCards].length
-			return count;
-		},
 		toJSON: (state) => {
-			// Split state data to exclude filter from JSON
-			const { filter, ...toSave } = { ...state };
+			// Split state data to exclude filter and order from JSON
+			const { filter, order, ...toSave } = { ...state };
 			// Update date
 			toSave._meta.lastUpdate = new Date().toISOString();
 			return JSON.stringify(toSave);
@@ -191,11 +211,7 @@ export default new Vuex.Store({
 		},
 		// ** Filter mutations **
 		updateFilter(state, payload: Filter) {
-			state.filter.isEnabled = true;
-			
-			// If payload does not contain the following properties, leave the current value as is
 			// ! Only check for undefined/null using '??' instead of '||' to allow setting empty strings or booleans  
-			state.filter.alphanumericSort = payload.alphanumericSort ?? state.filter.alphanumericSort;
 			state.filter.category = payload.category ?? state.filter.category;
 			state.filter.text = (payload.text ?? state.filter.text).toLowerCase();
 			state.filter.tags = payload.tags ?? state.filter.tags;
@@ -203,8 +219,12 @@ export default new Vuex.Store({
 		resetFilter(state) {
 			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
 			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
-			Vue.set(state, "filter", defaultFilter());
+			Vue.set(state, "filter", {});
 		},
+		setOrder(state, payload: Order) {
+			if(Object.values(Order).includes(payload)) state.order = payload;
+			else state.order = Order.DEFAULT;
+		}
 	},
 	actions: {
 		commitAndSave({commit, dispatch}, obj: { commit: string, payload: object }) {

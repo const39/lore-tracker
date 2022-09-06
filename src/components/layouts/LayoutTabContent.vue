@@ -52,11 +52,11 @@ export default Vue.extend({
 	},
 	computed: {
 		isSortDisabled(): boolean {
-			return this.$store.state.filter.isEnabled;
+			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
 		},
 		items: {
 			get(): CardTypes[] {
-				return this.$store.getters.filteredCards[this.category];
+				return this.$store.getters.getCards[this.category];
 			},
 			set(list: CardTypes[]) {
 				this.$store.dispatch("commitAndSave", {
