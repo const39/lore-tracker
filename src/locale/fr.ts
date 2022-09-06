@@ -6,6 +6,11 @@ const fr: Locale = {
 		timeline: "Frise des événements",
 	},
 
+	notFound: {
+		title: "Page Introuvable",
+		message: "Retourner à l'",
+	},
+
 	timeline: {
 		campaignStart: "Début de la campagne",
 		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur l'",
@@ -110,7 +115,7 @@ const fr: Locale = {
 		edit: "Modifier",
 		delete: "Supprimer",
 		quickNote: "Note rapide",
-		changeCategory: "Cliquer pour changer de catégorie",
+		changeCategory: "Clic ou Ctrl+Gauche/Droite pour changer de catégorie",
 	},
 
 	messages: {
@@ -122,6 +127,10 @@ const fr: Locale = {
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+		},
+		info: {
+			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",
+			updateNotifMessage: "Voir les détails sur GitHub.",
 		},
 	},
 

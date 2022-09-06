@@ -73,7 +73,7 @@ export default Vue.extend({
 			return `Form${utilities.capitalize(this.itemData._category)}`;
 		},
 		isSortDisabled(): boolean {
-			return this.$store.state.filter.isEnabled;
+			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
 		},
 	},
 });

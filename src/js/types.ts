@@ -5,7 +5,7 @@ import utilities from "./utilities";
 // ***** Constants *****
 // *********************
 
-export const VERSION = "1.1.0";
+export const VERSION = "1.2.0";
 export enum LocalStorageKey {
 	DATA_KEY = "DATA",
 	THEME_KEY = "THEME",
@@ -130,17 +130,22 @@ export const CategoryFilter = {
 	FACTION: CardCategory.Faction,
 	NOTE: CardCategory.Note,
 } as const;
+
+export enum Order {
+	DEFAULT = "default",
+	ALPHANUMERIC = "alphanumeric"
+}
+
 export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
 
 export interface Filter {
-	isEnabled: boolean;
-	alphanumericSort: boolean;
 	category: CategoryFilter;
 	text: string;
 	tags: ID[];
 }
 export interface State extends SaveFormat {
 	filter: Filter;
+	order: Order;
 }
 
 // *****************

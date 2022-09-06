@@ -109,6 +109,7 @@ import StatusTray from "@/components/StatusTray.vue";
 
 import { CardEvent, eventHub } from "@/js/eventHub";
 import utilities from "../js/utilities";
+import { Order } from "@/js/types";
 
 export default Vue.extend({
 	name: "PanelsContainer",
@@ -154,8 +155,7 @@ export default Vue.extend({
 		 * Update card order when selection changes
 		 */
 		selectedOrder(value) {
-			// Set boolean as parameter instead of number
-			this.$store.commit("updateFilter", { alphanumericSort: !!value });
+			this.$store.commit("setOrder", value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT );
 		},
 	},
 	mounted() {
