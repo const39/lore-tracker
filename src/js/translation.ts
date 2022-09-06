@@ -8,6 +8,11 @@ export interface Locale {
 		timeline: string;
 	};
 
+	notFound: {
+		title: string;
+		message: string;
+	},
+
 	timeline: {
 		campaignStart: string;
 		noEvent: string;
@@ -124,6 +129,10 @@ export interface Locale {
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
 		};
+		info: {
+			updateNotifTitle: string; 
+			updateNotifMessage: string; 
+		}
 	};
 
 	options: {

@@ -6,6 +6,11 @@ const en: Locale = {
 		timeline: "Timeline",
 	},
 
+	notFound: {
+		title: "Page Not Found",
+		message: "Go back to ",
+	},
+
 	timeline: {
 		campaignStart: "Campaign start",
 		noEvent: "No event registered. Add some on the ",
@@ -109,7 +114,7 @@ const en: Locale = {
 		edit: "Edit",
 		delete: "Delete",
 		quickNote: "Quick note",
-		changeCategory: "Click to change category",
+		changeCategory: "Click or Ctrl+Left/Right to change category",
 	},
 
 	messages: {
@@ -121,6 +126,10 @@ const en: Locale = {
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled.",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
+		},
+		info: {
+			updateNotifTitle: "LoreTracker has been updated!",
+			updateNotifMessage: "See update details on GitHub.",
 		},
 	},
 

@@ -46,10 +46,6 @@ npm run build
 npm --no-git-tag-version version <major|minor|patch>
 ```
 
-* Deploy to server **(on `main` branch only)**
-```
-npm run deploy
-```
 
 ## License
 
