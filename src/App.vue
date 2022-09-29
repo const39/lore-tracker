@@ -11,9 +11,9 @@
 
 			<v-spacer></v-spacer>
 
-			<router-link :to="{ name: 'Home' }">
+			<router-link :to="{ name: 'LoreBook' }">
 				<v-btn text>
-					<span class="mr-2">{{ $t("pages.home") }}</span>
+					<span class="mr-2">{{ $t("pages.loreBook") }}</span>
 				</v-btn>
 			</router-link>
 			<router-link :to="{ name: 'Notepad' }">
@@ -164,13 +164,14 @@ export default Vue.extend({
 		/**
 		 * Manage this component's hotkeys :
 		 * - On ESC press : Open/close options menu
-		 * - On F1 press : Navigate to Home page
+		 * - On F1 press : Navigate to LoreBook page
 		 * - On F2 press : Navigate to Timeline page
 		 */
 		hotkey(e: KeyboardEvent) {
 			if (e.code === "Escape") this.showMenu = !this.showMenu;
-			else if (e.code === "F1") this.$router.push({ name: "Home" });
-			else if (e.code === "F2") this.$router.push({ name: "Timeline" });
+			else if (e.code === "F1") this.$router.push({ name: "LoreBook" });
+			else if (e.code === "F2") this.$router.push({ name: "Notepad" });
+			else if (e.code === "F3") this.$router.push({ name: "Timeline" });
 		},
 		closeUpdateNotif() {
 			// Update Version number in LocalStorage to not show the notification a second time

@@ -1,15 +1,15 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import LoreBook from "../views/LoreBook.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
 	{
 		path: "/",
-		alias: "/home",
-		name: "Home",
-		component: Home,
+		alias: "/lore-book",
+		name: "LoreBook",
+		component: LoreBook,
 	},
 	{
 		path: "/timeline",

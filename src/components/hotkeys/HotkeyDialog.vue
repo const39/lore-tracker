@@ -37,12 +37,16 @@ export default Vue.extend({
 			hotkeysDisplay: {
 				pages: [
 					{
-						text: this.$t("options.hotkeys.pages.toHome"),
+						text: this.$t("options.hotkeys.pages.toLoreBook"),
 						command: "F1",
 					},
 					{
-						text: this.$t("options.hotkeys.pages.toTimeline"),
+						text: this.$t("options.hotkeys.pages.toNotepad"),
 						command: "F2",
+					},
+					{
+						text: this.$t("options.hotkeys.pages.toTimeline"),
+						command: "F3",
 					},
 				],
 				content: [

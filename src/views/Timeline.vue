@@ -10,7 +10,7 @@
 			</v-timeline>
 			<p class="text-center" v-else>
 				{{ $t("timeline.noEvent") }}
-				<router-link :to="{name: 'Home'}">{{ $t("pages.home") }}</router-link
+				<router-link :to="{name: 'LoreBook'}">{{ $t("pages.loreBook") }}</router-link
 				>.
 			</p>
 		</div>
