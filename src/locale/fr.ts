@@ -2,19 +2,19 @@ import { Locale } from "@/js/translation";
 
 const fr: Locale = {
 	pages: {
-		home: "Accueil",
+		loreBook: "Lore book",
 		timeline: "Frise des événements",
 		notepad: "Bloc-notes",
 	},
 
 	notFound: {
 		title: "Page Introuvable",
-		message: "Retourner à l'",
+		message: "Retourner au ",
 	},
 
 	timeline: {
 		campaignStart: "Début de la campagne",
-		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur l'",
+		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
 	},
 
 	eventTypes: {
@@ -165,7 +165,8 @@ const fr: Locale = {
 			title: "Raccourcis clavier",
 			pages: {
 				title: "Pages",
-				toHome: "Naviguer vers l'Accueil",
+				toLoreBook: "Naviguer vers le Lore book",
+				toNotepad: "Naviguer vers le Bloc-notes",
 				toTimeline: "Naviguer vers la Frise des événements",
 			},
 			content: {

@@ -4,7 +4,7 @@ import fr from "../locale/fr";
 
 export interface Locale {
 	pages: {
-		home: string;
+		loreBook: string;
 		timeline: string;
 		notepad: string;
 	};
@@ -12,7 +12,7 @@ export interface Locale {
 	notFound: {
 		title: string;
 		message: string;
-	},
+	};
 
 	timeline: {
 		campaignStart: string;
@@ -131,9 +131,9 @@ export interface Locale {
 			saveFileImportFailed: string;
 		};
 		info: {
-			updateNotifTitle: string; 
-			updateNotifMessage: string; 
-		}
+			updateNotifTitle: string;
+			updateNotifMessage: string;
+		};
 	};
 
 	options: {
@@ -165,7 +165,8 @@ export interface Locale {
 			title: string;
 			pages: {
 				title: string;
-				toHome: string;
+				toLoreBook: string;
+				toNotepad: string;
 				toTimeline: string;
 			};
 			content: {

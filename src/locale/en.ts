@@ -2,7 +2,7 @@ import { Locale } from "@/js/translation";
 
 const en: Locale = {
 	pages: {
-		home: "Home",
+		loreBook: "Lore book",
 		timeline: "Timeline",
 		notepad: "Notepad",
 	},
@@ -163,7 +163,8 @@ const en: Locale = {
 			title: "Hotkeys",
 			pages: {
 				title: "Pages",
-				toHome: "Navigate to Home",
+				toLoreBook: "Navigate to Lore Book",
+				toNotepad: "Navigate to Notepad",
 				toTimeline: "Navigate to Timeline",
 			},
 			content: {
