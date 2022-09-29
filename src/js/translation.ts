@@ -6,6 +6,7 @@ export interface Locale {
 	pages: {
 		home: string;
 		timeline: string;
+		notepad: string;
 	};
 
 	notFound: {

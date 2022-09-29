@@ -4,6 +4,7 @@ const en: Locale = {
 	pages: {
 		home: "Home",
 		timeline: "Timeline",
+		notepad: "Notepad",
 	},
 
 	notFound: {
