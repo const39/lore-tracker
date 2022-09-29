@@ -4,6 +4,7 @@ const fr: Locale = {
 	pages: {
 		home: "Accueil",
 		timeline: "Frise des événements",
+		notepad: "Bloc-notes",
 	},
 
 	notFound: {

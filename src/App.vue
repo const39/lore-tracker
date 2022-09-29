@@ -16,18 +16,16 @@
 					<span class="mr-2">{{ $t("pages.home") }}</span>
 				</v-btn>
 			</router-link>
+			<router-link :to="{ name: 'Notepad' }">
+				<v-btn text>
+					<span class="mr-2">{{ $t("pages.notepad") }}</span>
+				</v-btn>
+			</router-link>
 			<router-link :to="{ name: 'Timeline' }">
 				<v-btn text>
 					<span class="mr-2">{{ $t("pages.timeline") }}</span>
 				</v-btn>
 			</router-link>
-			<!-- *** Non-implemented routes *** -->
-			<!-- 
-			<router-link to="/dice">
-				<v-btn text>
-					<span class="mr-2">Dice</span>
-				</v-btn>
-			</router-link> -->
 
 			<!-- Options menu -->
 			<v-menu bottom left offset-y v-model="showMenu">
