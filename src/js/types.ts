@@ -18,9 +18,9 @@ export enum Season {
 	WINTER = "winter",
 }
 
-// **********************
-// ***** Model/Save *****
-// **********************
+// **************************
+// ***** Lore-book data *****
+// **************************
 export type ID = number;
 export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 export enum CardCategory {
@@ -91,6 +91,11 @@ export interface Note extends Card, Describable {
 	title: string;
 }
 
+export interface MetaData {
+	version: SaveVersion.Latest;
+	lastUpdate: string; // ISO date-time format | Format not enforced !
+}
+
 export interface CardsStore {
 	quest: Quest[];
 	event: Event[];
@@ -100,9 +105,20 @@ export interface CardsStore {
 	note: Note[];
 }
 
-export interface MetaData {
-	version: SaveVersion.Latest;
-	lastUpdate: string; // ISO date-time format | Format not enforced !
+// ************************
+// ***** Notepad data *****
+// ************************
+export type FileTypes = Note;
+
+export interface Folder {
+	id: ID;
+	name: string;
+	color: string;
+}
+
+export interface FileTreeNode {
+	folders: Folder[];
+	files: FileTypes[];
 }
 
 // ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
@@ -115,6 +131,7 @@ export interface SaveFormat {
 	days: number;
 	season: Season;
 	cards: CardsStore;
+	notepad: Map<string, FileTreeNode>;
 	quickNote: string;
 }
 

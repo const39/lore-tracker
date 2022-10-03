@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order } from "@/js/types";
+import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order, Folder, FileTreeNode, FileTypes } from "@/js/types";
 import saves, { SaveVersion } from "@/js/saves";
 import utilities from "@/js/utilities";
 
@@ -22,6 +22,19 @@ function defaultFilter(): Filter {
 	};
 }
 
+function defaultFileTreeNode(): FileTreeNode {
+	return {
+		folders: [],
+		files: []
+	}
+}
+
+function defaultNotepad() {
+	const table = new Map<string, FileTreeNode>();
+	table.set('/', defaultFileTreeNode());	// Set root node
+	return table;
+}
+
 function defaultState(): State {
 	return {
 		_meta: {
@@ -32,6 +45,7 @@ function defaultState(): State {
 		days: 0,
 		season: Season.SPRING,
 		cards: defaultCards(),
+		notepad: defaultNotepad(),
 		filter: defaultFilter(),
 		order: Order.DEFAULT,
 		quickNote: "",
@@ -138,6 +152,9 @@ export default new Vuex.Store({
 			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
 			return count;
 		},
+		getFolderContent: (state) => (path: string) => {
+			return state.notepad.get(path);
+		},
 		toJSON: (state) => {
 			// Split state data to exclude filter and order from JSON
 			const { filter, order, ...toSave } = { ...state };
@@ -206,9 +223,68 @@ export default new Vuex.Store({
 		setSeason(state, payload: Season) {
 			if(payload) state.season = payload;
 		},
+		// ** Quick Note mutations **
 		setQuickNote(state, payload: string) {
 			state.quickNote = payload.trim() ?? "";
 		},
+		// ** Notepad mutations **
+		addFolder(state, payload: {pathToParent: string, folder: Folder}) {
+			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+
+			// Add the payload folder to its parent's children list
+			const parent = state.notepad.get(sanitizedPathToParent);
+			if(parent) parent.folders.push(payload.folder)
+			else {
+				const node = defaultFileTreeNode();
+				node.folders.push(payload.folder);
+				state.notepad.set(sanitizedPathToParent, node)
+			}
+
+			// Create new entry in table for the newly created folder
+			const path = utilities.joinPaths(sanitizedPathToParent, payload.folder.name);
+			state.notepad.set(path, defaultFileTreeNode());
+		},	
+		updateFolder(state, payload: {pathToParent: string, folder: Folder}) {
+			// TODO
+		},	
+		deleteFolder(state, payload: {pathToParent: string, folder: Folder}) {
+			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+
+			// Remove the payload folder from its parent's children list
+			const parent = state.notepad.get(sanitizedPathToParent);
+			if(parent) {
+				const idx = parent.folders.findIndex(elem => elem.name === payload.folder.name)
+				if(idx != -1) parent.folders.splice(idx);
+			}
+
+			// Remove the deleted folder table entry
+			const path = utilities.joinPaths(sanitizedPathToParent, payload.folder.name);
+			state.notepad.delete(path);
+		},	
+		addFile(state, payload: {pathToParent: string, file: FileTypes}) {
+			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+
+			const parent = state.notepad.get(sanitizedPathToParent);
+			if(parent) parent.files.push(payload.file)
+			else {
+				const node = defaultFileTreeNode();
+				node.files.push(payload.file);
+				state.notepad.set(sanitizedPathToParent, node)
+			}
+		},	
+		updateFile(state, payload: {pathToParent: string, file: FileTypes}) {
+			// TODO
+		},	
+		deleteFile(state, payload: {pathToParent: string, file: FileTypes}) {
+			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+
+			const parent = state.notepad.get(sanitizedPathToParent);
+			if(parent) {
+				const idx = parent.files.findIndex(elem => elem.id === payload.file.id)
+				if(idx != -1) parent.files.splice(idx);
+			}
+		},	
+
 		// ** Filter mutations **
 		updateFilter(state, payload: Filter) {
 			// ! Only check for undefined/null using '??' instead of '||' to allow setting empty strings or booleans  

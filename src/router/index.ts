@@ -27,7 +27,7 @@ const routes = [
 		// this generates a separate chunk (about.[hash].js) for this route
 		// which is lazy-loaded when the route is visited.
 		component: () => import(/* webpackChunkName: "about" */ "../views/Notepad.vue"),
-		props: (route: any) => ({ routeName: "Notepad", folderPath: route.params.folderPath || "" }),
+		props: (route: any) => ({ routeName: "Notepad", folderPath: route.params.folderPath || "/" }),
 	},
 	{
 		path: "*",

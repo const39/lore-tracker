@@ -12,7 +12,7 @@
 		</v-breadcrumbs>
 		<div class="my-3 text-h6">Folders</div>
 		<v-row>
-			<v-col cols="12" md="3" v-for="folder in folderContent._folders" :key="folder.id">
+			<v-col cols="12" md="3" v-for="folder in folderContent.folders" :key="folder.id">
 				<v-card @dblclick="openFolder(folder)">
 					<v-card-title class="d-flex">
 						<v-icon x-large>mdi-folder</v-icon>
@@ -20,7 +20,7 @@
 							{{ folder.name }}
 						</span>
 						<v-avatar class="text-caption" size="20" color="grey">
-							{{ folder.children.length || "0" }}
+							{{ getChildrenCount(folder) }}
 						</v-avatar>
 					</v-card-title>
 				</v-card>
@@ -28,7 +28,7 @@
 		</v-row>
 		<div class="my-3 text-h6">Files</div>
 		<v-row>
-			<v-col cols="12" md="3" v-for="file in folderContent._files" :key="file.id">
+			<v-col cols="12" md="3" v-for="file in folderContent.files" :key="file.id">
 				<CardContainer :item-data="file"></CardContainer>
 			</v-col>
 		</v-row>
@@ -37,13 +37,21 @@
 
 <script lang="ts">
 import Vue from "vue";
+// import Vue, { PropType } from "vue";
+
+import CardContainer from "@/components/cards/CardContainer.vue";
+import { FileTreeNode, Folder } from "@/js/types";
+import utilities from "@/js/utilities";
 
 export default Vue.extend({
+	components: {
+		CardContainer
+	},
 	props: {
-		folderContent: {
-			type: Object, // TODO type with Folder interface
-			required: true,
-		},
+		// folderContent: {
+		// 	type: Object as PropType<FileTreeNode>,
+		// 	required: true,
+		// },
 		routeName: {
 			type: String,
 			required: true,
@@ -54,13 +62,24 @@ export default Vue.extend({
 		},
 	},
 	methods: {
-		openFolder(folder) {
+		openFolder(folder: Folder) {
 			this.$emit("folder-open", folder);
 		},
+		getChildrenCount(folder: Folder) {
+			const fullPath = utilities.joinPaths(this.folderPath, folder.name);
+			const content: FileTreeNode = this.$store.getters.getFolderContent(fullPath);
+			return content ? content.folders.length + content.folders.length : 0;
+		}
 	},
 	computed: {
+		
+		folderContent(): Folder {
+			return this.$store.getters.getFolderContent(this.folderPath);
+		},
 		breadcrumbs() {
 			const breadcrumbItems = [];
+
+			// TODO rewrite using map() + fix vue-router warning
 
 			if (this.folderPath) {
 				breadcrumbItems.push({
