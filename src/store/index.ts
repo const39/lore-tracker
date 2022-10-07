@@ -152,6 +152,9 @@ export default new Vuex.Store({
 			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
 			return count;
 		},
+		doesFolderExist: (state) => (path: string) => {
+			return state.notepad.has(path);
+		},
 		getFolderContent: (state) => (path: string) => {
 			return state.notepad.get(path);
 		},
@@ -226,7 +229,7 @@ export default new Vuex.Store({
 		},
 		// ** Notepad mutations **
 		addFolder(state, payload: {pathToParent: string, folder: Folder}) {
-			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+			const sanitizedPathToParent = utilities.sanitizePath(true, payload.pathToParent);
 
 			// Add the payload folder to its parent's children list
 			const parent = state.notepad.get(sanitizedPathToParent);
@@ -238,14 +241,14 @@ export default new Vuex.Store({
 			}
 
 			// Create new entry in table for the newly created folder
-			const path = utilities.joinPaths(sanitizedPathToParent, payload.folder.name);
+			const path = utilities.joinPaths(true, sanitizedPathToParent, payload.folder.name);
 			state.notepad.set(path, defaultFileTreeNode());
 		},	
 		updateFolder(state, payload: {pathToParent: string, folder: Folder}) {
 			// TODO
 		},	
 		deleteFolder(state, payload: {pathToParent: string, folder: Folder}) {
-			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+			const sanitizedPathToParent = utilities.sanitizePath(true, payload.pathToParent);
 
 			// Remove the payload folder from its parent's children list
 			const parent = state.notepad.get(sanitizedPathToParent);
@@ -255,11 +258,11 @@ export default new Vuex.Store({
 			}
 
 			// Remove the deleted folder table entry
-			const path = utilities.joinPaths(sanitizedPathToParent, payload.folder.name);
+			const path = utilities.joinPaths(true, sanitizedPathToParent, payload.folder.name);
 			state.notepad.delete(path);
 		},	
 		addFile(state, payload: {pathToParent: string, file: FileTypes}) {
-			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+			const sanitizedPathToParent = utilities.sanitizePath(true, payload.pathToParent);
 
 			const parent = state.notepad.get(sanitizedPathToParent);
 			if(parent) parent.files.push(payload.file)
@@ -273,7 +276,7 @@ export default new Vuex.Store({
 			// TODO
 		},	
 		deleteFile(state, payload: {pathToParent: string, file: FileTypes}) {
-			const sanitizedPathToParent = utilities.sanitizePath(payload.pathToParent);
+			const sanitizedPathToParent = utilities.sanitizePath(true, payload.pathToParent);
 
 			const parent = state.notepad.get(sanitizedPathToParent);
 			if(parent) {

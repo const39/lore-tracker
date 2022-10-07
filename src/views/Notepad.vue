@@ -2,18 +2,22 @@
 	<v-container>
 		<Banner>
 			<template v-slot:actions>
-				<NotepadActions :disabled="actionsDisabled" @new-folder="newFolder" @new-file="newFile"></NotepadActions>
+				<NotepadActions
+					:disabled="!doesFolderExist"
+					@new-folder="newFolder"
+					@new-file="newFile"
+				></NotepadActions>
 			</template>
 		</Banner>
 
 		<NotepadContent
-			v-if="folderContent"
+			v-if="doesFolderExist"
 			:route-name="routeName"
 			:folder-path="folderPath"
 			@folder-open="openFolder"
 		></NotepadContent>
 		<div v-else>
-			INEXISTANT FOLDER
+			INEXISTANT FOLDER	
 			<!-- TODO translate -->
 		</div>
 	</v-container>
@@ -36,6 +40,7 @@ export default Vue.extend({
 		NotepadContent,
 	},
 	props: {
+		// These props are passed to the component directly by vue-router
 		routeName: {
 			type: String,
 			required: true,
@@ -49,7 +54,7 @@ export default Vue.extend({
 		openFolder(folder: Folder) {
 			this.$router.push({
 				name: this.routeName,
-				params: { folderPath: utilities.joinPaths(this.folderPath, folder.name.toLowerCase()) },
+				params: { folderPath: utilities.joinPaths(false, this.folderPath, folder.name.toLowerCase()) },
 			});
 		},
 		newFolder(): void {
@@ -81,12 +86,10 @@ export default Vue.extend({
 		},
 	},
 	computed: {
-		folderContent(): Folder {
-			return this.$store.getters.getFolderContent(this.folderPath);
+		doesFolderExist(): boolean {
+			const sanitized = utilities.sanitizePath(true, this.folderPath);
+			return this.$store.getters.doesFolderExist(sanitized);
 		},
-		actionsDisabled(): boolean {
-			return this.folderContent === undefined;
-		}
 	},
 });
 </script>

@@ -75,25 +75,18 @@ export default {
 			else return { ...obj };
 		} else throw new Error("Argument ${obj} is not an object literal.");
 	},
-	trim(str: string, c: string) {
-		if (c.length != 1) throw new Error(c + " is not a single character.");
-
-		let start = 0,
-			end = str.length;
-
-		// Trim left
-		while (start < str.length && str[start] === c) start++;
-
-		// Trim right
-		while (end > start && str[end - 1] === c) end--;
-
-		return start > 0 || end < str.length ? str.substring(start, end) : str;
+	sanitizePath: function(leadingSlash: boolean, path: string): string {
+		// TODO check for illegal character in URI
+		const p = leadingSlash ? "/" + path : path;
+		const sanitized = p
+			.trim()
+			.toLowerCase()
+			.replaceAll(/\/+/g, "/");
+		if (!leadingSlash && sanitized.startsWith("/")) return sanitized.slice(1);
+		else return sanitized;
 	},
-	sanitizePath: function(path: string): string {
-		return "/" + this.trim(path.toLowerCase(), "/");
-	},
-	joinPaths: function(parent: string, child: string): string {
-		return this.sanitizePath(this.sanitizePath(parent) + this.sanitizePath(child));
+	joinPaths: function(leadingSlash: boolean, ...elements: string[]): string {
+		return this.sanitizePath(leadingSlash, elements.join("/"));
 	},
 	pipe: function(...functions: ((arg: any) => any)[]) {
 		return (initial: any) => functions.reduce((previous, f) => f(previous), initial);
