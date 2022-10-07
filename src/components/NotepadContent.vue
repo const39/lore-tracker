@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-        <!-- DEBUG -->
+		<!-- TODO remove -->
 		CONTENT : {{ folderContent }}<br />
 		ROUTE : {{ routeName }}<br />
 		PATH : {{ folderPath }}<br />
@@ -15,7 +15,7 @@
 			<v-col cols="12" md="3" v-for="folder in folderContent.folders" :key="folder.id">
 				<v-card @dblclick="openFolder(folder)">
 					<v-card-title class="d-flex">
-						<v-icon x-large>mdi-folder</v-icon>
+						<v-icon x-large :color="folder.color">mdi-folder</v-icon>
 						<span class="mx-1 flex-grow-1">
 							{{ folder.name }}
 						</span>
@@ -43,15 +43,21 @@ import CardContainer from "@/components/cards/CardContainer.vue";
 import { FileTreeNode, Folder } from "@/js/types";
 import utilities from "@/js/utilities";
 
+interface BreadcrumbItem {
+	text: string;
+	to: {
+		name: string;
+		params?: object;
+	};
+	disabled?: boolean;
+	exact: true;
+}
+
 export default Vue.extend({
 	components: {
-		CardContainer
+		CardContainer,
 	},
 	props: {
-		// folderContent: {
-		// 	type: Object as PropType<FileTreeNode>,
-		// 	required: true,
-		// },
 		routeName: {
 			type: String,
 			required: true,
@@ -66,40 +72,38 @@ export default Vue.extend({
 			this.$emit("folder-open", folder);
 		},
 		getChildrenCount(folder: Folder) {
-			const fullPath = utilities.joinPaths(this.folderPath, folder.name);
+			const fullPath = utilities.joinPaths(true, this.folderPath, folder.name);
 			const content: FileTreeNode = this.$store.getters.getFolderContent(fullPath);
 			return content ? content.folders.length + content.folders.length : 0;
-		}
+		},
 	},
 	computed: {
-		
 		folderContent(): Folder {
-			return this.$store.getters.getFolderContent(this.folderPath);
+			const sanitized = utilities.sanitizePath(true, this.folderPath)
+			return this.$store.getters.getFolderContent(sanitized);
 		},
 		breadcrumbs() {
-			const breadcrumbItems = [];
+			const splitPath = this.folderPath.split("/").filter((e) => e.length > 0);
+			if (splitPath.length < 1) return [];
 
-			// TODO rewrite using map() + fix vue-router warning
+			const root: BreadcrumbItem = {
+				text: this.$t("pages.notepad"),
+				to: { name: this.routeName },
+				disabled: false,
+				exact: true,
+			};
 
-			if (this.folderPath) {
-				breadcrumbItems.push({
-					text: "ROOT", // TODO change + translate
-					to: { name: this.routeName },
-					disabled: false,
+			const nextItems: BreadcrumbItem[] = splitPath.map((pathElement, idx, arr) => {
+				const pathToCurrentElement = arr.slice(0, idx + 1).join("/");
+				return {
+					text: pathElement,
+					to: { name: this.routeName, params: { folderPath: pathToCurrentElement } },
+					disabled: idx === arr.length - 1,
 					exact: true,
-				});
+				};
+			});
 
-				const splitPath = this.folderPath.split("/");
-				for (let i = 0; i < splitPath.length; i++) {
-					breadcrumbItems.push({
-						text: splitPath[i],
-						to: { name: this.routeName, params: { folderPath: splitPath.slice(0, i + 1).join("/") } },
-						disabled: i === splitPath.length - 1,
-						exact: true,
-					});
-				}
-			}
-			return breadcrumbItems;
+			return [root, ...nextItems];
 		},
 	},
 });
