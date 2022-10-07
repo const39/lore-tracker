@@ -7,7 +7,9 @@
 			</v-tab>
 		</v-tabs>
 		<v-tabs-items v-model="activeTab">
-			<LayoutTabContent v-for="tab in tabs" :key="tab" :category="tab" />
+			<v-tab-item v-for="tab in tabs" :key="tab">
+				<LayoutTabContent :category="tab" />
+			</v-tab-item>
 		</v-tabs-items>
 	</v-container>
 </template>
@@ -57,7 +59,7 @@ export default Vue.extend({
 			// Change active tab dynamically based on index of category in the enum
 			const idx = Object.values(CardCategory).findIndex((val) => val === e.tag.category);
 			this.activeTab = idx !== -1 ? idx : 0;
-			
+
 			// Scroll to card
 			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 		});
