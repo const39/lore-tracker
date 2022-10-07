@@ -156,11 +156,8 @@ export default new Vuex.Store({
 			return state.notepad.get(path);
 		},
 		toJSON: (state) => {
-			// Split state data to exclude filter and order from JSON
-			const { filter, order, ...toSave } = { ...state };
-			// Update date
-			toSave._meta.lastUpdate = new Date().toISOString();
-			return JSON.stringify(toSave);
+			const serialized = saves.serialize(state);
+			return JSON.stringify(serialized);
 		},
 	},
 	mutations: {
@@ -319,8 +316,9 @@ export default new Vuex.Store({
 				// The conversion method will throw an error if the save cannot be used. If an error is thrown:
 				//  - It is not caught to propagate it to UI
 				//  - Current state is not lost because it has not been cleared
-				const parsedData = saves.convertToLatest(JSON.parse(rawData));
-				commit('setState', parsedData);
+				const validData = saves.ensureLatestVersion(JSON.parse(rawData));
+				const deserialized = saves.deserialize(validData);
+				commit('setState', deserialized);
 			}
 		},
 		save({getters}) {
