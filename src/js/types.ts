@@ -121,18 +121,25 @@ export interface FileTreeNode {
 	files: FileTypes[];
 }
 
-// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
-// *** Update/Create save format converter in saves.ts
-// *** Regenerate JSON Schema on each update :
-// * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
-export interface SaveFormat {
+type NotepadState = Map<string, FileTreeNode>;	// Runtime type
+type NotepadSave = ([string, FileTreeNode])[]	// Serialized type (because native Map class cannot be serialized as is)
+
+interface SerializableState {
 	_meta: MetaData;
 	name: string;
 	days: number;
 	season: Season;
 	cards: CardsStore;
-	notepad: Map<string, FileTreeNode>;
+	notepad: NotepadSave | NotepadState;		// ! Explicitly set to a common super-type (MUST BE narrowed in sub-interfaces !)
 	quickNote: string;
+}
+
+// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
+// *** Update/Create save format converter in saves.ts
+// *** Regenerate JSON Schema on each update :
+// * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
+export interface SaveFormat extends SerializableState {
+	notepad: NotepadSave;	// Narrowed type, used for JSON serialization
 }
 
 // ***************************
@@ -160,7 +167,8 @@ export interface Filter {
 	text: string;
 	tags: ID[];
 }
-export interface State extends SaveFormat {
+export interface State extends SerializableState {
+	notepad: NotepadState; // Narrowed type, used at runtime
 	filter: Filter;
 	order: Order;
 }
