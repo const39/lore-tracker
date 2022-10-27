@@ -1,46 +1,41 @@
 <template>
 	<v-container>
-		<!-- TODO remove -->
-		CONTENT : {{ folderContent }}<br />
-		ROUTE : {{ routeName }}<br />
-		PATH : {{ folderPath }}<br />
-		BREAD : {{ breadcrumbs }}
+		<!-- TODO add "go back" button in breadcrumbs -->
 		<v-breadcrumbs v-if="breadcrumbs.length" :items="breadcrumbs">
 			<template v-slot:divider>
 				<v-icon>mdi-chevron-right</v-icon>
 			</template>
 		</v-breadcrumbs>
-		<div class="my-3 text-h6">Folders</div>
-		<v-row>
-			<v-col cols="12" md="3" v-for="folder in folderContent.folders" :key="folder.id">
-				<v-card @dblclick="openFolder(folder)">
-					<v-card-title class="d-flex">
-						<v-icon x-large :color="folder.color">mdi-folder</v-icon>
-						<span class="mx-1 flex-grow-1">
-							{{ folder.name }}
-						</span>
-						<v-avatar class="text-caption" size="20" color="grey">
-							{{ getChildrenCount(folder) }}
-						</v-avatar>
-					</v-card-title>
-				</v-card>
-			</v-col>
-		</v-row>
-		<div class="my-3 text-h6">Files</div>
-		<v-row>
-			<v-col cols="12" md="3" v-for="file in folderContent.files" :key="file.id">
-				<CardContainer :item-data="file"></CardContainer>
-			</v-col>
-		</v-row>
+		<div class="my-3">
+			<div class="mb-4 py-3 text-h6">
+				{{ $t("notepad.types.folder") + "s" }}
+			</div>
+			<v-row>
+				<v-col cols="12" md="3" v-for="folder in folderContent.folders" :key="folder.id">
+					<Folder :folder="folder" :parent-path="folderPath" @open-folder="openFolder(folder)"></Folder>
+				</v-col>
+			</v-row>
+		</div>
+		<div class="my-3">
+			<div class="mb-4 py-3 text-h6">{{ $t("notepad.types.file") + "s" }}</div>
+			<!-- <LayoutTabContent :category="noteCategory" /> -->
+			<v-row>
+				<v-col cols="12" md="3" v-for="file in folderContent.files" :key="file.id">
+					<CardContainer :item-data="file"></CardContainer>
+				</v-col>
+			</v-row>
+		</div>
 	</v-container>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
-// import Vue, { PropType } from "vue";
 
+import FolderVue from "./Folder.vue";
+// import LayoutTabContent from "./layouts/LayoutTabContent.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { FileTreeNode, Folder } from "@/js/types";
+
+import { CardCategory, FileTreeNode, Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
 
 interface BreadcrumbItem {
@@ -55,7 +50,9 @@ interface BreadcrumbItem {
 
 export default Vue.extend({
 	components: {
+		Folder: FolderVue,
 		CardContainer,
+		// LayoutTabContent,
 	},
 	props: {
 		routeName: {
@@ -69,7 +66,10 @@ export default Vue.extend({
 	},
 	methods: {
 		openFolder(folder: Folder) {
-			this.$emit("folder-open", folder);
+			this.$router.push({
+				name: this.routeName,
+				params: { folderPath: utilities.joinPaths(false, this.folderPath, folder.name.toLowerCase()) },
+			});
 		},
 		getChildrenCount(folder: Folder) {
 			const fullPath = utilities.joinPaths(true, this.folderPath, folder.name);
@@ -78,8 +78,14 @@ export default Vue.extend({
 		},
 	},
 	computed: {
+		noteCategory() {
+			return CardCategory.Note;
+		},
+		folderIcon() {
+			return Icon.folder;
+		},
 		folderContent(): Folder {
-			const sanitized = utilities.sanitizePath(true, this.folderPath)
+			const sanitized = utilities.sanitizePath(true, this.folderPath);
 			return this.$store.getters.getFolderContent(sanitized);
 		},
 		breadcrumbs() {

@@ -17,6 +17,20 @@ const fr: Locale = {
 		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
 	},
 
+	notepad: {
+		types: {
+			folder: "Dossier",
+			file: "Fichier",
+		},
+		folder: {
+			childElements: " éléments",
+		},
+		folderNotFound: {
+			title: "Dossier introuvable",
+			message: "Retourner au ",
+		},
+	},
+
 	eventTypes: {
 		combat: "Combat",
 		encounter: "Rencontre",
