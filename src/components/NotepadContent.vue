@@ -1,11 +1,13 @@
 <template>
 	<v-container>
-		<!-- TODO add "go back" button in breadcrumbs -->
-		<v-breadcrumbs v-if="breadcrumbs.length" :items="breadcrumbs">
-			<template v-slot:divider>
-				<v-icon>mdi-chevron-right</v-icon>
-			</template>
-		</v-breadcrumbs>
+		<div class="d-flex" v-if="breadcrumbs.length">
+			<v-icon @click="goBack">mdi-arrow-left</v-icon>
+			<v-breadcrumbs :items="breadcrumbs">
+				<template v-slot:divider>
+					<v-icon>mdi-chevron-right</v-icon>
+				</template>
+			</v-breadcrumbs>
+		</div>
 		<div class="my-3">
 			<div class="mb-4 py-3 text-h6">
 				{{ $t("notepad.types.folder") + "s" }}
@@ -65,6 +67,9 @@ export default Vue.extend({
 		},
 	},
 	methods: {
+		goBack() {
+			this.$router.back();
+		},
 		openFolder(folder: Folder) {
 			this.$router.push({
 				name: this.routeName,
