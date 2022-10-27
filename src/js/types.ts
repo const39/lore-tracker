@@ -191,6 +191,7 @@ export enum Icon {
 	questCompleted = "mdi-check-decagram",
 	taskCompleted = "mdi-star-check",
 	taskOngoing = "mdi-star-outline",
+	folder = "mdi-folder",
 }
 
 export class Tag {

@@ -17,6 +17,20 @@ const en: Locale = {
 		noEvent: "No event registered. Add some on the ",
 	},
 
+	notepad: {
+		types: {
+			folder: "Folder",
+			file: "File",
+		},
+		folder: {
+			childElements: " elements",
+		},
+		folderNotFound: {
+			title: "Folder not found",
+			message: "Go back to ",
+		}
+	},
+
 	eventTypes: {
 		combat: "Combat",
 		encounter: "Encounter",

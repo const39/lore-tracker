@@ -19,6 +19,20 @@ export interface Locale {
 		noEvent: string;
 	};
 
+	notepad: {
+		types: {
+			folder: string;
+			file: string;
+		};
+		folder: {
+			childElements: string;
+		};
+		folderNotFound: {
+			title: string;
+			message: string;
+		};
+	};
+
 	eventTypes: {
 		combat: string;
 		encounter: string;

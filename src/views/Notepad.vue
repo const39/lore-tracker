@@ -14,11 +14,13 @@
 			v-if="doesFolderExist"
 			:route-name="routeName"
 			:folder-path="folderPath"
-			@folder-open="openFolder"
 		></NotepadContent>
-		<div v-else>
-			INEXISTANT FOLDER	
-			<!-- TODO translate -->
+		<div v-else class="my-3 text-center">
+			<div class="text-xl-h4 my-3">{{ $t("notepad.folderNotFound.title") }}</div>
+			<p>
+				{{ $t("notepad.folderNotFound.message") }}
+				<router-link :to="{ name: this.routeName }">{{ $t("pages.notepad") }}</router-link>
+			</p>
 		</div>
 	</v-container>
 </template>
@@ -51,12 +53,6 @@ export default Vue.extend({
 		},
 	},
 	methods: {
-		openFolder(folder: Folder) {
-			this.$router.push({
-				name: this.routeName,
-				params: { folderPath: utilities.joinPaths(false, this.folderPath, folder.name.toLowerCase()) },
-			});
-		},
 		newFolder(): void {
 			// ! MOCKUP DATA
 			// TODO when adding new folder, check if there's not already a folder with the same name

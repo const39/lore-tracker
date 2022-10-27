@@ -2,22 +2,20 @@
 	<div class="d-flex flex-column">
 		<v-btn :disabled="disabled" class="mx-2 my-1" @click="$emit('new-folder')">
 			<v-icon left>mdi-plus</v-icon>
-			<!-- TODO translate -->
-			Folder	
+			{{ $t("notepad.types.folder") }}
 		</v-btn>
 		<v-btn :disabled="disabled" class="mx-2 my-1" @click="$emit('new-file')">
 			<v-icon left>mdi-plus</v-icon>
-			<!-- TODO translate -->
-			File
+			{{ $t("notepad.types.file") }}
 		</v-btn>
 	</div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
+import Vue from "vue";
 export default Vue.extend({
 	props: {
-		disabled: Boolean
-	}
-})
+		disabled: Boolean,
+	},
+});
 </script>
