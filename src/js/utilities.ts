@@ -78,10 +78,7 @@ export default {
 	sanitizePath: function(leadingSlash: boolean, path: string): string {
 		// TODO check for illegal character in URI
 		const p = leadingSlash ? "/" + path : path;
-		const sanitized = p
-			.trim()
-			.toLowerCase()
-			.replaceAll(/\/+/g, "/");
+		const sanitized = p.trim().toLowerCase().replace(/\/+/g, "/");
 		if (!leadingSlash && sanitized.startsWith("/")) return sanitized.slice(1);
 		else return sanitized;
 	},

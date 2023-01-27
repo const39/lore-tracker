@@ -2,7 +2,7 @@ import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import Ajv from "ajv";
-import { FileTreeNode, Filter, Order, SaveFormat, State } from "./types";
+import { FileTree, Filter, Order, SaveFormat, State } from "./types";
 import utilities from "./utilities";
 
 export enum SaveVersion {
@@ -138,7 +138,7 @@ class V2SaveProcessor extends SaveProcessor {
 			version: SaveVersion.v2,
 			lastUpdate: new Date().toISOString(),
 		};
-		converted.notepad = new Map<string, FileTreeNode>();
+		converted.notepad = new FileTree();
 		return converted;
 	}
 }
@@ -177,23 +177,14 @@ export default {
 		// Shallow copy of state
 		const serialized: any = { ...toSave };
 		serialized._meta.lastUpdate = new Date().toISOString(); // ! Because of shallow copy, changes lastUpdate in current state
-		serialized.notepad = Array.from(state.notepad.entries()); // Serialize Map instance to array of (key,value) pairs
+		serialized.notepad = state.notepad.serialize(); // Serialize Map instance to object literal
 
 		return serialized;
 	},
 	deserialize(save: SaveFormat): State {
 		// Shallow copy of save
 		const deserialized: any = { ...save };
-		deserialized.notepad = new Map(save.notepad); // Deserialize array of (key,value) pairs to a Map instance
-
-		// Set root node if none exists
-		if (!deserialized.notepad.has("/")) {
-			const emptyFileTreeNode: FileTreeNode = {
-				folders: [],
-				files: [],
-			};
-			deserialized.notepad.set("/", emptyFileTreeNode);
-		}
+		deserialized.notepad = new FileTree(save.notepad); // Deserialize object literal to FileTree instance
 		return deserialized;
 	},
 	/**
