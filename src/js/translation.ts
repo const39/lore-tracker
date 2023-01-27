@@ -96,6 +96,7 @@ export interface Locale {
 		unknownRole: string;
 		requiredField: string;
 		dayNotValid: string;
+		nameAlreadyUsed: string;
 	};
 
 	dialogs: {
