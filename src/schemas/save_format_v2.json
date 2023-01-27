@@ -362,20 +362,10 @@
           "type": "string"
         },
         "notepad": {
-          "items": {
-            "items": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/definitions/FileTreeNode"
-              }
-            ],
-            "maxItems": 2,
-            "minItems": 2,
-            "type": "array"
+          "additionalProperties": {
+            "$ref": "#/definitions/FileTreeNode"
           },
-          "type": "array"
+          "type": "object"
         },
         "quickNote": {
           "type": "string"

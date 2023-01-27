@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order, Folder, FileTreeNode, FileTypes } from "@/js/types";
+import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order, Folder, FileTreeNode, FileTypes, FileTree } from "@/js/types";
 import saves, { SaveVersion } from "@/js/saves";
 import utilities from "@/js/utilities";
 
@@ -29,12 +29,6 @@ function defaultFileTreeNode(): FileTreeNode {
 	}
 }
 
-function defaultNotepad() {
-	const table = new Map<string, FileTreeNode>();
-	table.set('/', defaultFileTreeNode());	// Set root node
-	return table;
-}
-
 function defaultState(): State {
 	return {
 		_meta: {
@@ -45,7 +39,7 @@ function defaultState(): State {
 		days: 0,
 		season: Season.SPRING,
 		cards: defaultCards(),
-		notepad: defaultNotepad(),
+		notepad: new FileTree(),
 		filter: defaultFilter(),
 		order: Order.DEFAULT,
 		quickNote: "",
@@ -153,10 +147,10 @@ export default new Vuex.Store({
 			return count;
 		},
 		doesFolderExist: (state) => (path: string) => {
-			return state.notepad.has(path);
+			return state.notepad.has(utilities.sanitizePath(true, path));
 		},
 		getFolderContent: (state) => (path: string) => {
-			return state.notepad.get(path);
+			return state.notepad.get(utilities.sanitizePath(true, path));
 		},
 		toJSON: (state) => {
 			const serialized = saves.serialize(state);
