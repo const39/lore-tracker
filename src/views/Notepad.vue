@@ -22,6 +22,9 @@
 				<router-link :to="{ name: this.routeName }">{{ $t("pages.notepad") }}</router-link>
 			</p>
 		</div>
+
+		<FolderDialog v-model="showFolderDialog" :parent-path="folderPath"></FolderDialog>
+		
 	</v-container>
 </template>
 
@@ -31,15 +34,18 @@ import Vue from "vue";
 import Banner from "@/components/banner/Banner.vue";
 import NotepadActions from "@/components/banner/actions/NotepadActions.vue";
 import NotepadContent from "@/components/NotepadContent.vue";
+import FolderDialog from "@/components/FolderDialog.vue";
 
 import utilities from "@/js/utilities";
-import { CardCategory, Folder, FileTypes } from "@/js/types";
+// import { CardCategory, Folder, FileTypes } from "@/js/types";
+import { CardCategory, FileTypes } from "@/js/types";
 
 export default Vue.extend({
 	components: {
 		Banner,
 		NotepadActions,
 		NotepadContent,
+		FolderDialog
 	},
 	props: {
 		// These props are passed to the component directly by vue-router
@@ -52,22 +58,18 @@ export default Vue.extend({
 			required: true,
 		},
 	},
+	data() {
+		return {
+			showFolderDialog: false
+		}
+	},
 	methods: {
 		newFolder(): void {
-			// ! MOCKUP DATA
-			// TODO when adding new folder, check if there's not already a folder with the same name
-			const folder: Folder = {
-				id: utilities.uid(),
-				name: "Blabla",
-				color: "green",
-			};
-			this.$store.dispatch("commitAndSave", {
-				commit: "addFolder",
-				payload: { pathToParent: this.folderPath, folder },
-			});
+			this.showFolderDialog = true;
 		},
 		newFile(): void {
 			// ! MOCKUP DATA
+			// TODO 
 			const note: FileTypes = {
 				_category: CardCategory.Note,
 				id: utilities.uid(),

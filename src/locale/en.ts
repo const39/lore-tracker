@@ -94,6 +94,7 @@ const en: Locale = {
 		unknownRole: "Unknown role",
 		requiredField: "required field",
 		dayNotValid: "invalid day",
+		nameAlreadyUsed: "Name already used"
 	},
 
 	dialogs: {

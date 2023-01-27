@@ -94,6 +94,7 @@ const fr: Locale = {
 		unknownRole: "Rôle inconnu",
 		requiredField: "champ requis",
 		dayNotValid: "jour invalide",
+		nameAlreadyUsed: "Nom déjà utilisé",
 	},
 
 	dialogs: {
