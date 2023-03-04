@@ -19,7 +19,7 @@
 			<div class="text-xl-h4 my-3">{{ $t("notepad.folderNotFound.title") }}</div>
 			<p>
 				{{ $t("notepad.folderNotFound.message") }}
-				<router-link :to="{ name: this.routeName }">{{ $t("pages.notepad") }}</router-link>
+				<router-link :to="{ name: routeName }">{{ $t("pages.notepad") }}</router-link>
 			</p>
 		</div>
 
@@ -33,8 +33,8 @@ import Vue from "vue";
 
 import Banner from "@/components/banner/Banner.vue";
 import NotepadActions from "@/components/banner/actions/NotepadActions.vue";
-import NotepadContent from "@/components/NotepadContent.vue";
-import FolderDialog from "@/components/FolderDialog.vue";
+import NotepadContent from "@/components/notepad/NotepadContent.vue";
+import FolderDialog from "@/components/notepad/FolderDialog.vue";
 
 import utilities from "@/js/utilities";
 // import { CardCategory, Folder, FileTypes } from "@/js/types";
