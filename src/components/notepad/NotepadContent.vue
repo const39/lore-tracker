@@ -14,7 +14,7 @@
 			</div>
 			<v-row>
 				<v-col cols="12" md="3" v-for="folder in folderContent.folders" :key="folder.id">
-					<Folder :folder="folder" :parent-path="folderPath" @open-folder="openFolder(folder)"></Folder>
+					<FolderCard :folder="folder" :parent-path="folderPath" @open-folder="openFolder(folder)"></FolderCard>
 				</v-col>
 			</v-row>
 		</div>
@@ -33,7 +33,7 @@
 <script lang="ts">
 import Vue from "vue";
 
-import FolderVue from "./Folder.vue";
+import FolderCard from "./FolderCard.vue";
 // import LayoutTabContent from "./layouts/LayoutTabContent.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
 
@@ -52,7 +52,7 @@ interface BreadcrumbItem {
 
 export default Vue.extend({
 	components: {
-		Folder: FolderVue,
+		FolderCard,
 		CardContainer,
 		// LayoutTabContent,
 	},
