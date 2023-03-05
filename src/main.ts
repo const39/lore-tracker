@@ -1,20 +1,15 @@
-import Vue from "vue";
+import { createApp } from "vue";
+import "./style.css";
 import App from "./App.vue";
+
+// Vuetify
+import "vuetify/styles";
+import { createVuetify } from "vuetify";
+const vuetify = createVuetify();
+
 import router from "./router";
-import vuetify from "./plugins/vuetify";
-import store from './store'
 
-/* Import Vuetify v-row component globally for vuedraggable to be able to use it */
-import { VRow } from "vuetify/lib";
-Vue.component("v-row", VRow);
+import { createPinia } from "pinia";
+const pinia = createPinia();
 
-/* Set translation function as global function */
-import translation from "./js/translation";
-Vue.prototype.$t = translation.t;
-
-new Vue({
-	router,
-	vuetify,
-	store,
-	render: (h) => h(App),
-}).$mount("#app");
+createApp(App).use(vuetify).use(router).use(pinia).mount("#app");
