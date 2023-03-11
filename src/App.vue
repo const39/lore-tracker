@@ -29,8 +29,8 @@
 
 			<!-- Options menu -->
 			<v-menu bottom left offset-y v-model="showMenu">
-				<template v-slot:activator="{ on, attrs }">
-					<v-btn icon v-bind="attrs" v-on="on">
+				<template v-slot:activator="{ props }">
+					<v-btn icon v-bind="props">
 						<v-icon>mdi-cog</v-icon>
 					</v-btn>
 				</template>
@@ -128,79 +128,72 @@
 	</v-app>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { VERSION, LocalStorageKey } from "./js/types";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { LocalStorageKey, VERSION } from "./js/types";
 
+import { useRouter } from "vue-router";
+import { useTheme } from "vuetify/lib/framework.mjs";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
-import ThemeMenu from "./components/menus/ThemeMenu.vue";
 import LangMenu from "./components/menus/LangMenu.vue";
 import SaveMenu from "./components/menus/SaveMenu.vue";
+import ThemeMenu from "./components/menus/ThemeMenu.vue";
 import QuickNote from "./components/QuickNote.vue";
 import Snackbar from "./components/Snackbar.vue";
-import { eventHub, SnackbarEvent } from "./js/eventHub";
+import { SnackbarEvent, useEventHub } from "./js/eventHub";
+import { useStore } from "./store";
 
-export default Vue.extend({
-	name: "App",
-	components: {
-		HotkeyDialog,
-		ThemeMenu,
-		LangMenu,
-		SaveMenu,
-		QuickNote,
-		Snackbar,
-	},
-	data() {
-		return {
-			version: VERSION,
-			showMenu: false,
-			showHotkeysDialog: false,
-			showAboutDialog: false,
-			showUpdateNotif: localStorage.getItem("VERSION") !== VERSION, // Display notif when version has changed
-			showDomainNameChangeNotif: Date.now() < new Date("2022-11-15T12:00:00").getTime(), // Displays until the 15/11/2022, 12:00
-		};
-	},
-	methods: {
-		/**
-		 * Manage this component's hotkeys :
-		 * - On ESC press : Open/close options menu
-		 * - On F1 press : Navigate to LoreBook page
-		 * - On F2 press : Navigate to Timeline page
-		 */
-		hotkey(e: KeyboardEvent) {
-			if (e.code === "Escape") this.showMenu = !this.showMenu;
-			else if (e.code === "F1") this.$router.push({ name: "LoreBook" });
-			else if (e.code === "F2") this.$router.push({ name: "Notepad" });
-			else if (e.code === "F3") this.$router.push({ name: "Timeline" });
-		},
-		closeUpdateNotif() {
-			// Update Version number in LocalStorage to not show the notification a second time
-			localStorage.setItem("VERSION", VERSION);
-			this.showUpdateNotif = false;
-		},
-	},
-	computed: {
-		copyrightText(): string {
-			return `© 2021-${new Date().getUTCFullYear()} const39`;
-		},
-	},
-	mounted() {
-		// Initialise the store at application start
-		try {
-			this.$store.dispatch("loadData");
-		} catch (err) {
-			console.error(err);
-			const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.loadBackup");
-			eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
-		}
+const version = ref(VERSION);
+const showMenu = ref(false);
+const showHotkeysDialog = ref(false);
+const showAboutDialog = ref(false);
+const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
+const showDomainNameChangeNotif = ref(Date.now() < new Date("2022-11-15T12:00:00").getTime()); // Displays until the 15/11/2022, 12:00
 
-		// Set theme if preference saved + register keyboard listener
-		this.$vuetify.theme.dark = localStorage.getItem(LocalStorageKey.THEME_KEY) === "dark";
-		document.addEventListener("keydown", this.hotkey);
-	},
-	beforeDestroy() {
-		document.removeEventListener("keydown", this.hotkey);
-	},
+const router = useRouter();
+const theme = useTheme();
+const store = useStore();
+const eventHub = useEventHub();
+
+const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
+
+/**
+ * Manage this component's hotkeys :
+ * - On ESC press : Open/close options menu
+ * - On F1 press : Navigate to LoreBook page
+ * - On F2 press : Navigate to Timeline page
+ */
+function hotkey(e: KeyboardEvent) {
+	if (e.code === "Escape") showMenu.value = !showMenu.value;
+	else if (e.code === "F1") router.push({ name: "LoreBook" });
+	else if (e.code === "F2") router.push({ name: "Notepad" });
+	else if (e.code === "F3") router.push({ name: "Timeline" });
+}
+
+function closeUpdateNotif() {
+	// Update Version number in LocalStorage to not show the notification a second time
+	localStorage.setItem("VERSION", VERSION);
+	showUpdateNotif.value = false;
+}
+
+onMounted(() => {
+	// Initialise the store at application start
+	try {
+		store.loadData();
+	} catch (err) {
+		console.error(err);
+		const msg = $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup");
+		eventHub.emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
+	}
+
+	// Set theme if preference saved + register keyboard listener
+	theme.global.name.value = localStorage.getItem(LocalStorageKey.THEME_KEY) ?? "light";
+	document.addEventListener("keydown", hotkey);
+});
+
+onBeforeUnmount(() => {
+	document.removeEventListener("keydown", hotkey);
 });
 </script>
 

@@ -9,26 +9,14 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
-import TagList from "../tags/TagList.vue";
+<script lang="ts" setup>
 import MarkdownView from "../../MarkdownView.vue";
+import TagList from "../tags/TagList.vue";
 
 import { Note } from "@/js/types";
-
-export default Vue.extend({
-	name: "ContentNote",
-	components: {
-		TagList,
-		MarkdownView,
-	},
-	props: {
-		itemData: {
-			type: Object as PropType<Note>,
-			required: true,
-		},
-	},
-});
+defineProps<{
+	itemData: Note;
+}>();
 </script>
 
 <style></style>

@@ -1,7 +1,7 @@
 <template>
 	<v-menu bottom left>
-		<template v-slot:activator="{ on, attrs }">
-			<v-btn icon v-bind="attrs" v-on="on">
+		<template v-slot:activator="{ props }">
+			<v-btn icon v-bind="props">
 				<v-icon>mdi-dots-vertical</v-icon>
 			</v-btn>
 		</template>
@@ -26,8 +26,8 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-export default {}
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
 </script>
 
 <style></style>

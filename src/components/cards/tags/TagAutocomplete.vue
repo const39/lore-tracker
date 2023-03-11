@@ -6,7 +6,7 @@
 		item-value="id"
 		dense
 		autofocus
-		:menu-props="{ 'max-width': '30%' }"
+		max-width="30%"
 		append-outer-icon="mdi-chevron-right"
 		@change="onChange"
 		@click:append-outer="open = false"
@@ -14,10 +14,10 @@
 	>
 		<template v-slot:prepend>
 			<v-menu bottom left>
-				<template v-slot:activator="{ on: menu, attrs }">
+				<template v-slot:activator="{ props: menuProps }">
 					<v-tooltip bottom>
-						<template v-slot:activator="{ on: tooltip }">
-							<v-icon v-bind="attrs" v-on="{ ...tooltip, ...menu }">{{ icons[category] }}</v-icon>
+						<template v-slot:activator="{ props: tooltipProps }">
+							<v-icon v-bind="mergeProps(menuProps, tooltipProps)">{{ icons[category] }}</v-icon>
 						</template>
 						<span>{{ $t("actions.changeCategory") }}</span>
 					</v-tooltip>
@@ -37,86 +37,77 @@
 	</v-autocomplete>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
-import { CardCategory, CardTypes, Icon, ID, Tag } from "@/js/types";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { ref, computed, nextTick, mergeProps } from "vue";
+import { CardCategory, CardTypes, Icon as icons, ID, Tag } from "@/js/types";
+import { useStore } from "@/store";
 
-export default Vue.extend({
-	props: {
-		// Override default v-model
-		value: {
-			type: Boolean,
-			required: true,
-		},
-		excludeIds: Array as PropType<ID[]>,
-	},
-	data() {
-		return {
-			category: CardCategory.Quest,
-			selectedTag: undefined,
-		};
-	},
-	methods: {
-		onChange(value: ID) {
-			if (value) {
-				this.$emit("select", value);
-				// HACK: Reset selection when removing the last selected tag
-				this.$nextTick(() => {
-					this.selectedTag = undefined;
-				});
-			}
-		},
-		/**
-		 * Change the current category with Ctrl+Left/RightArrow
-		 */
-		categoryChangeHotkey(e: KeyboardEvent) {
-			if (e.ctrlKey && e.code === "ArrowLeft") this.category = this.previousCategory;
-			else if (e.ctrlKey && e.code === "ArrowRight") this.category = this.nextCategory;
-		},
-	},
-	computed: {
-		icons() {
-			return Icon;
-		},
-		categories() {
-			return CardCategory;
-		},
-		previousCategory(): CardCategory {
-			const values = Object.values(this.categories);
-			const currentIdx = values.indexOf(this.category);
-			const prevIdx = currentIdx === 0 ? values.length - 1 : currentIdx - 1;
-			return values[prevIdx];
-		},
-		nextCategory(): CardCategory {
-			const values = Object.values(this.categories);
-			const currentIdx = values.indexOf(this.category);
-			const nextIdx = currentIdx === values.length - 1 ? 0 : currentIdx + 1;
-			return values[nextIdx];
-		},
-		/**
-		 * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
-		 */
-		availableTags(): Tag[] {
-			let tags = this.$store.state.cards[this.category]
-				.filter((card: CardTypes) => (this.excludeIds ? !this.excludeIds.includes(card.id) : true))
-				.map((card: CardTypes) => new Tag(card));
+const props = defineProps<{
+	// Override default v-model
+	modelValue: boolean;
+	excludeIds?: ID[];
+}>();
 
-			return tags;
-		},
-		/**
-		 * Overwrite default v-model to bind the v-model attribute to the parent.
-		 * This allows the parent component to get a 2-way data bind to this component seamlessly.
-		 * In this case, it is used to control this component's opening state.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		open: {
-			get() {
-				return this.value;
-			},
-			set(value) {
-				this.$emit("input", value);
-			},
-		},
+const emit = defineEmits<{
+	(e: "update:modelValue", value: boolean): void;
+	(e: "select", value: ID): void;
+}>();
+
+const store = useStore();
+
+const category = ref(CardCategory.Quest);
+const selectedTag = ref<Tag | undefined>(undefined);
+
+function onChange(value: ID) {
+	if (value) {
+		emit("select", value);
+		// HACK: Reset selection when removing the last selected tag
+		nextTick(() => (selectedTag.value = undefined));
+	}
+}
+/**
+ * Change the current category with Ctrl+Left/RightArrow
+ */
+function categoryChangeHotkey(e: KeyboardEvent) {
+	if (e.ctrlKey && e.code === "ArrowLeft") category.value = previousCategory.value;
+	else if (e.ctrlKey && e.code === "ArrowRight") category.value = nextCategory.value;
+}
+
+const categories = computed(() => CardCategory);
+const previousCategory = computed(() => {
+	const values = Object.values(categories.value);
+	const currentIdx = values.indexOf(category.value);
+	const prevIdx = currentIdx === 0 ? values.length - 1 : currentIdx - 1;
+	return values[prevIdx];
+});
+const nextCategory = computed(() => {
+	const values = Object.values(categories.value);
+	const currentIdx = values.indexOf(category.value);
+	const nextIdx = currentIdx === values.length - 1 ? 0 : currentIdx + 1;
+	return values[nextIdx];
+});
+/**
+ * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
+ */
+const availableTags = computed<Tag[]>(() => {
+	let cards: CardTypes[] = store.cards[category.value];
+	return cards
+		.filter((card: CardTypes) => (props.excludeIds ? !props.excludeIds.includes(card.id) : true))
+		.map((card: CardTypes) => new Tag(card));
+});
+/**
+ * Overwrite default v-model to bind the v-model attribute to the parent.
+ * This allows the parent component to get a 2-way data bind to this component seamlessly.
+ * In this case, it is used to control this component's opening state.
+ * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
+ */
+const open = computed({
+	get() {
+		return props.modelValue;
+	},
+	set(value) {
+		emit("update:modelValue", value);
 	},
 });
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<v-card class="my-2" outlined>
 		<v-card-title class="d-flex">
-			<span class=" text-subtitle-1 text--primary">{{ title }}</span>
+			<span class="text-subtitle-1 text--primary">{{ title }}</span>
 			<v-spacer></v-spacer>
 			<!-- 'Action' slot -->
 			<slot name="action"></slot>
@@ -16,14 +16,10 @@
 	</v-card>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-	props: {
-		title: String,
-		emptyContentText: String,
-		isFilled: Boolean,
-	},
-});
+<script lang="ts" setup>
+defineProps<{
+	title: string;
+	emptyContentText: string;
+	isFilled: boolean;
+}>();
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<v-form v-model="valid" ref="form">
 		<!-- Show title if "Add" form version -->
-		<v-card-title v-if="edit === undefined" class="justify-center">
+		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
 			<span class="mx-2">{{ $t("dialogs.addCharacter") }}</span>
 		</v-card-title>
@@ -57,11 +57,32 @@
 	</v-form>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import form from "@/mixins/form";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { CardCategory, Character } from "@/js/types";
+import utilities from "@/js/utilities";
+import { useForm, type FormProps } from "@/mixins/form";
+import { ref } from "vue";
+// HACK: Force TS to ignore typing of VForm because not type declaration can be found
+//@ts-ignore
+import type { VForm } from "vuetify/lib/components";
 
-export default Vue.extend({
-	mixins: [form],
-});
+const form = ref<VForm | null>(null);
+
+function factory(): Character {
+	return {
+		_category: CardCategory.Character,
+		id: utilities.uid(),
+		desc: "",
+		tags: [],
+		name: "",
+		race: "",
+		classes: "",
+		role: "",
+		isAlive: true,
+		isNPC: true,
+	};
+}
+
+const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Character>(factory, form);
 </script>

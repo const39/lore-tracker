@@ -13,41 +13,29 @@
 	</MenuActivator>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { ref, watch } from "vue";
 import translation, { SupportedLanguages } from "@/js/translation";
 
 import MenuActivator from "./MenuActivator.vue";
 
-export default Vue.extend({
-	components: {
-		MenuActivator,
+const selectedLang = ref(translation.getLanguage());
+
+const langList = [
+	{
+		key: SupportedLanguages.FRENCH,
+		name: "Français",
 	},
-	data() {
-		return {
-			selectedLang: translation.getLanguage(),
-		};
+	{
+		key: SupportedLanguages.ENGLISH,
+		name: "English",
 	},
-	computed: {
-		langList() {
-			return [
-				{
-					key: SupportedLanguages.FRENCH,
-					name: "Français",
-				},
-				{
-					key: SupportedLanguages.ENGLISH,
-					name: "English",
-				},
-			];
-		},
-	},
-	watch: {
-		selectedLang(val: SupportedLanguages) {
-			translation.setLanguage(val);
-			window.location.reload();
-		},
-	},
+];
+
+watch(selectedLang, (val: SupportedLanguages) => {
+	translation.setLanguage(val);
+	window.location.reload();
 });
 </script>
 

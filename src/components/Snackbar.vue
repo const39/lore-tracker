@@ -9,30 +9,28 @@
 	</v-snackbar>
 </template>
 
-<script lang="ts">
-import { eventHub, SnackbarEvent } from "@/js/eventHub";
-import Vue from "vue";
+<script lang="ts" setup>
+import { SnackbarEvent, useEventHub } from "@/js/eventHub";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
-export default Vue.extend({
-	data() {
-		return {
-			show: false,
-			message: "",
-			timeout: -1,
-			color: "primary",
-		};
-	},
-	created() {
-		eventHub.$on(SnackbarEvent.ID, (e: SnackbarEvent) => {
-			this.message = e.message;
-			this.timeout = e.timeout;
-			this.color = e.color;
-			this.show = true;
-		});
-	},
-	beforeDestroy() {
-		eventHub.$off(SnackbarEvent.ID);
-	},
+const show = ref(false);
+const message = ref("");
+const timeout = ref(-1);
+const color = ref("primary");
+
+const eventHub = useEventHub();
+
+onMounted(() => {
+	eventHub.on(SnackbarEvent.ID, (e: SnackbarEvent) => {
+		message.value = e.message;
+		timeout.value = e.timeout;
+		color.value = e.color;
+		show.value = true;
+	});
+});
+
+onBeforeUnmount(() => {
+	eventHub.off(SnackbarEvent.ID);
 });
 </script>
 

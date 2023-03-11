@@ -12,56 +12,45 @@
 	</ListPanel>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { ref, computed } from "vue";
 import { ID } from "@/js/types";
 
 import ListPanel from "@/components/ListPanel.vue";
 import TagList from "./TagList.vue";
 import TagAutocomplete from "./TagAutocomplete.vue";
 
-export default Vue.extend({
-	components: {
-		ListPanel,
-		TagList,
-		TagAutocomplete,
+const props = defineProps<{
+	// Override default v-model
+	modelValue: ID[];
+	excludeId?: ID;
+}>();
+
+const emit = defineEmits<{
+	(e: "update:modelValue", value: ID[]): void;
+}>();
+
+const showAutocomplete = ref(false);
+
+function onSelection(id: ID) {
+	if (!props.modelValue.includes(id)) props.modelValue.push(id);
+}
+
+const excludeIds = computed(() => [props.excludeId, ...props.modelValue]);
+
+/**
+ * Overwrite default v-model to bind the v-model attribute to the parent.
+ * This allows the parent component to get a 2-way data bind to this component seamlessly.
+ * In this case, it allows the TagListPanel > TagList > TagAutocomplete component chain to propagate any data update to the parent/child components.
+ * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
+ */
+const model = computed({
+	get() {
+		return props.modelValue;
 	},
-	props: {
-		// Override default v-model
-		value: {
-			type: Array as PropType<ID[]>,
-			required: true,
-		},
-		excludeId: Number as PropType<ID>,
-	},
-	data() {
-		return {
-			showAutocomplete: false,
-		};
-	},
-	methods: {
-		onSelection(id: ID) {
-			if (!this.model.includes(id)) this.model.push(id);
-		},
-	},
-	computed: {
-		/**
-		 * Overwrite default v-model to bind the v-model attribute to the parent.
-		 * This allows the parent component to get a 2-way data bind to this component seamlessly.
-		 * In this case, it allows the TagListPanel > TagList > TagAutocomplete component chain to propagate any data update to the parent/child components.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		model: {
-			get(): ID[] {
-				return this.value;
-			},
-			set(value: ID[]) {
-				this.$emit("input", value);
-			},
-		},
-		excludeIds(): ID[] {
-			return [this.excludeId, ...this.model];
-		},
+	set(value) {
+		emit("update:modelValue", value);
 	},
 });
 </script>

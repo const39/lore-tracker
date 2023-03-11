@@ -11,19 +11,9 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-	props: {
-		command: {
-			type: String,
-			required: true,
-		},
-		text: {
-			type: String,
-			required: true,
-		},
-	},
-});
+<script lang="ts" setup>
+defineProps<{
+	command: string;
+	text: string;
+}>();
 </script>

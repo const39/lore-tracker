@@ -58,64 +58,71 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { ref } from "vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import MenuActivator from "./MenuActivator.vue";
-import { eventHub, SnackbarEvent } from "@/js/eventHub";
+import { useEventHub, SnackbarEvent } from "@/js/eventHub";
+import { useStore } from "@/store";
 
-export default Vue.extend({
-	components: {
-		ConfirmDialog,
-		MenuActivator,
-	},
-	data() {
-		return {
-			uploadedFile: undefined as File | undefined,
-			showUploadDialog: false,
-			showConfirmDialog: false,
-		};
-	},
-	methods: {
-		downloadSave(): void {
-			const a = document.createElement("a");
-			const json = this.$store.getters.toJSON;
-			const blob = new Blob([json], { type: "application/json" });
-			a.href = URL.createObjectURL(blob);
-			a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;
-			a.click();
-		},
-		uploadSave(): void {
-			if (this.uploadedFile) {
-				this.uploadedFile.text().then((value: string) => {
-					try {
-						this.$store.dispatch("loadData", value);
-						this.$store.dispatch("save");
-						eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(this.$t("messages.success.saveFileImportSuccessful"), -1, "success"))
-					} catch(err) {
-						console.error(err);
-						const msg = this.$t("messages.errors.corruptedSave") + " " + this.$t("messages.errors.saveFileImportCancelled");
-						eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"))
-					} finally {
-						this.uploadedFile = undefined;
-						this.showUploadDialog = false;
-					}
-				})
-				.catch((err: any) => {
+const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
+const showUploadDialog = ref(false);
+const showConfirmDialog = ref(false);
+
+const eventHub = useEventHub();
+const store = useStore();
+
+function downloadSave(): void {
+	const a = document.createElement("a");
+	const blob = new Blob([store.toJSON], { type: "application/json" });
+	a.href = URL.createObjectURL(blob);
+	a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;
+	a.click();
+}
+
+function uploadSave(): void {
+	// v-file-input only accepts an array of files, but we do not use the 'multiple' prop
+	// so we only use the first element in the array
+	if (uploadedFile.value.length) {
+		uploadedFile.value[0]
+			.text()
+			.then((value: string) => {
+				try {
+					store.loadData(value);
+					store.save();
+					eventHub.emit(
+						SnackbarEvent.ID,
+						new SnackbarEvent($t("messages.success.saveFileImportSuccessful"), -1, "success")
+					);
+				} catch (err) {
 					console.error(err);
-					eventHub.$emit(SnackbarEvent.ID, new SnackbarEvent(this.$t("messages.errors.saveFileImportFailed"), -1, "error"))
-					this.uploadedFile = undefined;
-					this.showUploadDialog = false;
-				});
-			}
-		},
-		deleteSave(): void {
-			this.$store.commit("resetState");
-			this.$store.dispatch("deleteSave");
-		},
-	},
-});
+					const msg = `${$t("messages.errors.corruptedSave")} ${$t(
+						"messages.errors.saveFileImportCancelled"
+					)}`;
+					eventHub.emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
+				} finally {
+					uploadedFile.value = [];
+					showUploadDialog.value = false;
+				}
+			})
+			.catch((err: any) => {
+				console.error(err);
+				eventHub.emit(
+					SnackbarEvent.ID,
+					new SnackbarEvent($t("messages.errors.saveFileImportFailed"), -1, "error")
+				);
+				uploadedFile.value = [];
+				showUploadDialog.value = false;
+			});
+	}
+}
+
+function deleteSave(): void {
+	store.resetState();
+	store.deleteSave();
+}
 </script>
 
 <style></style>

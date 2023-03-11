@@ -20,8 +20,9 @@
 	</v-container>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
 import Banner from "@/components/banner/Banner.vue";
 import LorebookActions from "@/components/banner/actions/LorebookActions.vue";
@@ -31,53 +32,40 @@ import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
-import { CardEvent, eventHub } from "@/js/eventHub";
+import { CardEvent, useEventHub } from "@/js/eventHub";
 import utilities from "../js/utilities";
 import { Order } from "@/js/types";
+import { useStore } from "@/store";
 
-export default Vue.extend({
-	name: "PanelsContainer",
-	components: {
-		Banner,
-		LorebookActions,
-		LayoutTabs,
-		LayoutColumns,
-		ConfirmDialog,
-	},
-	data() {
-		return {
-			selectedLayout: 0,
-			confirmDialog: {
-				show: false,
-				title: "",
-				message: "",
-				acceptAction: () => {},
-			},
-		};
-	},
-	methods: {
-		selectLayout(value: number) {
-			this.selectedLayout = value;
-		},
-		/**
-		 * Update card order when selection changes
-		 */
-		selectOrder(value: number) {
-			this.$store.commit("setOrder", value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT);
-		},
-	},
-	mounted() {
-		eventHub.$on(CardEvent.ID, (e: CardEvent) => {
-			this.confirmDialog.message = this.$t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
-			this.confirmDialog.title = `${this.$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
-			this.confirmDialog.acceptAction = () =>
-				this.$store.dispatch("commitAndSave", { commit: "deleteCard", payload: e.card });
-			this.confirmDialog.show = true;
-		});
-	},
-	beforeDestroy() {
-		eventHub.$off(CardEvent.ID);
-	},
+const selectedLayout = ref(0);
+const confirmDialog = ref({
+	show: false,
+	title: "",
+	message: "",
+	acceptAction: () => {},
+});
+const store = useStore();
+const eventHub = useEventHub();
+
+function selectLayout(value: number) {
+	selectedLayout.value = value;
+}
+/**
+ * Update card order when selection changes
+ */
+function selectOrder(value: number) {
+	store.setOrder(value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT);
+}
+onMounted(() => {
+	eventHub.on(CardEvent.ID, (e: CardEvent) => {
+		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
+		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
+		confirmDialog.value.acceptAction = () => store.commitAndSave({ commit: "deleteCard", payload: e.card });
+		confirmDialog.value.show = true;
+	});
+});
+onBeforeUnmount(() => {
+	eventHub.off(CardEvent.ID);
 });
 </script>
 

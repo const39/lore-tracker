@@ -1,6 +1,5 @@
 import { SaveVersion } from "./saves";
 import utilities from "./utilities";
-import Vue from "vue";
 
 // *********************
 // ***** Constants *****
@@ -122,62 +121,63 @@ export interface FileTreeNode {
 	files: FileTypes[];
 }
 
-export class FileTree {
+export class FileTree extends Map<string, FileTreeNode> {}	// ! TMP
+// export class FileTree {
 	
-	entries!: Array<[key: string, value: FileTreeNode]>;
+// 	entries!: Array<[key: string, value: FileTreeNode]>;
 
-	constructor(data?: NotepadSave) {
-		Vue.set(this, "entries", data ? Object.keys(data).map((key) => [key, data[key]]) : []);
+// 	constructor(data?: NotepadSave) {
+// 		Vue.set(this, "entries", data ? Object.keys(data).map((key) => [key, data[key]]) : []);
 
-		// Set root node if none exists
-		if (!this.has("/")) {
-			const emptyFileTreeNode: FileTreeNode = {
-				folders: [],
-				files: [],
-			};
-			this.set("/", emptyFileTreeNode);
-		}
-	}
+// 		// Set root node if none exists
+// 		if (!this.has("/")) {
+// 			const emptyFileTreeNode: FileTreeNode = {
+// 				folders: [],
+// 				files: [],
+// 			};
+// 			this.set("/", emptyFileTreeNode);
+// 		}
+// 	}
 
-	get(key: string): FileTreeNode | undefined {
-		return this.entries.find((e) => e[0] == key)?.[1];
-	}
+// 	get(key: string): FileTreeNode | undefined {
+// 		return this.entries.find((e) => e[0] == key)?.[1];
+// 	}
 
-	set(key: string, value: FileTreeNode): this {
-		const entry = this.entries.find((e) => e[0] == key);
-		if (entry)
-			Vue.set(entry, 1, value);
-		else
-			this.entries.push([key, value]);
-		return this;
-	}
+// 	set(key: string, value: FileTreeNode): this {
+// 		const entry = this.entries.find((e) => e[0] == key);
+// 		if (entry)
+// 			Vue.set(entry, 1, value);
+// 		else
+// 			this.entries.push([key, value]);
+// 		return this;
+// 	}
 
-	has(key: string): boolean {
-		return this.entries.some((e) => e[0] == key);
-	}
+// 	has(key: string): boolean {
+// 		return this.entries.some((e) => e[0] == key);
+// 	}
 
-	delete(key: string): boolean {
-		const idx = this.entries.findIndex((e) => e[0] == key);
-		if (idx != -1)
-			this.entries.splice(idx, 1);
-		return idx != -1;
-	}
+// 	delete(key: string): boolean {
+// 		const idx = this.entries.findIndex((e) => e[0] == key);
+// 		if (idx != -1)
+// 			this.entries.splice(idx, 1);
+// 		return idx != -1;
+// 	}
 
-	clear(): void {
-		Vue.set(this, "entries", []);
-	}
+// 	clear(): void {
+// 		Vue.set(this, "entries", []);
+// 	}
 
-	[Symbol.iterator](): Iterator<[key: string, value: FileTreeNode]> {
-		return this.entries[Symbol.iterator]();
-	}
+// 	[Symbol.iterator](): Iterator<[key: string, value: FileTreeNode]> {
+// 		return this.entries[Symbol.iterator]();
+// 	}
 
-	serialize(): NotepadSave {
-		const result = Object.create(null);
-		for (const [key, value] of this.entries)
-			result[key] = value;
-		return result;
-	}
-}
+// 	serialize(): NotepadSave {
+// 		const result = Object.create(null);
+// 		for (const [key, value] of this.entries)
+// 			result[key] = value;
+// 		return result;
+// 	}
+// }
 
 type NotepadState = FileTree;	// Runtime type
 type NotepadSave = Record<string, FileTreeNode>	// Serialized type (because native Map class cannot be serialized as is)

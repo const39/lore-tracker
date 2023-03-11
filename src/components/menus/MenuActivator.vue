@@ -1,7 +1,7 @@
 <template>
 	<v-menu offset-x left open-on-hover>
-		<template v-slot:activator="{ on, attrs }">
-			<v-list-item v-on="on" v-bind="attrs">
+		<template v-slot:activator="{ props }">
+			<v-list-item v-bind="props">
 				<v-list-item-icon>
 					<v-icon>{{ icon }}</v-icon>
 				</v-list-item-icon>
@@ -12,16 +12,9 @@
 	</v-menu>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-
-export default Vue.extend({
-	props: {
-		title: {
-			type: String,
-			required: true,
-		},
-		icon: String, // Optional icon
-	},
-});
+<script lang="ts" setup>
+defineProps<{
+	title: string;
+	icon?: string; // Optional icon
+}>();
 </script>

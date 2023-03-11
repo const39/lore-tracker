@@ -24,8 +24,8 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { ref, computed } from "vue";
 import BaseCard from "./BaseCard.vue";
 
 import FormQuest from "./forms/FormQuest.vue";
@@ -36,51 +36,29 @@ import FormFaction from "./forms/FormFaction.vue";
 import FormNote from "./forms/FormNote.vue";
 
 import utilities from "@/js/utilities";
+import { useTheme } from "vuetify";
 
-export default Vue.extend({
-	components: {
-		BaseCard,
-		FormQuest,
-		FormEvent,
-		FormLocation,
-		FormCharacter,
-		FormFaction,
-		FormNote,
-	},
-	props: {
-		category: {
-			type: String,
-			required: true,
-		},
-		fillHeight: Boolean, // Optional style prop
-	},
-	data() {
-		return {
-			showForm: false,
-			showAdd: true,
-			hover: false,
-		};
-	},
-	methods: {
-		openForm(): void {
-			this.showForm = true;
-			this.showAdd = false;
-		},
-		closeForm(): void {
-			this.showForm = false;
-			// HACK: Delay display of 'Add' clickable card to after the form transition completion
-			setTimeout(() => (this.showAdd = true), 300);
-		},
-	},
-	computed: {
-		formComponent(): string {
-			return `Form${utilities.capitalize(this.category)}`;
-		},
-		isDarkTheme(): boolean {
-			return this.$vuetify.theme.dark;
-		},
-	},
-});
+const props = defineProps<{
+	category: string;
+	fillHeight?: boolean; // Optional style prop
+}>();
+
+const showForm = ref(false);
+const showAdd = ref(true);
+const hover = ref(false);
+
+function openForm(): void {
+	showForm.value = true;
+	showAdd.value = false;
+}
+function closeForm(): void {
+	showForm.value = false;
+	// HACK: Delay display of 'Add' clickable card to after the form transition completion
+	setTimeout(() => (showAdd.value = true), 300);
+}
+
+const formComponent = computed(() => `Form${utilities.capitalize(props.category)}`);
+const isDarkTheme = computed(() => useTheme().current.value.dark);
 </script>
 
 <style scoped>

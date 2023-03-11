@@ -5,8 +5,8 @@
 			<p class="text-h6 text--primary">
 				{{ itemData.name }}
 				<v-tooltip top v-if="!itemData.isAlive">
-					<template v-slot:activator="{ on, attrs }">
-						<v-icon v-bind="attrs" v-on="on">mdi-skull</v-icon>
+					<template v-slot:activator="{ props }">
+						<v-icon v-bind="props">mdi-skull</v-icon>
 					</template>
 					<span>{{ $t("fields.dead") }}</span>
 				</v-tooltip>
@@ -19,33 +19,23 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { computed } from "vue";
 import { Character } from "@/js/types";
 
 import TagList from "../tags/TagList.vue";
 import MarkdownView from "../../MarkdownView.vue";
 
-export default Vue.extend({
-	name: "ContentCharacter",
-	components: {
-		TagList,
-		MarkdownView,
-	},
-	props: {
-		itemData: {
-			type: Object as PropType<Character>,
-			required: true,
-		},
-	},
-	computed: {
-		identity(): string {
-			let race = this.itemData.race || this.$t("fields.unknownRace");
-			let classes = this.itemData.classes || this.$t("fields.unknownClass");
-			let role = this.itemData.role || this.$t("fields.unknownRole");
+const props = defineProps<{
+	itemData: Character;
+}>();
 
-			return `${race} - ${classes} (${role})`;
-		},
-	},
+const identity = computed(() => {
+	let race = props.itemData.race || $t("fields.unknownRace");
+	let classes = props.itemData.classes || $t("fields.unknownClass");
+	let role = props.itemData.role || $t("fields.unknownRole");
+
+	return `${race} - ${classes} (${role})`;
 });
 </script>

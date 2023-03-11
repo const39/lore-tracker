@@ -1,7 +1,7 @@
 <template>
 	<v-form v-model="valid" ref="form">
 		<!-- Show title if "Add" form version -->
-		<v-card-title v-if="edit === undefined" class="justify-center">
+		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
 			<span class="mx-2">{{ $t("dialogs.addEvent") }}</span>
 		</v-card-title>
@@ -24,15 +24,15 @@
 							:rules="requiredRule"
 							:items="eventTypes"
 						>
-							<template v-slot:selection="data">
+							<template v-slot:selection="{item}">
 								<v-chip>
-									<v-icon left>{{ icons[data.item] }}</v-icon>
-									{{ $t(`eventTypes.${data.item}`) }}
+									<v-icon left>{{ icons[item] }}</v-icon>
+									{{ $t(`eventTypes.${item}`) }}
 								</v-chip>
 							</template>
-							<template v-slot:item="data">
-								<v-icon left>{{ icons[data.item] }}</v-icon>
-								{{ $t(`eventTypes.${data.item}`) }}
+							<template v-slot:item="{item}">
+								<v-icon left>{{ icons[item] }}</v-icon>
+								{{ $t(`eventTypes.${item}`) }}
 							</template>
 						</v-autocomplete>
 					</v-col>
@@ -59,33 +59,39 @@
 	</v-form>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import form from "@/mixins/form";
-import { Event, EventType, Icon } from "@/js/types";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { CardCategory, Event, EventType, Icon as icons } from "@/js/types";
+import utilities from "@/js/utilities";
+import { useForm, type FormProps } from "@/mixins/form";
+import { useStore } from "@/store";
+import { ref } from "vue";
+// HACK: Force TS to ignore typing of VForm because not type declaration can be found
+//@ts-ignore
+import type { VForm } from "vuetify/lib/components";
 
-export default Vue.extend({
-	mixins: [form],
-	data: function() {
-		return {
-			dayRange: [
-				(v: string) => {
-					const val = Number(v);
-					return (Number.isSafeInteger(val) && val >= 0) || this.$t("fields.dayNotValid");
-				},
-			],
-			icons: Icon,
-			eventTypes: Object.values(EventType),
-		};
+const form = ref<VForm | null>(null);
+
+const store = useStore();
+
+const dayRange = [
+	(v: string) => {
+		const val = Number(v);
+		return (Number.isSafeInteger(val) && val >= 0) || $t("fields.dayNotValid");
 	},
-	methods: {
-		/**
-		 * Override of mixin method
-		 */
-		castCardData(card: Event): Event {
-			card.day = Number(card.day);	// Ensure day if a Number and not a string
-			return card;
-		},
-	},
-});
+];
+const eventTypes = Object.values(EventType);
+
+function factory(): Event {
+	return {
+		_category: CardCategory.Event,
+		id: utilities.uid(),
+		desc: "",
+		tags: [],
+		type: EventType.OTHER,
+		day: store.days,
+	};
+}
+
+const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Event>(factory, form);
 </script>

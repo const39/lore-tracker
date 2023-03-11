@@ -1,7 +1,7 @@
 <template>
 	<v-row class="my-3 d-flex align-center">
 		<div>
-			<v-hover v-slot="{ hover }">
+			<v-hover v-slot="{ isHovering }">
 				<div class="text-xl-h4 mb-2">
 					<v-form v-if="editName">
 						<v-text-field
@@ -17,7 +17,7 @@
 					</v-form>
 					<span v-else>
 						{{ campaignName }}
-						<v-icon v-show="hover" @click="editName = true">mdi-pencil</v-icon>
+						<v-icon v-show="isHovering" @click="editName = true">mdi-pencil</v-icon>
 					</span>
 				</div>
 			</v-hover>
@@ -37,38 +37,30 @@
 	</v-row>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { computed, ref } from "vue";
+import { t as $t } from "@/js/translation";
+import { useStore } from "@/store/index";
 
 import StatusTray from "./StatusTray.vue";
 import SearchView from "@/components/SearchView.vue";
 
-export default Vue.extend({
-	components: {
-		StatusTray,
-		SearchView,
+const rules = {
+	required: (v: string) => !!v || $t("fields.requiredField"),
+	counter: (v: string) => v.length <= 30 || "30 max.",
+};
+const editName = ref(false);
+
+const store = useStore();
+
+const cardCount = computed(() => store.cardCount);
+
+const campaignName = computed({
+	get() {
+		return store.name;
 	},
-	data() {
-		return {
-			editName: false,
-			rules: {
-				required: (v: string) => !!v || this.$t("fields.requiredField"),
-				counter: (v: string) => v.length <= 30 || "30 max.",
-			},
-		};
-	},
-	computed: {
-		cardCount(): number {
-			return this.$store.getters.cardCount;
-		},
-		campaignName: {
-			get() {
-				return this.$store.state.name;
-			},
-			set(value) {
-				if (value) this.$store.dispatch("commitAndSave", { commit: "setName", payload: value });
-			},
-		},
+	set(value) {
+		if (value) store.commitAndSave({ commit: "setName", payload: value });
 	},
 });
 </script>

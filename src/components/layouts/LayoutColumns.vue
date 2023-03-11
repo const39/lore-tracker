@@ -6,31 +6,23 @@
 	</v-container>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { onBeforeUnmount, onMounted } from "vue";
 import LayoutColumnContent from "./LayoutColumnContent.vue";
 
-import { eventHub, TagEvent } from "@/js/eventHub";
-import { CardCategory } from "@/js/types";
+import { useEventHub, TagEvent } from "@/js/eventHub";
+import { CardCategory as categories } from "@/js/types";
 
-export default Vue.extend({
-	name: "LayoutColumns",
-	components: {
-		LayoutColumnContent,
-	},
-	data() {
-		return {
-			categories: CardCategory,
-		};
-	},
-	mounted() {
-		// Catch TagEvent and scroll to the card with the specified id
-		eventHub.$on(TagEvent.ID, (e: TagEvent) => {
-			document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
-		});
-	},
-	beforeDestroy() {
-		eventHub.$off(TagEvent.ID);
-	},
+const eventHub = useEventHub();
+
+onMounted(() => {
+	// Catch TagEvent and scroll to the card with the specified id
+	eventHub.on(TagEvent.ID, (e: TagEvent) => {
+		document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
+	});
+});
+
+onBeforeUnmount(() => {
+	eventHub.off(TagEvent.ID);
 });
 </script>

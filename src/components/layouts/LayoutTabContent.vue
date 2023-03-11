@@ -22,47 +22,33 @@
 	</v-container>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
+<script lang="ts" setup>
+import { computed, ref } from "vue";
 import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
 
 import draggable from "vuedraggable";
 import { CardCategory, CardTypes } from "@/js/types";
+import { useStore } from "@/store";
 
-export default Vue.extend({
-	name: "LayoutTabContent",
-	props: {
-		category: {
-			type: String as PropType<CardCategory>,
-			required: true,
-		},
+const props = defineProps<{ category: CardCategory }>();
+const drag = ref(false);
+
+const store = useStore();
+
+const isSortDisabled = computed(() => {
+	return store.isFilterActive || !store.isDefaultOrder;
+});
+
+const items = computed({
+	get(): CardTypes[] {
+		return store.getCards[props.category];
 	},
-	components: {
-		CardContainer,
-		CardAdd,
-		draggable,
-	},
-	data() {
-		return {
-			drag: false,
-		};
-	},
-	computed: {
-		isSortDisabled(): boolean {
-			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
-		},
-		items: {
-			get(): CardTypes[] {
-				return this.$store.getters.getCards[this.category];
-			},
-			set(list: CardTypes[]) {
-				this.$store.dispatch("commitAndSave", {
-					commit: "updateWholeList",
-					payload: { category: this.category, list },
-				});
-			},
-		},
+	set(list: CardTypes[]) {
+		store.commitAndSave({
+			commit: "updateWholeList",
+			payload: { category: props.category, list },
+		});
 	},
 });
 </script>

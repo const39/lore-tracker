@@ -1,7 +1,7 @@
 <template>
 	<v-form v-model="valid" ref="form">
 		<!-- Show title if "Add" form version -->
-		<v-card-title v-if="edit === undefined" class="justify-center">
+		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
 			<span class="mx-2">{{ $t("dialogs.addQuest") }}</span>
 		</v-card-title>
@@ -31,8 +31,8 @@
 					>
 						<template v-slot:prepend>
 							<v-tooltip bottom>
-								<template v-slot:activator="{ on }">
-									<v-icon v-on="on" @click="complete(idx)">
+								<template v-slot:activator="{ props }">
+									<v-icon v-bind="props" @click="complete(idx)">
 										{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
 									</v-icon>
 								</template>
@@ -62,44 +62,50 @@
 	</v-form>
 </template>
 
-<script lang="ts">
-import form from "@/mixins/form";
-import { Icon, Task } from "@/js/types";
-
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { CardCategory, Quest, Icon as icons, Task } from "@/js/types";
 import ListPanel from "@/components/ListPanel.vue";
+import utilities from "@/js/utilities";
+import { useForm, type FormProps } from "@/mixins/form";
+import { ref } from "vue";
+// HACK: Force TS to ignore typing of VForm because not type declaration can be found
+//@ts-ignore
+import type { VForm } from "vuetify/lib/components";
 
-// Directly extend from the mixin instead of Vue to provide the mixin types to TypeScript 
-export default form.extend({
-	mixins: [form],
-	components: {
-		ListPanel,
-	},
-	data() {
-		return {
-			icons: Icon,
-		};
-	},
-	methods: {
-		addTask(): void {
-			const task: Task = {
-				desc: "",
-				isCompleted: false,
-			};
-			this.model.tasks.push(task);
-		},
-		complete(idx: number): void {
-			this.model.tasks[idx].isCompleted = !this.model.tasks[idx].isCompleted;
-		},
-		remove(idx: number): void {
-			if (idx in this.model.tasks) this.model.tasks.splice(idx, 1);
-		},
-		cleanInput(): void {
-			// Remove empty tasks
-			this.model.tasks = this.model.tasks.filter((task: Task) => task.desc.trim());
-		},
-	},
-});
+const form = ref<VForm | null>(null);
+
+function addTask(): void {
+	const task: Task = {
+		desc: "",
+		isCompleted: false,
+	};
+	model.value.tasks.push(task);
+}
+function complete(idx: number): void {
+	model.value.tasks[idx].isCompleted = !model.value.tasks[idx].isCompleted;
+}
+function remove(idx: number): void {
+	if (idx in model.value.tasks) model.value.tasks.splice(idx, 1);
+}
+function cleanInput(): void {
+	// Remove empty tasks
+	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());
+}
+
+function factory(): Quest {
+	return {
+		_category: CardCategory.Quest,
+		id: utilities.uid(),
+		tags: [],
+		title: "",
+		tasks: [],
+	};
+}
+
+const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Quest>(factory, form);
 </script>
+
 <style scoped>
 .border {
 	border: 1px solid black;

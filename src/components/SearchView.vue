@@ -14,13 +14,13 @@
 			</v-row>
 			<v-subheader>{{ $t("fields.category") }}</v-subheader>
 			<v-select outlined dense class="mx-2" v-model="selectedCategory" :items="categories">
-				<template v-slot:selection="data">
-					<v-icon left small> {{ icons[data.item] }} </v-icon>
-					{{ $t(`categories.${data.item}`) }}
+				<template v-slot:selection="{ item }">
+					<v-icon left small> {{ icons[item] }} </v-icon>
+					{{ $t(`categories.${item}`) }}
 				</template>
-				<template v-slot:item="data">
-					<v-icon left small> {{ icons[data.item] }} </v-icon>
-					{{ $t(`categories.${data.item}`) }}
+				<template v-slot:item="{ item }">
+					<v-icon left small> {{ icons[item] }} </v-icon>
+					{{ $t(`categories.${item}`) }}
 				</template>
 			</v-select>
 			<v-subheader>{{ $t("search.containing") }}</v-subheader>
@@ -34,81 +34,69 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { CategoryFilter, Icon } from "@/js/types";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { CategoryFilter, Icon as icons } from "@/js/types";
+import { useStore } from "@/store";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import TagListPanel from "./cards/tags/TagListPanel.vue";
 
-export default Vue.extend({
-	components: {
-		TagListPanel,
-	},
-	data() {
-		return {
-			open: false,
-			icons: Icon,
-			categories: Object.values(CategoryFilter),
-			selectedCategory: CategoryFilter.ALL,
-			textToContain: "",
-			selectedTags: [],
-		};
-	},
-	methods: {
-		search() {
-			this.$store.commit("updateFilter", {
-				category: this.selectedCategory,
-				text: this.textToContain,
-				tags: this.selectedTags,
-			});
-		},
-		/**
-		 * Open/close the Search view when pressing Ctrl+K
-		 */
-		hotkey(e: KeyboardEvent) {
-			if (e.code === "KeyK" && e.ctrlKey) this.open = !this.open;
-		},
-	},
-	computed: {
-		style(): string {
-			return this.open ? "display: block;" : "display: none;";
-		},
-		resultsNumber() {
-			let count = 0;
-			const cards = this.$store.getters.getCards;
-			for (const key in cards) count += cards[key as keyof typeof cards].length
-			return count;
-		},
-	},
-	watch: {
-		/**
-		 * Reset filter once the search view is closed
-		 */
-		open(newValue) {
-			if (!newValue) {
-				this.selectedCategory = CategoryFilter.ALL;
-				this.textToContain = "";
-				this.selectedTags = [];
-				this.$store.commit("resetFilter");
-			} 
-		},
-		/**
-		 * Trigger search as soon as a field changes
-		 */
-		selectedCategory() {
-			this.search();
-		},
-		textToContain() {
-			this.search();
-		},
-		selectedTags() {
-			this.search();
-		},
-	},
-	mounted() {
-		document.addEventListener("keydown", this.hotkey);
-	},
-	beforeDestroy() {
-		document.removeEventListener("keydown", this.hotkey);
-	},
+const open = ref(false);
+const categories = ref(Object.values(CategoryFilter));
+const selectedCategory = ref<CategoryFilter>(CategoryFilter.ALL);
+const textToContain = ref("");
+const selectedTags = ref([]);
+
+const store = useStore();
+
+function search() {
+	store.updateFilter({
+		category: selectedCategory.value,
+		text: textToContain.value,
+		tags: selectedTags.value,
+	});
+}
+
+/**
+ * Open/close the Search view when pressing Ctrl+K
+ */
+function hotkey(e: KeyboardEvent) {
+	if (e.code === "KeyK" && e.ctrlKey) open.value = !open.value;
+}
+
+const style = computed(() => {
+	return open.value ? "display: block;" : "display: none;";
+});
+
+const resultsNumber = computed(() => {
+	let count = 0;
+	const cards = store.getCards;
+	for (const key in cards) count += cards[key as keyof typeof cards].length;
+	return count;
+});
+
+/**
+ * Reset filter once the search view is closed
+ */
+watch(open, (newValue) => {
+	if (!newValue) {
+		selectedCategory.value = CategoryFilter.ALL;
+		textToContain.value = "";
+		selectedTags.value = [];
+		store.resetFilter();
+	}
+});
+
+/**
+ * Trigger search as soon as a field changes
+ */
+watch([selectedCategory, textToContain, selectedTags], () => search());
+
+onMounted(() => {
+	document.addEventListener("keydown", hotkey);
+});
+
+onBeforeUnmount(() => {
+	document.removeEventListener("keydown", hotkey);
 });
 </script>

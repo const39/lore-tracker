@@ -35,69 +35,65 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { useStore } from "@/store";
+import { computed, ref } from "vue";
 
-export default Vue.extend({
-	data() {
-		return {
-			open: false,
-			resizing: false,
-			originalW: 0,
-			originalH: 0,
-			originalX: 0,
-			originalY: 0,
-			originalMouseX: 0,
-			originalMouseY: 0,
-		};
-	},
-	methods: {
-		onHold(e: MouseEvent) {
-			const element = document.getElementById("resizable") as HTMLElement;
-			e.preventDefault();
-			this.originalW = Number.parseFloat(
-				getComputedStyle(element, null)
-					.getPropertyValue("width")
-					.replace("px", "")
-			);
-			this.originalH = Number.parseFloat(
-				getComputedStyle(element, null)
-					.getPropertyValue("height")
-					.replace("px", "")
-			);
-			this.originalX = element.getBoundingClientRect().left;
-			this.originalY = element.getBoundingClientRect().top;
-			this.originalMouseX = e.pageX;
-			this.originalMouseY = e.pageY;
+const open = ref(false);
+const resizing = ref(false);
 
-			this.resizing = true;
-		},
-		resize(e: MouseEvent) {
-			const element = document.getElementById("resizable") as HTMLElement;
-			const MIN_SIZE = 20;
-			if (this.resizing) {
-				const width = this.originalW - (e.pageX - this.originalMouseX);
-				const height = this.originalH - (e.pageY - this.originalMouseY);
-				if (width > MIN_SIZE) {
-					element.style.width = width + "px";
-					element.style.left = this.originalX + (e.pageX - this.originalMouseX) + "px";
-				}
-				if (height > MIN_SIZE) {
-					element.style.height = height + "px";
-					element.style.top = this.originalY + (e.pageY - this.originalMouseY) + "px";
-				}
-			}
-		},
+const store = useStore();
+
+const interaction = {
+	originalW: 0,
+	originalH: 0,
+	originalX: 0,
+	originalY: 0,
+	originalMouseX: 0,
+	originalMouseY: 0,
+};
+
+function onHold(e: MouseEvent) {
+	const element = document.getElementById("resizable") as HTMLElement;
+	e.preventDefault();
+	interaction.originalW = Number.parseFloat(
+		getComputedStyle(element, null).getPropertyValue("width").replace("px", "")
+	);
+	interaction.originalH = Number.parseFloat(
+		getComputedStyle(element, null).getPropertyValue("height").replace("px", "")
+	);
+	interaction.originalX = element.getBoundingClientRect().left;
+	interaction.originalY = element.getBoundingClientRect().top;
+	interaction.originalMouseX = e.pageX;
+	interaction.originalMouseY = e.pageY;
+
+	resizing.value = true;
+}
+
+function resize(e: MouseEvent) {
+	const element = document.getElementById("resizable") as HTMLElement;
+	const MIN_SIZE = 20;
+	if (resizing.value) {
+		const width = interaction.originalW - (e.pageX - interaction.originalMouseX);
+		const height = interaction.originalH - (e.pageY - interaction.originalMouseY);
+		if (width > MIN_SIZE) {
+			element.style.width = width + "px";
+			element.style.left = interaction.originalX + (e.pageX - interaction.originalMouseX) + "px";
+		}
+		if (height > MIN_SIZE) {
+			element.style.height = height + "px";
+			element.style.top = interaction.originalY + (e.pageY - interaction.originalMouseY) + "px";
+		}
+	}
+}
+
+const text = computed({
+	get() {
+		return store.quickNote;
 	},
-	computed: {
-		text: {
-			get() {
-				return this.$store.state.quickNote;
-			},
-			set(value) {
-				this.$store.dispatch("commitAndSave", { commit: "setQuickNote", payload: value });
-			},
-		},
+	set(value) {
+		store.commitAndSave({ commit: "setQuickNote", payload: value });
 	},
 });
 </script>
