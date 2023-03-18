@@ -1,17 +1,15 @@
 <template>
-	<v-container>
-		<v-tabs fixed-tabs color="accent" v-model="activeTab">
-			<v-tab v-for="tab in tabs" :key="tab">
-				<v-icon left>{{ icons[tab] }}</v-icon>
-				{{ $t(`categories.${tab}`) }}
-			</v-tab>
-		</v-tabs>
-		<v-tabs-items v-model="activeTab">
-			<v-tab-item v-for="tab in tabs" :key="tab">
-				<LayoutTabContent :category="tab" />
-			</v-tab-item>
-		</v-tabs-items>
-	</v-container>
+	<v-tabs fixed-tabs color="accent" v-model="activeTab">
+		<v-tab v-for="tab in tabs" :key="tab">
+			<v-icon start>{{ icons[tab] }}</v-icon>
+			{{ $t(`categories.${tab}`) }}
+		</v-tab>
+	</v-tabs>
+	<v-window v-model="activeTab">
+		<v-window-item v-for="tab in tabs" :key="tab">
+			<LayoutTabContent :category="tab" />
+		</v-window-item>
+	</v-window>
 </template>
 
 <script lang="ts" setup>

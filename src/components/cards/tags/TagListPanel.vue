@@ -37,7 +37,10 @@ function onSelection(id: ID) {
 	if (!props.modelValue.includes(id)) props.modelValue.push(id);
 }
 
-const excludeIds = computed(() => [props.excludeId, ...props.modelValue]);
+const excludeIds = computed(() => {
+	if (props.excludeId) return [props.excludeId, ...props.modelValue];
+	else return [...props.modelValue];
+});
 
 /**
  * Overwrite default v-model to bind the v-model attribute to the parent.

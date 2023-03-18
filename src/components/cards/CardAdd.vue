@@ -10,14 +10,14 @@
 			<!-- "Add" clickable card button -->
 			<v-card
 				v-if="showAdd"
-				outlined
+				variant="outlined"
 				@mouseenter="hover = true"
 				@mouseleave="hover = false"
 				class="my-1 custom-border"
-				:class="{ 'fill-height': fillHeight, grey: hover, 'lighten-3': !isDarkTheme, 'darken-3': isDarkTheme }"
+				:class="{ 'fill-height': fillHeight, 'grey-lighten-3': hover && !isDarkTheme, 'grey-darken-3': hover && isDarkTheme }"
 			>
 				<v-card-text class="text-center clickable" :class="{ 'fill-height': fillHeight }" @click="openForm">
-					<v-icon large>mdi-plus</v-icon>
+					<v-icon size="large">mdi-plus</v-icon>
 				</v-card-text>
 			</v-card>
 		</v-fade-transition>

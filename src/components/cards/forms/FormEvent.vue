@@ -8,7 +8,7 @@
 		<v-card-text>
 			<v-container>
 				<v-textarea
-					outlined
+					variant="outlined"
 					auto-grow
 					:label="$t('fields.desc') + '*'"
 					:hint="$t('fields.mdSupport')"
@@ -26,12 +26,12 @@
 						>
 							<template v-slot:selection="{item}">
 								<v-chip>
-									<v-icon left>{{ icons[item] }}</v-icon>
+									<v-icon start>{{ icons[item] }}</v-icon>
 									{{ $t(`eventTypes.${item}`) }}
 								</v-chip>
 							</template>
 							<template v-slot:item="{item}">
-								<v-icon left>{{ icons[item] }}</v-icon>
+								<v-icon start>{{ icons[item] }}</v-icon>
 								{{ $t(`eventTypes.${item}`) }}
 							</template>
 						</v-autocomplete>
@@ -53,8 +53,8 @@
 		</v-card-text>
 		<v-card-actions>
 			<v-spacer></v-spacer>
-			<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn color="primary" text :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
+			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
+			<v-btn color="primary" variant="text" :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
 		</v-card-actions>
 	</v-form>
 </template>
@@ -66,11 +66,9 @@ import utilities from "@/js/utilities";
 import { useForm, type FormProps } from "@/mixins/form";
 import { useStore } from "@/store";
 import { ref } from "vue";
-// HACK: Force TS to ignore typing of VForm because not type declaration can be found
-//@ts-ignore
-import type { VForm } from "vuetify/lib/components";
+import type { VForm } from "vuetify/components";
 
-const form = ref<VForm | null>(null);
+const form = ref<VForm | undefined>(undefined);
 
 const store = useStore();
 

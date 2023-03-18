@@ -15,7 +15,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn text color="primary" @click="showDialog = false">{{ $t("actions.close") }}</v-btn>
+				<v-btn variant="text" color="primary" @click="showDialog = false">{{ $t("actions.close") }}</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

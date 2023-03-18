@@ -1,14 +1,12 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
-// Vuetify
-import "vuetify/styles";
-import { createVuetify } from "vuetify";
-const vuetify = createVuetify();
-
+import vuetify from "./plugins/vuetify";
 import router from "./router";
-
 import { createPinia } from "pinia";
 const pinia = createPinia();
 
-createApp(App).use(vuetify).use(router).use(pinia).mount("#app");
+/* Import Vuetify v-row component globally for vuedraggable to be able to use it */
+import { VRow } from "vuetify/components";
+
+createApp(App).component("v-row", VRow).use(vuetify).use(router).use(pinia).mount("#app");

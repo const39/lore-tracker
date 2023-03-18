@@ -1,18 +1,18 @@
 <template>
 	<v-timeline-item
+		icon-color="white"
 		:icon="node.icon"
-		:color="node.color"
-		class="d-flex align-center"
-		:small="node.isHeader"
+		:dot-color="node.color"
+		:size="node.isHeader ? 'small' : undefined"
 		:fill-dot="!node.isHeader"
 	>
-		<div class="text--primary" :class="{ 'font-weight-medium': node.isHeader }">{{ node.text }}</div>
+		<div :class="{ 'font-weight-medium': node.isHeader }">{{ node.text }}</div>
 	</v-timeline-item>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { Event, EventType, CardCategory } from "@/js/types";
+import { computed, PropType } from "vue";
+import { type Event, EventType, CardCategory } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useTheme } from "vuetify";
 
@@ -23,8 +23,11 @@ interface Node {
 	color: string;
 }
 
+// ! Vue throws a type-check warning at runtime because it cannot crawl imported Event type  
+// @see https://vuejs.org/guide/typescript/composition-api.html#syntax-limitations
+type ItemType = Event | string;
 const props = defineProps<{
-	item: Event | string;
+	item: ItemType;
 }>();
 
 const theme = useTheme();
@@ -49,19 +52,19 @@ const node = computed(() => {
 
 		switch (props.item.type) {
 			case EventType.COMBAT:
-				info.color = "deep-orange darken-1";
+				info.color = "deep-orange-darken-1";
 				break;
 			case EventType.ENCOUNTER:
-				info.color = "purple darken-1";
+				info.color = "purple-darken-1";
 				break;
 			case EventType.DISCOVERY:
-				info.color = "green lighten-1";
+				info.color = "green-lighten-1";
 				break;
 			case EventType.TRAVEL:
 				info.color = "indigo";
 				break;
 			default:
-				info.color = "grey darken-2";
+				info.color = "grey-darken-2";
 				break;
 		}
 	}
@@ -71,7 +74,7 @@ const node = computed(() => {
 </script>
 <style>
 /* Set zoom on hover animation on the compiled Vuetify class of the dot */
-.v-timeline-item__dot:hover {
+.v-timeline-divider__dot:hover {
 	animation: zoom-on-hover 0.1s ease-in 1;
 	transform: scale(1.25);
 }

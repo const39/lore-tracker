@@ -30,7 +30,7 @@
 						@click:append="remove(idx)"
 					>
 						<template v-slot:prepend>
-							<v-tooltip bottom>
+							<v-tooltip location="bottom">
 								<template v-slot:activator="{ props }">
 									<v-icon v-bind="props" @click="complete(idx)">
 										{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
@@ -47,7 +47,7 @@
 		</v-card-text>
 		<v-card-actions>
 			<v-spacer></v-spacer>
-			<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
+			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
 			<v-btn
 				color="primary"
 				text
@@ -69,11 +69,9 @@ import ListPanel from "@/components/ListPanel.vue";
 import utilities from "@/js/utilities";
 import { useForm, type FormProps } from "@/mixins/form";
 import { ref } from "vue";
-// HACK: Force TS to ignore typing of VForm because not type declaration can be found
-//@ts-ignore
-import type { VForm } from "vuetify/lib/components";
+import type { VForm } from "vuetify/components";
 
-const form = ref<VForm | null>(null);
+const form = ref<VForm | undefined>(undefined);
 
 function addTask(): void {
 	const task: Task = {

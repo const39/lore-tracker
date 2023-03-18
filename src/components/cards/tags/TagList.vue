@@ -1,19 +1,34 @@
 <template>
 	<div class="pa-3">
 		<v-row v-for="(list, category) in tags" :key="category">
-			<v-icon small>{{ icons[category] }}</v-icon>
-			<!-- Editable version -->
-			<div v-if="editable">
-				<v-chip v-for="tag in list" :key="tag.id" class="ma-1" small outlined close @click:close="remove(tag)">
-					{{ truncate(tag.text, 30) }}
-				</v-chip>
+			<div v-if="list.length" class="d-flex align-center">
+				<v-icon size="small">{{ icons[category] }}</v-icon>
+				<!-- Editable version -->
+				<div v-if="editable">
+					<v-chip
+						v-for="tag in list"
+						:key="tag.id"
+						class="ma-1"
+						size="small"
+						close
+						@click:close="remove(tag)"
+					>
+						{{ truncate(tag.text, 30) }}
+					</v-chip>
+				</div>
+				<!-- Immutable version -->
+				<div v-else>
+					<v-chip
+						v-for="tag in list"
+						:key="tag.id"
+						class="ma-1"
+						size="small"
+						@click.stop="goToCard(tag)"
+					>
+						{{ truncate(tag.text, 30) }}
+					</v-chip>
+				</div>
 			</div>
-			<!-- Immutable version -->
-			<dir v-else>
-				<v-chip v-for="tag in list" :key="tag.id" class="ma-1" small outlined @click.stop="goToCard(tag)">
-					{{ truncate(tag.text, 30) }}
-				</v-chip>
-			</dir>
 		</v-row>
 	</div>
 </template>
@@ -29,9 +44,9 @@ const props = withDefaults(
 	defineProps<{
 		// Override default v-model
 		modelValue: ID[];
-		editable: boolean;
+		editable?: boolean;
 	}>(),
-	{ modelValue: () => [] }
+	{ editable: false }
 );
 
 const store = useStore();

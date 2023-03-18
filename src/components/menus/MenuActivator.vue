@@ -1,10 +1,7 @@
 <template>
-	<v-menu offset-x left open-on-hover>
+	<v-menu location="left" open-on-hover :open-delay="0" :close-delay="0">
 		<template v-slot:activator="{ props }">
-			<v-list-item v-bind="props">
-				<v-list-item-icon>
-					<v-icon>{{ icon }}</v-icon>
-				</v-list-item-icon>
+			<v-list-item v-bind="props" :prepend-icon="icon">
 				<v-list-item-title>{{ title }}</v-list-item-title>
 			</v-list-item>
 		</template>

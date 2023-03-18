@@ -4,13 +4,13 @@
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
-					<v-tooltip top>
+					<v-tooltip location="top">
 						<template v-slot:activator="{ props }">
-							<v-icon large v-bind="props">{{ getIcon(itemData) }}</v-icon>
+							<v-icon size="large" v-bind="props">{{ getIcon(itemData) }}</v-icon>
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
-					<v-chip label x-small outlined>{{ $t("status.day") + itemData.day }}</v-chip>
+					<v-chip label size="x-small" variant="text">{{ $t("status.day") + itemData.day }}</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc" />

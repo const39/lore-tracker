@@ -2,14 +2,15 @@ import { t as $t } from "@/js/translation";
 import { CardCategory, CardTypes, EventType } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useStore } from "@/store";
-import { ref, watch } from "vue";
+import { type Ref, ref, watch } from "vue";
+import type { VForm } from "vuetify/components";
 
 export interface FormProps {
 	category: CardCategory;
 	edit?: number; // [Optional] leave undefined to use the "Add" form instead of "Edit" form
 }
 
-export function useForm<T extends CardTypes>(emptyModelFactory: () => T, formElement: { validate: () => boolean }) {
+export function useForm<T extends CardTypes>(emptyModelFactory: () => T, formElement: Ref<VForm | undefined>) {
 	const props = defineProps<FormProps>();
 	const valid = ref(false);
 	const model = ref<T>(initModel());
@@ -22,8 +23,8 @@ export function useForm<T extends CardTypes>(emptyModelFactory: () => T, formEle
 	const requiredRule = [(v: string) => !!v || $t("fields.requiredField")];
 	const categoryIcon = utilities.getIcon(model.value);
 
-	function submit(): void {
-		formElement?.validate();
+	async function submit() {
+		await formElement.value?.validate();
 
 		if (valid.value) {
 			// HACK: Event-type specific process to ensure day if a Number and not a string

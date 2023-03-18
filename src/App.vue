@@ -1,54 +1,40 @@
 <template>
 	<v-app>
-		<v-app-bar app color="primary" dark>
+		<v-app-bar color="primary">
 			<div class="ma-2">
-				<v-img max-width="48px" max-height="48px" src="./assets/logo.svg"></v-img>
+				<v-img class="header-icon" max-width="48px" max-height="48px" src="logo.svg"></v-img>
 			</div>
 
-			<div class="d-flex align-center">
-				<div class="text-xl-h4 text-center">Lore Tracker</div>
-			</div>
+			<v-app-bar-title class="text-xl-h4">Lore Tracker</v-app-bar-title>
 
 			<v-spacer></v-spacer>
 
-			<router-link :to="{ name: 'LoreBook' }">
-				<v-btn text>
-					<span class="mr-2">{{ $t("pages.loreBook") }}</span>
-				</v-btn>
-			</router-link>
-			<router-link :to="{ name: 'Notepad' }">
-				<v-btn text>
-					<span class="mr-2">{{ $t("pages.notepad") }}</span>
-				</v-btn>
-			</router-link>
-			<router-link :to="{ name: 'Timeline' }">
-				<v-btn text>
-					<span class="mr-2">{{ $t("pages.timeline") }}</span>
-				</v-btn>
-			</router-link>
+			<v-btn variant="text" :to="{ name: 'LoreBook' }">
+				<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+			</v-btn>
+			<v-btn variant="text" :to="{ name: 'Notepad' }">
+				<span class="mr-2">{{ $t("pages.notepad") }}</span>
+			</v-btn>
+			<v-btn variant="text" :to="{ name: 'Timeline' }">
+				<span class="mr-2">{{ $t("pages.timeline") }}</span>
+			</v-btn>
 
 			<!-- Options menu -->
-			<v-menu bottom left offset-y v-model="showMenu">
+			<v-menu location="bottom" start v-model="showMenu">
 				<template v-slot:activator="{ props }">
 					<v-btn icon v-bind="props">
 						<v-icon>mdi-cog</v-icon>
 					</v-btn>
 				</template>
-				<v-list dense>
+				<v-list density="compact">
 					<v-item-group mandatory>
 						<ThemeMenu />
 						<LangMenu />
 						<SaveMenu />
-						<v-list-item link @click="showHotkeysDialog = true">
-							<v-list-item-icon>
-								<v-icon>mdi-help-circle</v-icon>
-							</v-list-item-icon>
+						<v-list-item prepend-icon="mdi-help-circle" link @click="showHotkeysDialog = true">
 							<v-list-item-title>{{ $t("options.hotkeys.optionName") }}</v-list-item-title>
 						</v-list-item>
-						<v-list-item link @click="showAboutDialog = true">
-							<v-list-item-icon>
-								<v-icon>mdi-information-outline</v-icon>
-							</v-list-item-icon>
+						<v-list-item prepend-icon="mdi-information-outline" link @click="showAboutDialog = true">
 							<v-list-item-title>{{ $t("options.about.optionName") }}</v-list-item-title>
 						</v-list-item>
 					</v-item-group>
@@ -75,7 +61,7 @@
 		<v-dialog v-model="showAboutDialog" max-width="450px">
 			<v-card>
 				<v-card-title>{{ $t("options.about.title") }}</v-card-title>
-				<v-card-text class="justify-left text--primary">
+				<v-card-text class="justify-left">
 					<v-container class="py-0">
 						<v-row class="my-1 font-weight-medium">Lore Tracker {{ version }}</v-row>
 						<v-row class="my-1">{{ copyrightText }}</v-row>
@@ -89,35 +75,37 @@
 				</v-card-text>
 				<v-card-actions>
 					<v-spacer></v-spacer>
-					<v-btn text color="primary" @click="showAboutDialog = false">{{ $t("actions.close") }}</v-btn>
+					<v-btn variant="text" color="primary" @click="showAboutDialog = false">{{
+						$t("actions.close")
+					}}</v-btn>
 				</v-card-actions>
 			</v-card>
 		</v-dialog>
 
 		<!-- Domain name change - TEMPORARY -->
-		<v-snackbar v-model="showDomainNameChangeNotif" multi-line top text timeout="-1">
+		<v-snackbar v-model="showDomainNameChangeNotif" multi-line location="top" text timeout="-1">
 			LoreTracker changes location and is now on <a href="https://lore-tracker.app">lore-tracker.app</a>.<br />If
 			you are still on <a href="https://lore-tracker.herokuapp.com">lore-tracker.herokuapp.com</a>, you need to
 			move your data manually before 15 November 2022. See
 			<a href="https://github.com/const39/lore-tracker/releases/tag/v1.2.0" target="_blank">this page</a> to learn
 			how to do it.
-			<template v-slot:action="{ attrs }">
-				<v-btn v-bind="attrs" icon @click="showDomainNameChangeNotif = false">
+			<template v-slot:actions>
+				<v-btn icon @click="showDomainNameChangeNotif = false">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</template>
 		</v-snackbar>
 
 		<!-- Update release notification -->
-		<v-snackbar v-model="showUpdateNotif" multi-line outlined text timeout="-1">
+		<v-snackbar v-model="showUpdateNotif" multi-line variant="outlined" text timeout="-1">
 			<div class="text-subtitle-1">{{ $t("messages.info.updateNotifTitle") }}</div>
 			<div class="text-body-2">
 				<a href="https://github.com/const39/lore-tracker/releases/latest" target="_blank">
 					{{ $t("messages.info.updateNotifMessage") }}
 				</a>
 			</div>
-			<template v-slot:action="{ attrs }">
-				<v-btn v-bind="attrs" icon @click="closeUpdateNotif">
+			<template v-slot:actions>
+				<v-btn icon @click="closeUpdateNotif">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</template>
@@ -197,7 +185,11 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped>
+<style>
+.header-icon > img {
+	position: initial;
+}
+
 .quick-note-wrapper {
 	position: fixed;
 	bottom: 0;

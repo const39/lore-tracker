@@ -1,14 +1,14 @@
 <template>
-	<v-tooltip bottom>
+	<v-tooltip location="bottom">
 		<template v-slot:activator="{ props }">
 			<div class="d-inline text-body-2" v-bind="props">
 				<span class="clickable" @click.left="daysCounter++" @click.right="daysCounter--">
-					<v-icon small>mdi-white-balance-sunny</v-icon>
+					<v-icon size="small">mdi-white-balance-sunny</v-icon>
 					{{ $t("status.day") + daysCounter }}
 				</span>
 				|
 				<span class="clickable" @click.left="nextSeason" @click.right="previousSeason">
-					<v-icon small>mdi-flower</v-icon>
+					<v-icon size="small">mdi-flower</v-icon>
 					{{ currentSeason }}
 				</span>
 			</div>

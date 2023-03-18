@@ -1,13 +1,22 @@
 <template>
-	<VueMarkdown class="text--primary" :html="false" :source="text" v-bind="$attrs"></VueMarkdown>
+	<VueMarkdown class="markdown" :source="text"></VueMarkdown>
 </template>
 
 <script lang="ts" setup>
-// HACK: Force TS to ignore untyped library because all .d.ts declaration attempts did not work
-//@ts-ignore
-import VueMarkdown from "@adapttive/vue-markdown";
+import VueMarkdown from "vue-markdown-render";
 
 defineProps<{
 	text: string;
 }>();
 </script>
+
+<style>
+.markdown * {
+	margin-top: 8px;
+	margin-bottom: 12px;
+}
+
+.markdown li {
+	margin: 0 0 0 16px;
+}
+</style>

@@ -2,7 +2,7 @@
 	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
 	<div>
 		<v-card-text class="pa-3">
-			<p class="text-h6 text--primary">{{ itemData.name }}</p>
+			<p class="text-h6">{{ itemData.name }}</p>
 			<MarkdownView :text="itemData.desc" />
 			<TagList v-model="itemData.tags" />
 		</v-card-text>

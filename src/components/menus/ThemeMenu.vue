@@ -6,13 +6,13 @@
 					<v-container>
 						<v-row class="d-flex justify-space-between">
 							<v-item
-								class="ma-1 text-center text--primary"
+								
 								v-for="item in themeList"
 								:key="item.key"
 								:value="item.key"
 								v-slot="{ toggle }"
 							>
-								<div @click="toggle">
+								<div class="ma-1 text-center" @click="toggle">
 									<v-sheet
 										height="72"
 										width="72"
@@ -71,8 +71,8 @@ watch(selectedTheme, (themeKey: string) => {
 </script>
 <style scoped>
 .active {
-	background-color: var(--v-accent-base);
-	border: 3px solid var(--v-accent-base);
+	background-color: rgb(var(--v-theme-accent));
+	border: 3px solid rgb(var(--v-theme-accent));
 }
 .clickable:hover {
 	cursor: pointer;

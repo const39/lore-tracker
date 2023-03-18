@@ -3,22 +3,29 @@
 		<!-- Card ordering selector -->
 		<v-item-group class="d-block" mandatory v-model="selectedOrder">
 			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip top>
+				<v-tooltip location="top">
 					<template v-slot:activator="{ props }">
-						<v-btn icon v-bind="props" :color="isSelected ? 'primary' : ''" @click="toggle">
-							<v-icon v-if="isSelected">mdi-sort-clock-descending</v-icon>
-							<v-icon v-else>mdi-sort-clock-descending-outline</v-icon>
-						</v-btn>
+						<v-btn
+							v-bind="props"
+							variant="text"
+							:icon="'mdi-sort-clock-descending' + (isSelected ? '' : '-outline')"
+							:color="isSelected ? 'primary' : ''"
+							@click="toggle"
+						></v-btn>
 					</template>
 					{{ $t("status.selectors.customOrder") }}
 				</v-tooltip>
 			</v-item>
 			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip top>
+				<v-tooltip location="top">
 					<template v-slot:activator="{ props }">
-						<v-btn icon v-bind="props" :color="isSelected ? 'primary' : ''" @click="toggle">
-							<v-icon>mdi-sort-alphabetical-variant</v-icon>
-						</v-btn>
+						<v-btn
+							v-bind="props"
+							variant="text"
+							icon="mdi-sort-alphabetical-variant"
+							:color="isSelected ? 'primary' : ''"
+							@click="toggle"
+						></v-btn>
 					</template>
 					{{ $t("status.selectors.alphanumericOrder") }}
 				</v-tooltip>
@@ -27,21 +34,29 @@
 		<!-- Layout selector -->
 		<v-item-group class="d-block" mandatory v-model="selectedLayout">
 			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip bottom>
+				<v-tooltip location="bottom">
 					<template v-slot:activator="{ props }">
-						<v-btn icon v-bind="props" :color="isSelected ? 'accent' : ''" @click="toggle">
-							<v-icon>mdi-tab</v-icon>
-						</v-btn>
+						<v-btn
+							v-bind="props"
+							variant="text"
+							icon="mdi-tab"
+							:color="isSelected ? 'accent' : ''"
+							@click="toggle"
+						></v-btn>
 					</template>
 					{{ $t("status.selectors.tabLayout") }}
 				</v-tooltip>
 			</v-item>
 			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip bottom>
+				<v-tooltip location="bottom">
 					<template v-slot:activator="{ props }">
-						<v-btn icon v-bind="props" :color="isSelected ? 'accent' : ''" @click="toggle">
-							<v-icon>mdi-view-column-outline</v-icon>
-						</v-btn>
+						<v-btn
+							v-bind="props"
+							variant="text"
+							icon="mdi-view-column-outline"
+							:color="isSelected ? 'accent' : ''"
+							@click="toggle"
+						></v-btn>
 					</template>
 					{{ $t("status.selectors.columnLayout") }}
 				</v-tooltip>

@@ -4,32 +4,38 @@
 			<v-icon>mdi-magnify</v-icon>
 			{{ $t("search.search") }}
 		</v-btn>
-		<v-navigation-drawer v-if="open" app right width="320" class="pa-2">
+		<v-navigation-drawer v-if="open" location="right" width="320" class="pa-2">
 			<v-row class="d-flex mx-2 my-5">
-				<span class="text-h5 text--primary">{{ $t("search.search") }}</span>
+				<span class="text-h5">{{ $t("search.search") }}</span>
 				<v-spacer></v-spacer>
 				<v-btn icon @click="open = false">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 			</v-row>
-			<v-subheader>{{ $t("fields.category") }}</v-subheader>
-			<v-select outlined dense class="mx-2" v-model="selectedCategory" :items="categories">
-				<template v-slot:selection="{ item }">
-					<v-icon left small> {{ icons[item] }} </v-icon>
-					{{ $t(`categories.${item}`) }}
+			<v-list-subheader>{{ $t("fields.category") }}</v-list-subheader>
+			<v-select variant="outlined" density="compact" class="mx-2" v-model="selectedCategory" :items="categories">
+				<template v-slot:selection="{ props, item }">
+					<v-list-item
+						v-bind="props"
+						:prepend-icon="icons[item.raw]"
+						:title="$t(`categories.${item.raw}`)"
+					></v-list-item>
 				</template>
-				<template v-slot:item="{ item }">
-					<v-icon left small> {{ icons[item] }} </v-icon>
-					{{ $t(`categories.${item}`) }}
+				<template v-slot:item="{ props, item }">
+					<v-list-item
+						v-bind="props"
+						:prepend-icon="icons[item.raw]"
+						:title="$t(`categories.${item.raw}`)"
+					></v-list-item>
 				</template>
 			</v-select>
-			<v-subheader>{{ $t("search.containing") }}</v-subheader>
-			<v-textarea outlined dense class="mx-2" v-model="textToContain"></v-textarea>
-			<v-subheader>{{ $t("search.taggedWith") }}</v-subheader>
+			<v-list-subheader>{{ $t("search.containing") }}</v-list-subheader>
+			<v-textarea variant="outlined" density="compact" class="mx-2" v-model="textToContain"></v-textarea>
+			<v-list-subheader>{{ $t("search.taggedWith") }}</v-list-subheader>
 			<TagListPanel class="mx-2" v-model="selectedTags" />
-			<span class="mx-2 grey--text text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
+			<span class="mx-2 text-grey text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
 			<br />
-			<span class="mx-2 grey--text text-caption">{{ $t("search.sortDisabled") }}</span>
+			<span class="mx-2 text-grey text-caption">{{ $t("search.sortDisabled") }}</span>
 		</v-navigation-drawer>
 	</div>
 </template>

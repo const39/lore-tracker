@@ -22,25 +22,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import { CardTypes } from "@/js/types";
 import { useEventHub, CardEvent } from "@/js/eventHub";
 
 import BaseCard from "./BaseCard.vue";
 
-import ContentQuest from "./content/ContentQuest.vue";
-import ContentEvent from "./content/ContentEvent.vue";
-import ContentLocation from "./content/ContentLocation.vue";
-import ContentCharacter from "./content/ContentCharacter.vue";
-import ContentFaction from "./content/ContentFaction.vue";
-import ContentNote from "./content/ContentNote.vue";
-
-import FormQuest from "./forms/FormQuest.vue";
-import FormEvent from "./forms/FormEvent.vue";
-import FormLocation from "./forms/FormLocation.vue";
-import FormCharacter from "./forms/FormCharacter.vue";
-import FormFaction from "./forms/FormFaction.vue";
-import FormNote from "./forms/FormNote.vue";
 import utilities from "@/js/utilities";
 import { useStore } from "@/store";
 
@@ -57,10 +44,16 @@ function onDelete() {
 }
 
 const contentComponent = computed(() => {
-	return `Content${utilities.capitalize(props.itemData._category)}`;
+	const componentName = `Content${utilities.capitalize(props.itemData._category)}.vue`;
+	return defineAsyncComponent({
+		loader: () => import("./content/" + componentName),
+	});
 });
 const formComponent = computed(() => {
-	return `Form${utilities.capitalize(props.itemData._category)}`;
+	const componentName = `Form${utilities.capitalize(props.itemData._category)}.vue`;
+	return defineAsyncComponent({
+		loader: () => import("./forms/" + componentName),
+	});
 });
 const isSortDisabled = computed(() => {
 	return store.isFilterActive || !store.isDefaultOrder;

@@ -121,9 +121,29 @@ export interface FileTreeNode {
 	files: FileTypes[];
 }
 
-export class FileTree extends Map<string, FileTreeNode> {}	// ! TMP
+export class FileTree extends Map<string, FileTreeNode> {
+	constructor(data?: NotepadSave) {
+		const entries = data ? Object.keys(data).map<[string, FileTreeNode]>((key) => [key, data[key]]) : [];
+		super(entries);
+
+		// Set root node if none exists
+		if (!this.has("/")) {
+			const emptyFileTreeNode: FileTreeNode = {
+				folders: [],
+				files: [],
+			};
+			this.set("/", emptyFileTreeNode);
+		}
+	}
+
+	serialize(): NotepadSave {
+		const result = Object.create(null);
+		for (const [key, value] of this.entries()) result[key] = value;
+		return result;
+	}
+} // ! TMP
 // export class FileTree {
-	
+
 // 	entries!: Array<[key: string, value: FileTreeNode]>;
 
 // 	constructor(data?: NotepadSave) {
@@ -179,8 +199,8 @@ export class FileTree extends Map<string, FileTreeNode> {}	// ! TMP
 // 	}
 // }
 
-type NotepadState = FileTree;	// Runtime type
-type NotepadSave = Record<string, FileTreeNode>	// Serialized type (because native Map class cannot be serialized as is)
+type NotepadState = FileTree; // Runtime type
+type NotepadSave = Record<string, FileTreeNode>; // Serialized type (because native Map class cannot be serialized as is)
 
 interface SerializableState {
 	_meta: MetaData;
@@ -188,7 +208,7 @@ interface SerializableState {
 	days: number;
 	season: Season;
 	cards: CardsStore;
-	notepad: NotepadSave | NotepadState;		// ! Explicitly set to a common super-type (MUST BE narrowed in sub-interfaces !)
+	notepad: NotepadSave | NotepadState; // ! Explicitly set to a common super-type (MUST BE narrowed in sub-interfaces !)
 	quickNote: string;
 }
 
@@ -197,7 +217,7 @@ interface SerializableState {
 // *** Regenerate JSON Schema on each update :
 // * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
 export interface SaveFormat extends SerializableState {
-	notepad: NotepadSave;	// Narrowed type, used for JSON serialization
+	notepad: NotepadSave; // Narrowed type, used for JSON serialization
 }
 
 // ***************************
@@ -215,7 +235,7 @@ export const CategoryFilter = {
 
 export enum Order {
 	DEFAULT = "default",
-	ALPHANUMERIC = "alphanumeric"
+	ALPHANUMERIC = "alphanumeric",
 }
 
 export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];

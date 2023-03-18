@@ -1,9 +1,7 @@
 <template>
-	<v-container>
-		<v-row>
-			<LayoutColumnContent v-for="cat in categories" :key="cat" :category="cat" />
-		</v-row>
-	</v-container>
+	<v-row>
+		<LayoutColumnContent v-for="cat in categories" :key="cat" :category="cat" />
+	</v-row>
 </template>
 
 <script lang="ts" setup>

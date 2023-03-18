@@ -2,16 +2,16 @@
 	<v-form ref="form">
 		<v-card>
 			<v-card-title class="text-h5"> Ajouter un dossier </v-card-title>
-			<v-card-text class="d-flex align-center text-body-2 text--primary">
-				<v-menu offset-x>
-					<template v-slot:activator="{ on, attrs }">
+			<v-card-text class="d-flex align-center text-body-2">
+				<v-menu>
+					<template v-slot:activator="{ props }">
 						<v-hover>
-							<template #default="{hover}">
-								<v-btn v-bind="attrs" v-on="on" class="mr-1" icon x-large>
-									<v-icon x-large :color="model.color"> {{ folderIcon }} </v-icon>
+							<template #default="{ isHovering }">
+								<v-btn v-bind="props" class="mr-1" icon size="x-large">
+									<v-icon size="x-large" :color="model.color"> {{ folderIcon }} </v-icon>
 									<v-fade-transition>
-										<v-overlay v-if="hover" absolute opacity="0.2">
-											<v-icon small>mdi-eyedropper-variant</v-icon>
+										<v-overlay v-if="isHovering" absolute opacity="0.2">
+											<v-icon size="small">mdi-eyedropper-variant</v-icon>
 										</v-overlay>
 									</v-fade-transition>
 								</v-btn>
@@ -24,93 +24,87 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn text color="primary" @click="close"> {{ $t("actions.close") }} </v-btn>
-				<v-btn text class="text--primary" @click="submit"> {{ $t("actions.save") }} </v-btn>
+				<v-btn variant="text" @click="close"> {{ $t("actions.close") }} </v-btn>
+				<v-btn variant="text" color="primary" @click="submit"> {{ $t("actions.save") }} </v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-form>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
 import { Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
 import validationRules from "@/js/validationRules";
 
-import vuetifyColors from "vuetify/lib/util/colors";
+import colors from "@/js/colors";
+import { type VForm } from "vuetify/components";
 
-import Vue, { PropType } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "@/store";
 
-// Provide form $ref type to TypeScript
-type VForm = Vue & { validate: () => boolean };
+const props = defineProps<{ parentPath: string; edit?: Folder }>();
+const emit = defineEmits<{
+	(e: "close"): void;
+	(e: "submit"): void;
+}>();
 
-export default Vue.extend({
-	props: {
-		parentPath: {
-			type: String,
-			required: true,
-		},
-		edit: {
-			type: Object as PropType<Folder>,
-			required: false,
-		},
-	},
-	data() {
-		return {
-			rules: {
-				color: [validationRules.required(this.$t("fields.requiredField")), validationRules.hex("")],
-				name: [
-					validationRules.required(this.$t("fields.requiredField")),
-					validationRules.counter("", 25),
-					(this as any).checkNameDoesNotExist,
-				],
-			},
-			model: (this as any).initModel(), // HACK: Type 'this' as any to avoid TS not finding initModel in the current this value
-		};
-	},
-	methods: {
-		getRandomColor(): string {
-			// ! baseColors cannot be cached as a computed property because initModel() is called at component init
-			const baseColors = Object.values(vuetifyColors).map((color) => color.base ?? "#ffffff");
-			const idx = Math.floor(Math.random() * baseColors.length);
-			return baseColors[idx];
-		},
-		checkNameDoesNotExist(name: string): boolean | string {
-			return !this.$store.getters.doesFolderExist(name) || this.$t("fields.nameAlreadyUsed");
-		},
-		initModel(): Folder {
-			// We return a clone of the object to avoid modifying directly the store
-			// Helpful when the user cancels their changes because we don't have to rollback
-			if (typeof this.edit !== "undefined") return utilities.deepCopy(this.edit) as Folder;
-			return {
-				id: utilities.uid(),
-				name: "",
-				color: this.getRandomColor(),
-			};
-		},
-		close(): void {
-			this.model = this.initModel();
-			this.$emit("close");
-		},
-		submit(): void {
-			if ((this.$refs.form as VForm).validate()) {
-				if (this.edit) {
-					// TODO
-					console.warn("updateFolder() not implemented yet");
-				} else
-					this.$store.dispatch("commitAndSave", {
-						commit: "addFolder",
-						payload: { pathToParent: this.parentPath, folder: this.model },
-					});
-				this.$emit("submit");
-			}
-		},
-	},
-	computed: {
-		folderIcon() {
-			return Icon.folder;
-		},
-	},
-});
+const rules = {
+	color: [validationRules.required($t("fields.requiredField")), validationRules.hex("")],
+	name: [
+		validationRules.required($t("fields.requiredField")),
+		validationRules.counter("", 25),
+		(this as any).checkNameDoesNotExist,
+	],
+};
+
+const model = ref(initModel());
+const form = ref<VForm | undefined>(undefined);
+
+const store = useStore();
+
+const folderIcon = computed(() => Icon.folder);
+
+function getRandomColor(): string {
+	// ! baseColors cannot be cached as a computed property because initModel() is called at component init
+	const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
+	const idx = Math.floor(Math.random() * baseColors.length);
+	return baseColors[idx];
+}
+
+function checkNameDoesNotExist(name: string): boolean | string {
+	return !store.doesFolderExist(name) || $t("fields.nameAlreadyUsed");
+}
+
+function initModel(): Folder {
+	// We return a clone of the object to avoid modifying directly the store
+	// Helpful when the user cancels their changes because we don't have to rollback
+	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit) as Folder;
+	return {
+		id: utilities.uid(),
+		name: "",
+		color: getRandomColor(),
+	};
+}
+
+function close(): void {
+	model.value = initModel();
+	emit("close");
+}
+
+async function submit() {
+	if (await form.value?.validate()) {
+		if (props.edit) {
+			// TODO
+			console.warn("updateFolder() not implemented yet");
+		} else
+			store.commitAndSave({
+				commit: "addFolder",
+				payload: { pathToParent: props.parentPath, folder: model },
+			});
+		emit("submit");
+	}
+}
 </script>
 
 <style></style>

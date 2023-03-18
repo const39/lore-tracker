@@ -3,24 +3,22 @@
 		<v-fab-transition origin="bottom right">
 			<v-card v-if="open">
 				<v-card-text>
-					<div class="d-flex justify-space-between">
+					<div class="d-flex justify-space-between align-center mb-2">
 						<v-btn
 							class="resizing-handle"
-							icon
+							variant="plain"
+							icon="mdi-cursor-move"
 							@mousedown="onHold"
 							@mousemove="resize"
 							@mouseup="resizing = false"
 						>
-							<v-icon>mdi-cursor-move</v-icon>
 						</v-btn>
-						<p class="text-h6 text--primary">{{ $t("actions.quickNote") }}</p>
-						<v-btn icon @click="open = false">
-							<v-icon>mdi-chevron-down</v-icon>
-						</v-btn>
+						<p class="text-h6">{{ $t("actions.quickNote") }}</p>
+						<v-btn variant="plain" icon="mdi-chevron-down" @click="open = false"> </v-btn>
 					</div>
 					<v-textarea
 						id="resizable"
-						outlined
+						variant="outlined"
 						auto-grow
 						autofocus
 						:hint="$t('fields.mdSupport')"
@@ -28,9 +26,7 @@
 					></v-textarea>
 				</v-card-text>
 			</v-card>
-			<v-btn v-else fab color="primary" @click="open = true">
-				<v-icon>mdi-text-box-edit</v-icon>
-			</v-btn>
+			<v-btn v-else size="large" icon="mdi-text-box-edit" color="primary" @click="open = true"> </v-btn>
 		</v-fab-transition>
 	</div>
 </template>

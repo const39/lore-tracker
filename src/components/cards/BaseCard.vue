@@ -1,7 +1,7 @@
 <template>
 	<v-card
 		height="100%"
-		:outlined="outlined"
+		:variant="outlined ? 'outlined' : 'elevated'"
 		:elevation="elevation"
 		fill-height
 		class="mb-4"
@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import CardOptions from "./CardOptions.vue";
 
 const props = defineProps<{
@@ -28,11 +28,11 @@ const props = defineProps<{
 }>();
 
 const hover = ref(false);
-const elevation = () => {
+const elevation = computed(() => {
 	let elevation = props.outlined ? 0 : 1;
 	if (hover.value) elevation++;
 	return elevation;
-};
+})
 </script>
 
 <style></style>

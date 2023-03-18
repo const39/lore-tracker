@@ -2,32 +2,33 @@
 	<v-col cols="12" md="4" sm="12">
 		<v-expansion-panels v-model="isCollapsed">
 			<v-expansion-panel>
-				<v-expansion-panel-header>
-					<div class="text-h5 text--primary">
-						<v-icon left>{{ icons[category] }}</v-icon>
+				<v-expansion-panel-title>
+					<div class="text-h5">
+						<v-icon start>{{ icons[category] }}</v-icon>
 						{{ $t(`categories.${category}`) }}
 					</div>
-				</v-expansion-panel-header>
-				<v-expansion-panel-content>
+				</v-expansion-panel-title>
+				<v-expansion-panel-text>
 					<CardAdd :category="category" :fill-height="false" />
 					<draggable
-						:disabled="isSortDisabled"
 						v-model="items"
-						v-bind="{ animation: 200 }"
 						group="items"
+						item-key="id"
+						:animation="200"
+						:disabled="isSortDisabled"
+						:move="onMove"
 						@start="drag = true"
 						@end="drag = false"
-						:move="onMove"
 					>
-						<CardContainer
-							v-for="item in items"
-							:key="item.id"
-							outlined
-							:class="{ draggable: !isSortDisabled }"
-							:item-data="item"
-						></CardContainer>
+						<template #item="{ element }">
+							<CardContainer
+								outlined
+								:class="{ draggable: !isSortDisabled }"
+								:item-data="element"
+							></CardContainer>
+						</template>
 					</draggable>
-				</v-expansion-panel-content>
+				</v-expansion-panel-text>
 			</v-expansion-panel>
 		</v-expansion-panels>
 	</v-col>
@@ -45,6 +46,7 @@ import { useStore } from "@/store";
 
 const props = defineProps<{ category: CardCategory }>();
 
+const drag = ref(false);
 const isCollapsed = ref(0);
 
 const store = useStore();

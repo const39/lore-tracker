@@ -20,7 +20,7 @@ const routes = [
 		props: (route: any) => ({ routeName: "Notepad", folderPath: route.params.folderPath || "/" }),
 	},
 	{
-		path: "/(.*)*",
+		path: "/:dummyParam(.*)*",
 		name: "NotFound",
 		component: () => import("../views/NotFound.vue"),
 	},

@@ -1,23 +1,21 @@
 <template>
-	<v-container>
-		<Banner>
-			<template v-slot:actions>
-				<LorebookActions @layout="selectLayout" @order="selectOrder"></LorebookActions>
-			</template>
-		</Banner>
+	<Banner>
+		<template v-slot:actions>
+			<LorebookActions @layout="selectLayout" @order="selectOrder"></LorebookActions>
+		</template>
+	</Banner>
 
-		<!-- Alternative layouts -->
-		<LayoutTabs v-if="selectedLayout === 0" />
-		<LayoutColumns v-else-if="selectedLayout === 1" />
+	<!-- Alternative layouts -->
+	<LayoutTabs v-if="selectedLayout === 0" />
+	<LayoutColumns v-else-if="selectedLayout === 1" />
 
-		<!-- Global delete form for all panels -->
-		<ConfirmDialog
-			v-model="confirmDialog.show"
-			:title="confirmDialog.title"
-			:message="confirmDialog.message"
-			:acceptAction="confirmDialog.acceptAction"
-		/>
-	</v-container>
+	<!-- Global delete form for all panels -->
+	<ConfirmDialog
+		v-model="confirmDialog.show"
+		:title="confirmDialog.title"
+		:message="confirmDialog.message"
+		:acceptAction="confirmDialog.acceptAction"
+	/>
 </template>
 
 <script lang="ts" setup>

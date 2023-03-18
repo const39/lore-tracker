@@ -1,24 +1,30 @@
-import Vue from "vue";
-import Vuetify from "vuetify/lib";
-import colors from "vuetify/lib/util/colors";
+import "vuetify/styles";
+import { createVuetify, type ThemeDefinition } from "vuetify";
 
-Vue.use(Vuetify);
+import colors from "@/js/colors";
 
-export default new Vuetify({
+const light: ThemeDefinition = {
+	dark: false,
+	colors: {
+		primary: colors.blue.darken2,
+		accent: colors.green.base,
+	},
+};
+
+const dark: ThemeDefinition = {
+	dark: true,
+	colors: {
+		primary: colors.pink.darken3,
+		accent: colors.cyan.accent3,
+	},
+};
+
+export default createVuetify({
 	theme: {
+		defaultTheme: "light",
 		themes: {
-			light: {
-				accent: colors.green,
-				background: colors.shades.white
-			},
-			dark: {
-				primary: colors.pink.darken3,
-				accent: colors.cyan.accent3,
-				background: colors.grey.darken4
-			}
-		},
-		options: {
-			customProperties: true,
+			light,
+			dark,
 		},
 	},
 });

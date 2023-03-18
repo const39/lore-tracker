@@ -1,23 +1,26 @@
 <template>
 	<v-container>
 		<draggable
+			v-model="items"
 			tag="v-row"
 			draggable=".item"
-			:disabled="isSortDisabled"
-			v-model="items"
-			v-bind="{ animation: 200 }"
 			group="items"
+			item-key="id"
+			:animation="200"
+			:disabled="isSortDisabled"
 			@start="drag = true"
 			@end="drag = false"
 		>
-			<template v-slot:header>
+			<template #header>
 				<v-col cols="12" md="4">
 					<CardAdd :category="category" fill-height />
 				</v-col>
 			</template>
-			<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
-				<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="item"></CardContainer>
-			</v-col>
+			<template #item="{ element }">
+				<v-col cols="12" md="4" class="item">
+					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element"></CardContainer>
+				</v-col>
+			</template>
 		</draggable>
 	</v-container>
 </template>

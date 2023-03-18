@@ -13,7 +13,7 @@
 					v-model="model.name"
 				></v-text-field>
 				<v-textarea
-					outlined
+					variant="outlined"
 					auto-grow
 					:label="$t('fields.desc')"
 					:hint="$t('fields.mdSupport')"
@@ -25,8 +25,8 @@
 		</v-card-text>
 		<v-card-actions>
 			<v-spacer></v-spacer>
-			<v-btn text @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn color="primary" text :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
+			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
+			<v-btn color="primary" variant="text" :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
 		</v-card-actions>
 	</v-form>
 </template>
@@ -37,11 +37,9 @@ import { CardCategory, Location } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useForm, type FormProps } from "@/mixins/form";
 import { ref } from "vue";
-// HACK: Force TS to ignore typing of VForm because not type declaration can be found
-//@ts-ignore
-import type { VForm } from "vuetify/lib/components";
+import type { VForm } from "vuetify/components";
 
-const form = ref<VForm | null>(null);
+const form = ref<VForm | undefined>(undefined);
 
 function factory(): Location {
 	return {

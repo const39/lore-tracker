@@ -2,35 +2,33 @@
 	<v-autocomplete
 		v-model="selectedTag"
 		:items="availableTags"
-		item-text="text"
+		item-title="text"
 		item-value="id"
-		dense
+		density="compact"
 		autofocus
 		max-width="30%"
-		append-outer-icon="mdi-chevron-right"
+		append-icon="mdi-chevron-right"
 		@change="onChange"
-		@click:append-outer="open = false"
+		@click:append="open = false"
 		@keydown="categoryChangeHotkey"
 	>
 		<template v-slot:prepend>
-			<v-menu bottom left>
+			<v-menu location="bottom left">
 				<template v-slot:activator="{ props: menuProps }">
-					<v-tooltip bottom>
+					<v-tooltip location="bottom">
 						<template v-slot:activator="{ props: tooltipProps }">
 							<v-icon v-bind="mergeProps(menuProps, tooltipProps)">{{ icons[category] }}</v-icon>
 						</template>
 						<span>{{ $t("actions.changeCategory") }}</span>
 					</v-tooltip>
 				</template>
-				<v-list dense>
-					<v-list-item-group>
-						<v-list-item v-for="cat in categories" :key="cat" link @click="category = cat">
-							<v-list-item-title>
-								<v-icon small class="mx-1">{{ icons[cat] }}</v-icon>
-								{{ $t(`categories.${cat}`) }}
-							</v-list-item-title>
-						</v-list-item>
-					</v-list-item-group>
+				<v-list density="compact">
+					<v-list-item v-for="cat in categories" :key="cat" link @click="category = cat">
+						<v-list-item-title>
+							<v-icon size="small" class="mx-1">{{ icons[cat] }}</v-icon>
+							{{ $t(`categories.${cat}`) }}
+						</v-list-item-title>
+					</v-list-item>
 				</v-list>
 			</v-menu>
 		</template>
