@@ -6,9 +6,9 @@
 		item-value="id"
 		density="compact"
 		autofocus
+		return-object
 		max-width="30%"
 		append-icon="mdi-chevron-right"
-		@change="onChange"
 		@click:append="open = false"
 		@keydown="categoryChangeHotkey"
 	>
@@ -37,7 +37,7 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { ref, computed, nextTick, mergeProps } from "vue";
+import { ref, watch, computed, nextTick, mergeProps } from "vue";
 import { CardCategory, CardTypes, Icon as icons, ID, Tag } from "@/js/types";
 import { useStore } from "@/store";
 
@@ -57,13 +57,15 @@ const store = useStore();
 const category = ref(CardCategory.Quest);
 const selectedTag = ref<Tag | undefined>(undefined);
 
-function onChange(value: ID) {
+watch(selectedTag, (value) => {
 	if (value) {
-		emit("select", value);
-		// HACK: Reset selection when removing the last selected tag
+		emit("select", value.id);
+		// HACK: Remove focus on v-autocomplete to allow it to render again and reset selection to clear input field
+		(document.activeElement as HTMLElement)?.blur();
 		nextTick(() => (selectedTag.value = undefined));
 	}
-}
+});
+
 /**
  * Change the current category with Ctrl+Left/RightArrow
  */

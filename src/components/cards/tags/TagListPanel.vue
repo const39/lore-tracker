@@ -2,9 +2,7 @@
 	<ListPanel :title="$t('fields.tags')" :empty-content-text="$t('fields.noTag')" :is-filled="model.length !== 0">
 		<template v-slot:action>
 			<v-slide-x-reverse-transition>
-				<v-btn v-if="!showAutocomplete" icon @click="showAutocomplete = true">
-					<v-icon>mdi-plus</v-icon>
-				</v-btn>
+				<v-btn v-if="!showAutocomplete" variant="text" density="compact" icon="mdi-plus" @click="showAutocomplete = true"> </v-btn>
 				<TagAutocomplete v-else v-model="showAutocomplete" :excludeIds="excludeIds" @select="onSelection" />
 			</v-slide-x-reverse-transition>
 		</template>

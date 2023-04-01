@@ -11,7 +11,7 @@
 			<slot></slot>
 		</v-card-text>
 		<v-card-text v-else>
-			<p class="mb-0 text-secondary text-left">{{ emptyContentText }}</p>
+			<p class="mb-0 text-grey text-left">{{ emptyContentText }}</p>
 		</v-card-text>
 	</v-card>
 </template>

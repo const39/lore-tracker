@@ -10,7 +10,7 @@
 						:key="tag.id"
 						class="ma-1"
 						size="small"
-						close
+						closable
 						@click:close="remove(tag)"
 					>
 						{{ truncate(tag.text, 30) }}
