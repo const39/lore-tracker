@@ -1,5 +1,5 @@
 <template>
-	<v-form v-model="valid" ref="form">
+	<v-form v-model="isValid" ref="form">
 		<!-- Show title if "Add" form version -->
 		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
@@ -8,42 +8,45 @@
 		<v-card-text>
 			<v-container>
 				<v-textarea
-					variant="outlined"
-					auto-grow
+					v-model="model.desc"
 					:label="$t('fields.desc') + '*'"
 					:hint="$t('fields.mdSupport')"
-					:rules="requiredRule"
-					v-model="model.desc"
+					:rules="[rules.required]"
+					variant="outlined"
+					auto-grow
 				></v-textarea>
 				<v-row>
 					<v-col cols="12" sm="12" md="6">
-						<v-autocomplete
-							chips
-							:label="$t('fields.eventType') + '*'"
+						<v-select
 							v-model="model.type"
-							:rules="requiredRule"
+							:label="$t('fields.eventType') + '*'"
+							:rules="[rules.required]"
 							:items="eventTypes"
+							chips
 						>
-							<template v-slot:selection="{item}">
-								<v-chip>
-									<v-icon start>{{ icons[item] }}</v-icon>
-									{{ $t(`eventTypes.${item}`) }}
+							<template v-slot:chip="{ props, item }">
+								<v-chip v-bind="props">
+									<v-icon :icon="icons[item.raw]" start></v-icon>
+									{{ $t(`eventTypes.${item.raw}`) }}
 								</v-chip>
 							</template>
-							<template v-slot:item="{item}">
-								<v-icon start>{{ icons[item] }}</v-icon>
-								{{ $t(`eventTypes.${item}`) }}
+							<template v-slot:item="{ props, item }">
+								<v-list-item
+									v-bind="props"
+									:prepend-icon="icons[item.raw]"
+									:title="$t(`eventTypes.${item.raw}`)"
+								></v-list-item>
 							</template>
-						</v-autocomplete>
+						</v-select>
 					</v-col>
 					<v-col cols="12" sm="12" md="6">
 						<v-text-field
+							v-model.number="model.day"
 							:prefix="$t('status.day')"
 							:label="$t('fields.eventDay') + '*'"
+							:rules="[rules.dayRange]"
 							type="number"
 							min="0"
-							v-model="model.day"
-							:rules="dayRange"
 						></v-text-field>
 					</v-col>
 				</v-row>
@@ -54,30 +57,42 @@
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn color="primary" variant="text" :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
+			<v-btn color="primary" variant="text" :disabled="!isValid" @click="onSubmit">
+				{{ $t("actions.save") }}
+			</v-btn>
 		</v-card-actions>
 	</v-form>
 </template>
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { CardCategory, Event, EventType, Icon as icons } from "@/js/types";
+import { CardCategory, Event, EventType, ID, Icon as icons } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useForm, type FormProps } from "@/mixins/form";
+import { number, numberInRange, required } from "@/js/validationRules";
+import { useForm } from "@/composables/form";
 import { useStore } from "@/store";
 import { ref } from "vue";
 import type { VForm } from "vuetify/components";
+import TagListPanel from "../tags/TagListPanel.vue";
+
+const props = defineProps<{
+	edit?: ID; // [Optional] leave undefined to use the "Add" form instead of "Edit" form
+}>();
+
+const emit = defineEmits<{
+	(e: "close"): void;
+}>();
 
 const form = ref<VForm | undefined>(undefined);
 
 const store = useStore();
 
-const dayRange = [
-	(v: string) => {
-		const val = Number(v);
-		return (Number.isSafeInteger(val) && val >= 0) || $t("fields.dayNotValid");
-	},
-];
+const rules = {
+	required: required($t("fields.requiredField")),
+	isNumber: number($t("fields.dayNotValid")),
+	dayRange: numberInRange($t("fields.dayNotValid"), 0),
+};
+
 const eventTypes = Object.values(EventType);
 
 function factory(): Event {
@@ -91,5 +106,20 @@ function factory(): Event {
 	};
 }
 
-const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Event>(factory, form);
+const { model, isValid, submit, reset } = useForm<Event>(form, CardCategory.Event, factory, {
+	edit: props.edit,
+});
+
+const categoryIcon = utilities.getIcon(model.value);
+
+function onSubmit() {
+	// Use callback instead of promise because the parent container will not catch the 'close' event for some reason
+	submit(() => close())
+}
+
+function close() {
+	reset();
+	// Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action.
+	emit("close");
+}
 </script>

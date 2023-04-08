@@ -1,5 +1,5 @@
 <template>
-	<v-card class="my-2" variant="outlined">
+	<v-card class="my-2 border" variant="outlined">
 		<v-card-title class="d-flex">
 			<span class="text-subtitle-1">{{ title }}</span>
 			<v-spacer></v-spacer>

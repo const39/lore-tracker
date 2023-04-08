@@ -1,5 +1,5 @@
 <template>
-	<v-form v-model="valid" ref="form">
+	<v-form v-model="isValid" ref="form">
 		<!-- Show title if "Add" form version -->
 		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
@@ -9,7 +9,7 @@
 			<v-container>
 				<v-text-field
 					:label="$t('fields.title') + '*'"
-					:rules="requiredRule"
+					:rules="[requiredRule]"
 					v-model="model.title"
 				></v-text-field>
 				<ListPanel
@@ -18,9 +18,7 @@
 					:is-filled="model.tasks.length > 0"
 				>
 					<template v-slot:action>
-						<v-btn icon @click="addTask">
-							<v-icon>mdi-plus</v-icon>
-						</v-btn>
+						<v-btn variant="text" density="compact" icon="mdi-plus" @click="addTask"> </v-btn>
 					</template>
 					<v-text-field
 						v-for="(task, idx) in model.tasks"
@@ -48,30 +46,62 @@
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn
-				color="primary"
-				text
-				:disabled="!valid"
-				@click="
-					cleanInput();
-					submit();
-				"
-				>{{ $t("actions.save") }}</v-btn
-			>
+			<v-btn color="primary" variant="text" :disabled="!isValid" @click="onSubmit">
+				{{ $t("actions.save") }}
+			</v-btn>
 		</v-card-actions>
 	</v-form>
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { CardCategory, Quest, Icon as icons, Task } from "@/js/types";
 import ListPanel from "@/components/ListPanel.vue";
+import { t as $t } from "@/js/translation";
+import { CardCategory, ID, Quest, Task, Icon as icons } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useForm, type FormProps } from "@/mixins/form";
+import { required } from "@/js/validationRules";
+import { useForm } from "@/composables/form";
 import { ref } from "vue";
 import type { VForm } from "vuetify/components";
+import TagListPanel from "../tags/TagListPanel.vue";
 
+const props = defineProps<{
+	edit?: ID; // [Optional] leave undefined to use the "Add" form instead of "Edit" form
+}>();
+
+const emit = defineEmits<{
+	(e: "close"): void;
+}>();
+
+const requiredRule = required($t("fields.requiredField"));
 const form = ref<VForm | undefined>(undefined);
+
+function factory(): Quest {
+	return {
+		_category: CardCategory.Quest,
+		id: utilities.uid(),
+		tags: [],
+		title: "",
+		tasks: [],
+	};
+}
+
+const { model, isValid, submit, reset } = useForm<Quest>(form, CardCategory.Quest, factory, {
+	edit: props.edit,
+});
+
+const categoryIcon = utilities.getIcon(model.value);
+
+function onSubmit() {
+	// Use callback instead of promise because the parent container will not catch the 'close' event for some reason
+	submit(() => close())
+}
+
+function close() {
+	cleanInput();
+	reset();
+	// Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action.
+	emit("close");
+}
 
 function addTask(): void {
 	const task: Task = {
@@ -90,18 +120,6 @@ function cleanInput(): void {
 	// Remove empty tasks
 	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());
 }
-
-function factory(): Quest {
-	return {
-		_category: CardCategory.Quest,
-		id: utilities.uid(),
-		tags: [],
-		title: "",
-		tasks: [],
-	};
-}
-
-const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Quest>(factory, form);
 </script>
 
 <style scoped>

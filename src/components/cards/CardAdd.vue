@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref, computed, defineAsyncComponent } from "vue";
 import BaseCard from "./BaseCard.vue";
 
 import FormQuest from "./forms/FormQuest.vue";
@@ -57,7 +57,12 @@ function closeForm(): void {
 	setTimeout(() => (showAdd.value = true), 300);
 }
 
-const formComponent = computed(() => `Form${utilities.capitalize(props.category)}`);
+const formComponent = computed(() => {
+	const componentName = "Form" + utilities.capitalize(props.category);
+	return defineAsyncComponent({
+		loader: () => import(`./forms/${componentName}.vue`),
+	});
+});
 const isDarkTheme = computed(() => useTheme().current.value.dark);
 </script>
 

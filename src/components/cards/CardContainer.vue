@@ -11,7 +11,6 @@
 			<component
 				v-if="showForm"
 				:is="formComponent"
-				:category="itemData._category"
 				:edit="itemData.id"
 				@close="showForm = false"
 			/>
@@ -44,15 +43,15 @@ function onDelete() {
 }
 
 const contentComponent = computed(() => {
-	const componentName = `Content${utilities.capitalize(props.itemData._category)}.vue`;
+	const componentName = "Content" + utilities.capitalize(props.itemData._category);
 	return defineAsyncComponent({
-		loader: () => import("./content/" + componentName),
+		loader: () => import(`./content/${componentName}.vue`),
 	});
 });
 const formComponent = computed(() => {
-	const componentName = `Form${utilities.capitalize(props.itemData._category)}.vue`;
+	const componentName = "Form" + utilities.capitalize(props.itemData._category);
 	return defineAsyncComponent({
-		loader: () => import("./forms/" + componentName),
+		loader: () => import(`./forms/${componentName}.vue`),
 	});
 });
 const isSortDisabled = computed(() => {

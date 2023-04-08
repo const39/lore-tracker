@@ -1,5 +1,5 @@
 <template>
-	<v-form v-model="valid" ref="form">
+	<v-form v-model="isValid" ref="form">
 		<!-- Show title if "Add" form version -->
 		<v-card-title v-if="props.edit === undefined" class="justify-center">
 			<v-icon>{{ categoryIcon }}</v-icon>
@@ -9,7 +9,7 @@
 			<v-container>
 				<v-text-field
 					:label="$t('fields.name') + '*'"
-					:rules="requiredRule"
+					:rules="[requiredRule]"
 					v-model="model.name"
 				></v-text-field>
 				<v-textarea
@@ -26,19 +26,32 @@
 		<v-card-actions>
 			<v-spacer></v-spacer>
 			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn color="primary" variant="text" :disabled="!valid" @click="submit">{{ $t("actions.save") }}</v-btn>
+			<v-btn color="primary" variant="text" :disabled="!isValid" @click="onSubmit">
+				{{ $t("actions.save") }}
+			</v-btn>
 		</v-card-actions>
 	</v-form>
 </template>
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { CardCategory, Faction } from "@/js/types";
+import { CardCategory, Faction, ID } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useForm, type FormProps } from "@/mixins/form";
+import { required } from "@/js/validationRules";
+import { useForm } from "@/composables/form";
 import { ref } from "vue";
 import type { VForm } from "vuetify/components";
+import TagListPanel from "../tags/TagListPanel.vue";
 
+const props = defineProps<{
+	edit?: ID; // [Optional] leave undefined to use the "Add" form instead of "Edit" form
+}>();
+
+const emit = defineEmits<{
+	(e: "close"): void;
+}>();
+
+const requiredRule = required($t("fields.requiredField"));
 const form = ref<VForm | undefined>(undefined);
 
 function factory(): Faction {
@@ -51,5 +64,20 @@ function factory(): Faction {
 	};
 }
 
-const { props, valid, model, requiredRule, categoryIcon, submit, close } = useForm<Faction>(factory, form);
+const { model, isValid, submit, reset } = useForm<Faction>(form, CardCategory.Faction, factory, {
+	edit: props.edit,
+});
+
+const categoryIcon = utilities.getIcon(model.value);
+
+function onSubmit() {
+	// Use callback instead of promise because the parent container will not catch the 'close' event for some reason
+	submit(() => close())
+}
+
+function close() {
+	reset();
+	// Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action.
+	emit("close");
+}
 </script>
