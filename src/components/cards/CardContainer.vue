@@ -8,12 +8,12 @@
 	>
 		<v-expand-transition>
 			<!-- Dynamic Form component -->
-			<component
+			<FormWrapper
 				v-if="showForm"
-				:is="formComponent"
+				:category="itemData._category"
 				:edit="itemData.id"
-				@close="showForm = false"
-			/>
+				@done="showForm = false"
+			></FormWrapper>
 			<!-- Dynamic Card content component -->
 			<component v-else :is="contentComponent" :class="{ draggable: !isSortDisabled }" :item-data="itemData" />
 		</v-expand-transition>
@@ -26,6 +26,7 @@ import { CardTypes } from "@/js/types";
 import { useEventHub, CardEvent } from "@/js/eventHub";
 
 import BaseCard from "./BaseCard.vue";
+import FormWrapper from "./forms/FormWrapper.vue";
 
 import utilities from "@/js/utilities";
 import { useStore } from "@/store";
@@ -33,7 +34,6 @@ import { useStore } from "@/store";
 const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
 const showForm = ref(false);
-const showContent = ref(true);
 
 const eventHub = useEventHub();
 const store = useStore();
@@ -48,12 +48,7 @@ const contentComponent = computed(() => {
 		loader: () => import(`./content/${componentName}.vue`),
 	});
 });
-const formComponent = computed(() => {
-	const componentName = "Form" + utilities.capitalize(props.itemData._category);
-	return defineAsyncComponent({
-		loader: () => import(`./forms/${componentName}.vue`),
-	});
-});
+
 const isSortDisabled = computed(() => {
 	return store.isFilterActive || !store.isDefaultOrder;
 });

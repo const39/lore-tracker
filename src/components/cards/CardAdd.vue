@@ -3,7 +3,7 @@
 		<v-expand-transition>
 			<!-- Dynamic Form component ("Add" version) -->
 			<BaseCard v-if="showForm">
-				<component :is="formComponent" :category="category" @close="closeForm" />
+				<FormWrapper :category="category" @done="closeForm"></FormWrapper>
 			</BaseCard>
 		</v-expand-transition>
 		<v-fade-transition>
@@ -14,7 +14,11 @@
 				@mouseenter="hover = true"
 				@mouseleave="hover = false"
 				class="my-1 custom-border"
-				:class="{ 'fill-height': fillHeight, 'grey-lighten-3': hover && !isDarkTheme, 'grey-darken-3': hover && isDarkTheme }"
+				:class="{
+					'fill-height': fillHeight,
+					'grey-lighten-3': hover && !isDarkTheme,
+					'grey-darken-3': hover && isDarkTheme,
+				}"
 			>
 				<v-card-text class="text-center clickable" :class="{ 'fill-height': fillHeight }" @click="openForm">
 					<v-icon size="large">mdi-plus</v-icon>
@@ -25,21 +29,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, defineAsyncComponent } from "vue";
-import BaseCard from "./BaseCard.vue";
-
-import FormQuest from "./forms/FormQuest.vue";
-import FormEvent from "./forms/FormEvent.vue";
-import FormLocation from "./forms/FormLocation.vue";
-import FormCharacter from "./forms/FormCharacter.vue";
-import FormFaction from "./forms/FormFaction.vue";
-import FormNote from "./forms/FormNote.vue";
-
-import utilities from "@/js/utilities";
+import { computed, ref } from "vue";
 import { useTheme } from "vuetify";
+import BaseCard from "./BaseCard.vue";
+import FormWrapper from "./forms/FormWrapper.vue";
 
-const props = defineProps<{
-	category: string;
+import { CardCategory } from "@/js/types";
+
+defineProps<{
+	category: CardCategory;
 	fillHeight?: boolean; // Optional style prop
 }>();
 
@@ -51,18 +49,13 @@ function openForm(): void {
 	showForm.value = true;
 	showAdd.value = false;
 }
+
 function closeForm(): void {
 	showForm.value = false;
 	// HACK: Delay display of 'Add' clickable card to after the form transition completion
 	setTimeout(() => (showAdd.value = true), 300);
 }
 
-const formComponent = computed(() => {
-	const componentName = "Form" + utilities.capitalize(props.category);
-	return defineAsyncComponent({
-		loader: () => import(`./forms/${componentName}.vue`),
-	});
-});
 const isDarkTheme = computed(() => useTheme().current.value.dark);
 </script>
 
