@@ -56,14 +56,13 @@ import { ref } from "vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import MenuActivator from "./MenuActivator.vue";
-import { useEventHub, SnackbarEvent } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus";
 import { useStore } from "@/store";
 
 const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
 const showUploadDialog = ref(false);
 const showConfirmDialog = ref(false);
 
-const eventHub = useEventHub();
 const store = useStore();
 
 function downloadSave(): void {
@@ -84,16 +83,21 @@ function uploadSave(): void {
 				try {
 					store.loadData(value);
 					store.save();
-					eventHub.emit(
-						SnackbarEvent.ID,
-						new SnackbarEvent($t("messages.success.saveFileImportSuccessful"), -1, "success")
-					);
+					eventBus.emit("show-snackbar", {
+						message: $t("messages.success.saveFileImportSuccessful"),
+						timeout: -1,
+						color: "success",
+					});
 				} catch (err) {
 					console.error(err);
-					const msg = `${$t("messages.errors.corruptedSave")} ${$t(
+					const message = `${$t("messages.errors.corruptedSave")} ${$t(
 						"messages.errors.saveFileImportCancelled"
 					)}`;
-					eventHub.emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
+					eventBus.emit("show-snackbar", {
+						message,
+						timeout: -1,
+						color: "error",
+					});
 				} finally {
 					uploadedFile.value = [];
 					showUploadDialog.value = false;
@@ -101,10 +105,11 @@ function uploadSave(): void {
 			})
 			.catch((err: any) => {
 				console.error(err);
-				eventHub.emit(
-					SnackbarEvent.ID,
-					new SnackbarEvent($t("messages.errors.saveFileImportFailed"), -1, "error")
-				);
+				eventBus.emit("show-snackbar", {
+					message: $t("messages.errors.saveFileImportFailed"),
+					timeout: -1,
+					color: "error",
+				});
 				uploadedFile.value = [];
 				showUploadDialog.value = false;
 			});

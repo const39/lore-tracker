@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { ref, computed, defineAsyncComponent } from "vue";
 import { CardTypes } from "@/js/types";
-import { useEventHub, CardEvent } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus";
 
 import BaseCard from "./BaseCard.vue";
 import FormWrapper from "./forms/FormWrapper.vue";
@@ -35,11 +35,10 @@ const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
 const showForm = ref(false);
 
-const eventHub = useEventHub();
 const store = useStore();
 
 function onDelete() {
-	eventHub.emit(CardEvent.ID, new CardEvent(props.itemData));
+	eventBus.emit("delete-card", props.itemData);
 }
 
 const contentComponent = computed(() => {

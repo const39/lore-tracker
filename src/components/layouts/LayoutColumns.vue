@@ -8,19 +8,17 @@
 import { onBeforeUnmount, onMounted } from "vue";
 import LayoutColumnContent from "./LayoutColumnContent.vue";
 
-import { useEventHub, TagEvent } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus";
 import { CardCategory as categories } from "@/js/types";
-
-const eventHub = useEventHub();
 
 onMounted(() => {
 	// Catch TagEvent and scroll to the card with the specified id
-	eventHub.on(TagEvent.ID, (e: TagEvent) => {
-		document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
+	eventBus.on("select-tag", (tag) => {
+		document.getElementById(tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 	});
 });
 
 onBeforeUnmount(() => {
-	eventHub.off(TagEvent.ID);
+	eventBus.off("select-tag");
 });
 </script>

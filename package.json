@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"ajv": "^6.12.6",
+		"mitt": "^3.0.0",
 		"pinia": "^2.0.32",
 		"vue": "^3.2.45",
 		"vue-markdown-render": "^2.0.1",

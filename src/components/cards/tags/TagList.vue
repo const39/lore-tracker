@@ -18,13 +18,7 @@
 				</div>
 				<!-- Immutable version -->
 				<div v-else>
-					<v-chip
-						v-for="tag in list"
-						:key="tag.id"
-						class="ma-1"
-						size="small"
-						@click.stop="goToCard(tag)"
-					>
+					<v-chip v-for="tag in list" :key="tag.id" class="ma-1" size="small" @click.stop="goToCard(tag)">
 						{{ truncate(tag.text, 30) }}
 					</v-chip>
 				</div>
@@ -34,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useEventHub, TagEvent } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus.js";
 import { CardCategory, Icon as icons, ID, Tag } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useStore } from "@/store";
@@ -50,7 +44,6 @@ const props = withDefaults(
 );
 
 const store = useStore();
-const eventHub = useEventHub();
 
 /**
  * Remove the ID matching the specified Tag from the 'value' prop (if any).
@@ -61,11 +54,11 @@ function remove(tag: Tag) {
 	if (index >= 0) props.modelValue.splice(index, 1);
 }
 /**
- * Send an event to the eventHub indicating that a tag referencing a card has been clicked.
+ * Send an event to the eventBus indicating that a tag referencing a card has been clicked.
  * This event can be used by layout components to redirect the user to the according card.
  */
 function goToCard(tag: Tag) {
-	eventHub.emit(TagEvent.ID, new TagEvent(tag));
+	eventBus.emit("select-tag", tag);
 }
 
 const truncate = utilities.truncate;

@@ -30,7 +30,7 @@ import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
-import { CardEvent, useEventHub } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus";
 import utilities from "../js/utilities";
 import { Order } from "@/js/types";
 import { useStore } from "@/store";
@@ -43,7 +43,6 @@ const confirmDialog = ref({
 	acceptAction: () => {},
 });
 const store = useStore();
-const eventHub = useEventHub();
 
 function selectLayout(value: number) {
 	selectedLayout.value = value;
@@ -55,15 +54,15 @@ function selectOrder(value: number) {
 	store.setOrder(value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT);
 }
 onMounted(() => {
-	eventHub.on(CardEvent.ID, (e: CardEvent) => {
-		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(e.card._category)}`);
-		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${utilities.getText(e.card)}" ?`;
-		confirmDialog.value.acceptAction = () => store.commitAndSave({ commit: "deleteCard", payload: e.card });
+	eventBus.on('delete-card', (card) => {
+		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(card._category)}`);
+		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${utilities.getText(card)}" ?`;
+		confirmDialog.value.acceptAction = () => store.commitAndSave({ commit: "deleteCard", payload: card });
 		confirmDialog.value.show = true;
 	});
 });
 onBeforeUnmount(() => {
-	eventHub.off(CardEvent.ID);
+	eventBus.off('delete-card');
 });
 </script>
 

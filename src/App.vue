@@ -129,7 +129,7 @@ import SaveMenu from "./components/menus/SaveMenu.vue";
 import ThemeMenu from "./components/menus/ThemeMenu.vue";
 import QuickNote from "./components/QuickNote.vue";
 import Snackbar from "./components/Snackbar.vue";
-import { SnackbarEvent, useEventHub } from "./js/eventHub";
+import { eventBus } from "./js/eventBus";
 import { useStore } from "./store";
 
 const version = ref(VERSION);
@@ -142,7 +142,6 @@ const showDomainNameChangeNotif = ref(Date.now() < new Date("2022-11-15T12:00:00
 const router = useRouter();
 const theme = useTheme();
 const store = useStore();
-const eventHub = useEventHub();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
@@ -171,8 +170,8 @@ onMounted(() => {
 		store.loadData();
 	} catch (err) {
 		console.error(err);
-		const msg = $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup");
-		eventHub.emit(SnackbarEvent.ID, new SnackbarEvent(msg, -1, "error"));
+		const message = $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup");
+		eventBus.emit("show-snackbar", { message, timeout: -1, color: "error" });
 	}
 
 	// Set theme if preference saved + register keyboard listener

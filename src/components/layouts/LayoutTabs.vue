@@ -18,12 +18,11 @@ import { ref, onMounted, onBeforeUnmount } from "vue";
 import LayoutTabContent from "./LayoutTabContent.vue";
 
 import { CardCategory, Icon as icons } from "@/js/types";
-import { useEventHub, TagEvent } from "@/js/eventHub";
+import { eventBus } from "@/js/eventBus";
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
 
-const eventHub = useEventHub();
 /**
  * Manage each column hot key :
  * - Alt+1 : Show Quest tab
@@ -45,19 +44,19 @@ function hotkey(e: KeyboardEvent) {
 
 onMounted(() => {
 	// Catch TagEvent, show the according tab and scroll to the card with the specified id
-	eventHub.on(TagEvent.ID, (e: TagEvent) => {
+	eventBus.on('select-tag', (tag) => {
 		// Change active tab dynamically based on index of category in the enum
-		const idx = Object.values(CardCategory).findIndex((val) => val === e.tag.category);
+		const idx = Object.values(CardCategory).findIndex((val) => val === tag.category);
 		activeTab.value = idx !== -1 ? idx : 0;
 
 		// Scroll to card
-		document.getElementById(e.tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
+		document.getElementById(tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 	});
 	document.addEventListener("keydown", hotkey);
 });
 
 onBeforeUnmount(() => {
-	eventHub.off(TagEvent.ID);
+	eventBus.off('select-tag');
 	document.removeEventListener("keydown", hotkey);
 });
 </script>
