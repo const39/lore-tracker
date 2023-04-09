@@ -8,23 +8,21 @@
 			<v-row class="d-flex mx-2 my-5">
 				<span class="text-h5">{{ $t("search.search") }}</span>
 				<v-spacer></v-spacer>
-				<v-btn icon @click="open = false">
-					<v-icon>mdi-close</v-icon>
-				</v-btn>
+				<v-btn variant="text" density="comfortable" icon="mdi-close" @click="open = false"> </v-btn>
 			</v-row>
 			<v-list-subheader>{{ $t("fields.category") }}</v-list-subheader>
 			<v-select variant="outlined" density="compact" class="mx-2" v-model="selectedCategory" :items="categories">
 				<template v-slot:selection="{ props, item }">
 					<v-list-item
 						v-bind="props"
-						:prepend-icon="icons[item.raw]"
+						:prepend-icon="icons[item.raw as keyof typeof icons]"
 						:title="$t(`categories.${item.raw}`)"
 					></v-list-item>
 				</template>
 				<template v-slot:item="{ props, item }">
 					<v-list-item
 						v-bind="props"
-						:prepend-icon="icons[item.raw]"
+						:prepend-icon="icons[item.raw as keyof typeof icons]"
 						:title="$t(`categories.${item.raw}`)"
 					></v-list-item>
 				</template>

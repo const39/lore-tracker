@@ -25,14 +25,14 @@
 					>
 						<template v-slot:chip="{ props, item }">
 							<v-chip v-bind="props">
-								<v-icon :icon="icons[item.raw]" start></v-icon>
+								<v-icon :icon="icons[item.raw as keyof typeof icons]" start></v-icon>
 								{{ $t(`eventTypes.${item.raw}`) }}
 							</v-chip>
 						</template>
 						<template v-slot:item="{ props, item }">
 							<v-list-item
 								v-bind="props"
-								:prepend-icon="icons[item.raw]"
+								:prepend-icon="icons[item.raw as keyof typeof icons]"
 								:title="$t(`eventTypes.${item.raw}`)"
 							></v-list-item>
 						</template>
