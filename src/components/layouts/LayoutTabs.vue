@@ -19,9 +19,16 @@ import LayoutTabContent from "./LayoutTabContent.vue";
 
 import { CardCategory, Icon as icons } from "@/js/types";
 import { eventBus } from "@/js/eventBus";
+import { onKeyDown } from "@vueuse/core";
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
+
+// Register hotkeys
+onKeyDown(
+	Array.from({ length: tabs.value.length }, (v, idx) => (idx + 1).toString()),	// Register listener for each tab
+	hotkey
+);
 
 /**
  * Manage each column hot key :
@@ -33,8 +40,8 @@ const activeTab = ref(0);
  * - Alt+6 : Show Note tab
  */
 function hotkey(e: KeyboardEvent) {
-	if (e.code.startsWith("Digit") && e.altKey) {
-		let num = Number.parseInt(e.code.charAt(5));
+	if (e.altKey) {
+		let num = Number.parseInt(e.key);
 		if (num >= 1 && num <= tabs.value.length) {
 			e.preventDefault();
 			activeTab.value = num - 1;
@@ -44,7 +51,7 @@ function hotkey(e: KeyboardEvent) {
 
 onMounted(() => {
 	// Catch TagEvent, show the according tab and scroll to the card with the specified id
-	eventBus.on('select-tag', (tag) => {
+	eventBus.on("select-tag", (tag) => {
 		// Change active tab dynamically based on index of category in the enum
 		const idx = Object.values(CardCategory).findIndex((val) => val === tag.category);
 		activeTab.value = idx !== -1 ? idx : 0;
@@ -52,11 +59,9 @@ onMounted(() => {
 		// Scroll to card
 		document.getElementById(tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
 	});
-	document.addEventListener("keydown", hotkey);
 });
 
 onBeforeUnmount(() => {
-	eventBus.off('select-tag');
-	document.removeEventListener("keydown", hotkey);
+	eventBus.off("select-tag");
 });
 </script>

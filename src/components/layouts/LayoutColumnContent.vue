@@ -36,13 +36,14 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import CardAdd from "../cards/CardAdd.vue";
 import CardContainer from "../cards/CardContainer.vue";
 
 import { CardCategory, CardTypes, Icon as icons } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
+import { onKeyDown } from "@vueuse/core";
 import draggable from "vuedraggable";
 
 const props = defineProps<{ category: CardCategory }>();
@@ -62,6 +63,10 @@ function onMove(e: any) {
 	 */
 	return e.draggedContext.element.constructor.name === e.relatedContext.element.constructor.name;
 }
+
+// Register hotkeys
+onKeyDown(["1", "2", "3", "4", "5", "6"], hotkey);
+
 /**
  * Manage each column hot key :
  * - Alt+1 : Collapse/expand Objective tab
@@ -74,12 +79,12 @@ function onMove(e: any) {
 function hotkey(e: KeyboardEvent) {
 	if (e.altKey) {
 		if (
-			(e.code === "Digit1" && props.category === CardCategory.Quest) ||
-			(e.code === "Digit2" && props.category === CardCategory.Event) ||
-			(e.code === "Digit3" && props.category === CardCategory.Location) ||
-			(e.code === "Digit4" && props.category === CardCategory.Character) ||
-			(e.code === "Digit5" && props.category === CardCategory.Faction) ||
-			(e.code === "Digit6" && props.category === CardCategory.Note)
+			(e.key === "1" && props.category === CardCategory.Quest) ||
+			(e.key === "2" && props.category === CardCategory.Event) ||
+			(e.key === "3" && props.category === CardCategory.Location) ||
+			(e.key === "4" && props.category === CardCategory.Character) ||
+			(e.key === "5" && props.category === CardCategory.Faction) ||
+			(e.key === "6" && props.category === CardCategory.Note)
 		) {
 			e.preventDefault();
 			isCollapsed.value = isCollapsed.value === 0 ? 1 : 0;
@@ -97,12 +102,6 @@ const items = computed({
 	set(list: CardTypes[]) {
 		cardsStore.updateWholeList({ category: props.category, list });
 	},
-});
-onMounted(() => {
-	document.addEventListener("keydown", hotkey);
-});
-onBeforeUnmount(() => {
-	document.removeEventListener("keydown", hotkey);
 });
 </script>
 

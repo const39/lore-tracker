@@ -45,6 +45,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import TagListPanel from "./cards/tags/TagListPanel.vue";
 import { useFilterStore } from "@/store/filter";
 import { useCardsStore } from "@/store/cards";
+import { onKeyDown } from "@vueuse/core";
 
 const open = ref(false);
 const categories = ref(Object.values(CategoryFilter));
@@ -61,11 +62,14 @@ function search() {
 	filterStore.tags = selectedTags.value;
 }
 
+// Register hotkeys
+onKeyDown(["k", "K"], hotkey)
+
 /**
  * Open/close the Search view when pressing Ctrl+K
  */
 function hotkey(e: KeyboardEvent) {
-	if (e.code === "KeyK" && e.ctrlKey) open.value = !open.value;
+	if (e.ctrlKey) open.value = !open.value;
 }
 
 const style = computed(() => {
@@ -95,12 +99,4 @@ watch(open, (newValue) => {
  * Trigger search as soon as a field changes
  */
 watch([selectedCategory, textToContain, selectedTags], () => search());
-
-onMounted(() => {
-	document.addEventListener("keydown", hotkey);
-});
-
-onBeforeUnmount(() => {
-	document.removeEventListener("keydown", hotkey);
-});
 </script>

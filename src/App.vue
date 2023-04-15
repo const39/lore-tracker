@@ -118,17 +118,18 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { onBeforeUnmount, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { LocalStorageKey, VERSION } from "./js/types";
 
+import { onKeyDown } from "@vueuse/core";
 import { useRouter } from "vue-router";
 import { useTheme } from "vuetify/lib/framework.mjs";
+import QuickNote from "./components/QuickNote.vue";
+import Snackbar from "./components/Snackbar.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "./components/menus/LangMenu.vue";
 import SaveMenu from "./components/menus/SaveMenu.vue";
 import ThemeMenu from "./components/menus/ThemeMenu.vue";
-import QuickNote from "./components/QuickNote.vue";
-import Snackbar from "./components/Snackbar.vue";
 import { eventBus } from "./js/eventBus";
 import { useStore } from "./store";
 
@@ -145,11 +146,15 @@ const store = useStore();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
+// Register hotkeys
+onKeyDown(["Escape", "F1", "F2", "F3"], hotkey)
+
 /**
  * Manage this component's hotkeys :
  * - On ESC press : Open/close options menu
  * - On F1 press : Navigate to LoreBook page
- * - On F2 press : Navigate to Timeline page
+ * - On F2 press : Navigate to Notepad page
+ * - On F3 press : Navigate to Timeline page
  */
 function hotkey(e: KeyboardEvent) {
 	if (e.code === "Escape") showMenu.value = !showMenu.value;
@@ -174,13 +179,8 @@ onMounted(() => {
 		eventBus.emit("show-snackbar", { message, timeout: -1, color: "error" });
 	}
 
-	// Set theme if preference saved + register keyboard listener
+	// Set theme if preference saved
 	theme.global.name.value = localStorage.getItem(LocalStorageKey.THEME_KEY) ?? "light";
-	document.addEventListener("keydown", hotkey);
-});
-
-onBeforeUnmount(() => {
-	document.removeEventListener("keydown", hotkey);
 });
 </script>
 
