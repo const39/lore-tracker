@@ -1,38 +1,34 @@
 <template>
 	<v-snackbar v-model="show" :timeout="timeout" :color="color">
 		{{ message }}
-		<template v-slot:action="{ attrs }">
-			<v-btn icon v-bind="attrs" @click="show = false">
+		<template v-slot:actions>
+			<v-btn icon @click="show = false">
 				<v-icon>mdi-close</v-icon>
 			</v-btn>
 		</template>
 	</v-snackbar>
 </template>
 
-<script lang="ts">
-import { eventHub, SnackbarEvent } from "@/js/eventHub";
-import Vue from "vue";
+<script lang="ts" setup>
+import { eventBus } from "@/js/eventBus.js";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 
-export default Vue.extend({
-	data() {
-		return {
-			show: false,
-			message: "",
-			timeout: -1,
-			color: "primary",
-		};
-	},
-	created() {
-		eventHub.$on(SnackbarEvent.ID, (e: SnackbarEvent) => {
-			this.message = e.message;
-			this.timeout = e.timeout;
-			this.color = e.color;
-			this.show = true;
-		});
-	},
-	beforeDestroy() {
-		eventHub.$off(SnackbarEvent.ID);
-	},
+const show = ref(false);
+const message = ref("");
+const timeout = ref(-1);
+const color = ref("primary");
+
+onMounted(() => {
+	eventBus.on("show-snackbar", (e) => {
+		message.value = e.message;
+		timeout.value = e.timeout;
+		color.value = e.color;
+		show.value = true;
+	});
+});
+
+onBeforeUnmount(() => {
+	eventBus.off("show-snackbar");
 });
 </script>
 

@@ -4,111 +4,99 @@
 			<v-icon>mdi-magnify</v-icon>
 			{{ $t("search.search") }}
 		</v-btn>
-		<v-navigation-drawer v-if="open" app right width="320" class="pa-2">
+		<v-navigation-drawer v-if="open" location="right" width="320" class="pa-2">
 			<v-row class="d-flex mx-2 my-5">
-				<span class="text-h5 text--primary">{{ $t("search.search") }}</span>
+				<span class="text-h5">{{ $t("search.search") }}</span>
 				<v-spacer></v-spacer>
-				<v-btn icon @click="open = false">
-					<v-icon>mdi-close</v-icon>
-				</v-btn>
+				<v-btn variant="text" density="comfortable" icon="mdi-close" @click="open = false"> </v-btn>
 			</v-row>
-			<v-subheader>{{ $t("fields.category") }}</v-subheader>
-			<v-select outlined dense class="mx-2" v-model="selectedCategory" :items="categories">
-				<template v-slot:selection="data">
-					<v-icon left small> {{ icons[data.item] }} </v-icon>
-					{{ $t(`categories.${data.item}`) }}
+			<v-list-subheader>{{ $t("fields.category") }}</v-list-subheader>
+			<v-select variant="outlined" density="compact" class="mx-2" v-model="selectedCategory" :items="categories">
+				<template v-slot:selection="{ props, item }">
+					<v-list-item
+						v-bind="props"
+						:prepend-icon="icons[item.raw as keyof typeof icons]"
+						:title="$t(`categories.${item.raw}`)"
+					></v-list-item>
 				</template>
-				<template v-slot:item="data">
-					<v-icon left small> {{ icons[data.item] }} </v-icon>
-					{{ $t(`categories.${data.item}`) }}
+				<template v-slot:item="{ props, item }">
+					<v-list-item
+						v-bind="props"
+						:prepend-icon="icons[item.raw as keyof typeof icons]"
+						:title="$t(`categories.${item.raw}`)"
+					></v-list-item>
 				</template>
 			</v-select>
-			<v-subheader>{{ $t("search.containing") }}</v-subheader>
-			<v-textarea outlined dense class="mx-2" v-model="textToContain"></v-textarea>
-			<v-subheader>{{ $t("search.taggedWith") }}</v-subheader>
+			<v-list-subheader>{{ $t("search.containing") }}</v-list-subheader>
+			<v-textarea variant="outlined" density="compact" class="mx-2" v-model="textToContain"></v-textarea>
+			<v-list-subheader>{{ $t("search.taggedWith") }}</v-list-subheader>
 			<TagListPanel class="mx-2" v-model="selectedTags" />
-			<span class="mx-2 grey--text text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
+			<span class="mx-2 text-grey text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
 			<br />
-			<span class="mx-2 grey--text text-caption">{{ $t("search.sortDisabled") }}</span>
+			<span class="mx-2 text-grey text-caption">{{ $t("search.sortDisabled") }}</span>
 		</v-navigation-drawer>
 	</div>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { CategoryFilter, Icon } from "@/js/types";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { CategoryFilter, Icon as icons } from "@/js/types";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import TagListPanel from "./cards/tags/TagListPanel.vue";
+import { useFilterStore } from "@/store/filter";
+import { useCardsStore } from "@/store/cards";
+import { onKeyDown } from "@vueuse/core";
 
-export default Vue.extend({
-	components: {
-		TagListPanel,
-	},
-	data() {
-		return {
-			open: false,
-			icons: Icon,
-			categories: Object.values(CategoryFilter),
-			selectedCategory: CategoryFilter.ALL,
-			textToContain: "",
-			selectedTags: [],
-		};
-	},
-	methods: {
-		search() {
-			this.$store.commit("updateFilter", {
-				category: this.selectedCategory,
-				text: this.textToContain,
-				tags: this.selectedTags,
-			});
-		},
-		/**
-		 * Open/close the Search view when pressing Ctrl+K
-		 */
-		hotkey(e: KeyboardEvent) {
-			if (e.code === "KeyK" && e.ctrlKey) this.open = !this.open;
-		},
-	},
-	computed: {
-		style(): string {
-			return this.open ? "display: block;" : "display: none;";
-		},
-		resultsNumber() {
-			let count = 0;
-			const cards = this.$store.getters.getCards;
-			for (const key in cards) count += cards[key as keyof typeof cards].length
-			return count;
-		},
-	},
-	watch: {
-		/**
-		 * Reset filter once the search view is closed
-		 */
-		open(newValue) {
-			if (!newValue) {
-				this.selectedCategory = CategoryFilter.ALL;
-				this.textToContain = "";
-				this.selectedTags = [];
-				this.$store.commit("resetFilter");
-			} 
-		},
-		/**
-		 * Trigger search as soon as a field changes
-		 */
-		selectedCategory() {
-			this.search();
-		},
-		textToContain() {
-			this.search();
-		},
-		selectedTags() {
-			this.search();
-		},
-	},
-	mounted() {
-		document.addEventListener("keydown", this.hotkey);
-	},
-	beforeDestroy() {
-		document.removeEventListener("keydown", this.hotkey);
-	},
+const open = ref(false);
+const categories = ref(Object.values(CategoryFilter));
+const selectedCategory = ref<CategoryFilter>(CategoryFilter.ALL);
+const textToContain = ref("");
+const selectedTags = ref([]);
+
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
+
+function search() {
+	filterStore.category = selectedCategory.value;
+	filterStore.text = textToContain.value;
+	filterStore.tags = selectedTags.value;
+}
+
+// Register hotkeys
+onKeyDown(["k", "K"], hotkey)
+
+/**
+ * Open/close the Search view when pressing Ctrl+K
+ */
+function hotkey(e: KeyboardEvent) {
+	if (e.ctrlKey) open.value = !open.value;
+}
+
+const style = computed(() => {
+	return open.value ? "display: block;" : "display: none;";
 });
+
+const resultsNumber = computed(() => {
+	let count = 0;
+	const cards = cardsStore.filteredCards;
+	for (const key in cards) count += cards[key as keyof typeof cards].length;
+	return count;
+});
+
+/**
+ * Reset filter once the search view is closed
+ */
+watch(open, (newValue) => {
+	if (!newValue) {
+		selectedCategory.value = CategoryFilter.ALL;
+		textToContain.value = "";
+		selectedTags.value = [];
+		filterStore.$reset();
+	}
+});
+
+/**
+ * Trigger search as soon as a field changes
+ */
+watch([selectedCategory, textToContain, selectedTags], () => search());
 </script>

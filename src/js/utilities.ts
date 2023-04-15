@@ -1,22 +1,23 @@
 import { CardCategory, CardTypes, Icon } from "./types";
+import { klona } from "klona/lite";
 
 export default {
 	/**
 	 * Returns the current timestamp. To be used as a Unique Identifier.
 	 * @returns the current timestamp
 	 */
-	uid: function() {
+	uid: function () {
 		return new Date().getTime();
 	},
-	capitalize: function(str: string) {
+	capitalize: function (str: string) {
 		if (typeof str === "string") return str.replace(/^\w/, (c) => c.toUpperCase());
 		else "";
 	},
-	truncate: function(text: string, maxLength: number) {
+	truncate: function (text: string, maxLength: number) {
 		if (maxLength > 0 && text.length > maxLength) return `${text.substring(0, maxLength)}...`;
 		else return text;
 	},
-	getIcon: function(content: CardTypes): Icon {
+	getIcon: function (content: CardTypes): Icon {
 		if (content._category === "event") return Icon[content.type];
 		else return Icon[content._category];
 	},
@@ -25,7 +26,7 @@ export default {
 	 * @param card
 	 * @returns the main text of the card
 	 */
-	getText: function(card: CardTypes): string {
+	getText: function (card: CardTypes): string {
 		switch (card._category) {
 			case CardCategory.Character:
 			case CardCategory.Location:
@@ -44,7 +45,7 @@ export default {
 	 * @param card
 	 * @returns all texts of the card
 	 */
-	getAllText: function(card: CardTypes): string[] {
+	getAllText: function (card: CardTypes): string[] {
 		switch (card._category) {
 			case CardCategory.Character:
 			case CardCategory.Location:
@@ -59,33 +60,29 @@ export default {
 		}
 	},
 	/**
-	 * Attempts a deep copy of the specified object literal.
+	 * Performs a deep copy of input.
+	 * Note: This function only works on literals, natives objects, custom class objects, Date, and RegExp (no Set, Map...).
 	 *
-	 * Note: This function is expected to only work on object literals and only with primitive types (no Set, Date...).
-	 *
-	 * @param obj the object to copy
-	 * @returns a deep copy of obj
-	 * @throws an Error if obj is not an object literal
+	 * @param input the object to copy
+	 * @see https://github.com/lukeed/klona
 	 */
-	deepCopy: function(obj: object): object {
-		if (!Array.isArray(obj) && typeof obj === "object") {
-			// If object has nested object values, use the JSON serialize/deserialize technique
-			// Otherwise, clone object
-			if (Object.values(obj).some((val) => typeof val === "object")) return JSON.parse(JSON.stringify(obj));
-			else return { ...obj };
-		} else throw new Error("Argument ${obj} is not an object literal.");
+	deepCopy: function <T>(input: T): T {
+		return klona(input);
 	},
-	sanitizePath: function(leadingSlash: boolean, path: string): string {
+	sanitizePath: function (leadingSlash: boolean, path: string): string {
 		// TODO check for illegal character in URI
 		const p = leadingSlash ? "/" + path : path;
 		const sanitized = p.trim().toLowerCase().replace(/\/+/g, "/");
 		if (!leadingSlash && sanitized.startsWith("/")) return sanitized.slice(1);
 		else return sanitized;
 	},
-	joinPaths: function(leadingSlash: boolean, ...elements: string[]): string {
+	joinPaths: function (leadingSlash: boolean, ...elements: string[]): string {
 		return this.sanitizePath(leadingSlash, elements.join("/"));
 	},
-	pipe: function(...functions: ((arg: any) => any)[]) {
+	pipe: function (...functions: ((arg: any) => any)[]) {
 		return (initial: any) => functions.reduce((previous, f) => f(previous), initial);
+	},
+	isClassInstance(obj: any) {
+		return !["Function", "Object", "Array"].includes(obj.constructor.name);
 	},
 };

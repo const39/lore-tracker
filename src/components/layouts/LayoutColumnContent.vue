@@ -2,120 +2,105 @@
 	<v-col cols="12" md="4" sm="12">
 		<v-expansion-panels v-model="isCollapsed">
 			<v-expansion-panel>
-				<v-expansion-panel-header>
-					<div class="text-h5 text--primary">
-						<v-icon left>{{ icons[category] }}</v-icon>
+				<v-expansion-panel-title>
+					<div class="text-h5">
+						<v-icon start>{{ icons[category] }}</v-icon>
 						{{ $t(`categories.${category}`) }}
 					</div>
-				</v-expansion-panel-header>
-				<v-expansion-panel-content>
+				</v-expansion-panel-title>
+				<v-expansion-panel-text>
 					<CardAdd :category="category" :fill-height="false" />
 					<draggable
-						:disabled="isSortDisabled"
 						v-model="items"
-						v-bind="{ animation: 200 }"
 						group="items"
+						item-key="id"
+						:animation="200"
+						:disabled="isSortDisabled"
+						:move="onMove"
 						@start="drag = true"
 						@end="drag = false"
-						:move="onMove"
 					>
-						<CardContainer
-							v-for="item in items"
-							:key="item.id"
-							outlined
-							:class="{ draggable: !isSortDisabled }"
-							:item-data="item"
-						></CardContainer>
+						<template #item="{ element }">
+							<CardContainer
+								outlined
+								:class="{ draggable: !isSortDisabled }"
+								:item-data="element"
+							></CardContainer>
+						</template>
 					</draggable>
-				</v-expansion-panel-content>
+				</v-expansion-panel-text>
 			</v-expansion-panel>
 		</v-expansion-panels>
 	</v-col>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
-import CardContainer from "../cards/CardContainer.vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { computed, ref } from "vue";
 import CardAdd from "../cards/CardAdd.vue";
+import CardContainer from "../cards/CardContainer.vue";
 
+import { CardCategory, CardTypes, Icon as icons } from "@/js/types";
+import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
+import { onKeyDown } from "@vueuse/core";
 import draggable from "vuedraggable";
-import { Icon, CardCategory, CardTypes } from "@/js/types";
 
-export default Vue.extend({
-	name: "LayoutColumnContent",
-	props: {
-		category: {
-			type: String as PropType<CardCategory>,
-			required: true,
-		},
+const props = defineProps<{ category: CardCategory }>();
+
+const drag = ref(false);
+const isCollapsed = ref(0);
+
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
+
+function onMove(e: any) {
+	/**
+	 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
+	 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
+	 * If both elements type are the same, this function will return true and authorize the drag
+	 * If they are different, it will return false to cancel the drag
+	 */
+	return e.draggedContext.element.constructor.name === e.relatedContext.element.constructor.name;
+}
+
+// Register hotkeys
+onKeyDown(["1", "2", "3", "4", "5", "6"], hotkey);
+
+/**
+ * Manage each column hot key :
+ * - Alt+1 : Collapse/expand Objective tab
+ * - Alt+2 : Collapse/expand Event tab
+ * - Alt+3 : Collapse/expand Location tab
+ * - Alt+4 : Collapse/expand Character tab
+ * - Alt+5 : Collapse/expand Faction tab
+ * - Alt+6 : Collapse/expand Note tab
+ */
+function hotkey(e: KeyboardEvent) {
+	if (e.altKey) {
+		if (
+			(e.key === "1" && props.category === CardCategory.Quest) ||
+			(e.key === "2" && props.category === CardCategory.Event) ||
+			(e.key === "3" && props.category === CardCategory.Location) ||
+			(e.key === "4" && props.category === CardCategory.Character) ||
+			(e.key === "5" && props.category === CardCategory.Faction) ||
+			(e.key === "6" && props.category === CardCategory.Note)
+		) {
+			e.preventDefault();
+			isCollapsed.value = isCollapsed.value === 0 ? 1 : 0;
+		}
+	}
+}
+const isSortDisabled = computed(() => {
+	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+});
+
+const items = computed({
+	get(): CardTypes[] {
+		return cardsStore.filteredCards[props.category];
 	},
-	components: {
-		CardContainer,
-		CardAdd,
-		draggable,
-	},
-	data() {
-		return {
-			isCollapsed: 0,
-			icons: Icon,
-		};
-	},
-	methods: {
-		onMove(e: any) {
-			/**
-			 * Check if origin element ("draggedContext") type and target element ("relatedContext") type are the same
-			 * This is to check that the dragged element will remain in the same list and not be dragged into another adjacent column
-			 * If both elements type are the same, this function will return true and authorize the drag
-			 * If they are different, it will return false to cancel the drag
-			 */
-			return e.draggedContext.element.constructor.name === e.relatedContext.element.constructor.name;
-		},
-		/**
-		 * Manage each column hot key :
-		 * - Alt+1 : Collapse/expand Objective tab
-		 * - Alt+2 : Collapse/expand Event tab
-		 * - Alt+3 : Collapse/expand Location tab
-		 * - Alt+4 : Collapse/expand Character tab
-		 * - Alt+5 : Collapse/expand Faction tab
-		 * - Alt+6 : Collapse/expand Note tab
-		 */
-		hotkey(e: KeyboardEvent) {
-			if (e.altKey) {
-				if (
-					(e.code === "Digit1" && this.category === CardCategory.Quest) ||
-					(e.code === "Digit2" && this.category === CardCategory.Event) ||
-					(e.code === "Digit3" && this.category === CardCategory.Location) ||
-					(e.code === "Digit4" && this.category === CardCategory.Character) ||
-					(e.code === "Digit5" && this.category === CardCategory.Faction) ||
-					(e.code === "Digit6" && this.category === CardCategory.Note)
-				) {
-					e.preventDefault();
-					this.isCollapsed = this.isCollapsed === 0 ? 1 : 0;
-				}
-			}
-		},
-	},
-	computed: {
-		isSortDisabled(): boolean {
-			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
-		},
-		items: {
-			get(): CardTypes[] {
-				return this.$store.getters.getCards[this.category];
-			},
-			set(list: CardTypes[]) {
-				this.$store.dispatch("commitAndSave", {
-					commit: "updateWholeList",
-					payload: { category: this.category, list },
-				});
-			},
-		},
-	},
-	mounted() {
-		document.addEventListener("keydown", this.hotkey);
-	},
-	beforeDestroy() {
-		document.removeEventListener("keydown", this.hotkey);
+	set(list: CardTypes[]) {
+		cardsStore.updateWholeList({ category: props.category, list });
 	},
 });
 </script>

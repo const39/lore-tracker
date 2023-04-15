@@ -4,13 +4,13 @@
 		<v-card-text class="pa-3">
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
-					<v-tooltip top>
-						<template v-slot:activator="{ on, attrs }">
-							<v-icon large v-on="on" v-bind="attrs">{{ getIcon(itemData) }}</v-icon>
+					<v-tooltip location="top">
+						<template v-slot:activator="{ props }">
+							<v-icon size="large" v-bind="props">{{ getIcon(itemData) }}</v-icon>
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
-					<v-chip label x-small outlined>{{ $t("status.day") + itemData.day }}</v-chip>
+					<v-chip label size="x-small" variant="text">{{ $t("status.day") + itemData.day }}</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc" />
@@ -21,28 +21,16 @@
 	</div>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
 import { Event } from "@/js/types";
-
-import TagList from "../tags/TagList.vue";
+import utilities from "@/js/utilities";
 import MarkdownView from "../../MarkdownView.vue";
-import utilities from '@/js/utilities';
+import TagList from "../tags/TagList.vue";
 
-export default Vue.extend({
-	name: "ContentEvent",
-	components: {
-		TagList,
-		MarkdownView,
-	},
-	props: {
-		itemData: {
-			type: Object as PropType<Event>,
-			required: true,
-		},
-	},
-	methods: {
-		getIcon: utilities.getIcon
-	}
-});
+defineProps<{
+	itemData: Event;
+}>();
+
+const getIcon = utilities.getIcon;
 </script>

@@ -2,53 +2,54 @@
 	<v-dialog v-model="showDialog" persistent max-width="375">
 		<v-card>
 			<v-card-title class="text-h5">{{ title }}</v-card-title>
-			<v-card-text class="text-body-2 text--primary">{{ message }}</v-card-text>
+			<v-card-text class="text-body-2">{{ message }}</v-card-text>
 			<v-card-actions>
 				<v-spacer></v-spacer>
-				<v-btn text color="primary" @click="cancel">{{ $t("actions.no") }}</v-btn>
-				<v-btn text class="text--primary" @click="accept">{{ $t("actions.yes") }}</v-btn>
+				<v-btn variant="text" color="primary" @click="cancel">{{ $t("actions.no") }}</v-btn>
+				<v-btn variant="text" @click="accept">{{ $t("actions.yes") }}</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { computed } from "vue";
 
-export default Vue.extend({
-	props: {
-		value: Boolean, // Default v-model overwrite
-		title: String,
-		message: String,
-		acceptAction: Function as PropType<() => void>,
-		cancelAction: Function as PropType<() => void>,
+const props = defineProps<{
+	modelValue: boolean; // Default v-model overwrite
+	title: string;
+	message: string;
+	acceptAction?: () => void;
+	cancelAction?: () => void;
+}>();
+
+const emit = defineEmits<{
+	(e: "update:modelValue", value: boolean): void;
+}>();
+
+/**
+ * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
+ * This allows to use a custom component as an external activator for the v-dialog.
+ * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
+ */
+const showDialog = computed({
+	get() {
+		return props.modelValue;
 	},
-	methods: {
-		cancel(): void {
-			if (this.cancelAction) this.cancelAction();
-			this.showDialog = false;
-		},
-		accept(): void {
-			if (this.acceptAction) this.acceptAction();
-			this.showDialog = false;
-		},
-	},
-	computed: {
-		/**
-		 * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
-		 * This allows to use a custom component as an external activator for the v-dialog.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		showDialog: {
-			get(): boolean {
-				return this.value;
-			},
-			set(value: boolean): void {
-				this.$emit("input", value);
-			},
-		},
+	set(value) {
+		emit("update:modelValue", value);
 	},
 });
+
+function cancel(): void {
+	props.cancelAction?.();
+	showDialog.value = false;
+}
+function accept(): void {
+	props.acceptAction?.();
+	showDialog.value = false;
+}
 </script>
 
 <style></style>

@@ -1,22 +1,22 @@
 <template>
 	<div>
-		<v-hover v-if="!editMode" v-slot="{ hover }">
+		<v-hover v-if="!editMode" v-slot="{ isHovering }">
 			<v-card @dblclick="openFolder(folder)">
 				<v-card-title class="d-flex">
-					<v-icon x-large :color="folder.color">{{ folderIcon }}</v-icon>
+					<v-icon size="x-large" :color="folder.color">{{ folderIcon }}</v-icon>
 					<div class="mx-1 flex-grow-1">
 						<span class="px-1 text-subtitle-1"> {{ folder.name }} </span>
 					</div>
-					<v-tooltip bottom>
-						<template v-slot:activator="{ on, attrs }">
-							<v-avatar class="text-caption" size="20" color="grey" v-bind="attrs" v-on="on">
+					<v-tooltip location="bottom">
+						<template v-slot:activator="{ props }">
+							<v-avatar class="text-caption" size="20" color="grey" v-bind="props">
 								{{ childrenCount }}
 							</v-avatar>
 						</template>
 						<span>{{ childrenCount + $t("notepad.folder.childElements") }}</span>
 					</v-tooltip>
 					<v-fade-transition>
-						<v-icon v-if="hover" class="mx-2" @click="editMode = true">mdi-pencil</v-icon>
+						<v-icon v-if="isHovering" class="mx-2" @click="editMode = true">mdi-pencil</v-icon>
 					</v-fade-transition>
 				</v-card-title>
 			</v-card>
@@ -31,47 +31,40 @@
 	</div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { computed, ref } from "vue";
 import FolderForm from "./FolderForm.vue";
-import Vue, { PropType } from "vue";
 
-import { FileTreeNode, Folder, Icon } from "@/js/types";
+import { Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
+import { useNotepadStore } from "@/store/notepad";
 
-export default Vue.extend({
-	components: {
-		FolderForm,
-	},
-	props: {
-		folder: {
-			type: Object as PropType<Folder>,
-			required: true,
-		},
-		parentPath: {
-			type: String,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			editMode: false,
-		};
-	},
-	methods: {
-		openFolder(folder: Folder) {
-			this.$emit("open-folder", folder);
-		},
-	},
-	computed: {
-		folderIcon() {
-			return Icon.folder;
-		},
-		childrenCount(): number {
-			const fullPath = utilities.joinPaths(true, this.parentPath, this.folder.name);
-			const content: FileTreeNode = this.$store.getters.getFolderContent(fullPath);
-			return content ? content.folders.length + content.files.length : 0;
-		},
-	},
+const props = defineProps<{
+	folder: Folder;
+	parentPath: string;
+}>();
+
+const emit = defineEmits<{
+	(e: "open-folder", folder: Folder): void;
+}>();
+
+const editMode = ref(false);
+
+const notepadStore = useNotepadStore();
+
+function openFolder(folder: Folder) {
+	emit("open-folder", folder);
+}
+
+const folderIcon = computed(() => {
+	return Icon.folder;
+});
+
+const childrenCount = computed(() => {
+	const fullPath = utilities.joinPaths(true, props.parentPath, props.folder.name);
+	const content = notepadStore.getFolderContent(fullPath);
+	return content ? content.folders.length + content.files.length : 0;
 });
 </script>
 

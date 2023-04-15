@@ -2,7 +2,7 @@ import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import Ajv from "ajv";
-import { FileTree, Filter, Order, SaveFormat, State } from "./types";
+import { FileTree, SaveFormat, SerializableState, State } from "./types";
 import utilities from "./utilities";
 
 export enum SaveVersion {
@@ -133,11 +133,7 @@ class V2SaveProcessor extends SaveProcessor {
 	 * @returns input data converted to v2 format
 	 */
 	protected convert(save: any): any {
-		const converted: State = { ...save };
-		converted._meta = {
-			version: SaveVersion.v2,
-			lastUpdate: new Date().toISOString(),
-		};
+		const converted: State = utilities.deepCopy(save);
 		converted.notepad = new FileTree();
 		return converted;
 	}
@@ -170,20 +166,19 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
 }
 
 export default {
-	serialize(state: State): SaveFormat {
-		// Split state data to exclude filter and order from JSON
-		const { filter, order, ...toSave }: { filter: Filter; order: Order } & State = { ...state };
-
-		// Shallow copy of state
-		const serialized: any = { ...toSave };
-		serialized._meta.lastUpdate = new Date().toISOString(); // ! Because of shallow copy, changes lastUpdate in current state
+	serialize(state: SerializableState): SaveFormat {
+		// Clone state to avoid modifying it
+		const serialized: any = utilities.deepCopy(state);
+		serialized._meta = {
+			version: SaveVersion.Latest,
+			lastUpdate: new Date().toISOString(),
+		};
 		serialized.notepad = state.notepad.serialize(); // Serialize Map instance to object literal
-
 		return serialized;
 	},
-	deserialize(save: SaveFormat): State {
-		// Shallow copy of save
-		const deserialized: any = { ...save };
+	deserialize(save: SaveFormat): SerializableState {
+		// Clone save to avoid modifying it
+		const deserialized: any = utilities.deepCopy(save);
 		deserialized.notepad = new FileTree(save.notepad); // Deserialize object literal to FileTree instance
 		return deserialized;
 	},
@@ -194,11 +189,11 @@ export default {
 	 * @param save the save data to convert
 	 * @returns the save data, converted if necessary to the latest save format.
 	 */
-	ensureLatestVersion(save: any) {
+	ensureLatestVersion(save: any): SaveFormat {
 		const inputSaveVersion = (save?._meta?.version as SaveVersion) ?? SaveVersion.Legacy;
 		if (Object.values(SaveVersion).includes(inputSaveVersion)) {
 			const pipeline = buildConversionPipeline(inputSaveVersion);
-			const saveAtLatestFormat = pipeline(save);
+			const saveAtLatestFormat: SaveFormat = pipeline(save);
 			return saveAtLatestFormat;
 		} else throw new Error("Save format could not be identified: save data is unusable.");
 	},
