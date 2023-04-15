@@ -4,41 +4,35 @@
 	</v-dialog>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import FolderForm from "./FolderForm.vue";
 
-import Vue from "vue";
+import { computed } from "vue";
 
-export default Vue.extend({
-	components: {
-		FolderForm,
+const props = defineProps<{
+	modelValue: boolean; // Default v-model overwrite
+	parentPath: string;
+}>();
+
+const emit = defineEmits<{
+	(e: "update:modelValue", value: boolean): void;
+}>();
+
+function close(): void {
+	showDialog.value = false;
+}
+
+/**
+ * Overwrite default v-model to bind this component's v-model attribute to the v-dialog one.
+ * This allows to use a custom component as an external activator for the v-dialog.
+ * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
+ */
+const showDialog = computed({
+	get() {
+		return props.modelValue;
 	},
-	props: {
-		value: Boolean, // Default v-model overwrite
-		parentPath: {
-			type: String,
-			required: true,
-		},
-	},
-	methods: {
-		close(): void {
-			this.showDialog = false;
-		},
-	},
-	computed: {
-		/**
-		 * Overwrite default v-model to bind this component's v-model attribute to the v-dialog one.
-		 * This allows to use a custom component as an external activator for the v-dialog.
-		 * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
-		 */
-		showDialog: {
-			get(): boolean {
-				return this.value;
-			},
-			set(value: boolean): void {
-				this.$emit("input", value);
-			},
-		},
+	set(value) {
+		emit("update:modelValue", value);
 	},
 });
 </script>

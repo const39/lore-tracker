@@ -1,68 +1,56 @@
 <template>
 	<v-container>
 		<draggable
+			v-model="items"
 			tag="v-row"
 			draggable=".item"
-			:disabled="isSortDisabled"
-			v-model="items"
-			v-bind="{ animation: 200 }"
 			group="items"
+			item-key="id"
+			:animation="200"
+			:disabled="isSortDisabled"
 			@start="drag = true"
 			@end="drag = false"
 		>
-			<template v-slot:header>
+			<template #header>
 				<v-col cols="12" md="4">
 					<CardAdd :category="category" fill-height />
 				</v-col>
 			</template>
-			<v-col cols="12" md="4" class="item" v-for="item in items" :key="item.id">
-				<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="item"></CardContainer>
-			</v-col>
+			<template #item="{ element }">
+				<v-col cols="12" md="4" class="item">
+					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element"></CardContainer>
+				</v-col>
+			</template>
 		</draggable>
 	</v-container>
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from "vue";
-import CardContainer from "../cards/CardContainer.vue";
+<script lang="ts" setup>
+import { computed, ref } from "vue";
 import CardAdd from "../cards/CardAdd.vue";
+import CardContainer from "../cards/CardContainer.vue";
 
-import draggable from "vuedraggable";
 import { CardCategory, CardTypes } from "@/js/types";
+import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
+import draggable from "vuedraggable";
 
-export default Vue.extend({
-	name: "LayoutTabContent",
-	props: {
-		category: {
-			type: String as PropType<CardCategory>,
-			required: true,
-		},
+const props = defineProps<{ category: CardCategory }>();
+const drag = ref(false);
+
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
+
+const isSortDisabled = computed(() => {
+	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+});
+
+const items = computed({
+	get(): CardTypes[] {
+		return cardsStore.filteredCards[props.category];
 	},
-	components: {
-		CardContainer,
-		CardAdd,
-		draggable,
-	},
-	data() {
-		return {
-			drag: false,
-		};
-	},
-	computed: {
-		isSortDisabled(): boolean {
-			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
-		},
-		items: {
-			get(): CardTypes[] {
-				return this.$store.getters.getCards[this.category];
-			},
-			set(list: CardTypes[]) {
-				this.$store.dispatch("commitAndSave", {
-					commit: "updateWholeList",
-					payload: { category: this.category, list },
-				});
-			},
-		},
+	set(list: CardTypes[]) {
+		cardsStore.updateWholeList({ category: props.category, list });
 	},
 });
 </script>

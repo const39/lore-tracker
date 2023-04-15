@@ -1,6 +1,5 @@
 import { SaveVersion } from "./saves";
 import utilities from "./utilities";
-import Vue from "vue";
 
 // *********************
 // ***** Constants *****
@@ -122,12 +121,10 @@ export interface FileTreeNode {
 	files: FileTypes[];
 }
 
-export class FileTree {
-	
-	entries!: Array<[key: string, value: FileTreeNode]>;
-
+export class FileTree extends Map<string, FileTreeNode> {
 	constructor(data?: NotepadSave) {
-		Vue.set(this, "entries", data ? Object.keys(data).map((key) => [key, data[key]]) : []);
+		const entries = data ? Object.keys(data).map<[string, FileTreeNode]>((key) => [key, data[key]]) : [];
+		super(entries);
 
 		// Set root node if none exists
 		if (!this.has("/")) {
@@ -139,56 +136,23 @@ export class FileTree {
 		}
 	}
 
-	get(key: string): FileTreeNode | undefined {
-		return this.entries.find((e) => e[0] == key)?.[1];
-	}
-
-	set(key: string, value: FileTreeNode): this {
-		const entry = this.entries.find((e) => e[0] == key);
-		if (entry)
-			Vue.set(entry, 1, value);
-		else
-			this.entries.push([key, value]);
-		return this;
-	}
-
-	has(key: string): boolean {
-		return this.entries.some((e) => e[0] == key);
-	}
-
-	delete(key: string): boolean {
-		const idx = this.entries.findIndex((e) => e[0] == key);
-		if (idx != -1)
-			this.entries.splice(idx, 1);
-		return idx != -1;
-	}
-
-	clear(): void {
-		Vue.set(this, "entries", []);
-	}
-
-	[Symbol.iterator](): Iterator<[key: string, value: FileTreeNode]> {
-		return this.entries[Symbol.iterator]();
-	}
-
 	serialize(): NotepadSave {
 		const result = Object.create(null);
-		for (const [key, value] of this.entries)
-			result[key] = value;
+		for (const [key, value] of this.entries()) result[key] = value;
 		return result;
 	}
 }
 
-type NotepadState = FileTree;	// Runtime type
-type NotepadSave = Record<string, FileTreeNode>	// Serialized type (because native Map class cannot be serialized as is)
+type NotepadState = FileTree; // Runtime type
+type NotepadSave = Record<string, FileTreeNode>; // Serialized type (because native Map class cannot be serialized as is)
 
-interface SerializableState {
-	_meta: MetaData;
+export interface SerializableState {
+	// _meta: MetaData;
 	name: string;
 	days: number;
 	season: Season;
 	cards: CardsStore;
-	notepad: NotepadSave | NotepadState;		// ! Explicitly set to a common super-type (MUST BE narrowed in sub-interfaces !)
+	notepad: NotepadState;
 	quickNote: string;
 }
 
@@ -196,8 +160,9 @@ interface SerializableState {
 // *** Update/Create save format converter in saves.ts
 // *** Regenerate JSON Schema on each update :
 // * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
-export interface SaveFormat extends SerializableState {
-	notepad: NotepadSave;	// Narrowed type, used for JSON serialization
+export interface SaveFormat extends Omit<SerializableState, "notepad"> {
+	_meta: MetaData;
+	notepad: NotepadSave; // Changed notepad type to the JSON-serializable one
 }
 
 // ***************************
@@ -215,7 +180,7 @@ export const CategoryFilter = {
 
 export enum Order {
 	DEFAULT = "default",
-	ALPHANUMERIC = "alphanumeric"
+	ALPHANUMERIC = "alphanumeric",
 }
 
 export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
@@ -226,7 +191,6 @@ export interface Filter {
 	tags: ID[];
 }
 export interface State extends SerializableState {
-	notepad: NotepadState; // Narrowed type, used at runtime
 	filter: Filter;
 	order: Order;
 }

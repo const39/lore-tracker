@@ -1,14 +1,14 @@
 <template>
-	<v-tooltip bottom>
-		<template v-slot:activator="{ on, attrs }">
-			<div class="d-inline text-body-2" v-on="on" v-bind="attrs">
+	<v-tooltip location="bottom">
+		<template v-slot:activator="{ props }">
+			<div class="d-inline text-body-2" v-bind="props">
 				<span class="clickable" @click.left="daysCounter++" @click.right="daysCounter--">
-					<v-icon small>mdi-white-balance-sunny</v-icon>
+					<v-icon size="small">mdi-white-balance-sunny</v-icon>
 					{{ $t("status.day") + daysCounter }}
 				</span>
 				|
 				<span class="clickable" @click.left="nextSeason" @click.right="previousSeason">
-					<v-icon small>mdi-flower</v-icon>
+					<v-icon size="small">mdi-flower</v-icon>
 					{{ currentSeason }}
 				</span>
 			</div>
@@ -17,48 +17,48 @@
 	</v-tooltip>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { t as $t } from "@/js/translation";
+import { computed } from "vue";
 import { Season } from "@/js/types";
+import { useCampaignInfoStore } from "@/store/campaignInfo";
 
-export default Vue.extend({
-	methods: {
-		previousSeason() {
-			const values = Object.values(Season);
-			const index = values.findIndex((entry) => entry === this.$store.state.season);
-			if (index > -1) {
-				if (index > 0) this.currentSeason = values[index - 1];
-				else this.currentSeason = values[values.length - 1];
-			}
-		},
-		nextSeason() {
-			const values = Object.values(Season);
-			let index = values.findIndex((entry) => entry === this.$store.state.season);
-			if (index > -1) {
-				if (index < values.length - 1) this.currentSeason = values[index + 1];
-				else this.currentSeason = values[0];
-			}
-		},
+const campaignInfoStore = useCampaignInfoStore();
+
+const daysCounter = computed({
+	get() {
+		return campaignInfoStore.days;
 	},
-	computed: {
-		daysCounter: {
-			get() {
-				return this.$store.state.days;
-			},
-			set(val) {
-				this.$store.dispatch("commitAndSave", { commit: "setDaysCount", payload: val });
-			},
-		},
-		currentSeason: {
-			get() {
-				return this.$t(`status.seasons.${this.$store.state.season}`);
-			},
-			set(val) {
-				this.$store.dispatch("commitAndSave", { commit: "setSeason", payload: val });
-			},
-		},
+	set(val) {
+		if (Number.isSafeInteger(val) && val > -1) campaignInfoStore.days = val;
 	},
 });
+
+const currentSeason = computed({
+	get() {
+		return $t(`status.seasons.${campaignInfoStore.season}`);
+	},
+	set(val) {
+		campaignInfoStore.season = val as Season;
+	},
+});
+
+function previousSeason() {
+	const values = Object.values(Season);
+	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
+	if (index > -1) {
+		if (index > 0) currentSeason.value = values[index - 1];
+		else currentSeason.value = values[values.length - 1];
+	}
+}
+function nextSeason() {
+	const values = Object.values(Season);
+	let index = values.findIndex((entry) => entry === campaignInfoStore.season);
+	if (index > -1) {
+		if (index < values.length - 1) currentSeason.value = values[index + 1];
+		else currentSeason.value = values[0];
+	}
+}
 </script>
 <style scoped>
 .clickable:hover {
