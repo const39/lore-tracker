@@ -38,7 +38,7 @@ import FolderForm from "./FolderForm.vue";
 
 import { Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useStore } from "@/store";
+import { useNotepadStore } from "@/store/notepad";
 
 const props = defineProps<{
 	folder: Folder;
@@ -51,7 +51,7 @@ const emit = defineEmits<{
 
 const editMode = ref(false);
 
-const store = useStore();
+const notepadStore = useNotepadStore();
 
 function openFolder(folder: Folder) {
 	emit("open-folder", folder);
@@ -63,7 +63,7 @@ const folderIcon = computed(() => {
 
 const childrenCount = computed(() => {
 	const fullPath = utilities.joinPaths(true, props.parentPath, props.folder.name);
-	const content = store.getFolderContent(fullPath);
+	const content = notepadStore.getFolderContent(fullPath);
 	return content ? content.folders.length + content.files.length : 0;
 });
 </script>

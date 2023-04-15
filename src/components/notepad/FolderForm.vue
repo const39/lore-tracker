@@ -41,7 +41,7 @@ import colors from "@/js/colors";
 import { type VForm } from "vuetify/components";
 
 import { ref, computed } from "vue";
-import { useStore } from "@/store";
+import { useNotepadStore } from "@/store/notepad";
 
 const props = defineProps<{ parentPath: string; edit?: Folder }>();
 const emit = defineEmits<{
@@ -61,7 +61,7 @@ const rules = {
 const model = ref(initModel());
 const form = ref<VForm | undefined>(undefined);
 
-const store = useStore();
+const notepadStore = useNotepadStore();
 
 const folderIcon = computed(() => Icon.folder);
 
@@ -73,7 +73,7 @@ function getRandomColor(): string {
 }
 
 function checkNameDoesNotExist(name: string): boolean | string {
-	return !store.doesFolderExist(name) || $t("fields.nameAlreadyUsed");
+	return !notepadStore.doesFolderExist(name) || $t("fields.nameAlreadyUsed");
 }
 
 function initModel(): Folder {
@@ -97,11 +97,7 @@ async function submit() {
 		if (props.edit) {
 			// TODO
 			console.warn("updateFolder() not implemented yet");
-		} else
-			store.commitAndSave({
-				commit: "addFolder",
-				payload: { pathToParent: props.parentPath, folder: model },
-			});
+		} else notepadStore.addFolder({ pathToParent: props.parentPath, folder: model.value });
 		emit("submit");
 	}
 }

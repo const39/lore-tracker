@@ -21,21 +21,27 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, defineAsyncComponent } from "vue";
-import { CardTypes } from "@/js/types";
 import { eventBus } from "@/js/eventBus";
+import { CardTypes } from "@/js/types";
+import { computed, defineAsyncComponent, ref } from "vue";
 
 import BaseCard from "./BaseCard.vue";
 import FormWrapper from "./forms/FormWrapper.vue";
 
 import utilities from "@/js/utilities";
-import { useStore } from "@/store";
+import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
 
 const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
 const showForm = ref(false);
 
-const store = useStore();
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
+
+const isSortDisabled = computed(() => {
+	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+});
 
 function onDelete() {
 	eventBus.emit("delete-card", props.itemData);
@@ -46,10 +52,6 @@ const contentComponent = computed(() => {
 	return defineAsyncComponent({
 		loader: () => import(`./content/${componentName}.vue`),
 	});
-});
-
-const isSortDisabled = computed(() => {
-	return store.isFilterActive || !store.isDefaultOrder;
 });
 </script>
 

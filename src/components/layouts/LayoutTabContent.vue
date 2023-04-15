@@ -27,31 +27,30 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import CardContainer from "../cards/CardContainer.vue";
 import CardAdd from "../cards/CardAdd.vue";
+import CardContainer from "../cards/CardContainer.vue";
 
-import draggable from "vuedraggable";
 import { CardCategory, CardTypes } from "@/js/types";
-import { useStore } from "@/store";
+import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
+import draggable from "vuedraggable";
 
 const props = defineProps<{ category: CardCategory }>();
 const drag = ref(false);
 
-const store = useStore();
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
 
 const isSortDisabled = computed(() => {
-	return store.isFilterActive || !store.isDefaultOrder;
+	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
 });
 
 const items = computed({
 	get(): CardTypes[] {
-		return store.getCards[props.category];
+		return cardsStore.filteredCards[props.category];
 	},
 	set(list: CardTypes[]) {
-		store.commitAndSave({
-			commit: "updateWholeList",
-			payload: { category: props.category, list },
-		});
+		cardsStore.updateWholeList({ category: props.category, list });
 	},
 });
 </script>

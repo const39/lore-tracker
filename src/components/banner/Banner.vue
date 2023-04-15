@@ -38,26 +38,29 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
 import { t as $t } from "@/js/translation";
-import { useStore } from "@/store/index";
+import { computed, ref } from "vue";
 
-import StatusTray from "./StatusTray.vue";
 import SearchView from "@/components/SearchView.vue";
+import { useCampaignInfoStore } from "@/store/campaignInfo";
+import { useCardsStore } from "@/store/cards";
+import StatusTray from "./StatusTray.vue";
 
 const rules = [(v: string) => !!v || $t("fields.requiredField"), (v: string) => v.length <= 30 || "30 max."];
 const editName = ref(false);
 
-const store = useStore();
+const cardsStore = useCardsStore();
+const campaignInfoStore = useCampaignInfoStore();
 
-const cardCount = computed(() => store.cardCount);
+const cardCount = computed(() => cardsStore.cardCount);
 
 const campaignName = computed({
 	get() {
-		return store.name;
+		return campaignInfoStore.name;
 	},
 	set(value) {
-		if (value) store.commitAndSave({ commit: "setName", payload: value });
+		const name = value.trim();
+		if (name) campaignInfoStore.name = name;
 	},
 });
 </script>

@@ -35,17 +35,17 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import { t as $t } from "@/js/translation";
+import { computed } from "vue";
 
 import FolderCard from "./FolderCard.vue";
 // import LayoutTabContent from "./layouts/LayoutTabContent.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
 
-import { CardCategory, FileTreeNode, Folder, Icon } from "@/js/types";
+import { CardCategory, Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
+import { useNotepadStore } from "@/store/notepad";
 import { useRouter } from "vue-router";
-import { useStore } from "@/store";
 
 interface BreadcrumbItem {
 	text: string;
@@ -63,7 +63,7 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
-const store = useStore();
+const notepadStore = useNotepadStore();
 
 function goBack() {
 	router.back();
@@ -76,7 +76,7 @@ function openFolder(folder: Folder) {
 }
 function getChildrenCount(folder: Folder) {
 	const fullPath = utilities.joinPaths(true, props.folderPath, folder.name);
-	const content = store.getFolderContent(fullPath);
+	const content = notepadStore.getFolderContent(fullPath);
 	return content ? content.folders.length + content.folders.length : 0;
 }
 
@@ -90,7 +90,7 @@ const folderIcon = computed(() => {
 
 const folderContent = computed(() => {
 	const sanitized = utilities.sanitizePath(true, props.folderPath);
-	return store.getFolderContent(sanitized);
+	return notepadStore.getFolderContent(sanitized);
 });
 
 const breadcrumbs = computed(() => {

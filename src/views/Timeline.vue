@@ -17,11 +17,11 @@
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
 import { Event } from "@/js/types";
-import { useStore } from "@/store";
+import { useCardsStore } from "@/store/cards";
 import { computed } from "vue";
 import TimelineEvent from "../components/TimelineEvent.vue";
 
-const store = useStore();
+const cardsStore = useCardsStore();
 
 interface GroupByDayMapping {
 	[key: number]: Event[];
@@ -33,7 +33,7 @@ function getKey(node: Event | string) {
 
 const nodes = computed(() => {
 	// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-	let events = store.cards.event.slice().reverse();
+	let events = cardsStore.cards.event.slice().reverse();
 
 	// Browse through events to index them by their day field
 	let indexedByDay: GroupByDayMapping = {};

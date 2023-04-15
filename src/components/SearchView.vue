@@ -41,9 +41,10 @@
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
 import { CategoryFilter, Icon as icons } from "@/js/types";
-import { useStore } from "@/store";
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import TagListPanel from "./cards/tags/TagListPanel.vue";
+import { useFilterStore } from "@/store/filter";
+import { useCardsStore } from "@/store/cards";
 
 const open = ref(false);
 const categories = ref(Object.values(CategoryFilter));
@@ -51,14 +52,13 @@ const selectedCategory = ref<CategoryFilter>(CategoryFilter.ALL);
 const textToContain = ref("");
 const selectedTags = ref([]);
 
-const store = useStore();
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
 
 function search() {
-	store.updateFilter({
-		category: selectedCategory.value,
-		text: textToContain.value,
-		tags: selectedTags.value,
-	});
+	filterStore.category = selectedCategory.value;
+	filterStore.text = textToContain.value;
+	filterStore.tags = selectedTags.value;
 }
 
 /**
@@ -74,7 +74,7 @@ const style = computed(() => {
 
 const resultsNumber = computed(() => {
 	let count = 0;
-	const cards = store.getCards;
+	const cards = cardsStore.filteredCards;
 	for (const key in cards) count += cards[key as keyof typeof cards].length;
 	return count;
 });
@@ -87,7 +87,7 @@ watch(open, (newValue) => {
 		selectedCategory.value = CategoryFilter.ALL;
 		textToContain.value = "";
 		selectedTags.value = [];
-		store.resetFilter();
+		filterStore.$reset();
 	}
 });
 

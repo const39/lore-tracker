@@ -8,7 +8,6 @@
 				{{ $t("actions.save") }}
 			</v-btn>
 		</v-card-actions>
-		{{ "valid" + isValid }}
 	</v-form>
 </template>
 
@@ -16,11 +15,9 @@
 import { t as $t } from "@/js/translation";
 import { CardCategory, CardTypes, EventType, ID } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useStore } from "@/store";
-import { computed } from "vue";
-import { watch } from "vue";
-import { defineAsyncComponent } from "vue";
-import { ref } from "vue";
+import { useCampaignInfoStore } from "@/store/campaignInfo";
+import { useCardsStore } from "@/store/cards";
+import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
 
 const props = defineProps<{
@@ -32,7 +29,8 @@ const emit = defineEmits<{
 	(e: "done"): void;
 }>();
 
-const store = useStore();
+const campaignInfoStore = useCampaignInfoStore();
+const cardsStore = useCardsStore();
 
 const form = ref<VForm | undefined>();
 const isValid = ref(false);
@@ -50,7 +48,7 @@ const formComponent = computed(() => {
 
 function initModel(): CardTypes {
 	if (typeof props.edit !== "undefined") {
-		const data = store.getByIdInCategory(props.edit, props.category);
+		const data = cardsStore.getByIdInCategory(props.edit, props.category);
 		// We return a clone of the object to avoid modifying directly the store
 		// Helpful when the user cancels their changes because we don't have to rollback
 		if (data) return utilities.deepCopy(data) as CardTypes;
@@ -66,8 +64,8 @@ function close() {
 async function submit() {
 	if (await form.value?.validate()) {
 		// Update or add card based on form type
-		if (typeof props.edit !== "undefined") store.commitAndSave({ commit: "updateCard", payload: model.value });
-		else store.commitAndSave({ commit: "addCard", payload: model.value });
+		if (typeof props.edit !== "undefined") cardsStore.updateCard(model.value);
+		else cardsStore.addCard(model.value);
 	}
 	close();
 }
@@ -93,7 +91,7 @@ function modelFactory(): CardTypes {
 				desc: "",
 				tags: [],
 				type: EventType.OTHER,
-				day: store.days,
+				day: campaignInfoStore.days,
 			};
 		case CardCategory.Location:
 			return {

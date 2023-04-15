@@ -36,20 +36,22 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import CardContainer from "../cards/CardContainer.vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import CardAdd from "../cards/CardAdd.vue";
+import CardContainer from "../cards/CardContainer.vue";
 
+import { CardCategory, CardTypes, Icon as icons } from "@/js/types";
+import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
 import draggable from "vuedraggable";
-import { Icon as icons, CardCategory, CardTypes } from "@/js/types";
-import { useStore } from "@/store";
 
 const props = defineProps<{ category: CardCategory }>();
 
 const drag = ref(false);
 const isCollapsed = ref(0);
 
-const store = useStore();
+const filterStore = useFilterStore();
+const cardsStore = useCardsStore();
 
 function onMove(e: any) {
 	/**
@@ -85,18 +87,15 @@ function hotkey(e: KeyboardEvent) {
 	}
 }
 const isSortDisabled = computed(() => {
-	return store.isFilterActive || !store.isDefaultOrder;
+	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
 });
 
 const items = computed({
 	get(): CardTypes[] {
-		return store.getCards[props.category];
+		return cardsStore.filteredCards[props.category];
 	},
 	set(list: CardTypes[]) {
-		store.commitAndSave({
-			commit: "updateWholeList",
-			payload: { category: props.category, list },
-		});
+		cardsStore.updateWholeList({ category: props.category, list });
 	},
 });
 onMounted(() => {

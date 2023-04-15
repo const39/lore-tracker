@@ -21,30 +21,31 @@
 import { t as $t } from "@/js/translation";
 import { computed } from "vue";
 import { Season } from "@/js/types";
-import { useStore } from "@/store/index";
+import { useCampaignInfoStore } from "@/store/campaignInfo";
 
-const store = useStore();
+const campaignInfoStore = useCampaignInfoStore();
+
 const daysCounter = computed({
 	get() {
-		return store.days;
+		return campaignInfoStore.days;
 	},
 	set(val) {
-		store.commitAndSave({ commit: "setDaysCount", payload: val });
+		if (Number.isSafeInteger(val) && val > -1) campaignInfoStore.days = val;
 	},
 });
 
 const currentSeason = computed({
 	get() {
-		return $t(`status.seasons.${store.season}`);
+		return $t(`status.seasons.${campaignInfoStore.season}`);
 	},
 	set(val) {
-		store.commitAndSave({ commit: "setSeason", payload: val });
+		campaignInfoStore.season = val as Season;
 	},
 });
 
 function previousSeason() {
 	const values = Object.values(Season);
-	const index = values.findIndex((entry) => entry === store.season);
+	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
 	if (index > -1) {
 		if (index > 0) currentSeason.value = values[index - 1];
 		else currentSeason.value = values[values.length - 1];
@@ -52,7 +53,7 @@ function previousSeason() {
 }
 function nextSeason() {
 	const values = Object.values(Season);
-	let index = values.findIndex((entry) => entry === store.season);
+	let index = values.findIndex((entry) => entry === campaignInfoStore.season);
 	if (index > -1) {
 		if (index < values.length - 1) currentSeason.value = values[index + 1];
 		else currentSeason.value = values[0];

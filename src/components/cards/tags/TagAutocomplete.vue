@@ -37,9 +37,9 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { ref, watch, computed, nextTick, mergeProps } from "vue";
-import { CardCategory, CardTypes, Icon as icons, ID, Tag } from "@/js/types";
-import { useStore } from "@/store";
+import { CardCategory, CardTypes, ID, Tag, Icon as icons } from "@/js/types";
+import { useCardsStore } from "@/store/cards";
+import { computed, mergeProps, nextTick, ref, watch } from "vue";
 
 const props = defineProps<{
 	// Override default v-model
@@ -52,7 +52,7 @@ const emit = defineEmits<{
 	(e: "select", value: ID): void;
 }>();
 
-const store = useStore();
+const cardsStore = useCardsStore();
 
 const category = ref(CardCategory.Quest);
 const selectedTag = ref<Tag | undefined>(undefined);
@@ -91,7 +91,7 @@ const nextCategory = computed(() => {
  * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
  */
 const availableTags = computed<Tag[]>(() => {
-	let cards: CardTypes[] = store.cards[category.value];
+	let cards: CardTypes[] = cardsStore.cards[category.value];
 	return cards
 		.filter((card: CardTypes) => (props.excludeIds ? !props.excludeIds.includes(card.id) : true))
 		.map((card: CardTypes) => new Tag(card));

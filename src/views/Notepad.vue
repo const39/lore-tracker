@@ -18,17 +18,17 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
 import { t as $t } from "@/js/translation";
+import { computed, ref } from "vue";
 
 import Banner from "@/components/banner/Banner.vue";
 import NotepadActions from "@/components/banner/actions/NotepadActions.vue";
-import NotepadContent from "@/components/notepad/NotepadContent.vue";
 import FolderDialog from "@/components/notepad/FolderDialog.vue";
+import NotepadContent from "@/components/notepad/NotepadContent.vue";
 
-import utilities from "@/js/utilities";
 import { CardCategory, FileTypes } from "@/js/types";
-import { useStore } from "@/store";
+import utilities from "@/js/utilities";
+import { useNotepadStore } from "@/store/notepad";
 
 const props = defineProps<{
 	// These props are passed to the component directly by vue-router
@@ -38,7 +38,7 @@ const props = defineProps<{
 
 const showFolderDialog = ref(false);
 
-const store = useStore();
+const notepadStore = useNotepadStore();
 
 function newFolder(): void {
 	showFolderDialog.value = true;
@@ -55,14 +55,11 @@ function newFile(): void {
 		title: "Note A",
 	};
 
-	store.commitAndSave({
-		commit: "addFile",
-		payload: { pathToParent: props.folderPath, file: note },
-	});
+	notepadStore.addFile({ pathToParent: props.folderPath, file: note });
 }
 
 const doesFolderExist = computed(() => {
 	const sanitized = utilities.sanitizePath(true, props.folderPath);
-	return store.doesFolderExist(sanitized);
+	return notepadStore.doesFolderExist(sanitized);
 });
 </script>

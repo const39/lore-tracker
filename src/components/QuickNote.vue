@@ -22,7 +22,7 @@
 						auto-grow
 						autofocus
 						:hint="$t('fields.mdSupport')"
-						v-model="text"
+						v-model="content"
 					></v-textarea>
 				</v-card-text>
 			</v-card>
@@ -33,13 +33,23 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { useStore } from "@/store";
-import { computed, ref } from "vue";
+import { useQuickNoteStore } from "@/store/quickNote";
+import { computed } from "vue";
+import { ref } from "vue";
 
 const open = ref(false);
 const resizing = ref(false);
 
-const store = useStore();
+const quickNoteStore = useQuickNoteStore();
+
+const content = computed({
+	get() {
+		return quickNoteStore.content;
+	},
+	set(value) {
+		quickNoteStore.content = value.trim() ?? "";
+	},
+});
 
 const interaction = {
 	originalW: 0,
@@ -83,15 +93,6 @@ function resize(e: MouseEvent) {
 		}
 	}
 }
-
-const text = computed({
-	get() {
-		return store.quickNote;
-	},
-	set(value) {
-		store.commitAndSave({ commit: "setQuickNote", payload: value });
-	},
-});
 </script>
 
 <style scoped>

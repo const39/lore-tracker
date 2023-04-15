@@ -20,20 +20,20 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { onBeforeUnmount, onMounted, ref } from "vue";
 
 import Banner from "@/components/banner/Banner.vue";
 import LorebookActions from "@/components/banner/actions/LorebookActions.vue";
 
-import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
 import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
+import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 import { eventBus } from "@/js/eventBus";
-import utilities from "../js/utilities";
 import { Order } from "@/js/types";
-import { useStore } from "@/store";
+import { useCardsStore } from "@/store/cards";
+import utilities from "../js/utilities";
 
 const selectedLayout = ref(0);
 const confirmDialog = ref({
@@ -42,7 +42,8 @@ const confirmDialog = ref({
 	message: "",
 	acceptAction: () => {},
 });
-const store = useStore();
+
+const cardsStore = useCardsStore();
 
 function selectLayout(value: number) {
 	selectedLayout.value = value;
@@ -51,18 +52,18 @@ function selectLayout(value: number) {
  * Update card order when selection changes
  */
 function selectOrder(value: number) {
-	store.setOrder(value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT);
+	cardsStore.order = value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT;
 }
 onMounted(() => {
-	eventBus.on('delete-card', (card) => {
+	eventBus.on("delete-card", (card) => {
 		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(card._category)}`);
 		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${utilities.getText(card)}" ?`;
-		confirmDialog.value.acceptAction = () => store.commitAndSave({ commit: "deleteCard", payload: card });
+		confirmDialog.value.acceptAction = () => cardsStore.deleteCard(card);
 		confirmDialog.value.show = true;
 	});
 });
 onBeforeUnmount(() => {
-	eventBus.off('delete-card');
+	eventBus.off("delete-card");
 });
 </script>
 

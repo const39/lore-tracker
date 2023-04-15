@@ -31,7 +31,7 @@
 import { eventBus } from "@/js/eventBus.js";
 import { CardCategory, Icon as icons, ID, Tag } from "@/js/types";
 import utilities from "@/js/utilities";
-import { useStore } from "@/store";
+import { useCardsStore } from "@/store/cards";
 import { computed } from "vue";
 
 const props = withDefaults(
@@ -43,7 +43,7 @@ const props = withDefaults(
 	{ editable: false }
 );
 
-const store = useStore();
+const cardsStore = useCardsStore();
 
 /**
  * Remove the ID matching the specified Tag from the 'value' prop (if any).
@@ -79,7 +79,7 @@ const tags = computed(() => {
 		note: [],
 	};
 	for (const id of props.modelValue) {
-		const elem = store.getById(id);
+		const elem = cardsStore.getById(id);
 
 		// If the object is found, create a tag object from the element's data
 		if (elem) {

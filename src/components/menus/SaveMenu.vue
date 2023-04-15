@@ -66,9 +66,9 @@ const showConfirmDialog = ref(false);
 const store = useStore();
 
 function downloadSave(): void {
+	const file = store.toFile();
 	const a = document.createElement("a");
-	const blob = new Blob([store.toJSON], { type: "application/json" });
-	a.href = URL.createObjectURL(blob);
+	a.href = URL.createObjectURL(file);
 	a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;
 	a.click();
 }
