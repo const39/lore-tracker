@@ -1,6 +1,6 @@
 <template>
-	<v-dialog v-model="showDialog" persistent max-width="375">
-		<FolderForm :parent-path="parentPath" @close="close" @submit="close"></FolderForm>
+	<v-dialog v-model="showDialog" max-width="375" persistent>
+		<FolderForm :parent-path="parentPath" @close="close" @submit="close" />
 	</v-dialog>
 </template>
 
@@ -36,5 +36,3 @@ const showDialog = computed({
 	},
 });
 </script>
-
-<style></style>

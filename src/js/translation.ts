@@ -234,7 +234,8 @@ export function getNestedProperty(object: any, property: string): string {
 }
 
 export function t(key: string): string {
-	const text = getNestedProperty(locales[current], key) || getNestedProperty(locales[fallback], key);
+	const text =
+		getNestedProperty(locales[current], key) || getNestedProperty(locales[fallback], key);
 	if (text) return text;
 	else {
 		if (process.env.NODE_ENV === "production") return "";

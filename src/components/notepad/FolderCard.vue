@@ -3,20 +3,32 @@
 		<v-hover v-if="!editMode" v-slot="{ isHovering }">
 			<v-card @dblclick="openFolder(folder)">
 				<v-card-title class="d-flex">
-					<v-icon size="x-large" :color="folder.color">{{ folderIcon }}</v-icon>
+					<v-icon :icon="folderIcon" :color="folder.color" size="x-large" />
 					<div class="mx-1 flex-grow-1">
-						<span class="px-1 text-subtitle-1"> {{ folder.name }} </span>
+						<span class="px-1 text-subtitle-1">
+							{{ folder.name }}
+						</span>
 					</div>
 					<v-tooltip location="bottom">
-						<template v-slot:activator="{ props }">
-							<v-avatar class="text-caption" size="20" color="grey" v-bind="props">
+						<template #activator="{ props: tooltipProps }">
+							<v-avatar
+								class="text-caption"
+								size="20"
+								color="grey"
+								v-bind="tooltipProps"
+							>
 								{{ childrenCount }}
 							</v-avatar>
 						</template>
 						<span>{{ childrenCount + $t("notepad.folder.childElements") }}</span>
 					</v-tooltip>
 					<v-fade-transition>
-						<v-icon v-if="isHovering" class="mx-2" @click="editMode = true">mdi-pencil</v-icon>
+						<v-icon
+							v-if="isHovering"
+							class="mx-2"
+							icon="mdi-pencil"
+							@click="editMode = true"
+						/>
 					</v-fade-transition>
 				</v-card-title>
 			</v-card>
@@ -27,7 +39,7 @@
 			:edit="folder"
 			@close="editMode = false"
 			@submit="editMode = false"
-		></FolderForm>
+		/>
 	</div>
 </template>
 
@@ -67,5 +79,3 @@ const childrenCount = computed(() => {
 	return content ? content.folders.length + content.files.length : 0;
 });
 </script>
-
-<style></style>

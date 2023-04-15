@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
@@ -40,7 +41,10 @@ abstract class SaveProcessor {
 
 	validateAndConvert(save: any): any {
 		if (SaveProcessor.validate(save, this.inputSaveVersion)) return this.convert(save);
-		else throw new Error("Save format does not match specified save version: save data is unusable.");
+		else
+			throw new Error(
+				"Save format does not match specified save version: save data is unusable."
+			);
 	}
 
 	protected abstract convert(save: any): any;

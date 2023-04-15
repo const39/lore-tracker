@@ -10,7 +10,12 @@ import { useNotepadStore } from "./notepad";
 import { useQuickNoteStore } from "./quickNote";
 
 export const useStore = defineStore("store", () => {
-	const stores = [useCampaignInfoStore(), useCardsStore(), useNotepadStore(), useQuickNoteStore()];
+	const stores = [
+		useCampaignInfoStore(),
+		useCardsStore(),
+		useNotepadStore(),
+		useQuickNoteStore(),
+	];
 
 	const serializableState = computed(() => {
 		const aggregatedState = stores.reduce(
@@ -21,7 +26,9 @@ export const useStore = defineStore("store", () => {
 		return deepUnref(reactive(aggregatedState));
 	});
 
-	const { ignoreUpdates } = watchIgnorable(serializableState, () => save(), { deep: true });
+	const { ignoreUpdates } = watchIgnorable(serializableState, () => save(), {
+		deep: true,
+	});
 
 	function setState(payload: SerializableState) {
 		stores.forEach((store) => store.$hydrate(payload));

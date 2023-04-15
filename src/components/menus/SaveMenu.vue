@@ -1,5 +1,9 @@
 <template>
-	<MenuActivator :close-on-content-click="false" :title="$t('options.save.optionName')" icon="mdi-content-save">
+	<MenuActivator
+		:close-on-content-click="false"
+		:title="$t('options.save.optionName')"
+		icon="mdi-content-save"
+	>
 		<v-list density="compact">
 			<v-list-item prepend-icon="mdi-download" @click="downloadSave">
 				<v-list-item-title>{{ $t("options.save.downloadText") }}</v-list-item-title>
@@ -9,7 +13,7 @@
 			</v-list-item>
 			<v-list-item prepend-icon="" @click="showConfirmDialog = true">
 				<template #prepend>
-					<v-icon color="red">mdi-delete</v-icon>
+					<v-icon color="red" icon="mdi-delete" />
 				</template>
 				<v-list-item-title class="text-red">
 					{{ $t("options.save.deleteText") }}
@@ -19,24 +23,28 @@
 	</MenuActivator>
 
 	<!-- Save file upload dialog -->
-	<v-dialog v-model="showUploadDialog" persistent max-width="450">
+	<v-dialog v-model="showUploadDialog" max-width="450" persistent>
 		<v-card>
-			<v-card-title class="text-h5">{{ $t("options.save.uploadText") }}</v-card-title>
+			<v-card-title class="text-h5">
+				{{ $t("options.save.uploadText") }}
+			</v-card-title>
 			<v-card-text>
 				<v-file-input
 					v-model="uploadedFile"
-					variant="outlined"
-					accept="application/json"
 					:label="$t('options.save.uploadInputLabel')"
 					:messages="$t('options.save.uploadInputHint')"
-				></v-file-input>
+					variant="outlined"
+					accept="application/json"
+				/>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn variant="text" @click="showUploadDialog = false">
 					{{ $t("actions.close") }}
 				</v-btn>
-				<v-btn variant="text" color="primary" @click="uploadSave">{{ $t("actions.save") }}</v-btn>
+				<v-btn variant="text" color="primary" @click="uploadSave">
+					{{ $t("actions.save") }}
+				</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -46,7 +54,7 @@
 		v-model="showConfirmDialog"
 		:title="$t('options.save.deleteDialogTitle')"
 		:message="$t('options.save.deleteDialogMessage')"
-		:acceptAction="deleteSave"
+		:accept-action="deleteSave"
 	/>
 </template>
 
@@ -103,7 +111,7 @@ function uploadSave(): void {
 					showUploadDialog.value = false;
 				}
 			})
-			.catch((err: any) => {
+			.catch((err) => {
 				console.error(err);
 				eventBus.emit("show-snackbar", {
 					message: $t("messages.errors.saveFileImportFailed"),
@@ -121,5 +129,3 @@ function deleteSave(): void {
 	store.deleteSave();
 }
 </script>
-
-<style></style>

@@ -1,9 +1,7 @@
 <template>
 	<v-menu location="bottom left">
-		<template v-slot:activator="{ props }">
-			<v-btn icon v-bind="props">
-				<v-icon>mdi-dots-vertical</v-icon>
-			</v-btn>
+		<template #activator="{ props }">
+			<v-btn icon="mdi-dots-vertical" v-bind="props" />
 		</template>
 
 		<v-list density="compact" flat>
@@ -22,6 +20,6 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-</script>
 
-<style></style>
+defineEmits(["edit", "delete"]);
+</script>

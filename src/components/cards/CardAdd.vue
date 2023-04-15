@@ -3,25 +3,29 @@
 		<v-expand-transition>
 			<!-- Dynamic Form component ("Add" version) -->
 			<BaseCard v-if="showForm">
-				<FormWrapper :category="category" @done="closeForm"></FormWrapper>
+				<FormWrapper :category="category" @done="closeForm" />
 			</BaseCard>
 		</v-expand-transition>
 		<v-fade-transition>
 			<!-- "Add" clickable card button -->
 			<v-card
 				v-if="showAdd"
-				variant="outlined"
-				@mouseenter="hover = true"
-				@mouseleave="hover = false"
-				class="my-1 custom-border"
 				:class="{
 					'fill-height': fillHeight,
 					'grey-lighten-3': hover && !isDarkTheme,
 					'grey-darken-3': hover && isDarkTheme,
 				}"
+				variant="outlined"
+				class="my-1 custom-border"
+				@mouseenter="hover = true"
+				@mouseleave="hover = false"
 			>
-				<v-card-text class="text-center clickable" :class="{ 'fill-height': fillHeight }" @click="openForm">
-					<v-icon size="large">mdi-plus</v-icon>
+				<v-card-text
+					:class="{ 'fill-height': fillHeight }"
+					class="text-center clickable"
+					@click="openForm"
+				>
+					<v-icon size="large" icon="mdi-plus" />
 				</v-card-text>
 			</v-card>
 		</v-fade-transition>

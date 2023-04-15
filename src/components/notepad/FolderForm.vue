@@ -1,31 +1,45 @@
 <template>
 	<v-form ref="form">
 		<v-card>
-			<v-card-title class="text-h5"> Ajouter un dossier </v-card-title>
+			<v-card-title class="text-h5">
+				Ajouter un dossier
+			</v-card-title>
 			<v-card-text class="d-flex align-center text-body-2">
 				<v-menu>
-					<template v-slot:activator="{ props }">
+					<template #activator="{ props: menuProps }">
 						<v-hover>
 							<template #default="{ isHovering }">
-								<v-btn v-bind="props" class="mr-1" icon size="x-large">
-									<v-icon size="x-large" :color="model.color"> {{ folderIcon }} </v-icon>
+								<v-btn v-bind="menuProps" class="mr-1" size="x-large" icon>
+									<v-icon
+										:icon="folderIcon"
+										:color="model.color"
+										size="x-large"
+									/>
 									<v-fade-transition>
-										<v-overlay v-if="isHovering" absolute opacity="0.2">
-											<v-icon size="small">mdi-eyedropper-variant</v-icon>
+										<v-overlay v-if="isHovering" opacity="0.2" absolute>
+											<v-icon size="small" icon="mdi-eyedropper-variant" />
 										</v-overlay>
 									</v-fade-transition>
 								</v-btn>
 							</template>
 						</v-hover>
 					</template>
-					<v-color-picker v-model="model.color" :rules="rules.color"></v-color-picker>
+					<v-color-picker v-model="model.color" :rules="rules.color" />
 				</v-menu>
-				<v-text-field :label="$t('fields.name') + '*'" :rules="rules.name" v-model="model.name"></v-text-field>
+				<v-text-field
+					v-model="model.name"
+					:label="$t('fields.name') + '*'"
+					:rules="rules.name"
+				/>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
-				<v-btn variant="text" @click="close"> {{ $t("actions.close") }} </v-btn>
-				<v-btn variant="text" color="primary" @click="submit"> {{ $t("actions.save") }} </v-btn>
+				<v-spacer />
+				<v-btn variant="text" @click="close">
+					{{ $t("actions.close") }}
+				</v-btn>
+				<v-btn variant="text" color="primary" @click="submit">
+					{{ $t("actions.save") }}
+				</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-form>
@@ -54,7 +68,7 @@ const rules = {
 	name: [
 		validationRules.required($t("fields.requiredField")),
 		validationRules.counter("", 25),
-		(this as any).checkNameDoesNotExist,
+		checkNameDoesNotExist,
 	],
 };
 
@@ -97,10 +111,12 @@ async function submit() {
 		if (props.edit) {
 			// TODO
 			console.warn("updateFolder() not implemented yet");
-		} else notepadStore.addFolder({ pathToParent: props.parentPath, folder: model.value });
+		} else
+			notepadStore.addFolder({
+				pathToParent: props.parentPath,
+				folder: model.value,
+			});
 		emit("submit");
 	}
 }
 </script>
-
-<style></style>

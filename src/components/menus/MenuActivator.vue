@@ -1,11 +1,11 @@
 <template>
-	<v-menu location="left" open-on-hover :open-delay="0" :close-delay="0">
-		<template v-slot:activator="{ props }">
+	<v-menu :open-delay="0" :close-delay="0" location="left" open-on-hover>
+		<template #activator="{ props }">
 			<v-list-item v-bind="props" :prepend-icon="icon">
 				<v-list-item-title>{{ title }}</v-list-item-title>
 			</v-list-item>
 		</template>
-		<slot></slot>
+		<slot />
 	</v-menu>
 </template>
 

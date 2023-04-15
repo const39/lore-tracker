@@ -1,7 +1,7 @@
 <template>
-	<v-tabs fixed-tabs color="accent" v-model="activeTab">
+	<v-tabs v-model="activeTab" color="accent" fixed-tabs>
 		<v-tab v-for="tab in tabs" :key="tab">
-			<v-icon start>{{ icons[tab] }}</v-icon>
+			<v-icon :icon="icons[tab]" start />
 			{{ $t(`categories.${tab}`) }}
 		</v-tab>
 	</v-tabs>
@@ -26,7 +26,7 @@ const activeTab = ref(0);
 
 // Register hotkeys
 onKeyDown(
-	Array.from({ length: tabs.value.length }, (v, idx) => (idx + 1).toString()),	// Register listener for each tab
+	Array.from({ length: tabs.value.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
 	hotkey
 );
 
@@ -41,7 +41,7 @@ onKeyDown(
  */
 function hotkey(e: KeyboardEvent) {
 	if (e.altKey) {
-		let num = Number.parseInt(e.key);
+		const num = Number.parseInt(e.key);
 		if (num >= 1 && num <= tabs.value.length) {
 			e.preventDefault();
 			activeTab.value = num - 1;

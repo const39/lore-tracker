@@ -1,10 +1,10 @@
 <template>
 	<v-container>
-		<div class="d-flex" v-if="breadcrumbs.length">
-			<v-icon @click="goBack">mdi-arrow-left</v-icon>
+		<div v-if="breadcrumbs.length" class="d-flex">
+			<v-icon icon="mdi-arrow-left" @click="goBack" />
 			<v-breadcrumbs :items="breadcrumbs">
-				<template v-slot:divider>
-					<v-icon>mdi-chevron-right</v-icon>
+				<template #divider>
+					<v-icon icon="mdi-chevron-right" />
 				</template>
 			</v-breadcrumbs>
 		</div>
@@ -13,21 +13,23 @@
 				{{ $t("notepad.types.folder") + "s" }}
 			</div>
 			<v-row>
-				<v-col cols="12" md="3" v-for="folder in folderContent?.folders" :key="folder.id">
+				<v-col v-for="folder in folderContent?.folders" :key="folder.id" cols="12" md="3">
 					<FolderCard
 						:folder="folder"
 						:parent-path="folderPath"
 						@open-folder="openFolder(folder)"
-					></FolderCard>
+					/>
 				</v-col>
 			</v-row>
 		</div>
 		<div class="my-3">
-			<div class="mb-4 py-3 text-h6">{{ $t("notepad.types.file") + "s" }}</div>
+			<div class="mb-4 py-3 text-h6">
+				{{ $t("notepad.types.file") + "s" }}
+			</div>
 			<!-- <LayoutTabContent :category="noteCategory" /> -->
 			<v-row>
-				<v-col cols="12" md="3" v-for="file in folderContent?.files" :key="file.id">
-					<CardContainer :item-data="file"></CardContainer>
+				<v-col v-for="file in folderContent?.files" :key="file.id" cols="12" md="3">
+					<CardContainer :item-data="file" />
 				</v-col>
 			</v-row>
 		</div>
@@ -71,7 +73,9 @@ function goBack() {
 function openFolder(folder: Folder) {
 	router.push({
 		name: props.routeName,
-		params: { folderPath: utilities.joinPaths(false, props.folderPath, folder.name.toLowerCase()) },
+		params: {
+			folderPath: utilities.joinPaths(false, props.folderPath, folder.name.toLowerCase()),
+		},
 	});
 }
 function getChildrenCount(folder: Folder) {
@@ -108,7 +112,10 @@ const breadcrumbs = computed(() => {
 		const pathToCurrentElement = arr.slice(0, idx + 1).join("/");
 		return {
 			text: pathElement,
-			to: { name: props.routeName, params: { folderPath: pathToCurrentElement } },
+			to: {
+				name: props.routeName,
+				params: { folderPath: pathToCurrentElement },
+			},
 			disabled: idx === arr.length - 1,
 			exact: true,
 		};
@@ -117,5 +124,3 @@ const breadcrumbs = computed(() => {
 	return [root, ...nextItems];
 });
 </script>
-
-<style></style>

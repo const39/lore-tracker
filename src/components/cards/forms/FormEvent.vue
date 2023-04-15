@@ -1,7 +1,7 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon>{{ categoryIcon }}</v-icon>
+		<v-icon :icon="categoryIcon" />
 		<span class="mx-2">{{ $t("dialogs.addEvent") }}</span>
 	</v-card-title>
 	<v-card-text>
@@ -13,7 +13,7 @@
 				:rules="[rules.required]"
 				variant="outlined"
 				auto-grow
-			></v-textarea>
+			/>
 			<v-row>
 				<v-col cols="12" sm="12" md="6">
 					<v-select
@@ -23,18 +23,18 @@
 						:items="eventTypes"
 						chips
 					>
-						<template v-slot:chip="{ props, item }">
-							<v-chip v-bind="props">
-								<v-icon :icon="icons[item.raw as keyof typeof icons]" start></v-icon>
+						<template #chip="{ props: chipProps, item }">
+							<v-chip v-bind="chipProps">
+								<v-icon :icon="icons[item.raw as keyof typeof icons]" start />
 								{{ $t(`eventTypes.${item.raw}`) }}
 							</v-chip>
 						</template>
-						<template v-slot:item="{ props, item }">
+						<template #item="{ props: itemProps, item }">
 							<v-list-item
-								v-bind="props"
+								v-bind="itemProps"
 								:prepend-icon="icons[item.raw as keyof typeof icons]"
 								:title="$t(`eventTypes.${item.raw}`)"
-							></v-list-item>
+							/>
 						</template>
 					</v-select>
 				</v-col>
@@ -46,7 +46,7 @@
 						:rules="[rules.dayRange]"
 						type="number"
 						min="0"
-					></v-text-field>
+					/>
 				</v-col>
 			</v-row>
 			<TagListPanel v-model="model.tags" :exclude-id="model.id" />

@@ -1,7 +1,7 @@
 <template>
 	<Banner>
-		<template v-slot:actions>
-			<LorebookActions @layout="selectLayout" @order="selectOrder"></LorebookActions>
+		<template #actions>
+			<LorebookActions @layout="selectLayout" @order="selectOrder" />
 		</template>
 	</Banner>
 
@@ -14,7 +14,7 @@
 		v-model="confirmDialog.show"
 		:title="confirmDialog.title"
 		:message="confirmDialog.message"
-		:acceptAction="confirmDialog.acceptAction"
+		:accept-action="confirmDialog.acceptAction"
 	/>
 </template>
 
@@ -40,6 +40,7 @@ const confirmDialog = ref({
 	show: false,
 	title: "",
 	message: "",
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	acceptAction: () => {},
 });
 
@@ -66,5 +67,3 @@ onBeforeUnmount(() => {
 	eventBus.off("delete-card");
 });
 </script>
-
-<style></style>

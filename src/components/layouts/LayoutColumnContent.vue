@@ -4,7 +4,7 @@
 			<v-expansion-panel>
 				<v-expansion-panel-title>
 					<div class="text-h5">
-						<v-icon start>{{ icons[category] }}</v-icon>
+						<v-icon :icon="icons[category]" start />
 						{{ $t(`categories.${category}`) }}
 					</div>
 				</v-expansion-panel-title>
@@ -12,20 +12,20 @@
 					<CardAdd :category="category" :fill-height="false" />
 					<draggable
 						v-model="items"
-						group="items"
-						item-key="id"
 						:animation="200"
 						:disabled="isSortDisabled"
 						:move="onMove"
+						group="items"
+						item-key="id"
 						@start="drag = true"
 						@end="drag = false"
 					>
 						<template #item="{ element }">
 							<CardContainer
-								outlined
 								:class="{ draggable: !isSortDisabled }"
 								:item-data="element"
-							></CardContainer>
+								outlined
+							/>
 						</template>
 					</draggable>
 				</v-expansion-panel-text>

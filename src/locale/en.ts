@@ -28,7 +28,7 @@ const en: Locale = {
 		folderNotFound: {
 			title: "Folder not found",
 			message: "Go back to ",
-		}
+		},
 	},
 
 	eventTypes: {
@@ -94,7 +94,7 @@ const en: Locale = {
 		unknownRole: "Unknown role",
 		requiredField: "required field",
 		dayNotValid: "invalid day",
-		nameAlreadyUsed: "Name already used"
+		nameAlreadyUsed: "Name already used",
 	},
 
 	dialogs: {
@@ -107,7 +107,8 @@ const en: Locale = {
 
 		deleteTitle: "Delete ",
 		deleteQuest: "Do you really want to delete this quest ?",
-		deleteEvent: "Do you really want to delete this event ? This will also change the timeline.",
+		deleteEvent:
+			"Do you really want to delete this event ? This will also change the timeline.",
 		deleteLocation: "Do you really want to delete this location ?",
 		deleteCharacter: "Do you really want to delete this character ?",
 		deleteFaction: "Do you really want to delete this faction ?",
@@ -166,7 +167,8 @@ const en: Locale = {
 			uploadInputHint: "JSON file required",
 			deleteText: "Delete save",
 			deleteDialogTitle: "Delete save?",
-			deleteDialogMessage: "All saved data will be lost. Please consider to backup your data first.",
+			deleteDialogMessage:
+				"All saved data will be lost. Please consider to backup your data first.",
 		},
 		about: {
 			optionName: "About",

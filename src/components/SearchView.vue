@@ -1,38 +1,50 @@
 <template>
 	<div>
-		<v-btn @click="open = !open">
-			<v-icon>mdi-magnify</v-icon>
+		<v-btn prepend-icon="mdi-magnify" @click="open = !open">
 			{{ $t("search.search") }}
 		</v-btn>
 		<v-navigation-drawer v-if="open" location="right" width="320" class="pa-2">
 			<v-row class="d-flex mx-2 my-5">
 				<span class="text-h5">{{ $t("search.search") }}</span>
-				<v-spacer></v-spacer>
-				<v-btn variant="text" density="comfortable" icon="mdi-close" @click="open = false"> </v-btn>
+				<v-spacer />
+				<v-btn
+					variant="text"
+					density="comfortable"
+					icon="mdi-close"
+					@click="open = false"
+				/>
 			</v-row>
 			<v-list-subheader>{{ $t("fields.category") }}</v-list-subheader>
-			<v-select variant="outlined" density="compact" class="mx-2" v-model="selectedCategory" :items="categories">
-				<template v-slot:selection="{ props, item }">
+			<v-select
+				v-model="selectedCategory"
+				:items="categories"
+				variant="outlined"
+				density="compact"
+				class="mx-2"
+			>
+				<template #selection="{ props, item }">
 					<v-list-item
 						v-bind="props"
 						:prepend-icon="icons[item.raw as keyof typeof icons]"
 						:title="$t(`categories.${item.raw}`)"
-					></v-list-item>
+					/>
 				</template>
-				<template v-slot:item="{ props, item }">
+				<template #item="{ props, item }">
 					<v-list-item
 						v-bind="props"
 						:prepend-icon="icons[item.raw as keyof typeof icons]"
 						:title="$t(`categories.${item.raw}`)"
-					></v-list-item>
+					/>
 				</template>
 			</v-select>
 			<v-list-subheader>{{ $t("search.containing") }}</v-list-subheader>
-			<v-textarea variant="outlined" density="compact" class="mx-2" v-model="textToContain"></v-textarea>
+			<v-textarea v-model="textToContain" variant="outlined" density="compact" class="mx-2" />
 			<v-list-subheader>{{ $t("search.taggedWith") }}</v-list-subheader>
-			<TagListPanel class="mx-2" v-model="selectedTags" />
-			<span class="mx-2 text-grey text-caption">{{ resultsNumber + $t("search.cardsMatching") }}</span>
-			<br />
+			<TagListPanel v-model="selectedTags" class="mx-2" />
+			<span class="mx-2 text-grey text-caption">{{
+				resultsNumber + $t("search.cardsMatching")
+			}}</span>
+			<br>
 			<span class="mx-2 text-grey text-caption">{{ $t("search.sortDisabled") }}</span>
 		</v-navigation-drawer>
 	</div>
@@ -41,11 +53,11 @@
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
 import { CategoryFilter, Icon as icons } from "@/js/types";
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import TagListPanel from "./cards/tags/TagListPanel.vue";
-import { useFilterStore } from "@/store/filter";
 import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
 import { onKeyDown } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
+import TagListPanel from "./cards/tags/TagListPanel.vue";
 
 const open = ref(false);
 const categories = ref(Object.values(CategoryFilter));
@@ -63,7 +75,7 @@ function search() {
 }
 
 // Register hotkeys
-onKeyDown(["k", "K"], hotkey)
+onKeyDown(["k", "K"], hotkey);
 
 /**
  * Open/close the Search view when pressing Ctrl+K
@@ -71,10 +83,6 @@ onKeyDown(["k", "K"], hotkey)
 function hotkey(e: KeyboardEvent) {
 	if (e.ctrlKey) open.value = !open.value;
 }
-
-const style = computed(() => {
-	return open.value ? "display: block;" : "display: none;";
-});
 
 const resultsNumber = computed(() => {
 	let count = 0;

@@ -1,11 +1,19 @@
 <template>
 	<div class="d-flex flex-column">
-		<v-btn :disabled="disabled" class="mx-2 my-1" @click="$emit('new-folder')">
-			<v-icon start>mdi-plus</v-icon>
+		<v-btn
+			:disabled="disabled"
+			class="mx-2 my-1"
+			prepend-icon="mdi-plus"
+			@click="$emit('new-folder')"
+		>
 			{{ $t("notepad.types.folder") }}
 		</v-btn>
-		<v-btn :disabled="disabled" class="mx-2 my-1" @click="$emit('new-file')">
-			<v-icon start>mdi-plus</v-icon>
+		<v-btn
+			:disabled="disabled"
+			class="mx-2 my-1"
+			prepend-icon="mdi-plus"
+			@click="$emit('new-file')"
+		>
 			{{ $t("notepad.types.file") }}
 		</v-btn>
 	</div>
@@ -14,4 +22,5 @@
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
 defineProps<{ disabled: boolean }>();
+defineEmits(["new-folder", "new-file"]);
 </script>

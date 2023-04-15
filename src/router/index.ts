@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { RouteLocation, createRouter, createWebHistory } from "vue-router";
 import LoreBook from "../views/LoreBook.vue";
 
 const routes = [
@@ -17,7 +17,10 @@ const routes = [
 		path: "/notepad/:folderPath*",
 		name: "Notepad",
 		component: () => import("../views/Notepad.vue"),
-		props: (route: any) => ({ routeName: "Notepad", folderPath: route.params.folderPath || "/" }),
+		props: (route: RouteLocation) => ({
+			routeName: "Notepad",
+			folderPath: route.params.folderPath || "/",
+		}),
 	},
 	{
 		path: "/:dummyParam(.*)*",
