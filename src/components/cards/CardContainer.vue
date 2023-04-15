@@ -1,8 +1,8 @@
 <template>
 	<BaseCard
+		:id="itemData.id + '-card'"
 		:with-options="!showForm"
 		:outlined="outlined"
-		:id="itemData.id + '-card'"
 		@edit="showForm = true"
 		@delete="onDelete"
 	>
@@ -13,9 +13,14 @@
 				:category="itemData._category"
 				:edit="itemData.id"
 				@done="showForm = false"
-			></FormWrapper>
+			/>
 			<!-- Dynamic Card content component -->
-			<component v-else :is="contentComponent" :class="{ draggable: !isSortDisabled }" :item-data="itemData" />
+			<component
+				:is="contentComponent"
+				v-else
+				:class="{ draggable: !isSortDisabled }"
+				:item-data="itemData"
+			/>
 		</v-expand-transition>
 	</BaseCard>
 </template>
@@ -54,5 +59,3 @@ const contentComponent = computed(() => {
 	});
 });
 </script>
-
-<style></style>

@@ -2,7 +2,7 @@
 	<div class="pa-3">
 		<v-row v-for="(list, category) in tags" :key="category">
 			<div v-if="list.length" class="d-flex align-center">
-				<v-icon size="small">{{ icons[category] }}</v-icon>
+				<v-icon :icon="icons[category]" size="small" />
 				<!-- Editable version -->
 				<div v-if="editable">
 					<v-chip
@@ -18,7 +18,13 @@
 				</div>
 				<!-- Immutable version -->
 				<div v-else>
-					<v-chip v-for="tag in list" :key="tag.id" class="ma-1" size="small" @click.stop="goToCard(tag)">
+					<v-chip
+						v-for="tag in list"
+						:key="tag.id"
+						class="ma-1"
+						size="small"
+						@click.stop="goToCard(tag)"
+					>
 						{{ truncate(tag.text, 30) }}
 					</v-chip>
 				</div>
@@ -36,22 +42,35 @@ import { computed } from "vue";
 
 const props = withDefaults(
 	defineProps<{
-		// Override default v-model
-		modelValue: ID[];
+		modelValue: ID[]; // v-model
 		editable?: boolean;
 	}>(),
 	{ editable: false }
 );
 
+const emit = defineEmits<{
+	(e: "update:modelValue", value: ID[]): void;
+}>();
+
 const cardsStore = useCardsStore();
+
+// v-model binding
+const model = computed({
+	get() {
+		return props.modelValue;
+	},
+	set(value) {
+		emit("update:modelValue", value);
+	},
+});
 
 /**
  * Remove the ID matching the specified Tag from the 'value' prop (if any).
  * Performs in-place removal, the prop is changed directly.
  */
 function remove(tag: Tag) {
-	const index = props.modelValue.indexOf(tag.id);
-	if (index >= 0) props.modelValue.splice(index, 1);
+	const index = model.value.indexOf(tag.id);
+	if (index >= 0) model.value.splice(index, 1);
 }
 /**
  * Send an event to the eventBus indicating that a tag referencing a card has been clicked.
@@ -70,7 +89,7 @@ type TagsPerCategory = {
  * Create a Tag for each object whose ID is given
  */
 const tags = computed(() => {
-	let tagLists: TagsPerCategory = {
+	const tagLists: TagsPerCategory = {
 		quest: [],
 		character: [],
 		event: [],
@@ -78,7 +97,7 @@ const tags = computed(() => {
 		faction: [],
 		note: [],
 	};
-	for (const id of props.modelValue) {
+	for (const id of model.value) {
 		const elem = cardsStore.getById(id);
 
 		// If the object is found, create a tag object from the element's data
@@ -90,5 +109,3 @@ const tags = computed(() => {
 	return tagLists;
 });
 </script>
-
-<style></style>

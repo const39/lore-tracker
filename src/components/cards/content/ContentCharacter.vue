@@ -4,17 +4,22 @@
 		<v-card-text class="pa-3">
 			<p class="text-h6">
 				{{ itemData.name }}
-				<v-tooltip location="top" v-if="!itemData.isAlive">
-					<template v-slot:activator="{ props }">
-						<v-icon v-bind="props">mdi-skull</v-icon>
+				<v-tooltip v-if="!itemData.isAlive" location="top">
+					<template #activator="{ props: tooltipProps }">
+						<v-icon v-bind="tooltipProps" icon="mdi-skull" />
 					</template>
 					<span>{{ $t("fields.dead") }}</span>
 				</v-tooltip>
-				<v-chip label size="x-small"> {{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }} </v-chip>
+				<v-chip size="x-small" label>
+					{{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }}
+				</v-chip>
 			</p>
-			<p class="text-subtitle-2 text-truncate">{{ identity }}</p>
+			<p class="text-subtitle-2 text-truncate">
+				{{ identity }}
+			</p>
 			<MarkdownView :text="itemData.desc" />
-			<TagList v-model="itemData.tags" />
+			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+			<TagList v-model="itemData.tags" :editable="false" />
 		</v-card-text>
 	</div>
 </template>
@@ -32,9 +37,9 @@ const props = defineProps<{
 }>();
 
 const identity = computed(() => {
-	let race = props.itemData.race || $t("fields.unknownRace");
-	let classes = props.itemData.classes || $t("fields.unknownClass");
-	let role = props.itemData.role || $t("fields.unknownRole");
+	const race = props.itemData.race || $t("fields.unknownRace");
+	const classes = props.itemData.classes || $t("fields.unknownClass");
+	const role = props.itemData.role || $t("fields.unknownRole");
 
 	return `${race} - ${classes} (${role})`;
 });

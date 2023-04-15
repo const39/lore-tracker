@@ -1,10 +1,16 @@
 <template>
-	<v-form v-model="isValid" ref="form" validate-on="input">
-		<component v-model="model" :is="formComponent" :variant="edit === undefined ? 'add' : 'edit'" />
+	<v-form ref="form" v-model="isValid" validate-on="input">
+		<component
+			:is="formComponent"
+			v-model="model"
+			:variant="edit === undefined ? 'add' : 'edit'"
+		/>
 		<v-card-actions>
-			<v-spacer></v-spacer>
-			<v-btn variant="text" @click="close">{{ $t("actions.close") }}</v-btn>
-			<v-btn color="primary" variant="text" :disabled="!isValid" @click="submit">
+			<v-spacer />
+			<v-btn variant="text" @click="close">
+				{{ $t("actions.close") }}
+			</v-btn>
+			<v-btn :disabled="!isValid" color="primary" variant="text" @click="submit">
 				{{ $t("actions.save") }}
 			</v-btn>
 		</v-card-actions>
@@ -133,5 +139,3 @@ function modelFactory(): CardTypes {
 	}
 }
 </script>
-
-<style scoped></style>

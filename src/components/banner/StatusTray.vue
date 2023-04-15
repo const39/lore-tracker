@@ -1,14 +1,14 @@
 <template>
 	<v-tooltip location="bottom">
-		<template v-slot:activator="{ props }">
+		<template #activator="{ props }">
 			<div class="d-inline text-body-2" v-bind="props">
 				<span class="clickable" @click.left="daysCounter++" @click.right="daysCounter--">
-					<v-icon size="small">mdi-white-balance-sunny</v-icon>
+					<v-icon size="small" icon="mdi-white-balance-sunny" />
 					{{ $t("status.day") + daysCounter }}
 				</span>
 				|
 				<span class="clickable" @click.left="nextSeason" @click.right="previousSeason">
-					<v-icon size="small">mdi-flower</v-icon>
+					<v-icon size="small" icon="mdi-flower" />
 					{{ currentSeason }}
 				</span>
 			</div>
@@ -53,7 +53,7 @@ function previousSeason() {
 }
 function nextSeason() {
 	const values = Object.values(Season);
-	let index = values.findIndex((entry) => entry === campaignInfoStore.season);
+	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
 	if (index > -1) {
 		if (index < values.length - 1) currentSeason.value = values[index + 1];
 		else currentSeason.value = values[0];

@@ -1,20 +1,28 @@
 <template>
 	<Banner>
-		<template v-slot:actions>
-			<NotepadActions :disabled="!doesFolderExist" @new-folder="newFolder" @new-file="newFile"></NotepadActions>
+		<template #actions>
+			<NotepadActions
+				:disabled="!doesFolderExist"
+				@new-folder="newFolder"
+				@new-file="newFile"
+			/>
 		</template>
 	</Banner>
 
-	<NotepadContent v-if="doesFolderExist" :route-name="routeName" :folder-path="folderPath"></NotepadContent>
+	<NotepadContent v-if="doesFolderExist" :route-name="routeName" :folder-path="folderPath" />
 	<div v-else class="my-3 text-center">
-		<div class="text-xl-h4 my-3">{{ $t("notepad.folderNotFound.title") }}</div>
+		<div class="text-xl-h4 my-3">
+			{{ $t("notepad.folderNotFound.title") }}
+		</div>
 		<p>
 			{{ $t("notepad.folderNotFound.message") }}
-			<router-link :to="{ name: routeName }">{{ $t("pages.notepad") }}</router-link>
+			<router-link :to="{ name: routeName }">
+				{{ $t("pages.notepad") }}
+			</router-link>
 		</p>
 	</div>
 
-	<FolderDialog v-model="showFolderDialog" :parent-path="folderPath"></FolderDialog>
+	<FolderDialog v-model="showFolderDialog" :parent-path="folderPath" />
 </template>
 
 <script lang="ts" setup>

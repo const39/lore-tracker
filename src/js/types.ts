@@ -123,7 +123,9 @@ export interface FileTreeNode {
 
 export class FileTree extends Map<string, FileTreeNode> {
 	constructor(data?: NotepadSave) {
-		const entries = data ? Object.keys(data).map<[string, FileTreeNode]>((key) => [key, data[key]]) : [];
+		const entries = data
+			? Object.keys(data).map<[string, FileTreeNode]>((key) => [key, data[key]])
+			: [];
 		super(entries);
 
 		// Set root node if none exists
@@ -183,7 +185,7 @@ export enum Order {
 	ALPHANUMERIC = "alphanumeric",
 }
 
-export type CategoryFilter = typeof CategoryFilter[keyof typeof CategoryFilter];
+export type CategoryFilter = (typeof CategoryFilter)[keyof typeof CategoryFilter];
 
 export interface Filter {
 	category: CategoryFilter;

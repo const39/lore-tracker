@@ -2,9 +2,12 @@
 	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
 	<div>
 		<v-card-text class="pa-3">
-			<p class="text-h6 mary">{{ itemData.name }}</p>
+			<p class="text-h6 mary">
+				{{ itemData.name }}
+			</p>
 			<MarkdownView :text="itemData.desc" />
-			<TagList v-model="itemData.tags" />
+			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+			<TagList v-model="itemData.tags" :editable="false" />
 		</v-card-text>
 	</div>
 </template>

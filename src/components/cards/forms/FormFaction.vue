@@ -1,19 +1,23 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon>{{ categoryIcon }}</v-icon>
+		<v-icon :icon="categoryIcon" />
 		<span class="mx-2">{{ $t("dialogs.addFaction") }}</span>
 	</v-card-title>
 	<v-card-text>
 		<v-container>
-			<v-text-field v-model="model.name" :label="$t('fields.name') + '*'" :rules="[requiredRule]"></v-text-field>
+			<v-text-field
+				v-model="model.name"
+				:label="$t('fields.name') + '*'"
+				:rules="[requiredRule]"
+			/>
 			<v-textarea
 				v-model="model.desc"
 				:label="$t('fields.desc')"
 				:hint="$t('fields.mdSupport')"
 				variant="outlined"
 				auto-grow
-			></v-textarea>
+			/>
 			<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 		</v-container>
 		<small>{{ "*" + $t("fields.requiredField") }}</small>

@@ -5,17 +5,28 @@
 			<v-card-text>
 				<v-row class="d-flex">
 					<v-col cols="12" md="6">
-						<HotkeyList :title="$t('options.hotkeys.pages.title')" :hotkeys="hotkeysDisplay.pages" />
-						<HotkeyList :title="$t('options.hotkeys.misc.title')" :hotkeys="hotkeysDisplay.misc" />
+						<HotkeyList
+							:title="$t('options.hotkeys.pages.title')"
+							:hotkeys="hotkeysDisplay.pages"
+						/>
+						<HotkeyList
+							:title="$t('options.hotkeys.misc.title')"
+							:hotkeys="hotkeysDisplay.misc"
+						/>
 					</v-col>
 					<v-col cols="12" md="6">
-						<HotkeyList :title="$t('options.hotkeys.content.title')" :hotkeys="hotkeysDisplay.content" />
+						<HotkeyList
+							:title="$t('options.hotkeys.content.title')"
+							:hotkeys="hotkeysDisplay.content"
+						/>
 					</v-col>
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
-				<v-btn variant="text" color="primary" @click="showDialog = false">{{ $t("actions.close") }}</v-btn>
+				<v-spacer />
+				<v-btn variant="text" color="primary" @click="showDialog = false">
+					{{ $t("actions.close") }}
+				</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>

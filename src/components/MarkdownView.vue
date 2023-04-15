@@ -1,5 +1,5 @@
 <template>
-	<VueMarkdown class="markdown" :source="text"></VueMarkdown>
+	<VueMarkdown :source="text" class="markdown" />
 </template>
 
 <script lang="ts" setup>

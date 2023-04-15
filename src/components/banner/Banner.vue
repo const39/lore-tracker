@@ -5,34 +5,39 @@
 				<div class="text-xl-h4 mb-2" v-bind="props">
 					<v-form v-if="editName">
 						<v-text-field
-							autofocus
 							v-model="campaignName"
-							counter
-							maxlength="30"
 							:rules="rules"
+							maxlength="30"
 							append-inner-icon="mdi-check"
+							autofocus
+							counter
 							@click:append-inner="editName = false"
 							@keypress.enter="editName = false"
-						></v-text-field>
+						/>
 					</v-form>
 					<span v-else>
 						{{ campaignName }}
-						<v-icon v-show="isHovering" size="x-small" icon="mdi-pencil" @click="editName = true"></v-icon>
+						<v-icon
+							v-show="isHovering"
+							size="x-small"
+							icon="mdi-pencil"
+							@click="editName = true"
+						/>
 					</span>
 				</div>
 			</v-hover>
 
 			<StatusTray />
 		</div>
-		<v-spacer></v-spacer>
+		<v-spacer />
 		<div class="text-right">
 			<SearchView class="mt-1 mb-2" />
 			<span class="text-grey text-caption">{{ cardCount + $t("status.cardCount") }}</span>
 		</div>
 
-		<v-divider vertical class="ml-3 mr-1"></v-divider>
+		<v-divider class="ml-3 mr-1" vertical />
 		<div>
-			<slot name="actions"></slot>
+			<slot name="actions" />
 		</div>
 	</v-row>
 </template>
@@ -46,7 +51,10 @@ import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
 import StatusTray from "./StatusTray.vue";
 
-const rules = [(v: string) => !!v || $t("fields.requiredField"), (v: string) => v.length <= 30 || "30 max."];
+const rules = [
+	(v: string) => !!v || $t("fields.requiredField"),
+	(v: string) => v.length <= 30 || "30 max.",
+];
 const editName = ref(false);
 
 const cardsStore = useCardsStore();
@@ -64,5 +72,3 @@ const campaignName = computed({
 	},
 });
 </script>
-
-<style></style>

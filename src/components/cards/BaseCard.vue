@@ -1,10 +1,10 @@
 <template>
 	<v-card
-		height="100%"
 		:variant="outlined ? 'outlined' : 'elevated'"
 		:elevation="elevation"
-		fill-height
+		height="100%"
 		class="mb-4"
+		fill-height
 		@mouseenter="hover = true"
 		@mouseleave="hover = false"
 		@dblclick="$emit('edit')"
@@ -14,7 +14,7 @@
 			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" />
 		</v-card-actions>
 		<!-- Inner content of the card -->
-		<slot></slot>
+		<slot />
 	</v-card>
 </template>
 
@@ -27,12 +27,12 @@ const props = defineProps<{
 	withOptions?: boolean;
 }>();
 
+defineEmits(["edit", "delete"]);
+
 const hover = ref(false);
 const elevation = computed(() => {
 	let elevation = props.outlined ? 0 : 1;
 	if (hover.value) elevation++;
 	return elevation;
-})
+});
 </script>
-
-<style></style>

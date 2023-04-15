@@ -1,9 +1,19 @@
 <template>
 	<MenuActivator :title="$t('options.lang.optionName')" icon="mdi-translate">
 		<v-list v-model:selected="selectedLang" density="compact" mandatory>
-			<v-list-item v-for="lang in langList" :key="lang.key" :value="lang.key" :title="lang.name">
+			<v-list-item
+				v-for="lang in langList"
+				:key="lang.key"
+				:value="lang.key"
+				:title="lang.name"
+			>
 				<template #prepend>
-					<v-img class="mr-2" max-width="32" max-height="32" :src="`/lang/${lang.key}.png`"></v-img>
+					<v-img
+						:src="`/lang/${lang.key}.png`"
+						class="mr-2"
+						max-width="32"
+						max-height="32"
+					/>
 				</template>
 			</v-list-item>
 		</v-list>
@@ -32,11 +42,9 @@ const langList = [
 
 watch(selectedLang, (val) => {
 	console.log("changing lang to", val);
-	if(val.length) {
+	if (val.length) {
 		translation.setLanguage(val[0]);
 		window.location.reload();
 	}
 });
 </script>
-
-<style></style>

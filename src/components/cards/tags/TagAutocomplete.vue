@@ -5,19 +5,22 @@
 		item-title="text"
 		item-value="id"
 		density="compact"
-		autofocus
-		return-object
 		max-width="30%"
 		append-icon="mdi-chevron-right"
+		autofocus
+		return-object
 		@click:append="open = false"
 		@keydown="categoryChangeHotkey"
 	>
-		<template v-slot:prepend>
+		<template #prepend>
 			<v-menu location="bottom left">
-				<template v-slot:activator="{ props: menuProps }">
+				<template #activator="{ props: menuProps }">
 					<v-tooltip location="bottom">
-						<template v-slot:activator="{ props: tooltipProps }">
-							<v-icon v-bind="mergeProps(menuProps, tooltipProps)">{{ icons[category] }}</v-icon>
+						<template #activator="{ props: tooltipProps }">
+							<v-icon
+								v-bind="mergeProps(menuProps, tooltipProps)"
+								:icon="icons[category]"
+							/>
 						</template>
 						<span>{{ $t("actions.changeCategory") }}</span>
 					</v-tooltip>
@@ -25,7 +28,7 @@
 				<v-list density="compact">
 					<v-list-item v-for="cat in categories" :key="cat" link @click="category = cat">
 						<v-list-item-title>
-							<v-icon size="small" class="mx-1">{{ icons[cat] }}</v-icon>
+							<v-icon :icon="icons[cat]" size="small" class="mx-1" />
 							{{ $t(`categories.${cat}`) }}
 						</v-list-item-title>
 					</v-list-item>
@@ -91,9 +94,11 @@ const nextCategory = computed(() => {
  * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
  */
 const availableTags = computed<Tag[]>(() => {
-	let cards: CardTypes[] = cardsStore.cards[category.value];
+	const cards: CardTypes[] = cardsStore.cards[category.value];
 	return cards
-		.filter((card: CardTypes) => (props.excludeIds ? !props.excludeIds.includes(card.id) : true))
+		.filter((card: CardTypes) =>
+			props.excludeIds ? !props.excludeIds.includes(card.id) : true
+		)
 		.map((card: CardTypes) => new Tag(card));
 });
 /**
@@ -111,5 +116,3 @@ const open = computed({
 	},
 });
 </script>
-
-<style></style>

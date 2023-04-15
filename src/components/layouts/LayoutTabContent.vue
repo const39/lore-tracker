@@ -2,12 +2,12 @@
 	<v-container>
 		<draggable
 			v-model="items"
+			:animation="200"
+			:disabled="isSortDisabled"
 			tag="v-row"
 			draggable=".item"
 			group="items"
 			item-key="id"
-			:animation="200"
-			:disabled="isSortDisabled"
 			@start="drag = true"
 			@end="drag = false"
 		>
@@ -18,7 +18,7 @@
 			</template>
 			<template #item="{ element }">
 				<v-col cols="12" md="4" class="item">
-					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element"></CardContainer>
+					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
 				</v-col>
 			</template>
 		</draggable>

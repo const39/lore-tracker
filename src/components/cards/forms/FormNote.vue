@@ -1,20 +1,20 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon>{{ categoryIcon }}</v-icon>
+		<v-icon :icon="categoryIcon" />
 		<span class="mx-2">{{ $t("dialogs.addNote") }}</span>
 	</v-card-title>
 	<v-card-text>
 		<v-container>
-			<v-text-field :label="$t('fields.title')" v-model="model.title"></v-text-field>
+			<v-text-field v-model="model.title" :label="$t('fields.title')" />
 			<v-textarea
-				variant="outlined"
-				auto-grow
+				v-model="model.desc"
 				:label="$t('fields.desc') + '*'"
 				:hint="$t('fields.mdSupport')"
 				:rules="[requiredRule]"
-				v-model="model.desc"
-			></v-textarea>
+				variant="outlined"
+				auto-grow
+			/>
 			<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 		</v-container>
 		<small>{{ "*" + $t("fields.requiredField") }}</small>

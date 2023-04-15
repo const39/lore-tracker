@@ -11,22 +11,29 @@
 							@mousedown="onHold"
 							@mousemove="resize"
 							@mouseup="resizing = false"
-						>
-						</v-btn>
-						<p class="text-h6">{{ $t("actions.quickNote") }}</p>
-						<v-btn variant="plain" icon="mdi-chevron-down" @click="open = false"> </v-btn>
+						/>
+						<p class="text-h6">
+							{{ $t("actions.quickNote") }}
+						</p>
+						<v-btn variant="plain" icon="mdi-chevron-down" @click="open = false" />
 					</div>
 					<v-textarea
 						id="resizable"
+						v-model="content"
+						:hint="$t('fields.mdSupport')"
 						variant="outlined"
 						auto-grow
 						autofocus
-						:hint="$t('fields.mdSupport')"
-						v-model="content"
-					></v-textarea>
+					/>
 				</v-card-text>
 			</v-card>
-			<v-btn v-else size="large" icon="mdi-text-box-edit" color="primary" @click="open = true"> </v-btn>
+			<v-btn
+				v-else
+				size="large"
+				icon="mdi-text-box-edit"
+				color="primary"
+				@click="open = true"
+			/>
 		</v-fab-transition>
 	</div>
 </template>
@@ -85,11 +92,13 @@ function resize(e: MouseEvent) {
 		const height = interaction.originalH - (e.pageY - interaction.originalMouseY);
 		if (width > MIN_SIZE) {
 			element.style.width = width + "px";
-			element.style.left = interaction.originalX + (e.pageX - interaction.originalMouseX) + "px";
+			element.style.left =
+				interaction.originalX + (e.pageX - interaction.originalMouseX) + "px";
 		}
 		if (height > MIN_SIZE) {
 			element.style.height = height + "px";
-			element.style.top = interaction.originalY + (e.pageY - interaction.originalMouseY) + "px";
+			element.style.top =
+				interaction.originalY + (e.pageY - interaction.originalMouseY) + "px";
 		}
 	}
 }

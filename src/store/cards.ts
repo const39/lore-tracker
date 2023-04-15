@@ -1,4 +1,13 @@
-import { CardCategory, CardTypes, CardsStore, CategoryFilter, Filter, ID, Order, SerializableState } from "@/js/types";
+import {
+	CardCategory,
+	CardTypes,
+	CardsStore,
+	CategoryFilter,
+	Filter,
+	ID,
+	Order,
+	SerializableState,
+} from "@/js/types";
 import utilities from "@/js/utilities";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
@@ -41,7 +50,9 @@ function filterCards(cards: CardsStore, filter: Filter) {
 				// If specified, search for corresponding text in text fields of the current entry
 				if (filter.text) {
 					const str = filter.text;
-					predicate = utilities.getAllText(entry).some((text) => text.toLowerCase().includes(str));
+					predicate = utilities
+						.getAllText(entry)
+						.some((text) => text.toLowerCase().includes(str));
 				}
 
 				// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
@@ -127,7 +138,9 @@ export const useCardsStore = defineStore("cards", () => {
 			for (const key in cards.value) {
 				cards.value[key as keyof typeof cards.value].forEach((entry: CardTypes) => {
 					// If this entry's tags contain a reference to the object we're about to delete, remove it
-					const referenceIndex = entry.tags.findIndex((event: number) => event === card.id);
+					const referenceIndex = entry.tags.findIndex(
+						(event: number) => event === card.id
+					);
 					if (referenceIndex != -1) entry.tags.splice(referenceIndex, 1);
 				});
 			}

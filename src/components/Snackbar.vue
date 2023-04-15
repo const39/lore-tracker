@@ -1,10 +1,8 @@
 <template>
 	<v-snackbar v-model="show" :timeout="timeout" :color="color">
 		{{ message }}
-		<template v-slot:actions>
-			<v-btn icon @click="show = false">
-				<v-icon>mdi-close</v-icon>
-			</v-btn>
+		<template #actions>
+			<v-btn icon="mdi-close" @click="show = false" />
 		</template>
 	</v-snackbar>
 </template>
@@ -31,5 +29,3 @@ onBeforeUnmount(() => {
 	eventBus.off("show-snackbar");
 });
 </script>
-
-<style></style>

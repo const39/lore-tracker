@@ -2,23 +2,27 @@
 	<MenuActivator :title="$t('options.themes.optionName')" icon="mdi-brightness-6">
 		<v-card>
 			<v-card-text>
-				<v-item-group mandatory active-class="active" v-model="selectedTheme">
+				<v-item-group v-model="selectedTheme" active-class="active" mandatory>
 					<v-container>
 						<v-row class="d-flex justify-space-between">
 							<v-item
-								
 								v-for="item in themeList"
 								:key="item.key"
-								:value="item.key"
 								v-slot="{ toggle }"
+								:value="item.key"
 							>
 								<div class="ma-1 text-center" @click="toggle">
 									<v-sheet
+										:style="
+											computeSheetStyle(
+												item.colors.primary,
+												item.colors.background
+											)
+										"
 										height="72"
 										width="72"
 										class="clickable"
-										:style="computeSheetStyle(item.colors.primary, item.colors.background)"
-									></v-sheet>
+									/>
 									<span> {{ item.name }} </span>
 								</div>
 							</v-item>
@@ -41,15 +45,12 @@ import MenuActivator from "./MenuActivator.vue";
 const theme = useTheme();
 const selectedTheme = ref(theme.current.value.dark ? "dark" : "light");
 
-function computeSheetStyle(primary: any, background: any) {
-	let p = primary?.base || primary;
-	let b = background?.base || background;
-
-	return `background: linear-gradient(45deg, ${b} 50%, ${p} 50%); `;
+function computeSheetStyle(primary: string, background: string) {
+	return `background: linear-gradient(45deg, ${background} 50%, ${primary} 50%); `;
 }
 
 const themeList = computed(() => {
-	let list = [];
+	const list = [];
 
 	// Browse Vuetify theme settings
 	const themes = theme.themes.value;

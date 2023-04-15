@@ -1,19 +1,21 @@
 <template>
 	<v-timeline-item
-		icon-color="white"
 		:icon="node.icon"
 		:dot-color="node.color"
 		:size="node.isHeader ? 'small' : undefined"
 		:fill-dot="!node.isHeader"
+		icon-color="white"
 	>
-		<div :class="{ 'font-weight-medium': node.isHeader }">{{ node.text }}</div>
+		<div :class="{ 'font-weight-medium': node.isHeader }">
+			{{ node.text }}
+		</div>
 	</v-timeline-item>
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType } from "vue";
-import { type Event, EventType, CardCategory } from "@/js/types";
+import { CardCategory, EventType, type Event } from "@/js/types";
 import utilities from "@/js/utilities";
+import { computed } from "vue";
 import { useTheme } from "vuetify";
 
 interface Node {
@@ -23,7 +25,7 @@ interface Node {
 	color: string;
 }
 
-// ! Vue throws a type-check warning at runtime because it cannot crawl imported Event type  
+// ! Vue throws a type-check warning at runtime because it cannot crawl imported Event type
 // @see https://vuejs.org/guide/typescript/composition-api.html#syntax-limitations
 type ItemType = Event | string;
 const props = defineProps<{
@@ -35,7 +37,7 @@ const theme = useTheme();
  * Return a custom object with the node's data, depending on the item prop type.
  */
 const node = computed(() => {
-	let info = {} as Node;
+	const info = {} as Node;
 
 	/**
 	 * If the item prop is an Event, return the relevant Event data.

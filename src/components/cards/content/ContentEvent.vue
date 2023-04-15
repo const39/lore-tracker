@@ -5,16 +5,19 @@
 			<v-row class="d-flex align-center">
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
 					<v-tooltip location="top">
-						<template v-slot:activator="{ props }">
-							<v-icon size="large" v-bind="props">{{ getIcon(itemData) }}</v-icon>
+						<template #activator="{ props }">
+							<v-icon v-bind="props" :icon="getIcon(itemData)" size="large" />
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
-					<v-chip label size="x-small" variant="text">{{ $t("status.day") + itemData.day }}</v-chip>
+					<v-chip size="x-small" variant="text" label>
+						{{ $t("status.day") + itemData.day }}
+					</v-chip>
 				</v-col>
 				<v-col class="flex-grow-1 flex-shrink-0">
 					<MarkdownView :text="itemData.desc" />
-					<TagList v-model="itemData.tags" />
+					<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+					<TagList v-model="itemData.tags" :editable="false" />
 				</v-col>
 			</v-row>
 		</v-card-text>

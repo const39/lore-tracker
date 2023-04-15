@@ -1,23 +1,23 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon>{{ categoryIcon }}</v-icon>
+		<v-icon :icon="categoryIcon" />
 		<span class="mx-2">{{ $t("dialogs.addQuest") }}</span>
 	</v-card-title>
 	<v-card-text>
 		<v-container>
 			<v-text-field
+				v-model="model.title"
 				:label="$t('fields.title') + '*'"
 				:rules="[requiredRule]"
-				v-model="model.title"
-			></v-text-field>
+			/>
 			<ListPanel
 				:title="$t('fields.tasks')"
 				:empty-content-text="$t('fields.noTask')"
 				:is-filled="model.tasks.length > 0"
 			>
-				<template v-slot:action>
-					<v-btn variant="text" density="compact" icon="mdi-plus" @click="addTask"> </v-btn>
+				<template #action>
+					<v-btn variant="text" density="compact" icon="mdi-plus" @click="addTask" />
 				</template>
 				<v-text-field
 					v-for="(task, idx) in model.tasks"
@@ -27,12 +27,16 @@
 					append-icon="mdi-close"
 					@click:append="remove(idx)"
 				>
-					<template v-slot:prepend>
+					<template #prepend>
 						<v-tooltip location="bottom">
-							<template v-slot:activator="{ props }">
-								<v-icon v-bind="props" @click="complete(idx)">
-									{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
-								</v-icon>
+							<template #activator="{ props: tooltipProps }">
+								<v-icon
+									v-bind="tooltipProps"
+									:icon="
+										task.isCompleted ? icons.taskCompleted : icons.taskOngoing
+									"
+									@click="complete(idx)"
+								/>
 							</template>
 							{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
 						</v-tooltip>

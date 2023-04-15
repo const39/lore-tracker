@@ -1,16 +1,31 @@
 <template>
 	<div class="my-3">
-		<div class="text-xl-h4">{{ $t("pages.timeline") }}</div>
-		<v-timeline v-if="nodes.length > 0" class="mx-16 my-6" direction="vertical" density="compact">
-			<v-timeline-item icon="mdi-star" dot-color="yellow-darken-1" icon-color="white" fill-dot>
-				<div class="font-weight-medium">{{ $t("timeline.campaignStart") }}</div>
+		<div class="text-xl-h4">
+			{{ $t("pages.timeline") }}
+		</div>
+		<v-timeline
+			v-if="nodes.length > 0"
+			class="mx-16 my-6"
+			direction="vertical"
+			density="compact"
+		>
+			<v-timeline-item
+				icon="mdi-star"
+				dot-color="yellow-darken-1"
+				icon-color="white"
+				fill-dot
+			>
+				<div class="font-weight-medium">
+					{{ $t("timeline.campaignStart") }}
+				</div>
 			</v-timeline-item>
 			<TimelineEvent v-for="node in nodes" :key="getKey(node)" :item="node" />
 		</v-timeline>
 		<p v-else class="text-center">
 			{{ $t("timeline.noEvent") }}
-			<router-link :to="{ name: 'LoreBook' }">{{ $t("pages.loreBook") }}</router-link
-			>.
+			<router-link :to="{ name: 'LoreBook' }">
+				{{ $t("pages.loreBook") }}
+			</router-link>.
 		</p>
 	</div>
 </template>
@@ -33,10 +48,10 @@ function getKey(node: Event | string) {
 
 const nodes = computed(() => {
 	// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-	let events = cardsStore.cards.event.slice().reverse();
+	const events = cardsStore.cards.event.slice().reverse();
 
 	// Browse through events to index them by their day field
-	let indexedByDay: GroupByDayMapping = {};
+	const indexedByDay: GroupByDayMapping = {};
 	for (const event of events) {
 		const index = event.day;
 
