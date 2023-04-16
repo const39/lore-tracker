@@ -12,12 +12,12 @@
 			@end="drag = false"
 		>
 			<template #header>
-				<v-col :cols="cols">
+				<v-col cols="12" v-bind="cols">
 					<CardAdd :category="category" fill-height />
 				</v-col>
 			</template>
 			<template #item="{ element }">
-				<v-col :cols="cols" class="item">
+				<v-col class="item" cols="12" v-bind="cols">
 					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
 				</v-col>
 			</template>
@@ -56,16 +56,25 @@ const items = computed({
 	},
 });
 
-const cols = computed(() => {
+interface Cols {
+	xs: number;
+	sm: number;
+	md: number;
+	lg: number;
+	xl?: number;
+	xxl?: number;
+}
+
+// Compute card width for each breakpoint sizing based on the preferred density
+const cols = computed<Cols>(() => {
 	switch (prefStore.cardsDensity) {
 		case "large":
-			return 6;
-		case "comfortable":
-			return 4;
+			return { xs: 12, sm: 12, md: 6, lg: 6 };
 		case "compact":
-			return 3;
+			return { xs: 12, sm: 6, md: 4, lg: 3 };
+		case "comfortable":
 		default:
-			return 4;
+			return { xs: 12, sm: 12, md: 6, lg: 4 };
 	}
 });
 </script>
