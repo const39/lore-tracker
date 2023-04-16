@@ -60,8 +60,3 @@ function nextSeason() {
 	}
 }
 </script>
-<style scoped>
-.clickable:hover {
-	cursor: pointer;
-}
-</style>

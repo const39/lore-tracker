@@ -1,0 +1,7 @@
+.clickable:hover {
+	cursor: pointer;
+}
+
+.scrollable {
+	overflow: auto !important;
+}

@@ -69,7 +69,4 @@ const themeList = computed(() => {
 	background-color: rgb(var(--v-theme-accent));
 	border: 3px solid rgb(var(--v-theme-accent));
 }
-.clickable:hover {
-	cursor: pointer;
-}
 </style>
