@@ -62,8 +62,9 @@ const en: Locale = {
 		selectors: {
 			customOrder: "Custom order",
 			alphanumericOrder: "Alphanumeric order",
-			tabLayout: "Tab layout",
-			columnLayout: "Column layout",
+			largeTabDensity: "Large density",
+			comfortableTabDensity: "Comfortable density",
+			compactTabDensity: "Compact density",
 		},
 	},
 

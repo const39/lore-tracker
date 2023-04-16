@@ -1,93 +1,92 @@
 <template>
 	<div>
 		<!-- Card ordering selector -->
-		<v-item-group v-model="orderModel" class="d-block" mandatory>
-			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip location="top">
-					<template #activator="{ props }">
-						<v-btn
-							v-bind="props"
-							:icon="'mdi-sort-clock-descending' + (isSelected ? '' : '-outline')"
-							:color="isSelected ? 'primary' : ''"
-							variant="text"
-							@click="toggle"
-						/>
-					</template>
-					{{ $t("status.selectors.customOrder") }}
-				</v-tooltip>
-			</v-item>
-			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip location="top">
-					<template #activator="{ props }">
-						<v-btn
-							v-bind="props"
-							:color="isSelected ? 'primary' : ''"
-							variant="text"
-							icon="mdi-sort-alphabetical-variant"
-							@click="toggle"
-						/>
-					</template>
-					{{ $t("status.selectors.alphanumericOrder") }}
-				</v-tooltip>
-			</v-item>
-		</v-item-group>
-		<!-- Layout selector -->
-		<v-item-group v-model="selectedLayout" class="d-block" mandatory>
-			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip location="bottom">
-					<template #activator="{ props }">
-						<v-btn
-							v-bind="props"
-							:color="isSelected ? 'accent' : ''"
-							variant="text"
-							icon="mdi-tab"
-							@click="toggle"
-						/>
-					</template>
-					{{ $t("status.selectors.tabLayout") }}
-				</v-tooltip>
-			</v-item>
-			<v-item v-slot="{ isSelected, toggle }">
-				<v-tooltip location="bottom">
-					<template #activator="{ props }">
-						<v-btn
-							v-bind="props"
-							:color="isSelected ? 'accent' : ''"
-							variant="text"
-							icon="mdi-view-column-outline"
-							@click="toggle"
-						/>
-					</template>
-					{{ $t("status.selectors.columnLayout") }}
-				</v-tooltip>
-			</v-item>
-		</v-item-group>
+		<v-btn-toggle
+			v-model="prefStore.cardsOrder"
+			class="d-flex justify-center"
+			color="primary"
+			variant="plain"
+			mandatory
+		>
+			<v-tooltip location="top">
+				<template #activator="{ props }">
+					<v-btn
+						v-bind="props"
+						:value="orderValues[0]"
+						class="full-opacity"
+						rounded="xl"
+						icon="mdi-sort-clock-descending"
+					/>
+				</template>
+				{{ $t("status.selectors.customOrder") }}
+			</v-tooltip>
+			<v-tooltip location="top">
+				<template #activator="{ props }">
+					<v-btn
+						v-bind="props"
+						:value="orderValues[1]"
+						class="full-opacity"
+						rounded="xl"
+						icon="mdi-sort-alphabetical-variant"
+					/>
+				</template>
+				{{ $t("status.selectors.alphanumericOrder") }}
+			</v-tooltip>
+		</v-btn-toggle>
+		<!-- Density selector -->
+		<v-btn-toggle v-model="prefStore.cardsDensity" color="accent" variant="plain" mandatory>
+			<v-tooltip location="bottom">
+				<template #activator="{ props }">
+					<v-btn
+						v-bind="props"
+						:value="densityValues[0]"
+						class="full-opacity"
+						rounded="xl"
+						icon="mdi-view-grid"
+					/>
+				</template>
+				{{ $t("status.selectors.largeTabDensity") }}
+			</v-tooltip>
+			<v-tooltip location="bottom">
+				<template #activator="{ props }">
+					<v-btn
+						v-bind="props"
+						:value="densityValues[1]"
+						class="full-opacity"
+						rounded="xl"
+						icon="mdi-view-comfy"
+					/>
+				</template>
+				{{ $t("status.selectors.comfortableTabDensity") }}
+			</v-tooltip>
+			<v-tooltip location="bottom">
+				<template #activator="{ props }">
+					<v-btn
+						v-bind="props"
+						:value="densityValues[2]"
+						class="full-opacity"
+						rounded="xl"
+						icon="mdi-view-module"
+					/>
+				</template>
+				{{ $t("status.selectors.compactTabDensity") }}
+			</v-tooltip>
+		</v-btn-toggle>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
 import { t as $t } from "@/js/translation";
-import { usePreferencesStore } from "@/store/preferences";
-const emit = defineEmits<{
-	(e: "layout", value: number): void;
-}>();
+import { Density, Order, usePreferencesStore } from "@/store/preferences";
 
 const prefStore = usePreferencesStore();
 
-const orderModel = ref(0);
-
-const selectedOrder = computed({
-	get() {
-		return prefStore.cardsOrder;
-	},
-	set(value) {
-		prefStore.cardsOrder = value;
-	},
-});
-
-const selectedLayout = ref(0);
-
-watch(orderModel, (value) => (selectedOrder.value = value === 1 ? "alphanumeric" : "default"));
-watch(selectedLayout, (value) => emit("layout", value));
+const orderValues: Order[] = ["default", "alphanumeric"];
+const densityValues: Density[] = ["large", "comfortable", "compact"];
 </script>
+
+<style scoped>
+.full-opacity {
+	opacity: 1;
+}
+</style>

@@ -64,8 +64,9 @@ export interface Locale {
 		selectors: {
 			customOrder: string;
 			alphanumericOrder: string;
-			tabLayout: string;
-			columnLayout: string;
+			largeTabDensity: string;
+			comfortableTabDensity: string;
+			compactTabDensity: string;
 		};
 	};
 

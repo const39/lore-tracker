@@ -12,12 +12,12 @@
 			@end="drag = false"
 		>
 			<template #header>
-				<v-col cols="12" md="4">
+				<v-col :cols="cols">
 					<CardAdd :category="category" fill-height />
 				</v-col>
 			</template>
 			<template #item="{ element }">
-				<v-col cols="12" md="4" class="item">
+				<v-col :cols="cols" class="item">
 					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
 				</v-col>
 			</template>
@@ -54,6 +54,19 @@ const items = computed({
 	set(list: CardTypes[]) {
 		cardsStore.updateWholeList({ category: props.category, list });
 	},
+});
+
+const cols = computed(() => {
+	switch (prefStore.cardsDensity) {
+		case "large":
+			return 6;
+		case "comfortable":
+			return 4;
+		case "compact":
+			return 3;
+		default:
+			return 4;
+	}
 });
 </script>
 
