@@ -22,7 +22,7 @@
 			>
 				<v-card-text
 					:class="{ 'fill-height': fillHeight }"
-					class="text-center clickable"
+					class="d-flex align-center justify-center clickable"
 					@click="openForm"
 				>
 					<v-icon size="large" icon="mdi-plus" />
@@ -66,13 +66,5 @@ const isDarkTheme = computed(() => useTheme().current.value.dark);
 <style scoped>
 .custom-border {
 	border-style: dashed;
-}
-.clickable {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-.clickable:hover {
-	cursor: pointer;
 }
 </style>

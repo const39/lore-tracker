@@ -1,3 +1,6 @@
+// Load global style
+import "./assets/global.css";
+
 import { createApp } from "vue";
 import App from "./App.vue";
 
