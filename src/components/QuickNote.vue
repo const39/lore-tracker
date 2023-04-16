@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<v-fab-transition origin="bottom right">
-			<v-card v-if="open">
+			<v-card v-if="open" class="size-constraint scrollable">
 				<v-card-text>
 					<div class="d-flex justify-space-between align-center mb-2">
 						<v-btn
@@ -105,6 +105,9 @@ function resize(e: MouseEvent) {
 </script>
 
 <style scoped>
+.size-constraint {
+	max-height: 80vh;
+}
 .resizing-handle {
 	cursor: nw-resize;
 }
