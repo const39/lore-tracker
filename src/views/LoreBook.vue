@@ -1,13 +1,11 @@
 <template>
 	<Banner>
 		<template #actions>
-			<LorebookActions @layout="selectLayout" />
+			<LorebookActions />
 		</template>
 	</Banner>
 
-	<!-- Alternative layouts -->
-	<LayoutTabs v-if="selectedLayout === 0" />
-	<LayoutColumns v-else-if="selectedLayout === 1" />
+	<LayoutTabs />
 
 	<!-- Global delete form for all panels -->
 	<ConfirmDialog
@@ -25,17 +23,14 @@ import { onBeforeUnmount, onMounted, ref } from "vue";
 import Banner from "@/components/banner/Banner.vue";
 import LorebookActions from "@/components/banner/actions/LorebookActions.vue";
 
-import LayoutColumns from "@/components/layouts/LayoutColumns.vue";
 import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
 
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 
 import { eventBus } from "@/js/eventBus";
-import { Order } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
 import utilities from "../js/utilities";
 
-const selectedLayout = ref(0);
 const confirmDialog = ref({
 	show: false,
 	title: "",
@@ -46,10 +41,6 @@ const confirmDialog = ref({
 
 const cardsStore = useCardsStore();
 
-function selectLayout(value: number) {
-	selectedLayout.value = value;
-}
-
 onMounted(() => {
 	eventBus.on("delete-card", (card) => {
 		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(card._category)}`);
@@ -58,6 +49,7 @@ onMounted(() => {
 		confirmDialog.value.show = true;
 	});
 });
+
 onBeforeUnmount(() => {
 	eventBus.off("delete-card");
 });
