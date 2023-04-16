@@ -45,6 +45,7 @@ import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
 import { onKeyDown } from "@vueuse/core";
 import draggable from "vuedraggable";
+import { usePreferencesStore } from "@/store/preferences";
 
 const props = defineProps<{ category: CardCategory }>();
 
@@ -52,6 +53,7 @@ const drag = ref(false);
 const isCollapsed = ref(0);
 
 const filterStore = useFilterStore();
+const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 
 function onMove(e: any) {
@@ -92,7 +94,7 @@ function hotkey(e: KeyboardEvent) {
 	}
 }
 const isSortDisabled = computed(() => {
-	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
 
 const items = computed({

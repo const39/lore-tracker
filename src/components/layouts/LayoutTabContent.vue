@@ -33,16 +33,18 @@ import CardContainer from "../cards/CardContainer.vue";
 import { CardCategory, CardTypes } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
+import { usePreferencesStore } from "@/store/preferences";
 import draggable from "vuedraggable";
 
 const props = defineProps<{ category: CardCategory }>();
 const drag = ref(false);
 
 const filterStore = useFilterStore();
+const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 
 const isSortDisabled = computed(() => {
-	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
 
 const items = computed({

@@ -21,13 +21,15 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
+import { t as $t, SupportedLanguages } from "@/js/translation";
 import { ref, watch } from "vue";
-import translation, { SupportedLanguages } from "@/js/translation";
 
+import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 
-const selectedLang = ref([translation.getLanguage()]);
+const prefStore = usePreferencesStore();
+
+const selectedLang = ref([prefStore.language]);
 
 const langList = [
 	{
@@ -41,10 +43,6 @@ const langList = [
 ];
 
 watch(selectedLang, (val) => {
-	console.log("changing lang to", val);
-	if (val.length) {
-		translation.setLanguage(val[0]);
-		window.location.reload();
-	}
+	if (val.length) prefStore.language = val[0];
 });
 </script>

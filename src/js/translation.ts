@@ -1,6 +1,6 @@
-import { LocalStorageKey } from "./types";
 import en from "../locale/en";
 import fr from "../locale/fr";
+import { usePreferencesStore } from "@/store/preferences";
 
 export interface Locale {
 	pages: {
@@ -210,16 +210,6 @@ export enum SupportedLanguages {
 
 const locales = { fr, en };
 const fallback = SupportedLanguages.ENGLISH;
-const current = getLanguage();
-
-export function setLanguage(lang: SupportedLanguages) {
-	localStorage.setItem(LocalStorageKey.LANG_KEY, lang);
-}
-
-export function getLanguage(): SupportedLanguages {
-	const val = localStorage.getItem(LocalStorageKey.LANG_KEY) as any;
-	return Object.values(SupportedLanguages).includes(val) ? (val as SupportedLanguages) : fallback;
-}
 
 export function getNestedProperty(object: any, property: string): string {
 	const props = property.split(".");
@@ -234,6 +224,9 @@ export function getNestedProperty(object: any, property: string): string {
 }
 
 export function t(key: string): string {
+	const prefStore = usePreferencesStore();
+	const current = prefStore.language;
+
 	const text =
 		getNestedProperty(locales[current], key) || getNestedProperty(locales[fallback], key);
 	if (text) return text;
@@ -246,8 +239,4 @@ export function t(key: string): string {
 	}
 }
 
-export default {
-	t,
-	setLanguage,
-	getLanguage,
-};
+export default { t };

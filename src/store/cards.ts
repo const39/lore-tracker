@@ -5,13 +5,13 @@ import {
 	CategoryFilter,
 	Filter,
 	ID,
-	Order,
 	SerializableState,
 } from "@/js/types";
 import utilities from "@/js/utilities";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useFilterStore } from "./filter";
+import { usePreferencesStore } from "./preferences";
 
 function defaultCards(): CardsStore {
 	// Generate automatically the CardsStore using the CardCategory enum values as keys
@@ -88,16 +88,15 @@ function sortCards(cards: CardsStore) {
 
 export const useCardsStore = defineStore("cards", () => {
 	const cards = ref(defaultCards());
-	const order = ref(Order.DEFAULT);
+
+	const prefStore = usePreferencesStore();
 	const filter = useFilterStore();
 
 	const serializableState = computed(() => ({ cards }));
 
-	const isDefaultOrder = computed(() => order.value === Order.DEFAULT);
-
 	const filteredCards = computed(() => {
 		const filtered = filterCards(cards.value, filter);
-		if (order.value === Order.ALPHANUMERIC) sortCards(filtered);
+		if (prefStore.cardsOrder === "alphanumeric") sortCards(filtered);
 		return filtered;
 	});
 
@@ -156,7 +155,6 @@ export const useCardsStore = defineStore("cards", () => {
 
 	function $reset() {
 		cards.value = defaultCards();
-		order.value = Order.DEFAULT;
 		filter.$reset();
 	}
 
@@ -166,11 +164,9 @@ export const useCardsStore = defineStore("cards", () => {
 
 	return {
 		cards,
-		order,
 		filter,
 		serializableState,
 
-		isDefaultOrder,
 		filteredCards,
 		cardCount,
 

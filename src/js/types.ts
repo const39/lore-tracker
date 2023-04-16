@@ -8,8 +8,7 @@ import utilities from "./utilities";
 export const VERSION = "1.2.0";
 export enum LocalStorageKey {
 	DATA_KEY = "DATA",
-	THEME_KEY = "THEME",
-	LANG_KEY = "LANG",
+	PREFERENCES_KEY = "PREFERENCES",
 }
 export enum Season {
 	SPRING = "spring",
