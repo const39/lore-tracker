@@ -148,11 +148,10 @@
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
 import { onMounted, ref } from "vue";
-import { LocalStorageKey, VERSION } from "./js/types";
+import { VERSION } from "./js/types";
 
 import { onKeyDown } from "@vueuse/core";
 import { useRouter } from "vue-router";
-import { useTheme } from "vuetify/lib/framework.mjs";
 import QuickNote from "./components/QuickNote.vue";
 import Snackbar from "./components/Snackbar.vue";
 import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
@@ -170,7 +169,6 @@ const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Dis
 const showDomainNameChangeNotif = ref(Date.now() < new Date("2022-11-15T12:00:00").getTime()); // Displays until the 15/11/2022, 12:00
 
 const router = useRouter();
-const theme = useTheme();
 const store = useStore();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
@@ -212,9 +210,6 @@ onMounted(() => {
 			color: "error",
 		});
 	}
-
-	// Set theme if preference saved
-	theme.global.name.value = localStorage.getItem(LocalStorageKey.THEME_KEY) ?? "light";
 });
 </script>
 

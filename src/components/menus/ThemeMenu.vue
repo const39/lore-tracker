@@ -2,7 +2,7 @@
 	<MenuActivator :title="$t('options.themes.optionName')" icon="mdi-brightness-6">
 		<v-card>
 			<v-card-text>
-				<v-item-group v-model="selectedTheme" active-class="active" mandatory>
+				<v-item-group v-model="prefStore.theme" active-class="active" mandatory>
 					<v-container>
 						<v-row class="d-flex justify-space-between">
 							<v-item
@@ -36,14 +36,13 @@
 
 <script lang="ts" setup>
 import { t as $t } from "@/js/translation";
-import { LocalStorageKey } from "@/js/types";
-import { computed, ref, watch } from "vue";
-
+import { usePreferencesStore } from "@/store/preferences";
+import { computed } from "vue";
 import { useTheme } from "vuetify";
 import MenuActivator from "./MenuActivator.vue";
 
 const theme = useTheme();
-const selectedTheme = ref(theme.current.value.dark ? "dark" : "light");
+const prefStore = usePreferencesStore()
 
 function computeSheetStyle(primary: string, background: string) {
 	return `background: linear-gradient(45deg, ${background} 50%, ${primary} 50%); `;
@@ -63,11 +62,6 @@ const themeList = computed(() => {
 	}
 
 	return list;
-});
-
-watch(selectedTheme, (themeKey: string) => {
-	theme.global.name.value = themeKey;
-	localStorage.setItem(LocalStorageKey.THEME_KEY, themeKey);
 });
 </script>
 <style scoped>

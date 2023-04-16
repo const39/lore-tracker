@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!-- Card ordering selector -->
-		<v-item-group v-model="selectedOrder" class="d-block" mandatory>
+		<v-item-group v-model="orderModel" class="d-block" mandatory>
 			<v-item v-slot="{ isSelected, toggle }">
 				<v-tooltip location="top">
 					<template #activator="{ props }">
@@ -66,15 +66,28 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { t as $t } from "@/js/translation";
+import { usePreferencesStore } from "@/store/preferences";
 const emit = defineEmits<{
-	(e: "order", value: number): void;
 	(e: "layout", value: number): void;
 }>();
-const selectedOrder = ref(0);
+
+const prefStore = usePreferencesStore();
+
+const orderModel = ref(0);
+
+const selectedOrder = computed({
+	get() {
+		return prefStore.cardsOrder;
+	},
+	set(value) {
+		prefStore.cardsOrder = value;
+	},
+});
+
 const selectedLayout = ref(0);
 
-watch(selectedOrder, (value) => emit("order", value));
+watch(orderModel, (value) => (selectedOrder.value = value === 1 ? "alphanumeric" : "default"));
 watch(selectedLayout, (value) => emit("layout", value));
 </script>

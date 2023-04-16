@@ -1,7 +1,7 @@
 <template>
 	<Banner>
 		<template #actions>
-			<LorebookActions @layout="selectLayout" @order="selectOrder" />
+			<LorebookActions @layout="selectLayout" />
 		</template>
 	</Banner>
 
@@ -49,12 +49,7 @@ const cardsStore = useCardsStore();
 function selectLayout(value: number) {
 	selectedLayout.value = value;
 }
-/**
- * Update card order when selection changes
- */
-function selectOrder(value: number) {
-	cardsStore.order = value === 1 ? Order.ALPHANUMERIC : Order.DEFAULT;
-}
+
 onMounted(() => {
 	eventBus.on("delete-card", (card) => {
 		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(card._category)}`);

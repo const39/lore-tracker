@@ -34,18 +34,18 @@ import BaseCard from "./BaseCard.vue";
 import FormWrapper from "./forms/FormWrapper.vue";
 
 import utilities from "@/js/utilities";
-import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
+import { usePreferencesStore } from "@/store/preferences";
 
 const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
 const showForm = ref(false);
 
 const filterStore = useFilterStore();
-const cardsStore = useCardsStore();
+const prefStore = usePreferencesStore();
 
 const isSortDisabled = computed(() => {
-	return filterStore.isFilterActive || !cardsStore.isDefaultOrder;
+	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
 
 function onDelete() {
