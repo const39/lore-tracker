@@ -10,7 +10,7 @@ import FolderForm from "./FolderForm.vue";
 import { computed } from "vue";
 
 const props = defineProps<{
-	modelValue: boolean; // Default v-model overwrite
+	modelValue: boolean; // v-model
 	parentPath: string;
 }>();
 
@@ -18,15 +18,7 @@ const emit = defineEmits<{
 	(e: "update:modelValue", value: boolean): void;
 }>();
 
-function close(): void {
-	showDialog.value = false;
-}
-
-/**
- * Overwrite default v-model to bind this component's v-model attribute to the v-dialog one.
- * This allows to use a custom component as an external activator for the v-dialog.
- * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
- */
+// v-model binding
 const showDialog = computed({
 	get() {
 		return props.modelValue;
@@ -35,4 +27,8 @@ const showDialog = computed({
 		emit("update:modelValue", value);
 	},
 });
+
+function close(): void {
+	showDialog.value = false;
+}
 </script>

@@ -1,26 +1,30 @@
 <template>
 	<v-form ref="form">
 		<v-card>
-			<v-card-title class="text-h5">
-				Ajouter un dossier
-			</v-card-title>
-			<v-card-text class="d-flex align-center text-body-2">
-				<v-menu>
+			<v-card-title class="text-h5"> Ajouter un dossier </v-card-title>
+			<v-card-text class="d-flex text-body-2">
+				<v-menu location="left">
 					<template #activator="{ props: menuProps }">
 						<v-hover>
-							<template #default="{ isHovering }">
-								<v-btn v-bind="menuProps" class="mr-1" size="x-large" icon>
-									<v-icon
-										:icon="folderIcon"
-										:color="model.color"
-										size="x-large"
-									/>
-									<v-fade-transition>
-										<v-overlay v-if="isHovering" opacity="0.2" absolute>
-											<v-icon size="small" icon="mdi-eyedropper-variant" />
-										</v-overlay>
-									</v-fade-transition>
-								</v-btn>
+							<template #default="{ isHovering, props: hoverProps }">
+								<div v-bind="mergeProps(menuProps, hoverProps)">
+									<v-btn class="mr-1" size="x-large" variant="text" icon>
+										<v-icon
+											:icon="folderIcon"
+											:color="model.color"
+											size="x-large"
+										></v-icon>
+										<v-fade-transition>
+											<v-icon
+												v-if="isHovering"
+												class="picker-btn-overlay"
+												size="x-small"
+												icon="mdi-eyedropper-variant"
+												color="white"
+											/>
+										</v-fade-transition>
+									</v-btn>
+								</div>
 							</template>
 						</v-hover>
 					</template>
@@ -54,8 +58,8 @@ import validationRules from "@/js/validationRules";
 import colors from "@/js/colors";
 import { type VForm } from "vuetify/components";
 
-import { ref, computed } from "vue";
 import { useNotepadStore } from "@/store/notepad";
+import { computed, mergeProps, ref } from "vue";
 
 const props = defineProps<{ parentPath: string; edit?: Folder }>();
 const emit = defineEmits<{
@@ -72,6 +76,8 @@ const rules = {
 	],
 };
 
+const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
+
 const model = ref(initModel());
 const form = ref<VForm | undefined>(undefined);
 
@@ -80,8 +86,6 @@ const notepadStore = useNotepadStore();
 const folderIcon = computed(() => Icon.folder);
 
 function getRandomColor(): string {
-	// ! baseColors cannot be cached as a computed property because initModel() is called at component init
-	const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
 	const idx = Math.floor(Math.random() * baseColors.length);
 	return baseColors[idx];
 }
@@ -93,7 +97,7 @@ function checkNameDoesNotExist(name: string): boolean | string {
 function initModel(): Folder {
 	// We return a clone of the object to avoid modifying directly the store
 	// Helpful when the user cancels their changes because we don't have to rollback
-	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit) as Folder;
+	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit);
 	return {
 		id: utilities.uid(),
 		name: "",
@@ -120,3 +124,9 @@ async function submit() {
 	}
 }
 </script>
+<style scoped>
+.picker-btn-overlay {
+	position: absolute;
+	opacity: 0.75;
+}
+</style>

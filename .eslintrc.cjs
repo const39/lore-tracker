@@ -39,7 +39,7 @@ module.exports = {
 					"SLOT",
 					"TWO_WAY_BINDING",
 					"OTHER_DIRECTIVES",
-					// "OTHER_ATTR",
+					"OTHER_ATTR",
 					"ATTR_DYNAMIC",
 					"ATTR_STATIC",
 					"ATTR_SHORTHAND_BOOL",
