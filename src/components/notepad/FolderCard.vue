@@ -1,46 +1,26 @@
 <template>
-	<div>
-		<v-hover v-if="!editMode" v-slot="{ isHovering }">
-			<v-card @dblclick="openFolder(folder)">
-				<v-card-title class="d-flex">
-					<v-icon :icon="folderIcon" :color="folder.color" size="x-large" />
-					<div class="mx-1 flex-grow-1">
-						<span class="px-1 text-subtitle-1">
-							{{ folder.name }}
-						</span>
-					</div>
-					<v-tooltip location="bottom">
-						<template #activator="{ props: tooltipProps }">
-							<v-avatar
-								class="text-caption"
-								size="20"
-								color="grey"
-								v-bind="tooltipProps"
-							>
-								{{ childrenCount }}
-							</v-avatar>
-						</template>
-						<span>{{ childrenCount + $t("notepad.folder.childElements") }}</span>
-					</v-tooltip>
-					<v-fade-transition>
-						<v-icon
-							v-if="isHovering"
-							class="mx-2"
-							icon="mdi-pencil"
-							@click="editMode = true"
-						/>
-					</v-fade-transition>
-				</v-card-title>
-			</v-card>
-		</v-hover>
-		<FolderForm
-			v-else
-			:parent-path="parentPath"
-			:edit="folder"
-			@close="editMode = false"
-			@submit="editMode = false"
-		/>
-	</div>
+	<BaseCard
+		v-if="!editMode"
+		:with-options="!editMode"
+		@edit="editMode = true"
+		@dblclick="openFolder(folder)"
+	>
+		<v-card-title class="pr-0 d-flex align-center">
+			<v-badge :content="childrenCount" color="grey">
+				<v-icon :icon="Icon.folder" :color="folder.color" size="x-large"></v-icon>
+			</v-badge>
+			<div class="pl-4 pt-2 flex-grow-1 text-subtitle-1">
+				{{ folder.name }}
+			</div>
+		</v-card-title>
+	</BaseCard>
+	<FolderForm
+		v-else
+		:parent-path="parentPath"
+		:edit="folder"
+		@close="editMode = false"
+		@submit="editMode = false"
+	/>
 </template>
 
 <script lang="ts" setup>
@@ -51,6 +31,7 @@ import FolderForm from "./FolderForm.vue";
 import { Folder, Icon } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useNotepadStore } from "@/store/notepad";
+import BaseCard from "../cards/BaseCard.vue";
 
 const props = defineProps<{
 	folder: Folder;
@@ -68,10 +49,6 @@ const notepadStore = useNotepadStore();
 function openFolder(folder: Folder) {
 	emit("open-folder", folder);
 }
-
-const folderIcon = computed(() => {
-	return Icon.folder;
-});
 
 const childrenCount = computed(() => {
 	const fullPath = utilities.joinPaths(true, props.parentPath, props.folder.name);
