@@ -1,6 +1,31 @@
 import { CardCategory, CardTypes, Icon } from "./types";
 import { klona } from "klona/lite";
 
+export type SerializedMap<K extends string | number, V> = Record<K, V>;
+
+export function mergeMaps<K, V>(a: Map<K, V>, b: Map<K, V>) {
+	for (const [k, v] of b.entries()) {
+		a.set(k, v);
+	}
+}
+
+export function serializeMap<K extends string | number, V>(map: Map<K, V>): SerializedMap<K, V> {
+	const result = Object.create(null);
+	for (const [key, value] of map.entries()) result[key] = value;
+	return result;
+}
+
+export function deserializeMap<K extends string | number, V>(obj: SerializedMap<K, V>): Map<K, V> {
+	const map = new Map<K, V>();
+	for (const key in obj) {
+		const k = key as keyof typeof obj;
+		map.set(k, obj[k]);
+	}
+	return map;
+}
+
+
+
 export default {
 	/**
 	 * Returns the current timestamp. To be used as a Unique Identifier.
@@ -69,20 +94,10 @@ export default {
 	deepCopy: function <T>(input: T): T {
 		return klona(input);
 	},
-	sanitizePath: function (leadingSlash: boolean, path: string): string {
-		// TODO check for illegal character in URI
-		const p = leadingSlash ? "/" + path : path;
-		const sanitized = p.trim().toLowerCase().replace(/\/+/g, "/");
-		if (!leadingSlash && sanitized.startsWith("/")) return sanitized.slice(1);
-		else return sanitized;
-	},
-	joinPaths: function (leadingSlash: boolean, ...elements: string[]): string {
-		return this.sanitizePath(leadingSlash, elements.join("/"));
-	},
 	pipe: function (...functions: ((arg: any) => any)[]) {
 		return (initial: any) => functions.reduce((previous, f) => f(previous), initial);
 	},
-	isClassInstance(obj: any) {
-		return !["Function", "Object", "Array"].includes(obj.constructor.name);
-	},
+	mergeMaps,
+	serializeMap,
+	deserializeMap
 };

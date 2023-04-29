@@ -3,7 +3,8 @@ import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import Ajv from "ajv";
-import { FileTree, SaveFormat, SerializableState, State } from "./types";
+import { createRootFolder } from "./model/fileTree";
+import { SaveFormat, SerializedState } from "./types";
 import utilities from "./utilities";
 
 export enum SaveVersion {
@@ -136,9 +137,9 @@ class V2SaveProcessor extends SaveProcessor {
 	 * @param save data to convert to v2 format
 	 * @returns input data converted to v2 format
 	 */
-	protected convert(save: any): any {
-		const converted: State = utilities.deepCopy(save);
-		converted.notepad = new FileTree();
+	protected convert(save: any): SerializedState {
+		const converted = utilities.deepCopy(save);
+		converted.notepad = createRootFolder().serialize();
 		return converted;
 	}
 }
@@ -170,22 +171,6 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
 }
 
 export default {
-	serialize(state: SerializableState): SaveFormat {
-		// Clone state to avoid modifying it
-		const serialized: any = utilities.deepCopy(state);
-		serialized._meta = {
-			version: SaveVersion.Latest,
-			lastUpdate: new Date().toISOString(),
-		};
-		serialized.notepad = state.notepad.serialize(); // Serialize Map instance to object literal
-		return serialized;
-	},
-	deserialize(save: SaveFormat): SerializableState {
-		// Clone save to avoid modifying it
-		const deserialized: any = utilities.deepCopy(save);
-		deserialized.notepad = new FileTree(save.notepad); // Deserialize object literal to FileTree instance
-		return deserialized;
-	},
 	/**
 	 * Convert save data to the latest format. If the save is already at the latest version, it is returned as is.
 	 * This method throws an error if the format of the specified save cannot be identified and as such cannot be converted.

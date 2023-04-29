@@ -1,4 +1,4 @@
-import { SerializableState } from "@/js/types";
+import { SerializedState } from "@/js/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -11,7 +11,7 @@ export const useQuickNoteStore = defineStore("quickNote", () => {
 		content.value = "";
 	}
 
-	function $hydrate(payload: SerializableState) {
+	function $hydrate(payload: SerializedState) {
 		content.value = payload.quickNote;
 	}
 

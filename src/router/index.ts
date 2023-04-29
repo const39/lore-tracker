@@ -1,5 +1,6 @@
 import { RouteLocation, createRouter, createWebHistory } from "vue-router";
 import LoreBook from "../views/LoreBook.vue";
+import { Path } from "@/js/model/fileTree";
 
 const routes = [
 	{
@@ -14,12 +15,11 @@ const routes = [
 		component: () => import("../views/Timeline.vue"),
 	},
 	{
-		path: "/notepad/:folderPath*",
+		path: "/notepad/:folderURI*",
 		name: "Notepad",
 		component: () => import("../views/Notepad.vue"),
 		props: (route: RouteLocation) => ({
-			routeName: "Notepad",
-			folderPath: route.params.folderPath || "/",
+			folderPath: route.params.folderURI ? new Path(...route.params.folderURI) : new Path(),
 		}),
 	},
 	{
