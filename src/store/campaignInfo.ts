@@ -1,4 +1,4 @@
-import { Season, SerializableState } from "@/js/types";
+import { Season, SerializedState } from "@/js/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -29,7 +29,7 @@ export const useCampaignInfoStore = defineStore("campaignInfo", () => {
 		$hydrate(getDefaults());
 	}
 
-	function $hydrate(payload: SerializableState | CampaignInfoState) {
+	function $hydrate(payload: SerializedState | CampaignInfoState) {
 		name.value = payload.name;
 		days.value = payload.days;
 		season.value = payload.season;

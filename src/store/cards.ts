@@ -5,7 +5,7 @@ import {
 	CategoryFilter,
 	Filter,
 	ID,
-	SerializableState,
+	SerializedState,
 } from "@/js/types";
 import utilities from "@/js/utilities";
 import { defineStore } from "pinia";
@@ -158,7 +158,7 @@ export const useCardsStore = defineStore("cards", () => {
 		filter.$reset();
 	}
 
-	function $hydrate(payload: SerializableState) {
+	function $hydrate(payload: SerializedState) {
 		cards.value = payload.cards;
 	}
 

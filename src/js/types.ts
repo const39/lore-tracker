@@ -1,3 +1,4 @@
+import { NotepadSave, NotepadState } from "./model/fileTree";
 import { SaveVersion } from "./saves";
 import utilities from "./utilities";
 
@@ -104,56 +105,13 @@ export interface CardsStore {
 	note: Note[];
 }
 
-// ************************
-// ***** Notepad data *****
-// ************************
-export type FileTypes = Note;
-
-export interface Folder {
-	id: ID;
-	name: string;
-	color: string;
-}
-
-export interface FileTreeNode {
-	folders: Folder[];
-	files: FileTypes[];
-}
-
-export class FileTree extends Map<string, FileTreeNode> {
-	constructor(data?: NotepadSave) {
-		const entries = data
-			? Object.keys(data).map<[string, FileTreeNode]>((key) => [key, data[key]])
-			: [];
-		super(entries);
-
-		// Set root node if none exists
-		if (!this.has("/")) {
-			const emptyFileTreeNode: FileTreeNode = {
-				folders: [],
-				files: [],
-			};
-			this.set("/", emptyFileTreeNode);
-		}
-	}
-
-	serialize(): NotepadSave {
-		const result = Object.create(null);
-		for (const [key, value] of this.entries()) result[key] = value;
-		return result;
-	}
-}
-
-type NotepadState = FileTree; // Runtime type
-type NotepadSave = Record<string, FileTreeNode>; // Serialized type (because native Map class cannot be serialized as is)
-
-export interface SerializableState {
+export interface SerializedState {
 	// _meta: MetaData;
 	name: string;
 	days: number;
 	season: Season;
 	cards: CardsStore;
-	notepad: NotepadState;
+	notepad: NotepadSave;
 	quickNote: string;
 }
 
@@ -161,9 +119,8 @@ export interface SerializableState {
 // *** Update/Create save format converter in saves.ts
 // *** Regenerate JSON Schema on each update :
 // * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
-export interface SaveFormat extends Omit<SerializableState, "notepad"> {
+export interface SaveFormat extends SerializedState {
 	_meta: MetaData;
-	notepad: NotepadSave; // Changed notepad type to the JSON-serializable one
 }
 
 // ***************************
@@ -190,10 +147,6 @@ export interface Filter {
 	category: CategoryFilter;
 	text: string;
 	tags: ID[];
-}
-export interface State extends SerializableState {
-	filter: Filter;
-	order: Order;
 }
 
 // *****************

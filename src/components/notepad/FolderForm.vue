@@ -50,18 +50,17 @@
 </template>
 
 <script lang="ts" setup>
+import colors from "@/js/colors";
+import { Folder, FolderMetadata, Path } from "@/js/model/fileTree";
 import { t as $t } from "@/js/translation";
-import { Folder, Icon } from "@/js/types";
+import { Icon } from "@/js/types";
 import utilities from "@/js/utilities";
 import validationRules from "@/js/validationRules";
-
-import colors from "@/js/colors";
-import { type VForm } from "vuetify/components";
-
 import { useNotepadStore } from "@/store/notepad";
 import { computed, mergeProps, ref } from "vue";
+import { type VForm } from "vuetify/components";
 
-const props = defineProps<{ parentPath: string; edit?: Folder }>();
+const props = defineProps<{ parent: Folder; edit?: Folder }>();
 const emit = defineEmits<{
 	(e: "close"): void;
 	(e: "submit"): void;
@@ -91,13 +90,14 @@ function getRandomColor(): string {
 }
 
 function checkNameDoesNotExist(name: string): boolean | string {
-	return !notepadStore.doesFolderExist(name) || $t("fields.nameAlreadyUsed");
+	const path = new Path(props.parent.path, name);
+	return !notepadStore.hasFolder(path) || $t("fields.nameAlreadyUsed");
 }
 
-function initModel(): Folder {
+function initModel(): FolderMetadata {
 	// We return a clone of the object to avoid modifying directly the store
 	// Helpful when the user cancels their changes because we don't have to rollback
-	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit);
+	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit.metadata);
 	return {
 		id: utilities.uid(),
 		name: "",
@@ -115,11 +115,11 @@ async function submit() {
 		if (props.edit) {
 			// TODO
 			console.warn("updateFolder() not implemented yet");
-		} else
-			notepadStore.addFolder({
-				pathToParent: props.parentPath,
-				folder: model.value,
-			});
+			// notepadStore.updateFolder({
+			// 	pathToParent: utilities.joinPaths(true, props.parentPath, model.value.name),
+			// 	folder: model.value,
+			// });
+		} else notepadStore.addFolder(new Folder(model.value, props.parent), props.parent.path);
 		emit("submit");
 	}
 }

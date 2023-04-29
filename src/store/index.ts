@@ -1,6 +1,6 @@
 import { deepUnref } from "@/composables/deepUnref";
-import saves from "@/js/saves";
-import { LocalStorageKey, SerializableState } from "@/js/types";
+import saves, { SaveVersion } from "@/js/saves";
+import { LocalStorageKey, SerializedState } from "@/js/types";
 import { watchIgnorable } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
@@ -8,6 +8,7 @@ import { useCampaignInfoStore } from "./campaignInfo";
 import { useCardsStore } from "./cards";
 import { useNotepadStore } from "./notepad";
 import { useQuickNoteStore } from "./quickNote";
+import utilities from "@/js/utilities";
 
 export const useStore = defineStore("store", () => {
 	const stores = [
@@ -17,20 +18,20 @@ export const useStore = defineStore("store", () => {
 		useQuickNoteStore(),
 	];
 
-	const serializableState = computed(() => {
+	const serializedState = computed(() => {
 		const aggregatedState = stores.reduce(
 			(acc, store) => ({ ...acc, ...store.serializableState }),
 			{}
-		) as SerializableState; // Type assertion because before deepUnref() aggregatedState still contains the stores's deep Refs
+		) as SerializedState; // Type assertion because before deepUnref(), aggregatedState still contains the stores's deep Refs
 
 		return deepUnref(reactive(aggregatedState));
 	});
 
-	const { ignoreUpdates } = watchIgnorable(serializableState, () => save(), {
+	const { ignoreUpdates } = watchIgnorable(serializedState, () => save(), {
 		deep: true,
 	});
 
-	function setState(payload: SerializableState) {
+	function setState(payload: SerializedState) {
 		stores.forEach((store) => store.$hydrate(payload));
 	}
 
@@ -39,7 +40,12 @@ export const useStore = defineStore("store", () => {
 	}
 
 	function toJSON() {
-		const serialized = saves.serialize(serializableState.value);
+		// Clone state to avoid modifying it
+		const serialized: any = utilities.deepCopy(serializedState.value);
+		serialized._meta = {
+			version: SaveVersion.Latest,
+			lastUpdate: new Date().toISOString(),
+		};
 		return JSON.stringify(serialized);
 	}
 
@@ -47,10 +53,10 @@ export const useStore = defineStore("store", () => {
 		return new Blob([toJSON()], { type: "application/json" });
 	}
 
-	function loadData(payload?: string) {
-		// Get persisted raw data (from payload or from LocalStorage if no payload)
-		const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
-
+	function loadData(json?: string) {
+		// Get persisted raw data (from argument or from LocalStorage if no argument)
+		const rawData = json || localStorage.getItem(LocalStorageKey.DATA_KEY);
+		
 		// Perform parsing, validation and conversion if there is data
 		// If there is no data to be used, leave the default state as is
 		if (rawData) {
@@ -59,9 +65,8 @@ export const useStore = defineStore("store", () => {
 			//  - It is not caught to propagate it to UI
 			//  - Current state is not lost because it has not been cleared
 			const validData = saves.ensureLatestVersion(JSON.parse(rawData));
-			const deserialized = saves.deserialize(validData);
 			// Disable auto persistence during state setting to avoid persisting the data immediately
-			ignoreUpdates(() => setState(deserialized));
+			ignoreUpdates(() => setState(validData));
 		}
 	}
 

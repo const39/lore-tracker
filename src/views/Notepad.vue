@@ -2,27 +2,27 @@
 	<Banner>
 		<template #actions>
 			<NotepadActions
-				:disabled="!doesFolderExist"
+				:disabled="folder === undefined"
 				@new-folder="newFolder"
 				@new-file="newFile"
 			/>
 		</template>
 	</Banner>
 
-	<NotepadContent v-if="doesFolderExist" :route-name="routeName" :folder-path="folderPath" />
+	<NotepadContent v-if="folder !== undefined" :folder="folder" />
 	<div v-else class="my-3 text-center">
 		<div class="text-xl-h4 my-3">
 			{{ $t("notepad.folderNotFound.title") }}
 		</div>
 		<p>
 			{{ $t("notepad.folderNotFound.message") }}
-			<router-link :to="{ name: routeName }">
+			<router-link :to="{ name: 'Notepad' }">
 				{{ $t("pages.notepad") }}
 			</router-link>
 		</p>
 	</div>
 
-	<FolderDialog v-model="showFolderDialog" :parent-path="folderPath" />
+	<FolderDialog v-if="folder !== undefined" v-model="showFolderDialog" :parent="folder" />
 </template>
 
 <script lang="ts" setup>
@@ -34,14 +34,14 @@ import NotepadActions from "@/components/banner/actions/NotepadActions.vue";
 import FolderDialog from "@/components/notepad/FolderDialog.vue";
 import NotepadContent from "@/components/notepad/NotepadContent.vue";
 
-import { CardCategory, FileTypes } from "@/js/types";
+import { CardCategory } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useNotepadStore } from "@/store/notepad";
+import { File, Path } from "@/js/model/fileTree";
 
+// These props are passed to the component directly by vue-router
 const props = defineProps<{
-	// These props are passed to the component directly by vue-router
-	routeName: string;
-	folderPath: string;
+	folderPath: Path;
 }>();
 
 const showFolderDialog = ref(false);
@@ -55,7 +55,7 @@ function newFolder(): void {
 function newFile(): void {
 	// ! MOCKUP DATA
 	// TODO
-	const note: FileTypes = {
+	const note: File = {
 		_category: CardCategory.Note,
 		id: utilities.uid(),
 		desc: "",
@@ -63,11 +63,8 @@ function newFile(): void {
 		title: "Note A",
 	};
 
-	notepadStore.addFile({ pathToParent: props.folderPath, file: note });
+	notepadStore.addFile(props.folderPath, note);
 }
 
-const doesFolderExist = computed(() => {
-	const sanitized = utilities.sanitizePath(true, props.folderPath);
-	return notepadStore.doesFolderExist(sanitized);
-});
+const folder = computed(() => notepadStore.getFolder(props.folderPath));
 </script>
