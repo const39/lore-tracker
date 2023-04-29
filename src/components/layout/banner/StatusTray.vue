@@ -19,8 +19,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
-import { Season } from "@/js/types";
+import { Season } from "@/core/constants";
+import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 
 const campaignInfoStore = useCampaignInfoStore();

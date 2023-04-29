@@ -18,13 +18,13 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import LorebookActions from "@/components/banner/actions/LorebookActions.vue";
-import Banner from "@/components/banner/Banner.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
-import { eventBus } from "@/js/eventBus";
-import { t as $t } from "@/js/translation";
-import utilities from "@/js/utilities";
+import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
+import Banner from "@/components/layout/banner/Banner.vue";
+import LayoutTabs from "@/components/layout/content/LayoutTabs.vue";
+import { eventBus } from "@/core/eventBus";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
 
 const confirmDialog = ref({

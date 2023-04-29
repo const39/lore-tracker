@@ -25,8 +25,8 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { Folder } from "@/js/model/fileTree";
-import { Icon } from "@/js/types";
+import { Icon } from "@/core/constants";
+import { Folder } from "@/core/model/fileTree";
 import BaseCard from "../cards/BaseCard.vue";
 import FolderForm from "./FolderForm.vue";
 

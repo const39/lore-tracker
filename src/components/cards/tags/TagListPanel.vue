@@ -27,9 +27,9 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import ListPanel from "@/components/ListPanel.vue";
-import { t as $t } from "@/js/translation";
-import { ID } from "@/js/types";
+import ListPanel from "@/components/common/ListPanel.vue";
+import { ID } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import TagAutocomplete from "./TagAutocomplete.vue";
 import TagList from "./TagList.vue";
 

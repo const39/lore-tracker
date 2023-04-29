@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Folder } from "@/js/model/fileTree";
+import { Folder } from "@/core/model/fileTree";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{

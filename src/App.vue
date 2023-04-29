@@ -149,15 +149,15 @@
 import { onKeyDown } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import Snackbar from "@/components/common/Snackbar.vue";
+import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import QuickNote from "@/components/QuickNote.vue";
-import Snackbar from "@/components/Snackbar.vue";
-import { eventBus } from "@/js/eventBus";
-import { t as $t } from "@/js/translation";
-import { VERSION } from "@/js/types";
+import { VERSION } from "@/core/constants";
+import { eventBus } from "@/core/eventBus";
+import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
 
 const version = ref(VERSION);

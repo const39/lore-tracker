@@ -60,9 +60,9 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import { eventBus } from "@/js/eventBus";
-import { t as $t } from "@/js/translation";
+import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
+import { eventBus } from "@/core/eventBus";
+import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
 import MenuActivator from "./MenuActivator.vue";
 

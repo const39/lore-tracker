@@ -32,9 +32,7 @@
 							<template #activator="{ props: tooltipProps }">
 								<v-icon
 									v-bind="tooltipProps"
-									:icon="
-										task.isCompleted ? icons.taskCompleted : icons.taskOngoing
-									"
+									:icon="task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing"
 									@click="complete(idx)"
 								/>
 							</template>
@@ -51,11 +49,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import ListPanel from "@/components/ListPanel.vue";
-import { t as $t } from "@/js/translation";
-import { Icon as icons, Quest, Task } from "@/js/types";
-import utilities from "@/js/utilities";
-import { required } from "@/js/validationRules";
+import ListPanel from "@/components/common/ListPanel.vue";
+import { Icon } from "@/core/constants";
+import { Quest, Task } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
+import { required } from "@/core/validationRules";
 import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{

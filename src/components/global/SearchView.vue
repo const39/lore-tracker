@@ -25,14 +25,14 @@
 				<template #selection="{ props, item }">
 					<v-list-item
 						v-bind="props"
-						:prepend-icon="icons[item.raw as keyof typeof icons]"
+						:prepend-icon="Icon[item.raw as keyof typeof Icon]"
 						:title="$t(`categories.${item.raw}`)"
 					/>
 				</template>
 				<template #item="{ props, item }">
 					<v-list-item
 						v-bind="props"
-						:prepend-icon="icons[item.raw as keyof typeof icons]"
+						:prepend-icon="Icon[item.raw as keyof typeof Icon]"
 						:title="$t(`categories.${item.raw}`)"
 					/>
 				</template>
@@ -53,11 +53,11 @@
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
-import { t as $t } from "@/js/translation";
-import { CategoryFilter, Icon as icons } from "@/js/types";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
+import { Icon } from "@/core/constants";
+import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { useFilterStore } from "@/store/filter";
-import TagListPanel from "./cards/tags/TagListPanel.vue";
+import { CategoryFilter, useFilterStore } from "@/store/filter";
 
 const open = ref(false);
 const categories = ref(Object.values(CategoryFilter));

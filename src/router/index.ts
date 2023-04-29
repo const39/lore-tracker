@@ -1,11 +1,11 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
-import { Path } from "@/js/model/fileTree";
+import { Path } from "@/core/model/fileTree";
 import LoreBook from "../views/LoreBook.vue";
 
 const routes = [
 	{
-		path: "/",
-		alias: "/lore-book",
+		path: "/lore-book/:tab?/:folderURI*",
+		alias: "/:tab?/:folderURI*",
 		name: "LoreBook",
 		component: LoreBook,
 	},

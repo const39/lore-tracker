@@ -44,8 +44,8 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import SearchView from "@/components/SearchView.vue";
-import { t as $t } from "@/js/translation";
+import SearchView from "@/components/global/SearchView.vue";
+import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
 import StatusTray from "./StatusTray.vue";

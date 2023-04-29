@@ -52,10 +52,10 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
-import { Character } from "@/js/types";
-import utilities from "@/js/utilities";
-import { required } from "@/js/validationRules";
+import { Character } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
+import { required } from "@/core/validationRules";
 import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{

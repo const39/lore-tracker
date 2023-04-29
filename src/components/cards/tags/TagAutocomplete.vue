@@ -19,7 +19,7 @@
 						<template #activator="{ props: tooltipProps }">
 							<v-icon
 								v-bind="mergeProps(menuProps, tooltipProps)"
-								:icon="icons[category]"
+								:icon="Icon[category]"
 							/>
 						</template>
 						<span>{{ $t("actions.changeCategory") }}</span>
@@ -28,7 +28,7 @@
 				<v-list density="compact">
 					<v-list-item v-for="cat in categories" :key="cat" link @click="category = cat">
 						<v-list-item-title>
-							<v-icon :icon="icons[cat]" size="small" class="mx-1" />
+							<v-icon :icon="Icon[cat]" size="small" class="mx-1" />
 							{{ $t(`categories.${cat}`) }}
 						</v-list-item-title>
 					</v-list-item>
@@ -40,8 +40,9 @@
 
 <script lang="ts" setup>
 import { computed, mergeProps, nextTick, ref, watch } from "vue";
-import { t as $t } from "@/js/translation";
-import { CardCategory, CardTypes, Icon as icons, ID, Tag } from "@/js/types";
+import { Icon } from "@/core/constants";
+import { CardCategory, CardTypes, ID, Tag } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 
 const props = defineProps<{

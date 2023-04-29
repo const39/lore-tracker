@@ -4,11 +4,7 @@
 		<v-card-actions class="float-right">
 			<v-tooltip v-if="fullyComplete" location="top">
 				<template #activator="{ props: tooltipProps }">
-					<v-icon
-						v-bind="tooltipProps"
-						:icon="icons.questCompleted"
-						class="float-right"
-					/>
+					<v-icon v-bind="tooltipProps" :icon="Icon.questCompleted" class="float-right" />
 				</template>
 				<span>{{ $t("fields.completed") }}</span>
 			</v-tooltip>
@@ -22,7 +18,7 @@
 					<v-tooltip location="bottom">
 						<template #activator="{ props: tooltipProps }">
 							<v-icon class="ma-2" v-bind="tooltipProps">
-								{{ task.isCompleted ? icons.taskCompleted : icons.taskOngoing }}
+								{{ task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing }}
 							</v-icon>
 						</template>
 						{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
@@ -40,8 +36,9 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
-import { Icon as icons, Quest } from "@/js/types";
+import { Icon } from "@/core/constants";
+import { Quest } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import TagList from "../tags/TagList.vue";
 
 const props = defineProps<{

@@ -15,8 +15,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useTheme } from "vuetify";
-import { CardCategory, type Event, EventType } from "@/js/types";
-import utilities from "@/js/utilities";
+import { Event, EventType } from "@/core/model/cards";
+import { CardCategory } from "@/core/model/cards";
+import utilities from "@/core/utilities";
 
 interface Node {
 	isHeader: boolean;

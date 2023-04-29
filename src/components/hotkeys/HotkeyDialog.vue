@@ -34,7 +34,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
 const props = defineProps<{

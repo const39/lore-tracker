@@ -2,13 +2,38 @@ import { watchIgnorable } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
 import { deepUnref } from "@/composables/deepUnref";
-import saves, { SaveVersion } from "@/js/saves";
-import { LocalStorageKey, SerializedState } from "@/js/types";
-import utilities from "@/js/utilities";
+import { LocalStorageKey, Season } from "@/core/constants";
+import { CardsStore } from "@/core/model/cards";
+import { NotepadSave } from "@/core/model/fileTree";
+import saves, { SaveVersion } from "@/core/saves";
+import utilities from "@/core/utilities";
 import { useCampaignInfoStore } from "./campaignInfo";
 import { useCardsStore } from "./cards";
 import { useNotepadStore } from "./notepad";
 import { useQuickNoteStore } from "./quickNote";
+
+export interface MetaData {
+	version: SaveVersion.Latest;
+	lastUpdate: string; // ISO date-time format | Format not enforced !
+}
+
+export interface SerializedState {
+	// _meta: MetaData;
+	name: string;
+	days: number;
+	season: Season;
+	cards: CardsStore;
+	notepad: NotepadSave;
+	quickNote: string;
+}
+
+// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
+// *** Update/Create save format converter in saves.ts
+// *** Regenerate JSON Schema on each update :
+// * => npx ts-json-schema-generator --path .\src\js\types.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
+export interface SaveFormat extends SerializedState {
+	_meta: MetaData;
+}
 
 export const useStore = defineStore("store", () => {
 	const stores = [

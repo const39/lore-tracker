@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 
 defineEmits(["edit", "delete"]);
 </script>

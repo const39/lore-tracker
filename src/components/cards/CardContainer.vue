@@ -27,9 +27,9 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from "vue";
-import { eventBus } from "@/js/eventBus";
-import { CardTypes } from "@/js/types";
-import utilities from "@/js/utilities";
+import { eventBus } from "@/core/eventBus";
+import { CardTypes } from "@/core/model/cards";
+import utilities from "@/core/utilities";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
 import BaseCard from "./BaseCard.vue";

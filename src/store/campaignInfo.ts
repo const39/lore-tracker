@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { Season, SerializedState } from "@/js/types";
+import { Season } from "@/core/constants";
+import { SerializedState } from ".";
 
 interface CampaignInfoState {
 	name: string;

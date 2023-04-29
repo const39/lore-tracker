@@ -1,17 +1,10 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import {
-	CardCategory,
-	CardsStore,
-	CardTypes,
-	CategoryFilter,
-	Filter,
-	ID,
-	SerializedState,
-} from "@/js/types";
-import utilities from "@/js/utilities";
-import { useFilterStore } from "./filter";
+import { CardCategory, CardTypes, CardsStore, ID } from "@/core/model/cards";
+import utilities from "@/core/utilities";
+import { CategoryFilter, Filter, useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
+import { SerializedState } from ".";
 
 function defaultCards(): CardsStore {
 	// Generate automatically the CardsStore using the CardCategory enum values as keys
