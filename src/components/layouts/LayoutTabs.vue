@@ -13,13 +13,12 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { ref, onMounted, onBeforeUnmount } from "vue";
-import LayoutTabContent from "./LayoutTabContent.vue";
-
-import { CardCategory, Icon as icons } from "@/js/types";
-import { eventBus } from "@/js/eventBus";
 import { onKeyDown } from "@vueuse/core";
+import { onBeforeUnmount, onMounted, ref } from "vue";
+import { eventBus } from "@/js/eventBus";
+import { t as $t } from "@/js/translation";
+import { CardCategory, Icon as icons } from "@/js/types";
+import LayoutTabContent from "./LayoutTabContent.vue";
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);

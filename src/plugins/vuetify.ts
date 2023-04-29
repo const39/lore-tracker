@@ -1,6 +1,5 @@
 import "vuetify/styles";
 import { createVuetify, type ThemeDefinition } from "vuetify";
-
 import colors from "@/js/colors";
 
 const light: ThemeDefinition = {

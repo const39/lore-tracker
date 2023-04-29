@@ -59,13 +59,12 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { ref } from "vue";
-
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import MenuActivator from "./MenuActivator.vue";
 import { eventBus } from "@/js/eventBus";
+import { t as $t } from "@/js/translation";
 import { useStore } from "@/store";
+import MenuActivator from "./MenuActivator.vue";
 
 const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
 const showUploadDialog = ref(false);

@@ -1,8 +1,8 @@
-import { SupportedLanguages } from "@/js/translation";
-import { LocalStorageKey } from "@/js/types";
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 import { useTheme } from "vuetify";
+import { SupportedLanguages } from "@/js/translation";
+import { LocalStorageKey } from "@/js/types";
 
 export type Order = "default" | "alphanumeric";
 export type Density = "large" | "comfortable" | "compact";

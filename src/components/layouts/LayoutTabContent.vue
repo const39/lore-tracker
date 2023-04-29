@@ -27,14 +27,13 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import CardAdd from "../cards/CardAdd.vue";
-import CardContainer from "../cards/CardContainer.vue";
-
+import draggable from "vuedraggable";
 import { CardCategory, CardTypes } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
-import draggable from "vuedraggable";
+import CardAdd from "../cards/CardAdd.vue";
+import CardContainer from "../cards/CardContainer.vue";
 
 const props = defineProps<{ category: CardCategory }>();
 const drag = ref(false);

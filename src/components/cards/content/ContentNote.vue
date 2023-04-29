@@ -13,10 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-import MarkdownView from "../../MarkdownView.vue";
-import TagList from "../tags/TagList.vue";
-
+import MarkdownView from "@/components/MarkdownView.vue";
 import { Note } from "@/js/types";
+import TagList from "../tags/TagList.vue";
 defineProps<{
 	itemData: Note;
 }>();

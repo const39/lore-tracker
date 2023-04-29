@@ -30,11 +30,11 @@
 	</div>
 </template>
 <script lang="ts" setup>
+import { computed } from "vue";
+import TimelineEvent from "@/components/TimelineEvent.vue";
 import { t as $t } from "@/js/translation";
 import { Event } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
-import { computed } from "vue";
-import TimelineEvent from "../components/TimelineEvent.vue";
 
 const cardsStore = useCardsStore();
 

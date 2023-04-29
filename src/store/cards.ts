@@ -1,15 +1,15 @@
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 import {
 	CardCategory,
-	CardTypes,
 	CardsStore,
+	CardTypes,
 	CategoryFilter,
 	Filter,
 	ID,
 	SerializedState,
 } from "@/js/types";
 import utilities from "@/js/utilities";
-import { defineStore } from "pinia";
-import { computed, ref } from "vue";
 import { useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 

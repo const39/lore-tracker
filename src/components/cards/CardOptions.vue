@@ -10,12 +10,12 @@
 				:title="$t('actions.edit')"
 				prepend-icon="mdi-pencil"
 				@click="$emit('edit')"
-			></v-list-item>
+			/>
 			<v-list-item
 				:title="$t('actions.delete')"
 				prepend-icon="mdi-delete"
 				@click="$emit('delete')"
-			></v-list-item>
+			/>
 		</v-list>
 	</v-menu>
 </template>

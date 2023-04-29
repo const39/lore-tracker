@@ -1,14 +1,14 @@
-import { deepUnref } from "@/composables/deepUnref";
-import saves, { SaveVersion } from "@/js/saves";
-import { LocalStorageKey, SerializedState } from "@/js/types";
 import { watchIgnorable } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
+import { deepUnref } from "@/composables/deepUnref";
+import saves, { SaveVersion } from "@/js/saves";
+import { LocalStorageKey, SerializedState } from "@/js/types";
+import utilities from "@/js/utilities";
 import { useCampaignInfoStore } from "./campaignInfo";
 import { useCardsStore } from "./cards";
 import { useNotepadStore } from "./notepad";
 import { useQuickNoteStore } from "./quickNote";
-import utilities from "@/js/utilities";
 
 export const useStore = defineStore("store", () => {
 	const stores = [
@@ -56,7 +56,7 @@ export const useStore = defineStore("store", () => {
 	function loadData(json?: string) {
 		// Get persisted raw data (from argument or from LocalStorage if no argument)
 		const rawData = json || localStorage.getItem(LocalStorageKey.DATA_KEY);
-		
+
 		// Perform parsing, validation and conversion if there is data
 		// If there is no data to be used, leave the default state as is
 		if (rawData) {

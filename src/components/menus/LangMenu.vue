@@ -21,9 +21,8 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t, SupportedLanguages } from "@/js/translation";
 import { ref, watch } from "vue";
-
+import { t as $t, SupportedLanguages } from "@/js/translation";
 import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 

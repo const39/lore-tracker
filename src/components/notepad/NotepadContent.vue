@@ -37,11 +37,11 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 import CardContainer from "@/components/cards/CardContainer.vue";
 import { Folder, Path } from "@/js/model/fileTree";
 import { t as $t } from "@/js/translation";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
 import FolderCard from "./FolderCard.vue";
 
 interface BreadcrumbItem {
@@ -69,7 +69,7 @@ function openFolder(folder: Folder) {
 	router.push({
 		name: "Notepad",
 		params: {
-			folderURI: [...path.rawSegments],	// Use spread syntax to convert readonly array to mutable one (typing issue only)
+			folderURI: [...path.rawSegments], // Use spread syntax to convert readonly array to mutable one (typing issue only)
 		},
 	});
 }

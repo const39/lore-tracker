@@ -18,8 +18,8 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { computed } from "vue";
+import { t as $t } from "@/js/translation";
 import { Season } from "@/js/types";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 

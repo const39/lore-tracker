@@ -43,10 +43,9 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { computed, ref } from "vue";
-
 import SearchView from "@/components/SearchView.vue";
+import { t as $t } from "@/js/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
 import StatusTray from "./StatusTray.vue";

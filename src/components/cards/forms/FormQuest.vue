@@ -50,13 +50,13 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import ListPanel from "@/components/ListPanel.vue";
 import { t as $t } from "@/js/translation";
-import { Quest, Task, Icon as icons } from "@/js/types";
+import { Icon as icons, Quest, Task } from "@/js/types";
 import utilities from "@/js/utilities";
 import { required } from "@/js/validationRules";
 import TagListPanel from "../tags/TagListPanel.vue";
-import { computed } from "vue";
 
 const props = defineProps<{
 	modelValue: Quest; // v-model

@@ -7,7 +7,7 @@
 	>
 		<v-card-title class="pr-0 d-flex align-center">
 			<v-badge :content="childrenCount" color="grey">
-				<v-icon :icon="Icon.folder" :color="folder.metadata.color" size="x-large"></v-icon>
+				<v-icon :icon="Icon.folder" :color="folder.metadata.color" size="x-large" />
 			</v-badge>
 			<div class="pl-4 pt-2 flex-grow-1 text-subtitle-1">
 				{{ folder.metadata.name }}
@@ -25,11 +25,10 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import FolderForm from "./FolderForm.vue";
-
 import { Folder } from "@/js/model/fileTree";
 import { Icon } from "@/js/types";
 import BaseCard from "../cards/BaseCard.vue";
+import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
 	folder: Folder;

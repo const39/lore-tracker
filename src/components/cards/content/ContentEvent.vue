@@ -25,10 +25,10 @@
 </template>
 
 <script lang="ts" setup>
+import MarkdownView from "@/components/MarkdownView.vue";
 import { t as $t } from "@/js/translation";
 import { Event } from "@/js/types";
 import utilities from "@/js/utilities";
-import MarkdownView from "../../MarkdownView.vue";
 import TagList from "../tags/TagList.vue";
 
 defineProps<{

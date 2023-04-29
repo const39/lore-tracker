@@ -25,12 +25,11 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { computed } from "vue";
+import MarkdownView from "@/components/MarkdownView.vue";
+import { t as $t } from "@/js/translation";
 import { Character } from "@/js/types";
-
 import TagList from "../tags/TagList.vue";
-import MarkdownView from "../../MarkdownView.vue";
 
 const props = defineProps<{
 	itemData: Character;

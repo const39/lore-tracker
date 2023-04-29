@@ -1,6 +1,6 @@
-import { RouteLocation, createRouter, createWebHistory } from "vue-router";
-import LoreBook from "../views/LoreBook.vue";
+import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 import { Path } from "@/js/model/fileTree";
+import LoreBook from "../views/LoreBook.vue";
 
 const routes = [
 	{

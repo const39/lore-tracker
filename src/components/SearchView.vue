@@ -51,12 +51,12 @@
 </template>
 
 <script lang="ts" setup>
+import { onKeyDown } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
 import { t as $t } from "@/js/translation";
 import { CategoryFilter, Icon as icons } from "@/js/types";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
-import { onKeyDown } from "@vueuse/core";
-import { computed, ref, watch } from "vue";
 import TagListPanel from "./cards/tags/TagListPanel.vue";
 
 const open = ref(false);

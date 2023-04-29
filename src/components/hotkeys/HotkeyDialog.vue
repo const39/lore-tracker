@@ -33,8 +33,8 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { computed } from "vue";
+import { t as $t } from "@/js/translation";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
 const props = defineProps<{

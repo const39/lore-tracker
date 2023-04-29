@@ -1,5 +1,5 @@
-import en from "../locale/en";
-import fr from "../locale/fr";
+import en from "@/locale/en";
+import fr from "@/locale/fr";
 import { usePreferencesStore } from "@/store/preferences";
 
 export interface Locale {

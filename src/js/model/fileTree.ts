@@ -1,6 +1,6 @@
 import { MD5 } from "object-hash";
 import { ID, Note } from "../types";
-import utilities, { SerializedMap, deserializeMap, mergeMaps, serializeMap } from "../utilities";
+import utilities, { deserializeMap, mergeMaps, SerializedMap, serializeMap } from "../utilities";
 
 export type File = Note;
 
@@ -150,7 +150,7 @@ export class Folder {
 	}
 
 	private flatten(parentHash?: Key) {
-		let map: FlatTree = new Map<Key, FlatFolder>();
+		const map: FlatTree = new Map<Key, FlatFolder>();
 		const objHash = MD5(this);
 
 		const childrenHashes: Key[] = [];
