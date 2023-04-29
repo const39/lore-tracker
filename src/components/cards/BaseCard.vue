@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
 import CardOptions from "./CardOptions.vue";
 
 const props = defineProps<{

@@ -39,10 +39,9 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { t as $t } from "@/js/translation";
 import { Icon as icons, Quest } from "@/js/types";
-import { computed } from "vue";
-
 import TagList from "../tags/TagList.vue";
 
 const props = defineProps<{

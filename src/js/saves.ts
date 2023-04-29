@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import Ajv from "ajv";
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
-import Ajv from "ajv";
 import { createRootFolder } from "./model/fileTree";
 import { SaveFormat, SerializedState } from "./types";
 import utilities from "./utilities";

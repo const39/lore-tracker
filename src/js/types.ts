@@ -1,4 +1,4 @@
-import { NotepadSave, NotepadState } from "./model/fileTree";
+import { NotepadSave } from "./model/fileTree";
 import { SaveVersion } from "./saves";
 import utilities from "./utilities";
 

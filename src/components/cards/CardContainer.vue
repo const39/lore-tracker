@@ -26,16 +26,14 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, defineAsyncComponent, ref } from "vue";
 import { eventBus } from "@/js/eventBus";
 import { CardTypes } from "@/js/types";
-import { computed, defineAsyncComponent, ref } from "vue";
-
-import BaseCard from "./BaseCard.vue";
-import FormWrapper from "./forms/FormWrapper.vue";
-
 import utilities from "@/js/utilities";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
+import BaseCard from "./BaseCard.vue";
+import FormWrapper from "./forms/FormWrapper.vue";
 
 const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 

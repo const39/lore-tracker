@@ -17,19 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-
-import Banner from "@/components/banner/Banner.vue";
 import LorebookActions from "@/components/banner/actions/LorebookActions.vue";
-
-import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
-
+import Banner from "@/components/banner/Banner.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-
+import LayoutTabs from "@/components/layouts/LayoutTabs.vue";
 import { eventBus } from "@/js/eventBus";
+import { t as $t } from "@/js/translation";
+import utilities from "@/js/utilities";
 import { useCardsStore } from "@/store/cards";
-import utilities from "../js/utilities";
 
 const confirmDialog = ref({
 	show: false,

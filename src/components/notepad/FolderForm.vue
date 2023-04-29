@@ -1,7 +1,9 @@
 <template>
 	<v-form ref="form">
 		<v-card>
-			<v-card-title class="text-h5"> Ajouter un dossier </v-card-title>
+			<v-card-title class="text-h5">
+				Ajouter un dossier
+			</v-card-title>
 			<v-card-text class="d-flex text-body-2">
 				<v-menu location="left">
 					<template #activator="{ props: menuProps }">
@@ -13,7 +15,7 @@
 											:icon="folderIcon"
 											:color="model.color"
 											size="x-large"
-										></v-icon>
+										/>
 										<v-fade-transition>
 											<v-icon
 												v-if="isHovering"
@@ -50,6 +52,8 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, mergeProps, ref } from "vue";
+import { type VForm } from "vuetify/components";
 import colors from "@/js/colors";
 import { Folder, FolderMetadata, Path } from "@/js/model/fileTree";
 import { t as $t } from "@/js/translation";
@@ -57,8 +61,6 @@ import { Icon } from "@/js/types";
 import utilities from "@/js/utilities";
 import validationRules from "@/js/validationRules";
 import { useNotepadStore } from "@/store/notepad";
-import { computed, mergeProps, ref } from "vue";
-import { type VForm } from "vuetify/components";
 
 const props = defineProps<{ parent: Folder; edit?: Folder }>();
 const emit = defineEmits<{

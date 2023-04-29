@@ -8,8 +8,8 @@
 </template>
 
 <script lang="ts" setup>
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { eventBus } from "@/js/eventBus.js";
-import { ref, onMounted, onBeforeUnmount } from "vue";
 
 const show = ref(false);
 const message = ref("");

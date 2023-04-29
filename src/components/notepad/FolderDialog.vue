@@ -5,10 +5,9 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { Folder } from "@/js/model/fileTree";
 import FolderForm from "./FolderForm.vue";
-
-import { computed } from "vue";
 
 const props = defineProps<{
 	modelValue: boolean; // v-model

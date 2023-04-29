@@ -39,10 +39,9 @@
 </template>
 
 <script lang="ts" setup>
+import { computed, ref } from "vue";
 import { t as $t } from "@/js/translation";
 import { useQuickNoteStore } from "@/store/quickNote";
-import { computed } from "vue";
-import { ref } from "vue";
 
 const open = ref(false);
 const resizing = ref(false);

@@ -35,10 +35,9 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useTheme } from "vuetify";
+import { CardCategory } from "@/js/types";
 import BaseCard from "./BaseCard.vue";
 import FormWrapper from "./forms/FormWrapper.vue";
-
-import { CardCategory } from "@/js/types";
 
 defineProps<{
 	category: CardCategory;

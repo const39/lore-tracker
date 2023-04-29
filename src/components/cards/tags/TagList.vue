@@ -34,11 +34,11 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { eventBus } from "@/js/eventBus.js";
 import { CardCategory, Icon as icons, ID, Tag } from "@/js/types";
 import utilities from "@/js/utilities";
 import { useCardsStore } from "@/store/cards";
-import { computed } from "vue";
 
 const props = withDefaults(
 	defineProps<{

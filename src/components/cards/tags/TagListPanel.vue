@@ -26,13 +26,12 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { ref, computed } from "vue";
-import { ID } from "@/js/types";
-
+import { computed, ref } from "vue";
 import ListPanel from "@/components/ListPanel.vue";
-import TagList from "./TagList.vue";
+import { t as $t } from "@/js/translation";
+import { ID } from "@/js/types";
 import TagAutocomplete from "./TagAutocomplete.vue";
+import TagList from "./TagList.vue";
 
 const props = defineProps<{
 	modelValue: ID[]; // v-model

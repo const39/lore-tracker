@@ -1,5 +1,5 @@
-import { CardTypes, Tag } from "./types";
 import mitt from "mitt";
+import { CardTypes, Tag } from "./types";
 
 type Events = {
 	"delete-card": CardTypes;

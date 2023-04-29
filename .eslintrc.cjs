@@ -8,7 +8,35 @@ module.exports = {
 		"@vue/eslint-config-typescript/recommended",
 		// "prettier",
 	],
+	plugins: ["import"],
 	rules: {
+		"import/order": [
+			"warn",
+			{
+				groups: [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index",
+					"object",
+					"type",
+				],
+				pathGroups: [
+					{
+						pattern: "@/**",
+						group: "internal",
+					},
+				],
+				pathGroupsExcludedImportTypes: ["internal"],
+				"newlines-between": "never",
+				alphabetize: {
+					order: "asc",
+					caseInsensitive: true,
+				},
+			},
+		],
 		"vue/multi-word-component-names": "off",
 		"vue/no-ref-object-destructure": "warn",
 		"vue/html-indent": ["error", "tab"],
@@ -39,7 +67,7 @@ module.exports = {
 					"SLOT",
 					"TWO_WAY_BINDING",
 					"OTHER_DIRECTIVES",
-					"OTHER_ATTR",
+					// "OTHER_ATTR",
 					"ATTR_DYNAMIC",
 					"ATTR_STATIC",
 					"ATTR_SHORTHAND_BOOL",

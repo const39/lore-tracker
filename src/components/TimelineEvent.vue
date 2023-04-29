@@ -13,10 +13,10 @@
 </template>
 
 <script lang="ts" setup>
-import { CardCategory, EventType, type Event } from "@/js/types";
-import utilities from "@/js/utilities";
 import { computed } from "vue";
 import { useTheme } from "vuetify";
+import { CardCategory, type Event, EventType } from "@/js/types";
+import utilities from "@/js/utilities";
 
 interface Node {
 	isHeader: boolean;

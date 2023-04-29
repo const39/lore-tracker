@@ -51,11 +51,11 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from "vue";
 import { t as $t } from "@/js/translation";
 import { Character } from "@/js/types";
 import utilities from "@/js/utilities";
 import { required } from "@/js/validationRules";
-import { computed } from "vue";
 import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{

@@ -1,5 +1,5 @@
-import { CardCategory, CardTypes, Icon } from "./types";
 import { klona } from "klona/lite";
+import { CardCategory, CardTypes, Icon } from "./types";
 
 export type SerializedMap<K extends string | number, V> = Record<K, V>;
 
@@ -23,8 +23,6 @@ export function deserializeMap<K extends string | number, V>(obj: SerializedMap<
 	}
 	return map;
 }
-
-
 
 export default {
 	/**
@@ -99,5 +97,5 @@ export default {
 	},
 	mergeMaps,
 	serializeMap,
-	deserializeMap
+	deserializeMap,
 };

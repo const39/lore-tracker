@@ -1,6 +1,6 @@
-import { CategoryFilter, ID } from "@/js/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { CategoryFilter, ID } from "@/js/types";
 
 export const useFilterStore = defineStore("filter", () => {
 	const category = ref<CategoryFilter>(CategoryFilter.ALL);

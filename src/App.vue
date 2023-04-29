@@ -146,20 +146,19 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { onMounted, ref } from "vue";
-import { VERSION } from "./js/types";
-
 import { onKeyDown } from "@vueuse/core";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import QuickNote from "./components/QuickNote.vue";
-import Snackbar from "./components/Snackbar.vue";
-import HotkeyDialog from "./components/hotkeys/HotkeyDialog.vue";
-import LangMenu from "./components/menus/LangMenu.vue";
-import SaveMenu from "./components/menus/SaveMenu.vue";
-import ThemeMenu from "./components/menus/ThemeMenu.vue";
-import { eventBus } from "./js/eventBus";
-import { useStore } from "./store";
+import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
+import LangMenu from "@/components/menus/LangMenu.vue";
+import SaveMenu from "@/components/menus/SaveMenu.vue";
+import ThemeMenu from "@/components/menus/ThemeMenu.vue";
+import QuickNote from "@/components/QuickNote.vue";
+import Snackbar from "@/components/Snackbar.vue";
+import { eventBus } from "@/js/eventBus";
+import { t as $t } from "@/js/translation";
+import { VERSION } from "@/js/types";
+import { useStore } from "@/store";
 
 const version = ref(VERSION);
 const showMenu = ref(false);

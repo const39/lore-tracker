@@ -1,7 +1,7 @@
-import { File, Folder, Path, createRootFolder } from "@/js/model/fileTree";
-import type { SerializedState } from "@/js/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { createRootFolder, File, Folder, Path } from "@/js/model/fileTree";
+import type { SerializedState } from "@/js/types";
 
 export const useNotepadStore = defineStore("notepad", () => {
 	const fileTree = ref(createRootFolder());

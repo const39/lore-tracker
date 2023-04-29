@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { usePreferencesStore } from "@/store/preferences";
 import { computed } from "vue";
 import { useTheme } from "vuetify";
+import { t as $t } from "@/js/translation";
+import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 
 const theme = useTheme();
-const prefStore = usePreferencesStore()
+const prefStore = usePreferencesStore();
 
 function computeSheetStyle(primary: string, background: string) {
 	return `background: linear-gradient(45deg, ${background} 50%, ${primary} 50%); `;

@@ -39,10 +39,10 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
-import { CardCategory, CardTypes, ID, Tag, Icon as icons } from "@/js/types";
-import { useCardsStore } from "@/store/cards";
 import { computed, mergeProps, nextTick, ref, watch } from "vue";
+import { t as $t } from "@/js/translation";
+import { CardCategory, CardTypes, Icon as icons, ID, Tag } from "@/js/types";
+import { useCardsStore } from "@/store/cards";
 
 const props = defineProps<{
 	// Override default v-model

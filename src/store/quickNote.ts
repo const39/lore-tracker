@@ -1,6 +1,6 @@
-import { SerializedState } from "@/js/types";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { SerializedState } from "@/js/types";
 
 export const useQuickNoteStore = defineStore("quickNote", () => {
 	const content = ref("");
