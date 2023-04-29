@@ -27,14 +27,14 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import NotepadActions from "@/components/banner/actions/NotepadActions.vue";
-import Banner from "@/components/banner/Banner.vue";
+import NotepadActions from "@/components/layout/banner/actions/NotepadActions.vue";
+import Banner from "@/components/layout/banner/Banner.vue";
 import FolderDialog from "@/components/notepad/FolderDialog.vue";
 import NotepadContent from "@/components/notepad/NotepadContent.vue";
-import { File, Path } from "@/js/model/fileTree";
-import { t as $t } from "@/js/translation";
-import { CardCategory } from "@/js/types";
-import utilities from "@/js/utilities";
+import { CardCategory } from "@/core/model/cards";
+import { File, Path } from "@/core/model/fileTree";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
 import { useNotepadStore } from "@/store/notepad";
 
 // These props are passed to the component directly by vue-router

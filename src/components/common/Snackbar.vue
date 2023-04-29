@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { eventBus } from "@/js/eventBus.js";
+import { eventBus } from "@/core/eventBus.js";
 
 const show = ref(false);
 const message = ref("");

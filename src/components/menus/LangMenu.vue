@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-import { t as $t, SupportedLanguages } from "@/js/translation";
+import { t as $t, SupportedLanguages } from "@/core/translation";
 import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 

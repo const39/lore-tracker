@@ -25,14 +25,14 @@
 					>
 						<template #chip="{ props: chipProps, item }">
 							<v-chip v-bind="chipProps">
-								<v-icon :icon="icons[item.raw as keyof typeof icons]" start />
+								<v-icon :icon="Icon[item.raw as keyof typeof Icon]" start />
 								{{ $t(`eventTypes.${item.raw}`) }}
 							</v-chip>
 						</template>
 						<template #item="{ props: itemProps, item }">
 							<v-list-item
 								v-bind="itemProps"
-								:prepend-icon="icons[item.raw as keyof typeof icons]"
+								:prepend-icon="Icon[item.raw as keyof typeof Icon]"
 								:title="$t(`eventTypes.${item.raw}`)"
 							/>
 						</template>
@@ -57,10 +57,11 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
-import { Event, EventType, Icon as icons } from "@/js/types";
-import utilities from "@/js/utilities";
-import { number, numberInRange, required } from "@/js/validationRules";
+import { Icon } from "@/core/constants";
+import { Event, EventType } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
+import { number, numberInRange, required } from "@/core/validationRules";
 import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{

@@ -31,9 +31,9 @@
 </template>
 <script lang="ts" setup>
 import { computed } from "vue";
-import TimelineEvent from "@/components/TimelineEvent.vue";
-import { t as $t } from "@/js/translation";
-import { Event } from "@/js/types";
+import TimelineEvent from "@/components/timeline/TimelineEvent.vue";
+import { Event } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 
 const cardsStore = useCardsStore();

@@ -26,9 +26,9 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import MarkdownView from "@/components/MarkdownView.vue";
-import { t as $t } from "@/js/translation";
-import { Character } from "@/js/types";
+import MarkdownView from "@/components/common/MarkdownView.vue";
+import { Character } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import TagList from "../tags/TagList.vue";
 
 const props = defineProps<{

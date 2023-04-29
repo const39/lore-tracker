@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 import { useQuickNoteStore } from "@/store/quickNote";
 
 const open = ref(false);

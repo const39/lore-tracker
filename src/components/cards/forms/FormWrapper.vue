@@ -20,9 +20,9 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
-import { t as $t } from "@/js/translation";
-import { CardCategory, CardTypes, EventType, ID } from "@/js/types";
-import utilities from "@/js/utilities";
+import { CardCategory, CardTypes, EventType, ID } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
 

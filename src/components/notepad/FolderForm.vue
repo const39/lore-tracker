@@ -54,12 +54,12 @@
 <script lang="ts" setup>
 import { computed, mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
-import colors from "@/js/colors";
-import { Folder, FolderMetadata, Path } from "@/js/model/fileTree";
-import { t as $t } from "@/js/translation";
-import { Icon } from "@/js/types";
-import utilities from "@/js/utilities";
-import validationRules from "@/js/validationRules";
+import colors from "@/core/colors";
+import { Icon } from "@/core/constants";
+import { Folder, FolderMetadata, Path } from "@/core/model/fileTree";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
+import validationRules from "@/core/validationRules";
 import { useNotepadStore } from "@/store/notepad";
 
 const props = defineProps<{ parent: Folder; edit?: Folder }>();

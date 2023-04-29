@@ -2,7 +2,7 @@
 	<div class="pa-3">
 		<v-row v-for="(list, category) in tags" :key="category">
 			<div v-if="list.length" class="d-flex align-center">
-				<v-icon :icon="icons[category]" size="small" />
+				<v-icon :icon="Icon[category]" size="small" />
 				<!-- Editable version -->
 				<div v-if="editable">
 					<v-chip
@@ -35,9 +35,10 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { eventBus } from "@/js/eventBus.js";
-import { CardCategory, Icon as icons, ID, Tag } from "@/js/types";
-import utilities from "@/js/utilities";
+import { Icon } from "@/core/constants";
+import { eventBus } from "@/core/eventBus.js";
+import { CardCategory, ID, Tag } from "@/core/model/cards";
+import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
 
 const props = withDefaults(

@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 import { Density, Order, usePreferencesStore } from "@/store/preferences";
 
 const prefStore = usePreferencesStore();

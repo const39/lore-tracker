@@ -1,5 +1,5 @@
 import { MD5 } from "object-hash";
-import { ID, Note } from "../types";
+import { ID, Note } from "@/core/model/cards";
 import utilities, { deserializeMap, mergeMaps, SerializedMap, serializeMap } from "../utilities";
 
 export type File = Note;

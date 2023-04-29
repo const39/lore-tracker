@@ -28,12 +28,12 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import draggable from "vuedraggable";
-import { CardCategory, CardTypes } from "@/js/types";
+import CardAdd from "@/components/cards/CardAdd.vue";
+import CardContainer from "@/components/cards/CardContainer.vue";
+import { CardCategory, CardTypes } from "@/core/model/cards";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
-import CardAdd from "../cards/CardAdd.vue";
-import CardContainer from "../cards/CardContainer.vue";
 
 const props = defineProps<{ category: CardCategory }>();
 const drag = ref(false);

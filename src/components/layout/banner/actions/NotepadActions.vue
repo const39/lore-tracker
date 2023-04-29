@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts" setup>
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 defineProps<{ disabled: boolean }>();
 defineEmits(["new-folder", "new-file"]);
 </script>

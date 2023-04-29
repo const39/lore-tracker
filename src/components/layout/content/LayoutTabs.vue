@@ -1,7 +1,7 @@
 <template>
 	<v-tabs v-model="activeTab" color="accent" fixed-tabs>
-		<v-tab v-for="tab in tabs" :key="tab">
-			<v-icon :icon="icons[tab]" start />
+		<v-tab v-for="tab in tabs" :key="tab" :to="tab">
+			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
 		</v-tab>
 	</v-tabs>
@@ -15,9 +15,10 @@
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { eventBus } from "@/js/eventBus";
-import { t as $t } from "@/js/translation";
-import { CardCategory, Icon as icons } from "@/js/types";
+import { Icon } from "@/core/constants";
+import { eventBus } from "@/core/eventBus";
+import { CardCategory } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import LayoutTabContent from "./LayoutTabContent.vue";
 
 const tabs = ref(Object.values(CardCategory));

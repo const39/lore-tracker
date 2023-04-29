@@ -1,5 +1,6 @@
 import { klona } from "klona/lite";
-import { CardCategory, CardTypes, Icon } from "./types";
+import { CardCategory, CardTypes } from "@/core/model/cards";
+import { Icon } from "./constants";
 
 export type SerializedMap<K extends string | number, V> = Record<K, V>;
 

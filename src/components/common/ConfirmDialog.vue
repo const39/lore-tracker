@@ -22,7 +22,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { t as $t } from "@/js/translation";
+import { t as $t } from "@/core/translation";
 
 const props = defineProps<{
 	modelValue: boolean; // Default v-model overwrite

@@ -40,8 +40,8 @@
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { Folder, Path } from "@/js/model/fileTree";
-import { t as $t } from "@/js/translation";
+import { Folder, Path } from "@/core/model/fileTree";
+import { t as $t } from "@/core/translation";
 import FolderCard from "./FolderCard.vue";
 
 interface BreadcrumbItem {
