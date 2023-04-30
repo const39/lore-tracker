@@ -26,21 +26,21 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { Icon } from "@/core/constants";
-import { Folder } from "@/core/model/fileTree";
+import { CardFolder } from "@/core/model/cards";
 import BaseCard from "../cards/BaseCard.vue";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
-	folder: Folder;
+	folder: CardFolder;
 }>();
 
 const emit = defineEmits<{
-	(e: "open-folder", folder: Folder): void;
+	(e: "open-folder", folder: CardFolder): void;
 }>();
 
 const editMode = ref(false);
 
-function openFolder(folder: Folder) {
+function openFolder(folder: CardFolder) {
 	emit("open-folder", folder);
 }
 

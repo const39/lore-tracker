@@ -6,12 +6,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Folder } from "@/core/model/fileTree";
+import { CardFolder } from "@/core/model/cards";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
 	modelValue: boolean; // v-model
-	parent: Folder;
+	parent: CardFolder;
 }>();
 
 const emit = defineEmits<{

@@ -3,8 +3,7 @@ import { defineStore } from "pinia";
 import { computed, reactive } from "vue";
 import { deepUnref } from "@/composables/deepUnref";
 import { LocalStorageKey, Season } from "@/core/constants";
-import { CardsStore } from "@/core/model/cards";
-import { NotepadSave } from "@/core/model/fileTree";
+import { CardsStoreSerialized } from "@/core/model/cards";
 import saves, { SaveVersion } from "@/core/saves";
 import utilities from "@/core/utilities";
 import { useCampaignInfoStore } from "./campaignInfo";
@@ -22,8 +21,7 @@ export interface SerializedState {
 	name: string;
 	days: number;
 	season: Season;
-	cards: CardsStore;
-	notepad: NotepadSave;
+	cards: CardsStoreSerialized;
 	quickNote: string;
 }
 
