@@ -27,8 +27,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import FolderCard from "@/components/notepad/FolderCard.vue";
-import FolderDialog from "@/components/notepad/FolderDialog.vue";
+import FolderCard from "@/components/cards/folder/FolderCard.vue";
+import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
 import { CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 

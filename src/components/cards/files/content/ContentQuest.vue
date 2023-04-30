@@ -36,10 +36,10 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import TagList from "@/components/cards/tags/TagList.vue";
 import { Icon } from "@/core/constants";
 import { Quest } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import TagList from "../tags/TagList.vue";
 
 const props = defineProps<{
 	itemData: Quest;

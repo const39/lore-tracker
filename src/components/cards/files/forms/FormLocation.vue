@@ -2,7 +2,7 @@
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
 		<v-icon :icon="categoryIcon" />
-		<span class="mx-2">{{ $t("dialogs.addFaction") }}</span>
+		<span class="mx-2">{{ $t("dialogs.addLocation") }}</span>
 	</v-card-title>
 	<v-card-text>
 		<v-container>
@@ -26,14 +26,14 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Faction } from "@/core/model/cards";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
+import { Location } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { required } from "@/core/validationRules";
-import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{
-	modelValue: Faction; // v-model
+	modelValue: Location; // v-model
 	variant: "edit" | "add";
 }>();
 

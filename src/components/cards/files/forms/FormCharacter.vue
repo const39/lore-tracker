@@ -52,11 +52,11 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import { Character } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { required } from "@/core/validationRules";
-import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{
 	modelValue: Character; // v-model

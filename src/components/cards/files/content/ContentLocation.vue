@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts" setup>
+import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
 import { Location } from "@/core/model/cards";
-import TagList from "../tags/TagList.vue";
 
 defineProps<{
 	itemData: Location;

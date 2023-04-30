@@ -57,12 +57,12 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import { Icon } from "@/core/constants";
 import { Event, EventType } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { number, numberInRange, required } from "@/core/validationRules";
-import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{
 	modelValue: Event; // v-model
