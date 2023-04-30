@@ -1,8 +1,6 @@
 import { MD5 } from "object-hash";
-import { ID, Note } from "@/core/model/cards";
-import utilities, { deserializeMap, mergeMaps, SerializedMap, serializeMap } from "../utilities";
-
-export type File = Note;
+import { ID } from "@/core/model/cards";
+import utilities, { SerializedMap, deserializeMap, mergeMaps, serializeMap } from "../utilities";
 
 export interface FolderMetadata {
 	id: ID;
@@ -10,12 +8,25 @@ export interface FolderMetadata {
 	color: string;
 }
 
-type Key = string;
-type FlatFolder = Omit<Folder, "parent" | "subfolders"> & { parent?: Key; subfolders: Key[] };
-type FlatTree = Map<Key, FlatFolder>;
+export type Indexable = { id: ID };
 
-export type NotepadState = Folder; // Runtime type
-export type NotepadSave = SerializedMap<Key, FlatFolder>; // Serialized type
+interface IFolder<File extends Indexable> {
+	metadata: FolderMetadata;
+	parent?: Folder<File>;
+	files: File[];
+	subfolders: Folder<File>[];
+}
+
+type Key = string;
+
+interface FlatFolder<T extends Indexable> extends Omit<IFolder<T>, "parent" | "subfolders"> {
+	parent?: Key;
+	subfolders: Key[];
+}
+
+type FlatTree<T extends Indexable> = Map<Key, FlatFolder<T>>;
+
+export type SerializedFolder<T extends Indexable> = SerializedMap<Key, FlatFolder<T>>
 
 export class Path {
 	static readonly ILLEGAL_CHARS_REGEX = /(\/|\\|:|\||<|>|\?|"|\*|%)+/g;
@@ -80,12 +91,12 @@ export class Path {
 	}
 }
 
-export class Folder {
+export class Folder<File extends Indexable> implements IFolder<File> {
 	constructor(
 		public metadata: FolderMetadata,
-		public parent?: Folder,
+		public parent?: Folder<File>,
 		public files: File[] = [],
-		public subfolders: Folder[] = []
+		public subfolders: Folder<File>[] = []
 	) {}
 
 	get path(): Path {
@@ -100,8 +111,12 @@ export class Folder {
 		this.files.push(file);
 	}
 
-	deleteFile(file: File) {
-		const idx = this.files.findIndex((f) => f.id === file.id);
+	getFile(id: ID) {
+		return this.files.find((f) => f.id === id);
+	}
+
+	deleteFile(id: ID) {
+		const idx = this.files.findIndex((f) => f.id === id);
 		if (idx !== -1) this.files.splice(idx, 1);
 	}
 
@@ -111,7 +126,7 @@ export class Folder {
 		return this.getFolder(path) !== undefined;
 	}
 
-	getFolder(path: Path): Folder | undefined {
+	getFolder(path: Path): Folder<File> | undefined {
 		if (path.isRoot()) return this;
 		else if (path.length === 1) {
 			return this.subfolders.find((folder) => folder.metadata.name === path.rawSegments[0]);
@@ -124,7 +139,7 @@ export class Folder {
 		return undefined;
 	}
 
-	addFolder(folder: Folder, parentPath?: Path) {
+	addFolder(folder: Folder<File>, parentPath?: Path) {
 		if (!parentPath || parentPath.isRoot()) this.subfolders.push(folder);
 		else {
 			const parent = this.getFolder(parentPath);
@@ -149,21 +164,25 @@ export class Folder {
 		}
 	}
 
-	private flatten(parentHash?: Key) {
-		const map: FlatTree = new Map<Key, FlatFolder>();
+	// This method is intended to be private, but we cannot enforce it because TS clashes with Vue's reactivity system when dealing with private properties
+	// @see https://github.com/vuejs/core/issues/2981
+	_flatten(parentHash?: Key) {
+		const map: FlatTree<File> = new Map<Key, FlatFolder<File>>();
 		const objHash = MD5(this);
 
 		const childrenHashes: Key[] = [];
 		for (const subfolder of this.subfolders) {
-			const { map: res, hash } = subfolder.flatten(objHash);
+			const { map: res, hash } = subfolder._flatten(objHash);
 			mergeMaps(map, res);
 			childrenHashes.push(hash);
 		}
 
-		const flatFolder = { ...this } as FlatFolder;
-
-		flatFolder.parent = parentHash;
-		flatFolder.subfolders = childrenHashes;
+		const flatFolder: FlatFolder<File> = {
+			metadata: this.metadata,
+			files: this.files,
+			parent: parentHash,
+			subfolders: childrenHashes,
+		};
 
 		if (!map.has(objHash)) map.set(objHash, flatFolder);
 
@@ -174,14 +193,14 @@ export class Folder {
 	}
 
 	serialize() {
-		const { map } = this.flatten();
+		const { map } = this._flatten();
 		return serializeMap(map);
 	}
 
-	static deserialize(serialized: NotepadSave) {
-		const flatMap = deserializeMap<Key, FlatFolder>(serialized);
+	static deserialize<File extends Indexable>(serialized: SerializedMap<Key, FlatFolder<File>>) {
+		const flatMap = deserializeMap(serialized);
 
-		function revive(flatFolder: FlatFolder, revivedParent?: Folder): Folder {
+		function revive(flatFolder: FlatFolder<File>, revivedParent?: Folder<File>): Folder<File> {
 			const folder = new Folder(flatFolder.metadata, revivedParent, flatFolder.files);
 			folder.subfolders = flatFolder.subfolders.map((hash) =>
 				revive(flatMap.get(hash)!, folder)
@@ -197,11 +216,12 @@ export class Folder {
 	}
 }
 
-export function createRootFolder(): Folder {
+export function createRootFolder<T extends Indexable>(name: string, files?: T[]) {
 	const meta: FolderMetadata = {
 		id: utilities.uid(),
-		name: "",
+		name,
 		color: "#ffffff",
 	};
-	return new Folder(meta);
+	return new Folder(meta, undefined, files);
 }
+

@@ -1,5 +1,6 @@
 import { Icon } from "../constants";
 import utilities from "../utilities";
+import { Folder, SerializedFolder } from "./fileTree";
 
 export type ID = number;
 
@@ -75,13 +76,26 @@ export interface Note extends BaseCard {
 
 export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 
+export class CardFolder extends Folder<CardTypes> {}
+
+// Runtime type
 export interface CardsStore {
-	quest: Quest[];
-	event: Event[];
-	location: Location[];
-	character: Character[];
-	faction: Faction[];
-	note: Note[];
+	[CardCategory.Quest]: Folder<Quest>;
+	[CardCategory.Event]: Folder<Event>;
+	[CardCategory.Location]: Folder<Location>;
+	[CardCategory.Character]: Folder<Character>;
+	[CardCategory.Faction]: Folder<Faction>;
+	[CardCategory.Note]: Folder<Note>;
+}
+
+// Serialized type
+export interface CardsStoreSerialized {
+	[CardCategory.Quest]: SerializedFolder<Quest>;
+	[CardCategory.Event]: SerializedFolder<Event>;
+	[CardCategory.Location]: SerializedFolder<Location>;
+	[CardCategory.Character]: SerializedFolder<Character>;
+	[CardCategory.Faction]: SerializedFolder<Faction>;
+	[CardCategory.Note]: SerializedFolder<Note>;
 }
 
 export class Tag {
