@@ -7,8 +7,15 @@ import LoreBook from "../views/LoreBook.vue";
 const routes = [
 	{
 		path: "/lore-book",
-		name: "LoreBook",
+		name: "LoreBookEmpty", // this route should not be used as is, it only serves as a parent URI for its children routes
 		component: LoreBook,
+		children: [
+			{
+				path: "",
+				name: "LoreBook", // vue-router requires a name when using an empty path, but this route only serves as a redirection so we provide a dummy name
+				redirect: { name: `LoreBook-${CardCategory.Quest}` },
+			},
+		],
 	},
 	{
 		path: "/",
@@ -39,7 +46,7 @@ const router = createRouter({
 	history: createWebHistory(),
 });
 
-// Create a LoreBook sub-route dynamically for each card category  
+// Create a LoreBook sub-route dynamically for each card category
 Object.values(CardCategory).forEach((category) => {
 	router.addRoute("LoreBook", {
 		path: `${category}/:folderURI*`,
