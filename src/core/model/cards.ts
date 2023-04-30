@@ -78,6 +78,18 @@ export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 
 export class CardFolder extends Folder<CardTypes> {}
 
+export type CardTypesMapping = {
+	[CardCategory.Quest]: Quest;
+	[CardCategory.Event]: Event;
+	[CardCategory.Location]: Location;
+	[CardCategory.Character]: Character;
+	[CardCategory.Faction]: Faction;
+	[CardCategory.Note]: Note;
+}
+
+export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T]
+
+
 // Runtime type
 export interface CardsStore {
 	[CardCategory.Quest]: Folder<Quest>;

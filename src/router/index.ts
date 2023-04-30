@@ -1,13 +1,18 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
+import LayoutTabContent from "@/components/layout/content/LayoutTabContent.vue";
+import { CardCategory } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import LoreBook from "../views/LoreBook.vue";
 
 const routes = [
 	{
-		path: "/lore-book/:tab?/:folderURI*",
-		alias: "/:tab?/:folderURI*",
+		path: "/lore-book",
 		name: "LoreBook",
 		component: LoreBook,
+	},
+	{
+		path: "/",
+		redirect: { name: "LoreBook" },
 	},
 	{
 		path: "/timeline",
@@ -29,7 +34,22 @@ const routes = [
 	},
 ];
 
-export default createRouter({
+const router = createRouter({
 	routes,
 	history: createWebHistory(),
 });
+
+// Create a LoreBook sub-route dynamically for each card category  
+Object.values(CardCategory).forEach((category) => {
+	router.addRoute("LoreBook", {
+		path: `${category}/:folderURI*`,
+		name: `LoreBook-${category}`,
+		component: LayoutTabContent,
+		props: (route: RouteLocation) => ({
+			category,
+			folderPath: route.params.folderURI ? new Path(...route.params.folderURI) : undefined,
+		}),
+	});
+});
+
+export default router;
