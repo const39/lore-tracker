@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<div v-if="breadcrumbs.length" class="d-flex">
+		<div v-if="breadcrumbs.length" class="d-flex align-center">
 			<v-icon icon="mdi-arrow-left" @click="goBack" />
 			<v-breadcrumbs :items="breadcrumbs">
 				<template #divider>
@@ -8,21 +8,7 @@
 				</template>
 			</v-breadcrumbs>
 		</div>
-		<div class="my-3">
-			<div class="mb-4 py-3 text-h6">
-				{{ $t("notepad.types.folder") + "s" }}
-			</div>
-			<v-row>
-				<v-col
-					v-for="subfolder in folder.subfolders"
-					:key="subfolder.metadata.id"
-					cols="12"
-					md="3"
-				>
-					<FolderCard :folder="subfolder" @open-folder="openFolder(subfolder)" />
-				</v-col>
-			</v-row>
-		</div>
+		<FoldersArea :folder="folder" />
 		<div class="my-3">
 			<div class="mb-4 py-3 text-h6">
 				{{ $t("notepad.types.file") + "s" }}
@@ -62,13 +48,13 @@ import { useRouter } from "vue-router";
 import draggable from "vuedraggable";
 import CardAdd from "@/components/cards/CardAdd.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import FolderCard from "@/components/notepad/FolderCard.vue";
 import { CardCategory, CardFolder, CardTypes } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
+import FoldersArea from "./FoldersArea.vue";
 
 const props = defineProps<{ category: CardCategory; folderPath?: Path }>();
 const drag = ref(false);
@@ -124,9 +110,8 @@ const cols = computed<Cols>(() => {
 
 interface BreadcrumbItem {
 	text: string;
-	to: {
-		name: string;
-		params?: object;
+	to?: {
+		params: object;
 	};
 	disabled?: boolean;
 	exact: true;
@@ -154,7 +139,6 @@ const breadcrumbs = computed(() => {
 	const segments = folder.value.path.rawSegments;
 	const root: BreadcrumbItem = {
 		text: $t("pages.notepad"),
-		to: { name: "Notepad" },
 		disabled: false,
 		exact: true,
 	};
@@ -164,7 +148,6 @@ const breadcrumbs = computed(() => {
 		return {
 			text: pathElement,
 			to: {
-				name: "Notepad",
 				params: { folderURI: pathToCurrentElement },
 			},
 			disabled: idx === arr.length - 1,

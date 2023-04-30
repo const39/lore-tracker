@@ -12,7 +12,7 @@
 								<div v-bind="mergeProps(menuProps, hoverProps)">
 									<v-btn class="mr-1" size="x-large" variant="text" icon>
 										<v-icon
-											:icon="folderIcon"
+											:icon="Icon.folder"
 											:color="model.color"
 											size="x-large"
 										/>
@@ -52,17 +52,17 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, mergeProps, ref } from "vue";
+import { mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
 import colors from "@/core/colors";
 import { Icon } from "@/core/constants";
+import { CardFolder } from "@/core/model/cards";
 import { Folder, FolderMetadata, Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
-import { useNotepadStore } from "@/store/notepad";
 
-const props = defineProps<{ parent: Folder; edit?: Folder }>();
+const props = defineProps<{ parent: CardFolder; edit?: CardFolder }>();
 const emit = defineEmits<{
 	(e: "close"): void;
 	(e: "submit"): void;
@@ -73,7 +73,8 @@ const rules = {
 	name: [
 		validationRules.required($t("fields.requiredField")),
 		validationRules.counter("", 25),
-		checkNameDoesNotExist,
+		// Check name is not already used by another folder in the current parent folder
+		(name: string) => !props.parent.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
 	],
 };
 
@@ -82,18 +83,9 @@ const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff")
 const model = ref(initModel());
 const form = ref<VForm | undefined>(undefined);
 
-const notepadStore = useNotepadStore();
-
-const folderIcon = computed(() => Icon.folder);
-
 function getRandomColor(): string {
 	const idx = Math.floor(Math.random() * baseColors.length);
 	return baseColors[idx];
-}
-
-function checkNameDoesNotExist(name: string): boolean | string {
-	const path = new Path(props.parent.path, name);
-	return !notepadStore.hasFolder(path) || $t("fields.nameAlreadyUsed");
 }
 
 function initModel(): FolderMetadata {
@@ -121,7 +113,7 @@ async function submit() {
 			// 	pathToParent: utilities.joinPaths(true, props.parentPath, model.value.name),
 			// 	folder: model.value,
 			// });
-		} else notepadStore.addFolder(new Folder(model.value, props.parent), props.parent.path);
+		} else props.parent.addFolder(new Folder(model.value, props.parent), props.parent.path);
 		emit("submit");
 	}
 }
