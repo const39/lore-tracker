@@ -15,12 +15,12 @@
 			@end="drag = false"
 		>
 			<template #header>
-				<v-col cols="12" v-bind="cols">
+				<v-col cols="12" v-bind="density">
 					<CardAdd :category="category" fill-height />
 				</v-col>
 			</template>
 			<template #item="{ element }">
-				<v-col class="item" cols="12" v-bind="cols">
+				<v-col class="item" cols="12" v-bind="density">
 					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
 				</v-col>
 			</template>
@@ -33,6 +33,7 @@ import { computed, ref } from "vue";
 import draggable from "vuedraggable";
 import CardAdd from "@/components/cards/CardAdd.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
+import { useGridDensity } from "@/composables/gridDensity";
 import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
@@ -47,6 +48,8 @@ const filterStore = useFilterStore();
 const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 
+const { density } = useGridDensity();
+
 const isSortDisabled = computed(() => {
 	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
@@ -58,29 +61,6 @@ const files = computed({
 	set(list) {
 		cardsStore.updateWholeList(props.category, list);
 	},
-});
-
-
-interface Cols {
-	xs: number;
-	sm: number;
-	md: number;
-	lg: number;
-	xl?: number;
-	xxl?: number;
-}
-
-// Compute card width for each breakpoint sizing based on the preferred density
-const cols = computed<Cols>(() => {
-	switch (prefStore.cardsDensity) {
-		case "large":
-			return { xs: 12, sm: 12, md: 6, lg: 6 };
-		case "compact":
-			return { xs: 12, sm: 6, md: 4, lg: 3 };
-		case "comfortable":
-		default:
-			return { xs: 12, sm: 12, md: 6, lg: 4 };
-	}
 });
 </script>
 

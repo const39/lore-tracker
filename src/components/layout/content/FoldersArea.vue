@@ -15,7 +15,7 @@
 				v-for="subfolder in folder.subfolders"
 				:key="subfolder.metadata.id"
 				cols="12"
-				md="3"
+				v-bind="density"
 			>
 				<FolderCard :folder="subfolder" @open-folder="openFolder" />
 			</v-col>
@@ -29,6 +29,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
+import { useGridDensity } from "@/composables/gridDensity";
 import { CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 
@@ -37,6 +38,7 @@ defineProps<{ folder: CardFolder }>();
 const showFolderDialog = ref(false);
 
 const router = useRouter();
+const { density } = useGridDensity();
 
 function newFolder(): void {
 	showFolderDialog.value = true;
