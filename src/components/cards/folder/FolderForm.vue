@@ -106,6 +106,8 @@ function close(): void {
 
 async function submit() {
 	if (await form.value?.validate()) {
+		console.log(props.parent.path);
+		
 		if (props.edit) {
 			// TODO
 			console.warn("updateFolder() not implemented yet");
@@ -113,7 +115,7 @@ async function submit() {
 			// 	pathToParent: utilities.joinPaths(true, props.parentPath, model.value.name),
 			// 	folder: model.value,
 			// });
-		} else props.parent.addFolder(new Folder(model.value, props.parent), props.parent.path);
+		} else props.parent.addFolder(new Folder(model.value, props.parent));
 		emit("submit");
 	}
 }
