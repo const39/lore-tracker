@@ -1,6 +1,14 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { CardCategory, CardTypes, CardsStore, ID } from "@/core/model/cards";
+import {
+	CardCategory,
+	CardTypeBasedOnCategory,
+	CardTypes,
+	CardsStore,
+	CardsStoreSerialized,
+	ID,
+} from "@/core/model/cards";
+import { Folder, createRootFolder } from "@/core/model/fileTree";
 import utilities from "@/core/utilities";
 import { CategoryFilter, Filter, useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
@@ -9,7 +17,10 @@ import { SerializedState } from ".";
 function defaultCards(): CardsStore {
 	// Generate automatically the CardsStore using the CardCategory enum values as keys
 	const cards = {} as CardsStore;
-	for (const category of Object.values(CardCategory)) cards[category] = [];
+	for (const category of Object.values(CardCategory)) {
+		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
+		cards[category] = createRootFolder(`${category}-root`);
+	}
 	return cards;
 }
 
@@ -85,26 +96,41 @@ export const useCardsStore = defineStore("cards", () => {
 	const prefStore = usePreferencesStore();
 	const filter = useFilterStore();
 
-	const serializableState = computed(() => ({ cards }));
+	const serializableState = computed(() => {
+		const serializedCards = {} as CardsStoreSerialized;
+		for (const category of Object.values(CardCategory)) {
+			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
+			serializedCards[category] = getCategoryFolder(category).serialize();
+		}
+		return { cards: serializedCards };
+	});
 
 	const filteredCards = computed(() => {
-		const filtered = filterCards(cards.value, filter);
-		if (prefStore.cardsOrder === "alphanumeric") sortCards(filtered);
-		return filtered;
+		// TODO
+		// const filtered = filterCards(cards.value, filter);
+		// if (prefStore.cardsOrder === "alphanumeric") sortCards(filtered);
+		// return filtered;
+		return cards;
 	});
 
 	const cardCount = computed(() => {
-		let count = 0;
-		for (const key in cards.value) count += cards.value[key as keyof typeof cards.value].length;
-		return count;
+		// TODO
+		// let count = 0;
+		// for (const key in cards.value) count += cards.value[key as keyof typeof cards.value].length;
+		// return count;
+		return 0;
 	});
 
-	function getByIdInCategory(id: ID, category: CardCategory): CardTypes | undefined {
-		const idx = cards.value[category].findIndex((entry: CardTypes) => entry.id === id);
-		return idx != -1 ? cards.value[category][idx] : undefined;
+	function getCategoryFolder<T extends CardCategory>(category: T) {
+		return cards.value[category];
 	}
 
-	function getById(id: ID): CardTypes | undefined {
+	function getByIdInCategory<T extends CardCategory>(id: ID, category: T) {
+		const folder = getCategoryFolder(category);
+		return folder.getFile(id) as CardTypeBasedOnCategory<T>;
+	}
+
+	function getById(id: ID) {
 		for (const key in cards.value) {
 			const ret = getByIdInCategory(id, key as CardCategory);
 			if (ret) return ret;
@@ -113,22 +139,24 @@ export const useCardsStore = defineStore("cards", () => {
 	}
 
 	function addCard(card: CardTypes) {
-		cards.value[card._category].unshift(card as any);
+		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
+		getCategoryFolder(card._category).addFile(card);
 	}
 
 	function updateCard(card: CardTypes) {
-		const list: CardTypes[] = cards.value[card._category];
+		const list: CardTypes[] = getCategoryFolder(card._category).files;
 		const index = list.findIndex((entry) => entry.id === card.id);
 		if (index !== -1) list[index] = card;
 	}
 
 	function deleteCard(card: CardTypes) {
-		const list: CardTypes[] = cards.value[card._category];
+		const list: CardTypes[] = getCategoryFolder(card._category).files;
 		const index = list.findIndex((entry) => entry.id === card.id);
 		if (index !== -1) {
 			// Search in each array for eventual entries referencing the object we're about to delete
 			for (const key in cards.value) {
-				cards.value[key as keyof typeof cards.value].forEach((entry: CardTypes) => {
+				const files = getCategoryFolder(key as keyof typeof cards.value).files;
+				files.forEach((entry: CardTypes) => {
 					// If this entry's tags contain a reference to the object we're about to delete, remove it
 					const referenceIndex = entry.tags.findIndex(
 						(event: number) => event === card.id
@@ -142,8 +170,12 @@ export const useCardsStore = defineStore("cards", () => {
 		}
 	}
 
-	function updateWholeList(payload: { category: CardCategory; list: CardTypes[] }) {
-		cards.value[payload.category] = payload.list as any; // HACK: workaround typing for now
+	function updateWholeList<T extends CardCategory>(
+		category: T,
+		list: CardTypeBasedOnCategory<T>[]
+	) {
+		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
+		getCategoryFolder(category).files = list;
 	}
 
 	function $reset() {
@@ -152,7 +184,15 @@ export const useCardsStore = defineStore("cards", () => {
 	}
 
 	function $hydrate(payload: SerializedState) {
-		cards.value = payload.cards;
+		Object.keys(payload.cards).forEach((category) => {
+			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
+			const deserialized = Folder.deserialize(payload.cards[category]);
+			// Create default folder if deserialization fails
+			//@ts-ignore - Same reason
+			cards.value[category] = deserialized
+				? deserialized
+				: createRootFolder(`${category}-root`);
+		});
 	}
 
 	return {
@@ -163,6 +203,7 @@ export const useCardsStore = defineStore("cards", () => {
 		filteredCards,
 		cardCount,
 
+		getCategoryFolder,
 		getByIdInCategory,
 		getById,
 		addCard,

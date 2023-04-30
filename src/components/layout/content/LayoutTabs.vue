@@ -1,14 +1,18 @@
 <template>
 	<v-tabs v-model="activeTab" color="accent" fixed-tabs>
-		<v-tab v-for="tab in tabs" :key="tab" :to="tab">
+		<v-tab v-for="tab in tabs" :key="tab" :to="{ name: `LoreBook-${tab}` }">
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
 		</v-tab>
 	</v-tabs>
 	<v-window v-model="activeTab">
-		<v-window-item v-for="tab in tabs" :key="tab">
-			<LayoutTabContent :category="tab" />
-		</v-window-item>
+		<!-- Render LayoutTabContent component via vue-router -->
+		<!-- (rendered inside v-window-item's slot because of a vue-router limitation restricting the use of router-view inside a Transition component) -->
+		<router-view v-slot="{ Component }">
+			<v-window-item v-for="tab in tabs" :key="tab">
+				<component :is="Component" />
+			</v-window-item>
+		</router-view>
 	</v-window>
 </template>
 
@@ -19,7 +23,6 @@ import { Icon } from "@/core/constants";
 import { eventBus } from "@/core/eventBus";
 import { CardCategory } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import LayoutTabContent from "./LayoutTabContent.vue";
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
