@@ -25,11 +25,11 @@
 </template>
 
 <script lang="ts" setup>
+import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
 import { Event } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
-import TagList from "../tags/TagList.vue";
 
 defineProps<{
 	itemData: Event;

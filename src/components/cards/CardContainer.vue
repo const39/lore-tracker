@@ -33,7 +33,7 @@ import utilities from "@/core/utilities";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
 import BaseCard from "./BaseCard.vue";
-import FormWrapper from "./forms/FormWrapper.vue";
+import FormWrapper from "./files/forms/FormWrapper.vue";
 
 const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
@@ -53,7 +53,7 @@ function onDelete() {
 const contentComponent = computed(() => {
 	const componentName = "Content" + utilities.capitalize(props.itemData._category);
 	return defineAsyncComponent({
-		loader: () => import(`./content/${componentName}.vue`),
+		loader: () => import(`./files/content/${componentName}.vue`),
 	});
 });
 </script>

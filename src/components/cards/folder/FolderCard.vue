@@ -15,7 +15,7 @@
 		</v-card-title>
 	</BaseCard>
 	<FolderForm
-		v-else
+		v-else-if="folder.parent"
 		:parent="folder.parent"
 		:edit="folder"
 		@close="editMode = false"
@@ -25,9 +25,9 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import BaseCard from "@/components/cards/BaseCard.vue";
 import { Icon } from "@/core/constants";
 import { CardFolder } from "@/core/model/cards";
-import BaseCard from "../cards/BaseCard.vue";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{

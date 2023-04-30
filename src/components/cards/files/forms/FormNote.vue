@@ -2,19 +2,16 @@
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
 		<v-icon :icon="categoryIcon" />
-		<span class="mx-2">{{ $t("dialogs.addLocation") }}</span>
+		<span class="mx-2">{{ $t("dialogs.addNote") }}</span>
 	</v-card-title>
 	<v-card-text>
 		<v-container>
-			<v-text-field
-				v-model="model.name"
-				:label="$t('fields.name') + '*'"
-				:rules="[requiredRule]"
-			/>
+			<v-text-field v-model="model.title" :label="$t('fields.title')" />
 			<v-textarea
 				v-model="model.desc"
-				:label="$t('fields.desc')"
+				:label="$t('fields.desc') + '*'"
 				:hint="$t('fields.mdSupport')"
+				:rules="[requiredRule]"
 				variant="outlined"
 				auto-grow
 			/>
@@ -26,14 +23,14 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Location } from "@/core/model/cards";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
+import { Note } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { required } from "@/core/validationRules";
-import TagListPanel from "../tags/TagListPanel.vue";
 
 const props = defineProps<{
-	modelValue: Location; // v-model
+	modelValue: Note; // v-model
 	variant: "edit" | "add";
 }>();
 
