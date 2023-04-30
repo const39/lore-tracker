@@ -19,11 +19,17 @@ import { t as $t } from "@/core/translation";
 const props = defineProps<{ folder: CardFolder }>();
 
 interface BreadcrumbItem {
+	// Item text to display
 	text: string;
-	to?: {
-		params: object;
+	// vue-router link for this item
+	to: {
+		params: {
+			folderURI: string | string[];
+		};
 	};
+	// whether this item is clickable or not
 	disabled?: boolean;
+	// triggers exact navigation to the associated link
 	exact: true;
 }
 
@@ -37,11 +43,12 @@ const breadcrumbs = computed(() => {
 	if (props.folder.path.isRoot()) return [];
 
 	const path = props.folder.path;
+	let aggregatedPath = new Path();
 	const root: BreadcrumbItem = {
 		text: $t("pages.loreBook"),
 		to: {
 			params: {
-				folderURI: new Path(),
+				folderURI: [...aggregatedPath.rawSegments],
 			},
 		},
 		disabled: false,
@@ -49,10 +56,11 @@ const breadcrumbs = computed(() => {
 	};
 
 	const nextItems: BreadcrumbItem[] = path.pathSegments.map((segment, idx) => {
+		aggregatedPath = new Path(aggregatedPath, segment);
 		return {
 			text: segment.getEnd().toString({ leadingSlash: false }),
 			to: {
-				params: { folderURI: segment.getHead() },
+				params: { folderURI: [...aggregatedPath.rawSegments] },
 			},
 			disabled: idx === path.length - 1,
 			exact: true,
