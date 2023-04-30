@@ -102,7 +102,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 	get path(): Path {
 		return this.parent
 			? new Path(this.parent.path, this.metadata.name)
-			: new Path(this.metadata.name);
+			: new Path();
 	}
 
 	// ** File **
