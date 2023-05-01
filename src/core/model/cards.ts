@@ -89,24 +89,14 @@ export type CardTypesMapping = {
 export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T];
 
 // Runtime type
-export interface CardsStore {
-	[CardCategory.Quest]: Folder<Quest>;
-	[CardCategory.Event]: Folder<Event>;
-	[CardCategory.Location]: Folder<Location>;
-	[CardCategory.Character]: Folder<Character>;
-	[CardCategory.Faction]: Folder<Faction>;
-	[CardCategory.Note]: Folder<Note>;
-}
+export type CardsStore = {
+	[Category in CardCategory]: Folder<CardTypeBasedOnCategory<Category>>;
+};
 
 // Serialized type
-export interface CardsStoreSerialized {
-	[CardCategory.Quest]: SerializedFolder<Quest>;
-	[CardCategory.Event]: SerializedFolder<Event>;
-	[CardCategory.Location]: SerializedFolder<Location>;
-	[CardCategory.Character]: SerializedFolder<Character>;
-	[CardCategory.Faction]: SerializedFolder<Faction>;
-	[CardCategory.Note]: SerializedFolder<Note>;
-}
+export type CardsStoreSerialized = {
+	[Category in CardCategory]: SerializedFolder<CardTypeBasedOnCategory<Category>>;
+};
 
 export class Tag {
 	id: ID;

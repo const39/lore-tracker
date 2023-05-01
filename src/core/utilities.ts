@@ -1,21 +1,19 @@
 import { klona } from "klona/lite";
 
 // Map utility functions
-export type SerializedMap<K extends string | number, V> = Record<K, V>;
-
 export function mergeMaps<K, V>(a: Map<K, V>, b: Map<K, V>) {
 	for (const [k, v] of b.entries()) {
 		a.set(k, v);
 	}
 }
 
-export function serializeMap<K extends string | number, V>(map: Map<K, V>): SerializedMap<K, V> {
-	const result = Object.create(null);
+export function serializeMap<K extends string | number, V>(map: Map<K, V>) {
+	const result: Record<K, V> = Object.create(null);
 	for (const [key, value] of map.entries()) result[key] = value;
 	return result;
 }
 
-export function deserializeMap<K extends string | number, V>(obj: SerializedMap<K, V>): Map<K, V> {
+export function deserializeMap<K extends string | number, V>(obj: Record<K, V>): Map<K, V> {
 	const map = new Map<K, V>();
 	for (const key in obj) {
 		const k = key as keyof typeof obj;
