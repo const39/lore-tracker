@@ -11,7 +11,7 @@
 			<v-list-item prepend-icon="mdi-upload" @click="showUploadDialog = true">
 				<v-list-item-title>{{ $t("options.save.uploadText") }}</v-list-item-title>
 			</v-list-item>
-			<v-list-item prepend-icon="" @click="showConfirmDialog = true">
+			<v-list-item prepend-icon="" @click="confirmDeletion">
 				<template #prepend>
 					<v-icon color="red" icon="mdi-delete" />
 				</template>
@@ -48,29 +48,22 @@
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
-
-	<!-- Delete confirmation dialog -->
-	<ConfirmDialog
-		v-model="showConfirmDialog"
-		:title="$t('options.save.deleteDialogTitle')"
-		:message="$t('options.save.deleteDialogMessage')"
-		:accept-action="deleteSave"
-	/>
 </template>
 
 <script lang="ts" setup>
 import { ref } from "vue";
-import ConfirmDialog from "@/components/common/ConfirmDialog.vue";
-import { eventBus } from "@/core/eventBus";
 import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
+import { useGlobalConfirmDialog } from "@/store/confirmDialog";
+import { useGlobalSnackbar } from "@/store/snackbar";
 import MenuActivator from "./MenuActivator.vue";
 
 const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
 const showUploadDialog = ref(false);
-const showConfirmDialog = ref(false);
 
 const store = useStore();
+const { showSnackbar } = useGlobalSnackbar();
+const { showConfirmDialog } = useGlobalConfirmDialog();
 
 function downloadSave(): void {
 	const file = store.toFile();
@@ -90,7 +83,7 @@ function uploadSave(): void {
 				try {
 					store.loadData(value);
 					store.save();
-					eventBus.emit("show-snackbar", {
+					showSnackbar({
 						message: $t("messages.success.saveFileImportSuccessful"),
 						timeout: -1,
 						color: "success",
@@ -100,7 +93,7 @@ function uploadSave(): void {
 					const message = `${$t("messages.errors.corruptedSave")} ${$t(
 						"messages.errors.saveFileImportCancelled"
 					)}`;
-					eventBus.emit("show-snackbar", {
+					showSnackbar({
 						message,
 						timeout: -1,
 						color: "error",
@@ -112,7 +105,7 @@ function uploadSave(): void {
 			})
 			.catch((err) => {
 				console.error(err);
-				eventBus.emit("show-snackbar", {
+				showSnackbar({
 					message: $t("messages.errors.saveFileImportFailed"),
 					timeout: -1,
 					color: "error",
@@ -121,6 +114,14 @@ function uploadSave(): void {
 				showUploadDialog.value = false;
 			});
 	}
+}
+
+function confirmDeletion() {
+	showConfirmDialog({
+		title: $t("options.save.deleteDialogTitle"),
+		message: $t("options.save.deleteDialogMessage"),
+		confirmAction: deleteSave,
+	});
 }
 
 function deleteSave(): void {
