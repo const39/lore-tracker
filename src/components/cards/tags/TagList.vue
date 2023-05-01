@@ -99,7 +99,7 @@ const tags = computed(() => {
 		note: [],
 	};
 	for (const id of model.value) {
-		const elem = cardsStore.getById(id);
+		const elem = cardsStore.findFileInCardStore(id);
 
 		// If the object is found, create a tag object from the element's data
 		if (elem) {

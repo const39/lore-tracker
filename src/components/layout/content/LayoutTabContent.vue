@@ -1,13 +1,13 @@
 <template>
 	<v-container>
-		<FolderBreadcrumbs :folder="folder" />
-		<FoldersArea :folder="folder" />
-		<FilesArea :category="category" :folder="folder" />
+		<FolderBreadcrumbs />
+		<FoldersArea />
+		<FilesArea />
 	</v-container>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { watch } from "vue";
 import { CardCategory } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { useCardsStore } from "@/store/cards";
@@ -19,13 +19,11 @@ const props = defineProps<{ category: CardCategory; folderPath?: Path }>();
 
 const cardsStore = useCardsStore();
 
-const folder = computed(() => {
-	const root = cardsStore.getCategoryFolder(props.category);
-	// If a path is specified, get the folder it points to
-	// Otherwise, keep the root folder as current folder
-	const folder = props.folderPath ? root.getFolder(props.folderPath) : root;
-	// Return root folder if no folder at specified path was found
-	return folder ? folder : root;
-});
+watch(
+	props,
+	({ category, folderPath }) => {
+		cardsStore.setCurrentFolder(category, folderPath);
+	},
+	{ immediate: true }
+);
 </script>
-
