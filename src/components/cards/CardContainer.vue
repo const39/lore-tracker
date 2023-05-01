@@ -28,9 +28,11 @@
 
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from "vue";
-import { eventBus } from "@/core/eventBus";
-import { CardTypes } from "@/core/model/cards";
+import { CardTypes, getText } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
+import { useCardsStore } from "@/store/cards";
+import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
 import BaseCard from "./BaseCard.vue";
@@ -40,15 +42,21 @@ const props = defineProps<{ itemData: CardTypes; outlined?: boolean }>();
 
 const showForm = ref(false);
 
+const cardsStore = useCardsStore();
 const filterStore = useFilterStore();
 const prefStore = usePreferencesStore();
+const { showConfirmDialog } = useGlobalConfirmDialog();
 
 const isSortDisabled = computed(() => {
 	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
 
 function onDelete() {
-	eventBus.emit("delete-card", props.itemData);
+	showConfirmDialog({
+		title: `${$t("dialogs.deleteTitle")} "${getText(props.itemData)}" ?`,
+		message: $t(`dialogs.delete${utilities.capitalize(props.itemData._category)}`),
+		confirmAction: () => cardsStore.deleteCard(props.itemData),
+	});
 }
 
 const contentComponent = computed(() => {

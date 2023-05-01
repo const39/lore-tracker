@@ -140,8 +140,9 @@
 			</template>
 		</v-snackbar>
 
-		<!-- Global snackbar -->
-		<Snackbar />
+		<!-- Global snackbar and confirm dialog -->
+		<GlobalSnackbar />
+		<GlobalConfirmDialog />
 	</v-app>
 </template>
 
@@ -149,16 +150,17 @@
 import { onKeyDown } from "@vueuse/core";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
-import Snackbar from "@/components/common/Snackbar.vue";
+import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
 import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
 import { VERSION } from "@/core/constants";
-import { eventBus } from "@/core/eventBus";
 import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
+import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
+import { useGlobalSnackbar } from "./store/snackbar";
 
 const version = ref(VERSION);
 const showMenu = ref(false);
@@ -169,6 +171,7 @@ const showDomainNameChangeNotif = ref(Date.now() < new Date("2022-11-15T12:00:00
 
 const router = useRouter();
 const store = useStore();
+const { showSnackbar } = useGlobalSnackbar();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
@@ -201,10 +204,8 @@ onMounted(() => {
 		store.loadData();
 	} catch (err) {
 		console.error(err);
-		const message =
-			$t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup");
-		eventBus.emit("show-snackbar", {
-			message,
+		showSnackbar({
+			message: $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup"),
 			timeout: -1,
 			color: "error",
 		});
