@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import {
 	CardCategory,
+	CardFolder,
 	CardTypeBasedOnCategory,
 	CardTypes,
 	CardsStore,
@@ -10,7 +11,7 @@ import {
 	getAllText,
 	getText,
 } from "@/core/model/cards";
-import { Folder, createRootFolder } from "@/core/model/fileTree";
+import { Folder, Path, createRootFolder } from "@/core/model/fileTree";
 import { CategoryFilter, Filter, useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 import { SerializedState } from ".";
@@ -92,6 +93,14 @@ function sortCards(cards: CardsStore) {
 export const useCardsStore = defineStore("cards", () => {
 	const cards = ref(defaultCards());
 
+	const currentCategory = ref<CardCategory>(CardCategory.Quest);
+	const currentFolderPath = ref<Path>(new Path());
+
+	const currentFolder = computed(() => {
+		const root = getCategoryFolder(currentCategory.value);
+		return root.getFolder(currentFolderPath.value) ?? root;
+	});
+
 	const prefStore = usePreferencesStore();
 	const filter = useFilterStore();
 
@@ -99,10 +108,15 @@ export const useCardsStore = defineStore("cards", () => {
 		const serializedCards = {} as CardsStoreSerialized;
 		for (const category of Object.values(CardCategory)) {
 			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
-			serializedCards[category] = getCategoryFolder(category).serialize();
+			serializedCards[category] = _getFlatTree(category);
 		}
 		return { cards: serializedCards };
 	});
+
+	function setCurrentFolder(category: CardCategory, folderPath?: Path) {
+		currentCategory.value = category;
+		currentFolderPath.value = folderPath ? folderPath : new Path();
+	}
 
 	const filteredCards = computed(() => {
 		// TODO
@@ -120,41 +134,82 @@ export const useCardsStore = defineStore("cards", () => {
 		return 0;
 	});
 
+	function _getFlatTree<T extends CardCategory>(category: T) {
+		return getCategoryFolder(category).serialize();
+	}
+
+	function getAllFolders<T extends CardCategory>(category: T) {
+		const flat = _getFlatTree(category);
+		return Object.keys(flat).map((key) => flat[key]);
+	}
+
+	function getAllFiles<T extends CardCategory>(category: T) {
+		return getAllFolders(category).flatMap(
+			(folder) => folder.files as CardTypeBasedOnCategory<T>[]
+		);
+	}
+
 	function getCategoryFolder<T extends CardCategory>(category: T) {
 		return cards.value[category];
 	}
 
-	function getByIdInCategory<T extends CardCategory>(id: ID, category: T) {
-		const folder = getCategoryFolder(category);
-		return folder.getFile(id) as CardTypeBasedOnCategory<T>;
+	function findFileInCurrentFolder<T extends CardCategory>(id: ID) {
+		return currentFolder.value.getFile(id) as CardTypeBasedOnCategory<T>;
 	}
 
-	function getById(id: ID) {
+	function findFolderInCurrentFolder<T extends CardCategory>(path: Path) {
+		return currentFolder.value.getFolder(path);
+	}
+
+	function findFileInCardStore(id: ID) {
 		for (const key in cards.value) {
-			const ret = getByIdInCategory(id, key as CardCategory);
+			const files = getAllFiles(key as CardCategory);
+			const ret = files.find((file) => file.id === id);
 			if (ret) return ret;
 		}
 		return undefined;
 	}
 
-	function addCard(card: CardTypes) {
+	// * Actions relative to the current folder * \\
+	function addFolder(folder: CardFolder) {
+		// Ensure the folder's parent is indeed the current one
+		folder.parent = currentFolder.value;
 		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
-		getCategoryFolder(card._category).addFile(card);
+		currentFolder.value.addFolder(folder);
+	}
+
+	function updateFolder(folder: CardFolder) {
+		// TODO
+	}
+
+	function deleteFolder(folder: CardFolder) {
+		currentFolder.value.deleteFolder(folder.relativePath);
+	}
+
+	function addCard(card: CardTypes) {
+		if (currentCategory.value === card._category) {
+			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
+			currentFolder.value.addFile(card);
+		} else
+			throw new Error(
+				`Cannot add a card of category ${card._category} in a folder of category ${currentCategory.value}`
+			);
 	}
 
 	function updateCard(card: CardTypes) {
-		const list: CardTypes[] = getCategoryFolder(card._category).files;
-		const index = list.findIndex((entry) => entry.id === card.id);
-		if (index !== -1) list[index] = card;
+		const list = currentFolder.value.files;
+		const idx = list.findIndex((entry) => entry.id === card.id);
+		if (idx !== -1) list[idx] = card;
 	}
 
 	function deleteCard(card: CardTypes) {
-		const list: CardTypes[] = getCategoryFolder(card._category).files;
+		const list = currentFolder.value.files;
 		const index = list.findIndex((entry) => entry.id === card.id);
 		if (index !== -1) {
 			// Search in each array for eventual entries referencing the object we're about to delete
 			for (const key in cards.value) {
-				const files = getCategoryFolder(key as keyof typeof cards.value).files;
+				// TODO walk through deep file lists
+				const files = getAllFiles(key as keyof typeof cards.value);
 				files.forEach((entry: CardTypes) => {
 					// If this entry's tags contain a reference to the object we're about to delete, remove it
 					const referenceIndex = entry.tags.findIndex(
@@ -169,12 +224,9 @@ export const useCardsStore = defineStore("cards", () => {
 		}
 	}
 
-	function updateWholeList<T extends CardCategory>(
-		category: T,
-		list: CardTypeBasedOnCategory<T>[]
-	) {
+	function updateWholeList<T extends CardCategory>(list: CardTypeBasedOnCategory<T>[]) {
 		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
-		getCategoryFolder(category).files = list;
+		currentFolder.value.files = list;
 	}
 
 	function $reset() {
@@ -195,20 +247,41 @@ export const useCardsStore = defineStore("cards", () => {
 	}
 
 	return {
+		// State
 		cards,
-		filter,
+		currentCategory,
+		currentFolderPath,
+		currentFolder,
 		serializableState,
 
+		// State setter
+		setCurrentFolder,
+
+		// TODO remove or rework
+		filter,
 		filteredCards,
 		cardCount,
 
+		// Getters
+		getAllFiles,
+		getAllFolders,
 		getCategoryFolder,
-		getByIdInCategory,
-		getById,
+		findFileInCurrentFolder,
+		findFolderInCurrentFolder,
+		findFileInCardStore,
+
+		// Folder actions
+		addFolder,
+		updateFolder,
+		deleteFolder,
+
+		// Card actions
 		addCard,
 		updateCard,
 		deleteCard,
 		updateWholeList,
+
+		// Store management
 		$reset,
 		$hydrate,
 	};

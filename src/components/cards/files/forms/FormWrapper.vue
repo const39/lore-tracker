@@ -54,7 +54,7 @@ const formComponent = computed(() => {
 
 function initModel(): CardTypes {
 	if (typeof props.edit !== "undefined") {
-		const data = cardsStore.getByIdInCategory(props.edit, props.category);
+		const data = cardsStore.findFileInCurrentFolder(props.edit);
 		// We return a clone of the object to avoid modifying directly the store
 		// Helpful when the user cancels their changes because we don't have to rollback
 		if (data) return utilities.deepCopy(data) as CardTypes;

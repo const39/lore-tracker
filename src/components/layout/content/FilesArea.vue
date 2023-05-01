@@ -34,13 +34,10 @@ import draggable from "vuedraggable";
 import CardAdd from "@/components/cards/CardAdd.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
 import { useGridDensity } from "@/composables/gridDensity";
-import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
 import { usePreferencesStore } from "@/store/preferences";
-
-const props = defineProps<{ category: CardCategory; folder: CardFolder }>();
 
 const drag = ref(false);
 
@@ -54,12 +51,14 @@ const isSortDisabled = computed(() => {
 	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
 });
 
+const category = computed(() => cardsStore.currentCategory);
+
 const files = computed({
 	get() {
-		return props.folder.files;
+		return cardsStore.currentFolder.files;
 	},
 	set(list) {
-		cardsStore.updateWholeList(props.category, list);
+		cardsStore.updateWholeList(list);
 	},
 });
 </script>

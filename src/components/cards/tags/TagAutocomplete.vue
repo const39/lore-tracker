@@ -95,7 +95,7 @@ const nextCategory = computed(() => {
  * Browse the store to create a tag for each card (excluding objects with the specified IDs, if any)
  */
 const availableTags = computed<Tag[]>(() => {
-	const cards: CardTypes[] = cardsStore.cards[category.value];
+	const cards = cardsStore.getAllFiles(category.value);
 	return cards
 		.filter((card: CardTypes) =>
 			props.excludeIds ? !props.excludeIds.includes(card.id) : true

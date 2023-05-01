@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { mergeProps, ref } from "vue";
+import { computed, mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
 import colors from "@/core/colors";
 import { Icon } from "@/core/icons";
@@ -61,8 +61,9 @@ import { Folder, FolderMetadata, Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
+import { useCardsStore } from "@/store/cards";
 
-const props = defineProps<{ parent: CardFolder; edit?: CardFolder }>();
+const props = defineProps<{ edit?: CardFolder }>();
 const emit = defineEmits<{
 	(e: "close"): void;
 	(e: "submit"): void;
@@ -74,7 +75,7 @@ const rules = {
 		validationRules.required($t("fields.requiredField")),
 		validationRules.counter("", 25),
 		// Check name is not already used by another folder in the current parent folder
-		(name: string) => !props.parent.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
+		(name: string) => !parent.value.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
 	],
 };
 
@@ -82,6 +83,10 @@ const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff")
 
 const model = ref(initModel());
 const form = ref<VForm | undefined>(undefined);
+
+const cardsStore = useCardsStore();
+
+const parent = computed(() => cardsStore.currentFolder);
 
 function getRandomColor(): string {
 	const idx = Math.floor(Math.random() * baseColors.length);
@@ -106,16 +111,16 @@ function close(): void {
 
 async function submit() {
 	if (await form.value?.validate()) {
-		console.log(props.parent.path);
-		
+		console.log(parent.value.absolutePath);
+
 		if (props.edit) {
 			// TODO
 			console.warn("updateFolder() not implemented yet");
 			// notepadStore.updateFolder({
-			// 	pathToParent: utilities.joinPaths(true, props.parentPath, model.value.name),
+			// 	pathToParent: utilities.joinPaths(true, parent.valuePath, model.value.name),
 			// 	folder: model.value,
 			// });
-		} else props.parent.addFolder(new Folder(model.value, props.parent));
+		} else cardsStore.addFolder(new Folder(model.value));
 		emit("submit");
 	}
 }
