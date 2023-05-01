@@ -1,6 +1,6 @@
 import { MD5 } from "object-hash";
 import { ID } from "@/core/model/cards";
-import utilities, { SerializedMap, deserializeMap, mergeMaps, serializeMap } from "../utilities";
+import utilities, { deserializeMap, mergeMaps, serializeMap } from "../utilities";
 
 export interface FolderMetadata {
 	id: ID;
@@ -26,7 +26,7 @@ interface FlatFolder<T extends Indexable> extends Omit<IFolder<T>, "parent" | "s
 
 type FlatTree<T extends Indexable> = Map<Key, FlatFolder<T>>;
 
-export type SerializedFolder<T extends Indexable> = SerializedMap<Key, FlatFolder<T>>
+export type SerializedFolder<T extends Indexable> = Record<Key, FlatFolder<T>>;
 
 export class Path {
 	static readonly ILLEGAL_CHARS_REGEX = /(\/|\\|:|\||<|>|\?|"|\*|%)+/g;
@@ -99,10 +99,12 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		public subfolders: Folder<File>[] = []
 	) {}
 
-	get path(): Path {
-		return this.parent
-			? new Path(this.parent.path, this.metadata.name)
-			: new Path();
+	get absolutePath(): Path {
+		return this.parent ? new Path(this.parent.absolutePath, this.metadata.name) : new Path();
+	}
+
+	get relativePath(): Path {
+		return new Path(this.metadata.name);
 	}
 
 	// ** File **
@@ -154,7 +156,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 	deleteFolder(path: Path) {
 		if (path.isRoot()) {
 			throw new Error(
-				`Folder cannot delete itself. Tried to delete folder at path ${this.path}.`
+				`Folder cannot delete itself. Tried to delete folder at path ${this.absolutePath}.`
 			);
 		} else if (path.length === 1) {
 			const idx = this.subfolders.findIndex((f) => f.metadata.name === path.rawSegments[0]);
@@ -197,7 +199,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		return serializeMap(map);
 	}
 
-	static deserialize<File extends Indexable>(serialized: SerializedMap<Key, FlatFolder<File>>) {
+	static deserialize<File extends Indexable>(serialized: Record<Key, FlatFolder<File>>) {
 		const flatMap = deserializeMap(serialized);
 
 		function revive(flatFolder: FlatFolder<File>, revivedParent?: Folder<File>): Folder<File> {
@@ -224,4 +226,3 @@ export function createRootFolder<T extends Indexable>(name: string, files?: T[])
 	};
 	return new Folder(meta, undefined, files);
 }
-
