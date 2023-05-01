@@ -7,7 +7,6 @@
 		fill-height
 		@mouseenter="hover = true"
 		@mouseleave="hover = false"
-		@dblclick="$emit('edit')"
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
