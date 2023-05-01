@@ -1,7 +1,7 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon :icon="categoryIcon" />
+		<v-icon :icon="getIcon(model)" />
 		<span class="mx-2">{{ $t("dialogs.addEvent") }}</span>
 	</v-card-title>
 	<v-card-text>
@@ -58,10 +58,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Icon } from "@/core/constants";
+import { Icon, getIcon } from "@/core/icons";
 import { Event, EventType } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
 import { number, numberInRange, required } from "@/core/validationRules";
 
 const props = defineProps<{
@@ -82,7 +81,6 @@ const model = computed({
 	},
 });
 
-const categoryIcon = utilities.getIcon(model.value);
 const eventTypes = Object.values(EventType);
 
 const rules = {

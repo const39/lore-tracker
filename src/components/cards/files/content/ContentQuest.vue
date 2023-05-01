@@ -37,7 +37,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagList from "@/components/cards/tags/TagList.vue";
-import { Icon } from "@/core/constants";
+import { Icon } from "@/core/icons";
 import { Quest } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 

@@ -15,9 +15,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useTheme } from "vuetify";
-import { Event, EventType } from "@/core/model/cards";
-import { CardCategory } from "@/core/model/cards";
-import utilities from "@/core/utilities";
+import { getIcon } from "@/core/icons";
+import { CardCategory, Event, EventType } from "@/core/model/cards";
 
 interface Node {
 	isHeader: boolean;
@@ -51,7 +50,7 @@ const node = computed(() => {
 		info.color = theme.global.current.value.dark ? "white" : "black";
 	} else if (props.item._category === CardCategory.Event) {
 		info.text = props.item.desc;
-		info.icon = utilities.getIcon(props.item);
+		info.icon = getIcon(props.item);
 
 		switch (props.item.type) {
 			case EventType.COMBAT:

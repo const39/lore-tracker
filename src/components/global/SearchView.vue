@@ -54,7 +54,7 @@
 import { onKeyDown } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Icon } from "@/core/constants";
+import { Icon } from "@/core/icons";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { CategoryFilter, useFilterStore } from "@/store/filter";

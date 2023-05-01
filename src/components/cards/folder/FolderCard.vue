@@ -26,7 +26,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
-import { Icon } from "@/core/constants";
+import { Icon } from "@/core/icons";
 import { CardFolder } from "@/core/model/cards";
 import FolderForm from "./FolderForm.vue";
 

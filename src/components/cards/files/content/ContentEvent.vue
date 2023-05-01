@@ -27,13 +27,11 @@
 <script lang="ts" setup>
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
+import { getIcon } from "@/core/icons";
 import { Event } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
 
 defineProps<{
 	itemData: Event;
 }>();
-
-const getIcon = utilities.getIcon;
 </script>
