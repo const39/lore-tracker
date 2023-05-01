@@ -7,9 +7,10 @@ import {
 	CardsStore,
 	CardsStoreSerialized,
 	ID,
+	getAllText,
+	getText,
 } from "@/core/model/cards";
 import { Folder, createRootFolder } from "@/core/model/fileTree";
-import utilities from "@/core/utilities";
 import { CategoryFilter, Filter, useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 import { SerializedState } from ".";
@@ -54,9 +55,7 @@ function filterCards(cards: CardsStore, filter: Filter) {
 				// If specified, search for corresponding text in text fields of the current entry
 				if (filter.text) {
 					const str = filter.text;
-					predicate = utilities
-						.getAllText(entry)
-						.some((text) => text.toLowerCase().includes(str));
+					predicate = getAllText(entry).some((text) => text.toLowerCase().includes(str));
 				}
 
 				// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
@@ -83,8 +82,8 @@ function filterCards(cards: CardsStore, filter: Filter) {
 function sortCards(cards: CardsStore) {
 	for (const field in cards) {
 		cards[field as keyof typeof cards].sort((a: CardTypes, b: CardTypes) => {
-			const textA = utilities.getText(a).toLowerCase();
-			const textB = utilities.getText(b).toLowerCase();
+			const textA = getText(a).toLowerCase();
+			const textB = getText(b).toLowerCase();
 			return textA.localeCompare(textB);
 		});
 	}

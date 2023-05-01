@@ -1,7 +1,7 @@
 <template>
 	<!-- Show title if "Add" form version -->
 	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon :icon="categoryIcon" />
+		<v-icon :icon="getIcon(model)" />
 		<span class="mx-2">{{ $t("dialogs.addQuest") }}</span>
 	</v-card-title>
 	<v-card-text>
@@ -51,10 +51,9 @@
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon } from "@/core/constants";
+import { Icon, getIcon } from "@/core/icons";
 import { Quest, Task } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
 import { required } from "@/core/validationRules";
 
 const props = defineProps<{
@@ -75,8 +74,6 @@ const model = computed({
 	},
 });
 
-const categoryIcon = utilities.getIcon(model.value);
-
 const requiredRule = required($t("fields.requiredField"));
 
 function addTask(): void {
@@ -86,12 +83,15 @@ function addTask(): void {
 	};
 	model.value.tasks.push(task);
 }
+
 function complete(idx: number): void {
 	model.value.tasks[idx].isCompleted = !model.value.tasks[idx].isCompleted;
 }
+
 function remove(idx: number): void {
 	if (idx in model.value.tasks) model.value.tasks.splice(idx, 1);
 }
+
 // function cleanInput(): void {
 // 	// Remove empty tasks
 // 	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());

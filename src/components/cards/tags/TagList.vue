@@ -35,8 +35,8 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Icon } from "@/core/constants";
 import { eventBus } from "@/core/eventBus.js";
+import { Icon } from "@/core/icons";
 import { CardCategory, ID, Tag } from "@/core/model/cards";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";

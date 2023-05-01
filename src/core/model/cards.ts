@@ -1,5 +1,4 @@
-import { Icon } from "../constants";
-import utilities from "../utilities";
+import { Icon, getIcon } from "../icons";
 import { Folder, SerializedFolder } from "./fileTree";
 
 export type ID = number;
@@ -85,10 +84,9 @@ export type CardTypesMapping = {
 	[CardCategory.Character]: Character;
 	[CardCategory.Faction]: Faction;
 	[CardCategory.Note]: Note;
-}
+};
 
-export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T]
-
+export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T];
 
 // Runtime type
 export interface CardsStore {
@@ -118,8 +116,48 @@ export class Tag {
 
 	constructor(refObject: CardTypes) {
 		this.id = refObject.id;
-		this.text = utilities.getText(refObject);
+		this.text = getText(refObject);
 		this.category = refObject._category;
-		this.icon = utilities.getIcon(refObject);
+		this.icon = getIcon(refObject);
+	}
+}
+
+/**
+ * Returns the card's main text (i.e. its prominent field (title, name...) if it's not empty or the description as fallback).
+ * @param card
+ * @returns the main text of the card
+ */
+export function getText(card: CardTypes): string {
+	switch (card._category) {
+		case CardCategory.Character:
+		case CardCategory.Location:
+		case CardCategory.Faction:
+			return card.name || card.desc;
+		case CardCategory.Quest:
+			return card.title;
+		case CardCategory.Note:
+			return card.title || card.desc;
+		default:
+			return card.desc;
+	}
+}
+
+/**
+ * Returns all text contained in the card as an array of strings.
+ * @param card
+ * @returns all texts of the card
+ */
+export function getAllText(card: CardTypes): string[] {
+	switch (card._category) {
+		case CardCategory.Character:
+		case CardCategory.Location:
+		case CardCategory.Faction:
+			return [card.name, card.desc];
+		case CardCategory.Quest:
+			return [card.title, ...card.tasks.map((task) => task.desc)];
+		case CardCategory.Note:
+			return [card.title, card.desc];
+		default:
+			return [card.desc];
 	}
 }

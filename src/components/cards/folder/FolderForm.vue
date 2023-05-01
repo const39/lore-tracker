@@ -55,7 +55,7 @@
 import { mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
 import colors from "@/core/colors";
-import { Icon } from "@/core/constants";
+import { Icon } from "@/core/icons";
 import { CardFolder } from "@/core/model/cards";
 import { Folder, FolderMetadata, Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";

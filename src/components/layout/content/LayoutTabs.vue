@@ -19,8 +19,8 @@
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { Icon } from "@/core/constants";
 import { eventBus } from "@/core/eventBus";
+import { Icon } from "@/core/icons";
 import { CardCategory } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 

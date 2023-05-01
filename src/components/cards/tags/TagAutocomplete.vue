@@ -40,7 +40,7 @@
 
 <script lang="ts" setup>
 import { computed, mergeProps, nextTick, ref, watch } from "vue";
-import { Icon } from "@/core/constants";
+import { Icon } from "@/core/icons";
 import { CardCategory, CardTypes, ID, Tag } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";

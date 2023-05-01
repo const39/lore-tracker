@@ -23,6 +23,7 @@ import LorebookActions from "@/components/layout/banner/actions/LorebookActions.
 import Banner from "@/components/layout/banner/Banner.vue";
 import LayoutTabs from "@/components/layout/content/LayoutTabs.vue";
 import { eventBus } from "@/core/eventBus";
+import { getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
@@ -40,7 +41,7 @@ const cardsStore = useCardsStore();
 onMounted(() => {
 	eventBus.on("delete-card", (card) => {
 		confirmDialog.value.message = $t(`dialogs.delete${utilities.capitalize(card._category)}`);
-		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${utilities.getText(card)}" ?`;
+		confirmDialog.value.title = `${$t("dialogs.deleteTitle")} "${getText(card)}" ?`;
 		confirmDialog.value.acceptAction = () => cardsStore.deleteCard(card);
 		confirmDialog.value.show = true;
 	});
