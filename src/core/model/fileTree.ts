@@ -109,8 +109,8 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 
 	// ** File **
 
-	addFile(file: File) {
-		this.files.push(file);
+	addFile(file: File, where: "head" | "tail" = "head") {
+		where === "head" ? this.files.unshift(file) : this.files.push(file);
 	}
 
 	getFile(id: ID) {
@@ -141,15 +141,19 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		return undefined;
 	}
 
-	addFolder(folder: Folder<File>, parentPath?: Path) {
-		if (!parentPath || parentPath.isRoot()) this.subfolders.push(folder);
+	addFolder(folder: Folder<File>, parentPath?: Path, where: "head" | "tail" = "head") {
+		if (!parentPath || parentPath.isRoot())
+			where === "head" ? this.subfolders.unshift(folder) : this.subfolders.push(folder);
 		else {
 			const parent = this.getFolder(parentPath);
 			if (!parent)
 				throw new Error(
 					`Cannot create folder on inexistant parent. Tried to create folder on parent at path ${parentPath}.`
 				);
-			else parent.subfolders.push(folder);
+			else
+				where === "head"
+					? parent.subfolders.unshift(folder)
+					: parent.subfolders.push(folder);
 		}
 	}
 
