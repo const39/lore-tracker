@@ -5,6 +5,7 @@
 		:outlined="outlined"
 		@edit="showForm = true"
 		@delete="onDelete"
+		@dblclick="showForm = true"
 	>
 		<v-expand-transition>
 			<!-- Dynamic Form component -->
