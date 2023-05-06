@@ -1,7 +1,7 @@
 <template>
 	<div class="my-3">
 		<div class="mb-4 py-3 text-h6">
-			{{ $t("notepad.types.file") + "s" }}
+			{{ $t("categories.file") + "s" }}
 		</div>
 		<draggable
 			v-model="files"

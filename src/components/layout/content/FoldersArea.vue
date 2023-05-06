@@ -1,7 +1,7 @@
 <template>
 	<div class="my-3">
 		<div class="mb-4 text-h6">
-			<span> {{ $t("notepad.types.folder") + "s" }} </span>
+			<span> {{ $t("categories.folder") + "s" }} </span>
 			<v-btn
 				class="mx-2"
 				icon="mdi-plus"

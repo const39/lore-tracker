@@ -14,9 +14,6 @@
 			<v-btn :to="{ name: 'LoreBook' }" variant="text">
 				<span class="mr-2">{{ $t("pages.loreBook") }}</span>
 			</v-btn>
-			<v-btn :to="{ name: 'Notepad' }" variant="text">
-				<span class="mr-2">{{ $t("pages.notepad") }}</span>
-			</v-btn>
 			<v-btn :to="{ name: 'Timeline' }" variant="text">
 				<span class="mr-2">{{ $t("pages.timeline") }}</span>
 			</v-btn>
@@ -182,14 +179,12 @@ onKeyDown(["Escape", "F1", "F2", "F3"], hotkey);
  * Manage this component's hotkeys :
  * - On ESC press : Open/close options menu
  * - On F1 press : Navigate to LoreBook page
- * - On F2 press : Navigate to Notepad page
- * - On F3 press : Navigate to Timeline page
+ * - On F2 press : Navigate to Timeline page
  */
 function hotkey(e: KeyboardEvent) {
 	if (e.code === "Escape") showMenu.value = !showMenu.value;
 	else if (e.code === "F1") router.push({ name: "LoreBook" });
-	else if (e.code === "F2") router.push({ name: "Notepad" });
-	else if (e.code === "F3") router.push({ name: "Timeline" });
+	else if (e.code === "F2") router.push({ name: "Timeline" });
 }
 
 function closeUpdateNotif() {
