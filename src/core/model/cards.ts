@@ -1,5 +1,7 @@
+import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { Icon, getIcon } from "../icons";
-import { Folder, SerializedFolder } from "./fileTree";
+import utilities from "../utilities";
+import { Folder, FolderMetadata, SerializedFolder } from "./fileTree";
 
 export type ID = number;
 
@@ -75,8 +77,6 @@ export interface Note extends BaseCard {
 
 export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 
-export class CardFolder extends Folder<CardTypes> {}
-
 export type CardTypesMapping = {
 	[CardCategory.Quest]: Quest;
 	[CardCategory.Event]: Event;
@@ -88,14 +88,23 @@ export type CardTypesMapping = {
 
 export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T];
 
+export interface CardFolderMetadata extends FolderMetadata {
+	_category: CardCategory;
+}
+
+export class CardFolder extends Folder<CardFolderMetadata, CardTypes> {}
+
 // Runtime type
 export type CardsStore = {
-	[Category in CardCategory]: Folder<CardTypeBasedOnCategory<Category>>;
+	[Category in CardCategory]: Folder<CardFolderMetadata, CardTypeBasedOnCategory<Category>>;
 };
 
 // Serialized type
 export type CardsStoreSerialized = {
-	[Category in CardCategory]: SerializedFolder<CardTypeBasedOnCategory<Category>>;
+	[Category in CardCategory]: SerializedFolder<
+		CardFolderMetadata,
+		CardTypeBasedOnCategory<Category>
+	>;
 };
 
 export class Tag {
@@ -110,6 +119,79 @@ export class Tag {
 		this.category = refObject._category;
 		this.icon = getIcon(refObject);
 	}
+}
+
+export function createCard(category: CardCategory): CardTypes {
+	const campaignInfoStore = useCampaignInfoStore();
+	switch (category) {
+		case CardCategory.Quest:
+			return {
+				_category: CardCategory.Quest,
+				id: utilities.uid(),
+				tags: [],
+				title: "",
+				tasks: [],
+			};
+		case CardCategory.Event:
+			return {
+				_category: CardCategory.Event,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				type: EventType.OTHER,
+				day: campaignInfoStore.days,
+			};
+		case CardCategory.Location:
+			return {
+				_category: CardCategory.Location,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				name: "",
+			};
+		case CardCategory.Character:
+			return {
+				_category: CardCategory.Character,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				name: "",
+				race: "",
+				classes: "",
+				role: "",
+				isAlive: true,
+				isNPC: true,
+			};
+		case CardCategory.Faction:
+			return {
+				_category: CardCategory.Faction,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				name: "",
+			};
+		case CardCategory.Note:
+			return {
+				_category: CardCategory.Note,
+				id: utilities.uid(),
+				desc: "",
+				tags: [],
+				title: "",
+			};
+	}
+}
+
+export function createRootFolder<T extends CardCategory>(
+	category: T,
+	files?: CardTypeBasedOnCategory<T>[]
+) {
+	const meta: CardFolderMetadata = {
+		id: utilities.uid(),
+		_category: category,
+		color: "#ffffff",
+		name: `${category}-root`,
+	};
+	return new CardFolder(meta, undefined, files);
 }
 
 /**

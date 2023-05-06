@@ -1,7 +1,9 @@
 <template>
 	<v-form ref="form" v-model="isValid">
 		<v-card>
-			<v-card-title v-if="!edit" class="text-h5">{{ $t("dialogs.addFolder") }}</v-card-title>
+			<v-card-title v-if="!edit" class="text-h5">
+				{{ $t("dialogs.addFolder") }}
+			</v-card-title>
 			<v-card-text class="d-flex text-body-2">
 				<v-menu location="left">
 					<template #activator="{ props: menuProps }">
@@ -54,8 +56,8 @@ import { computed, mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
 import colors from "@/core/colors";
 import { Icon } from "@/core/icons";
-import { CardFolder } from "@/core/model/cards";
-import { Folder, FolderMetadata, Path } from "@/core/model/fileTree";
+import { CardFolder, CardFolderMetadata } from "@/core/model/cards";
+import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
@@ -79,11 +81,11 @@ const rules = {
 
 const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
 
+const cardsStore = useCardsStore();
+
 const model = ref(initModel());
 const isValid = ref(false);
 const form = ref<VForm | undefined>(undefined);
-
-const cardsStore = useCardsStore();
 
 const parent = computed(() => cardsStore.currentFolder);
 
@@ -92,12 +94,13 @@ function getRandomColor(): string {
 	return baseColors[idx];
 }
 
-function initModel(): FolderMetadata {
+function initModel(): CardFolderMetadata {
 	// We return a clone of the object to avoid modifying directly the store
 	// Helpful when the user cancels their changes because we don't have to rollback
 	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit.metadata);
 	return {
 		id: utilities.uid(),
+		_category: cardsStore.currentCategory,
 		name: "",
 		color: getRandomColor(),
 	};
@@ -111,7 +114,7 @@ function close(): void {
 async function submit() {
 	if (await form.value?.validate()) {
 		if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
-		else cardsStore.addFolder(new Folder(model.value));
+		else cardsStore.addFolder(new CardFolder(model.value));
 		emit("submit");
 	}
 }

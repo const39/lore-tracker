@@ -2,6 +2,41 @@
   "$ref": "#/definitions/SaveFormat",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "definitions": {
+    "CardCategory": {
+      "enum": [
+        "quest",
+        "event",
+        "location",
+        "character",
+        "faction",
+        "note"
+      ],
+      "type": "string"
+    },
+    "CardFolderMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "$ref": "#/definitions/CardCategory"
+        },
+        "color": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "_category",
+        "color",
+        "id",
+        "name"
+      ],
+      "type": "object"
+    },
     "CardTypeBasedOnCategory<\"character\">": {
       "$ref": "#/definitions/Character"
     },
@@ -24,22 +59,22 @@
       "additionalProperties": false,
       "properties": {
         "character": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22character%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22character%22%3E%3E"
         },
         "event": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22event%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22event%22%3E%3E"
         },
         "faction": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22faction%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22faction%22%3E%3E"
         },
         "location": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22location%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22location%22%3E%3E"
         },
         "note": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22note%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22note%22%3E%3E"
         },
         "quest": {
-          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22quest%22%3E%3E"
+          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22quest%22%3E%3E"
         }
       },
       "required": [
@@ -179,26 +214,6 @@
         "id",
         "name",
         "tags"
-      ],
-      "type": "object"
-    },
-    "FolderMetadata": {
-      "additionalProperties": false,
-      "properties": {
-        "color": {
-          "type": "string"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "name": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "id",
-        "name",
-        "color"
       ],
       "type": "object"
     },
@@ -362,7 +377,7 @@
       ],
       "type": "string"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"character\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"character\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -373,7 +388,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"
@@ -394,7 +409,7 @@
       },
       "type": "object"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"event\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"event\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -405,7 +420,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"
@@ -426,7 +441,7 @@
       },
       "type": "object"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"faction\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"faction\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -437,7 +452,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"
@@ -458,7 +473,7 @@
       },
       "type": "object"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"location\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"location\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -469,7 +484,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"
@@ -490,7 +505,7 @@
       },
       "type": "object"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"note\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"note\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -501,7 +516,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"
@@ -522,7 +537,7 @@
       },
       "type": "object"
     },
-    "SerializedFolder<CardTypeBasedOnCategory<\"quest\">>": {
+    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"quest\">>": {
       "additionalProperties": {
         "additionalProperties": false,
         "properties": {
@@ -533,7 +548,7 @@
             "type": "array"
           },
           "metadata": {
-            "$ref": "#/definitions/FolderMetadata"
+            "$ref": "#/definitions/CardFolderMetadata"
           },
           "parent": {
             "type": "string"

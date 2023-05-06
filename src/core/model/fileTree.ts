@@ -1,6 +1,6 @@
 import { MD5 } from "object-hash";
 import { ID } from "@/core/model/cards";
-import utilities, { deserializeMap, mergeMaps, serializeMap } from "../utilities";
+import { deserializeMap, mergeMaps, serializeMap } from "../utilities";
 
 export interface FolderMetadata {
 	id: ID;
@@ -10,23 +10,27 @@ export interface FolderMetadata {
 
 export type Indexable = { id: ID };
 
-interface IFolder<File extends Indexable> {
-	metadata: FolderMetadata;
-	parent?: Folder<File>;
+interface IFolder<Metadata extends FolderMetadata, File extends Indexable> {
+	metadata: Metadata;
+	parent?: Folder<Metadata, File>;
 	files: File[];
-	subfolders: Folder<File>[];
+	subfolders: Folder<Metadata, File>[];
 }
 
 type Key = string;
 
-interface FlatFolder<T extends Indexable> extends Omit<IFolder<T>, "parent" | "subfolders"> {
+interface FlatFolder<M extends FolderMetadata, T extends Indexable>
+	extends Omit<IFolder<M, T>, "parent" | "subfolders"> {
 	parent?: Key;
 	subfolders: Key[];
 }
 
-type FlatTree<T extends Indexable> = Map<Key, FlatFolder<T>>;
+type FlatTree<M extends FolderMetadata, T extends Indexable> = Map<Key, FlatFolder<M, T>>;
 
-export type SerializedFolder<T extends Indexable> = Record<Key, FlatFolder<T>>;
+export type SerializedFolder<M extends FolderMetadata, T extends Indexable> = Record<
+	Key,
+	FlatFolder<M, T>
+>;
 
 export class Path {
 	static readonly ILLEGAL_CHARS_REGEX = /(\/|\\|:|\||<|>|\?|"|\*|%)+/g;
@@ -91,12 +95,14 @@ export class Path {
 	}
 }
 
-export class Folder<File extends Indexable> implements IFolder<File> {
+export class Folder<Metadata extends FolderMetadata, File extends Indexable>
+	implements IFolder<Metadata, File>
+{
 	constructor(
-		public metadata: FolderMetadata,
-		public parent?: Folder<File>,
+		public metadata: Metadata,
+		public parent?: Folder<Metadata, File>,
 		public files: File[] = [],
-		public subfolders: Folder<File>[] = []
+		public subfolders: Folder<Metadata, File>[] = []
 	) {}
 
 	get absolutePath(): Path {
@@ -128,7 +134,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		return this.getFolder(path) !== undefined;
 	}
 
-	getFolder(path: Path): Folder<File> | undefined {
+	getFolder(path: Path): Folder<Metadata, File> | undefined {
 		if (path.isRoot()) return this;
 		else if (path.length === 1) {
 			return this.subfolders.find((folder) => folder.metadata.name === path.rawSegments[0]);
@@ -141,7 +147,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		return undefined;
 	}
 
-	addFolder(folder: Folder<File>, parentPath?: Path, where: "head" | "tail" = "head") {
+	addFolder(folder: Folder<Metadata, File>, parentPath?: Path, where: "head" | "tail" = "head") {
 		if (!parentPath || parentPath.isRoot())
 			where === "head" ? this.subfolders.unshift(folder) : this.subfolders.push(folder);
 		else {
@@ -173,7 +179,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 	// This method is intended to be private, but we cannot enforce it because TS clashes with Vue's reactivity system when dealing with private properties
 	// @see https://github.com/vuejs/core/issues/2981
 	_flatten(parentHash?: Key) {
-		const map: FlatTree<File> = new Map<Key, FlatFolder<File>>();
+		const map: FlatTree<Metadata, File> = new Map<Key, FlatFolder<Metadata, File>>();
 		const objHash = MD5(this);
 
 		const childrenHashes: Key[] = [];
@@ -188,7 +194,7 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 			}
 		}
 
-		const flatFolder: FlatFolder<File> = {
+		const flatFolder: FlatFolder<Metadata, File> = {
 			metadata: this.metadata,
 			files: this.files,
 			parent: parentHash,
@@ -208,16 +214,21 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 		return serializeMap(map);
 	}
 
-	static deserialize<File extends Indexable>(serialized: Record<Key, FlatFolder<File>>) {
+	static deserialize<Metadata extends FolderMetadata, File extends Indexable>(
+		serialized: Record<Key, FlatFolder<Metadata, File>>
+	) {
 		const flatMap = deserializeMap(serialized);
 
-		function revive(flatFolder: FlatFolder<File>, revivedParent?: Folder<File>): Folder<File> {
-			const folder = new Folder(flatFolder.metadata, revivedParent, flatFolder.files);
+		const revive = (
+			flatFolder: FlatFolder<Metadata, File>,
+			revivedParent?: Folder<Metadata, File>
+		): Folder<Metadata, File> => {
+			const folder = new this(flatFolder.metadata, revivedParent, flatFolder.files);
 			folder.subfolders = flatFolder.subfolders.map((hash) =>
 				revive(flatMap.get(hash)!, folder)
 			);
 			return folder;
-		}
+		};
 
 		// Get root node (i.e. the node with no parent)
 		const root = [...flatMap.values()].find((flatFolder) => flatFolder.parent === undefined);
@@ -225,13 +236,4 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 
 		return revive(root);
 	}
-}
-
-export function createRootFolder<T extends Indexable>(name: string, files?: T[]) {
-	const meta: FolderMetadata = {
-		id: utilities.uid(),
-		name,
-		color: "#ffffff",
-	};
-	return new Folder(meta, undefined, files);
 }

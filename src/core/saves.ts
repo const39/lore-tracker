@@ -4,7 +4,7 @@ import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import { SaveFormat, SerializedState } from "@/store";
-import { createRootFolder } from "./model/fileTree";
+import { CardCategory, createRootFolder } from "./model/cards";
 import utilities from "./utilities";
 
 export enum SaveVersion {
@@ -142,7 +142,7 @@ class V2SaveProcessor extends SaveProcessor {
 
 		// For each category, create a root folder and set all existing cards as its files
 		Object.keys(converted.cards).forEach((category) => {
-			const folder = createRootFolder(`${category}-root`, converted.cards[category]);
+			const folder = createRootFolder(category as CardCategory, converted.cards[category]);
 			converted.cards[category] = folder.serialize();
 		});
 		
