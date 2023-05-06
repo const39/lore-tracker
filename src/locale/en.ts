@@ -123,6 +123,7 @@ const en: Locale = {
 		delete: "Delete",
 		quickNote: "Quick note",
 		changeCategory: "Click or Ctrl+Left/Right to change category",
+		cardDragndrop: "Move cards",
 	},
 
 	messages: {
