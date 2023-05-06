@@ -1,344 +1,574 @@
 {
-	"$ref": "#/definitions/SaveFormat",
-	"$schema": "http://json-schema.org/draft-07/schema#",
-	"definitions": {
-		"CardsStore": {
-			"additionalProperties": false,
-			"properties": {
-				"character": {
-					"items": {
-						"$ref": "#/definitions/Character"
-					},
-					"type": "array"
-				},
-				"event": {
-					"items": {
-						"$ref": "#/definitions/Event"
-					},
-					"type": "array"
-				},
-				"faction": {
-					"items": {
-						"$ref": "#/definitions/Faction"
-					},
-					"type": "array"
-				},
-				"location": {
-					"items": {
-						"$ref": "#/definitions/Location"
-					},
-					"type": "array"
-				},
-				"note": {
-					"items": {
-						"$ref": "#/definitions/Note"
-					},
-					"type": "array"
-				},
-				"quest": {
-					"items": {
-						"$ref": "#/definitions/Quest"
-					},
-					"type": "array"
-				}
-			},
-			"required": ["quest", "event", "location", "character", "faction", "note"],
-			"type": "object"
-		},
-		"Character": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "character",
-					"type": "string"
-				},
-				"classes": {
-					"type": "string"
-				},
-				"desc": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"isAlive": {
-					"type": "boolean"
-				},
-				"isNPC": {
-					"type": "boolean"
-				},
-				"name": {
-					"type": "string"
-				},
-				"race": {
-					"type": "string"
-				},
-				"role": {
-					"type": "string"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				}
-			},
-			"required": [
-				"_category",
-				"classes",
-				"desc",
-				"id",
-				"isAlive",
-				"isNPC",
-				"name",
-				"race",
-				"role",
-				"tags"
-			],
-			"type": "object"
-		},
-		"Event": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "event",
-					"type": "string"
-				},
-				"day": {
-					"type": "number"
-				},
-				"desc": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				},
-				"type": {
-					"$ref": "#/definitions/EventType"
-				}
-			},
-			"required": ["_category", "day", "desc", "id", "tags", "type"],
-			"type": "object"
-		},
-		"EventType": {
-			"enum": ["combat", "encounter", "discovery", "travel", "other"],
-			"type": "string"
-		},
-		"Faction": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "faction",
-					"type": "string"
-				},
-				"desc": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"name": {
-					"type": "string"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				}
-			},
-			"required": ["_category", "desc", "id", "name", "tags"],
-			"type": "object"
-		},
-		"FileTreeNode": {
-			"additionalProperties": false,
-			"properties": {
-				"files": {
-					"items": {
-						"$ref": "#/definitions/FileTypes"
-					},
-					"type": "array"
-				},
-				"folders": {
-					"items": {
-						"$ref": "#/definitions/Folder"
-					},
-					"type": "array"
-				}
-			},
-			"required": ["folders", "files"],
-			"type": "object"
-		},
-		"FileTypes": {
-			"$ref": "#/definitions/Note"
-		},
-		"Folder": {
-			"additionalProperties": false,
-			"properties": {
-				"color": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"name": {
-					"type": "string"
-				}
-			},
-			"required": ["id", "name", "color"],
-			"type": "object"
-		},
-		"ID": {
-			"type": "number"
-		},
-		"Location": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "location",
-					"type": "string"
-				},
-				"desc": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"name": {
-					"type": "string"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				}
-			},
-			"required": ["_category", "desc", "id", "name", "tags"],
-			"type": "object"
-		},
-		"MetaData": {
-			"additionalProperties": false,
-			"properties": {
-				"lastUpdate": {
-					"type": "string"
-				},
-				"version": {
-					"const": "save-v2",
-					"type": "string"
-				}
-			},
-			"required": ["version", "lastUpdate"],
-			"type": "object"
-		},
-		"Note": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "note",
-					"type": "string"
-				},
-				"desc": {
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				},
-				"title": {
-					"type": "string"
-				}
-			},
-			"required": ["_category", "desc", "id", "tags", "title"],
-			"type": "object"
-		},
-		"Quest": {
-			"additionalProperties": false,
-			"properties": {
-				"_category": {
-					"const": "quest",
-					"type": "string"
-				},
-				"id": {
-					"$ref": "#/definitions/ID"
-				},
-				"tags": {
-					"items": {
-						"$ref": "#/definitions/ID"
-					},
-					"type": "array"
-				},
-				"tasks": {
-					"items": {
-						"$ref": "#/definitions/Task"
-					},
-					"type": "array"
-				},
-				"title": {
-					"type": "string"
-				}
-			},
-			"required": ["_category", "id", "tags", "tasks", "title"],
-			"type": "object"
-		},
-		"SaveFormat": {
-			"additionalProperties": false,
-			"properties": {
-				"_meta": {
-					"$ref": "#/definitions/MetaData"
-				},
-				"cards": {
-					"$ref": "#/definitions/CardsStore"
-				},
-				"days": {
-					"type": "number"
-				},
-				"name": {
-					"type": "string"
-				},
-				"notepad": {
-					"additionalProperties": {
-						"$ref": "#/definitions/FileTreeNode"
-					},
-					"type": "object"
-				},
-				"quickNote": {
-					"type": "string"
-				},
-				"season": {
-					"$ref": "#/definitions/Season"
-				}
-			},
-			"required": ["_meta", "cards", "days", "name", "notepad", "quickNote", "season"],
-			"type": "object"
-		},
-		"Season": {
-			"enum": ["spring", "summer", "autumn", "winter"],
-			"type": "string"
-		},
-		"Task": {
-			"additionalProperties": false,
-			"properties": {
-				"desc": {
-					"type": "string"
-				},
-				"isCompleted": {
-					"type": "boolean"
-				}
-			},
-			"required": ["desc", "isCompleted"],
-			"type": "object"
-		}
-	}
+  "$ref": "#/definitions/SaveFormat",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "CardTypeBasedOnCategory<\"character\">": {
+      "$ref": "#/definitions/Character"
+    },
+    "CardTypeBasedOnCategory<\"event\">": {
+      "$ref": "#/definitions/Event"
+    },
+    "CardTypeBasedOnCategory<\"faction\">": {
+      "$ref": "#/definitions/Faction"
+    },
+    "CardTypeBasedOnCategory<\"location\">": {
+      "$ref": "#/definitions/Location"
+    },
+    "CardTypeBasedOnCategory<\"note\">": {
+      "$ref": "#/definitions/Note"
+    },
+    "CardTypeBasedOnCategory<\"quest\">": {
+      "$ref": "#/definitions/Quest"
+    },
+    "CardsStoreSerialized": {
+      "additionalProperties": false,
+      "properties": {
+        "character": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22character%22%3E%3E"
+        },
+        "event": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22event%22%3E%3E"
+        },
+        "faction": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22faction%22%3E%3E"
+        },
+        "location": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22location%22%3E%3E"
+        },
+        "note": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22note%22%3E%3E"
+        },
+        "quest": {
+          "$ref": "#/definitions/SerializedFolder%3CCardTypeBasedOnCategory%3C%22quest%22%3E%3E"
+        }
+      },
+      "required": [
+        "quest",
+        "event",
+        "location",
+        "character",
+        "faction",
+        "note"
+      ],
+      "type": "object"
+    },
+    "Character": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "character",
+          "type": "string"
+        },
+        "classes": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "isAlive": {
+          "type": "boolean"
+        },
+        "isNPC": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        },
+        "race": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "_category",
+        "classes",
+        "desc",
+        "id",
+        "isAlive",
+        "isNPC",
+        "name",
+        "race",
+        "role",
+        "tags"
+      ],
+      "type": "object"
+    },
+    "Event": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "event",
+          "type": "string"
+        },
+        "day": {
+          "type": "number"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        },
+        "type": {
+          "$ref": "#/definitions/EventType"
+        }
+      },
+      "required": [
+        "_category",
+        "day",
+        "desc",
+        "id",
+        "tags",
+        "type"
+      ],
+      "type": "object"
+    },
+    "EventType": {
+      "enum": [
+        "combat",
+        "encounter",
+        "discovery",
+        "travel",
+        "other"
+      ],
+      "type": "string"
+    },
+    "Faction": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "faction",
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "_category",
+        "desc",
+        "id",
+        "name",
+        "tags"
+      ],
+      "type": "object"
+    },
+    "FolderMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "color": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "color"
+      ],
+      "type": "object"
+    },
+    "ID": {
+      "type": "number"
+    },
+    "Location": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "location",
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "_category",
+        "desc",
+        "id",
+        "name",
+        "tags"
+      ],
+      "type": "object"
+    },
+    "MetaData": {
+      "additionalProperties": false,
+      "properties": {
+        "lastUpdate": {
+          "type": "string"
+        },
+        "version": {
+          "const": "save-v2",
+          "type": "string"
+        }
+      },
+      "required": [
+        "version",
+        "lastUpdate"
+      ],
+      "type": "object"
+    },
+    "Note": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "note",
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "_category",
+        "desc",
+        "id",
+        "tags",
+        "title"
+      ],
+      "type": "object"
+    },
+    "Quest": {
+      "additionalProperties": false,
+      "properties": {
+        "_category": {
+          "const": "quest",
+          "type": "string"
+        },
+        "id": {
+          "$ref": "#/definitions/ID"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/definitions/ID"
+          },
+          "type": "array"
+        },
+        "tasks": {
+          "items": {
+            "$ref": "#/definitions/Task"
+          },
+          "type": "array"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "_category",
+        "id",
+        "tags",
+        "tasks",
+        "title"
+      ],
+      "type": "object"
+    },
+    "SaveFormat": {
+      "additionalProperties": false,
+      "properties": {
+        "_meta": {
+          "$ref": "#/definitions/MetaData"
+        },
+        "cards": {
+          "$ref": "#/definitions/CardsStoreSerialized"
+        },
+        "days": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "quickNote": {
+          "type": "string"
+        },
+        "season": {
+          "$ref": "#/definitions/Season"
+        }
+      },
+      "required": [
+        "_meta",
+        "cards",
+        "days",
+        "name",
+        "quickNote",
+        "season"
+      ],
+      "type": "object"
+    },
+    "Season": {
+      "enum": [
+        "spring",
+        "summer",
+        "autumn",
+        "winter"
+      ],
+      "type": "string"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"character\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22character%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"event\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22event%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"faction\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22faction%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"location\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22location%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"note\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22note%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "SerializedFolder<CardTypeBasedOnCategory<\"quest\">>": {
+      "additionalProperties": {
+        "additionalProperties": false,
+        "properties": {
+          "files": {
+            "items": {
+              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22quest%22%3E"
+            },
+            "type": "array"
+          },
+          "metadata": {
+            "$ref": "#/definitions/FolderMetadata"
+          },
+          "parent": {
+            "type": "string"
+          },
+          "subfolders": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "files",
+          "metadata",
+          "subfolders"
+        ],
+        "type": "object"
+      },
+      "type": "object"
+    },
+    "Task": {
+      "additionalProperties": false,
+      "properties": {
+        "desc": {
+          "type": "string"
+        },
+        "isCompleted": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "isCompleted",
+        "desc"
+      ],
+      "type": "object"
+    }
+  }
 }

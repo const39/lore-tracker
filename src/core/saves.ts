@@ -132,14 +132,20 @@ class V2SaveProcessor extends SaveProcessor {
 	/**
 	 * Convert v1-format data to v2-format.
 	 * Changes between v1 and v2 formats are:
-	 * - New field: 'notepad' on root object
+	 * - Convert each card list to a file tree
 	 *
 	 * @param save data to convert to v2 format
 	 * @returns input data converted to v2 format
 	 */
 	protected convert(save: any): SerializedState {
 		const converted = utilities.deepCopy(save);
-		converted.notepad = createRootFolder().serialize();
+
+		// For each category, create a root folder and set all existing cards as its files
+		Object.keys(converted.cards).forEach((category) => {
+			const folder = createRootFolder(`${category}-root`, converted.cards[category]);
+			converted.cards[category] = folder.serialize();
+		});
+		
 		return converted;
 	}
 }
