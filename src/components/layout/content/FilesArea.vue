@@ -1,7 +1,14 @@
 <template>
 	<div class="my-3">
-		<div class="mb-4 py-3 text-h6">
-			{{ $t("categories.file") + "s" }}
+		<div class="mb-4 text-h6">
+			<span> {{ $t("categories.file") + "s" }} </span>
+			<v-btn
+				class="mx-2"
+				icon="mdi-plus"
+				density="compact"
+				variant="text"
+				@click="newFile"
+			/>
 		</div>
 		<draggable
 			v-model="files"
@@ -14,11 +21,6 @@
 			@start="drag = true"
 			@end="drag = false"
 		>
-			<template #header>
-				<v-col cols="12" v-bind="density">
-					<CardAdd :category="category" fill-height />
-				</v-col>
-			</template>
 			<template #item="{ element }">
 				<v-col class="item" cols="12" v-bind="density">
 					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
@@ -31,13 +33,13 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import draggable from "vuedraggable";
-import CardAdd from "@/components/cards/CardAdd.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
 import { useGridDensity } from "@/composables/gridDensity";
 import { getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
+import { useGlobalCardForm } from "@/store/globalCardForm";
 import { usePreferencesStore } from "@/store/preferences";
 
 const drag = ref(false);
@@ -45,6 +47,7 @@ const drag = ref(false);
 const filterStore = useFilterStore();
 const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
+const formStore = useGlobalCardForm();
 
 const { density } = useGridDensity();
 
@@ -70,6 +73,10 @@ const files = computed({
 		cardsStore.updateWholeList(list);
 	},
 });
+
+function newFile(): void {
+	formStore.newAddForm(category.value, cardsStore.currentFolder);
+}
 </script>
 
 <style scoped>

@@ -87,13 +87,13 @@ const fr: Locale = {
 	},
 
 	dialogs: {
-		addFolder: "Ajouter un dossier",
-		addQuest: "Ajouter une quête",
-		addEvent: "Ajouter un événement",
-		addLocation: "Ajouter une localité",
-		addCharacter: "Ajouter un personnage",
-		addFaction: "Ajouter une faction",
-		addNote: "Ajouter une note",
+		addFolder: "Nouveau  dossier",
+		addQuest: "Nouvelle quête",
+		addEvent: "Nouveau événement",
+		addLocation: "Nouvelle localité",
+		addCharacter: "Nouveau  personnage",
+		addFaction: "Nouvelle faction",
+		addNote: "Nouvelle note",
 
 		deleteFolder: "Supprimer un dossier",
 		deleteQuest: "Supprimer une quête",
@@ -128,6 +128,8 @@ const fr: Locale = {
 	messages: {
 		success: {
 			saveFileImportSuccessful: "Fichier de sauvegarde importé.",
+			newCardStored: "sauvegardé(e)",
+			newCardStoredInFolder: "sauvegardé(e) dans le dossier",
 		},
 		errors: {
 			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
