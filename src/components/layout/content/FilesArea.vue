@@ -34,6 +34,7 @@ import draggable from "vuedraggable";
 import CardAdd from "@/components/cards/CardAdd.vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
 import { useGridDensity } from "@/composables/gridDensity";
+import { getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useFilterStore } from "@/store/filter";
@@ -55,7 +56,15 @@ const category = computed(() => cardsStore.currentCategory);
 
 const files = computed({
 	get() {
-		return cardsStore.currentFolder.files;
+		const files = cardsStore.currentFolder.files;
+		if (prefStore.cardsOrder === "alphanumeric")
+			// Sort the shallow copy of the files list in the alphanumeric order
+			return [...files].sort((a, b) => {
+				const textA = getText(a).toLowerCase();
+				const textB = getText(b).toLowerCase();
+				return textA.localeCompare(textB);
+			});
+		else return files;
 	},
 	set(list) {
 		cardsStore.updateWholeList(list);
