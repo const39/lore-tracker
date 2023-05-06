@@ -53,8 +53,8 @@ const isSortDisabled = computed(() => {
 
 function onDelete() {
 	showConfirmDialog({
-		title: `${$t("dialogs.deleteTitle")} "${getText(props.itemData)}" ?`,
-		message: $t(`dialogs.delete${utilities.capitalize(props.itemData._category)}`),
+		title: $t(`dialogs.delete${utilities.capitalize(props.itemData._category)}`),
+		message: $t(`dialogs.deleteConfirm`) + `"${getText(props.itemData)}" ?`,
 		confirmAction: () => cardsStore.deleteCard(props.itemData),
 	});
 }

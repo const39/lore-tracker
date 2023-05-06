@@ -101,6 +101,7 @@ export interface Locale {
 	};
 
 	dialogs: {
+		addFolder: string;
 		addQuest: string;
 		addEvent: string;
 		addLocation: string;
@@ -108,13 +109,15 @@ export interface Locale {
 		addFaction: string;
 		addNote: string;
 
-		deleteTitle: string;
+		deleteFolder: string;
 		deleteQuest: string;
 		deleteEvent: string;
 		deleteLocation: string;
 		deleteCharacter: string;
 		deleteFaction: string;
 		deleteNote: string;
+		deleteConfirm: string;
+		deleteConfirmFolder: string;
 	};
 
 	search: {
