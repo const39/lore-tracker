@@ -8,12 +8,10 @@ import {
 	CardsStore,
 	CardsStoreSerialized,
 	ID,
-	getAllText,
-	getText,
+	getAllText
 } from "@/core/model/cards";
 import { Folder, FolderMetadata, Path, createRootFolder } from "@/core/model/fileTree";
 import { CategoryFilter, Filter, useFilterStore } from "./filter";
-import { usePreferencesStore } from "./preferences";
 import { SerializedState } from ".";
 
 function defaultCards(): CardsStore {
@@ -26,69 +24,56 @@ function defaultCards(): CardsStore {
 	return cards;
 }
 
-/**
- * Filter the specified cards using the given filter.
- * @param cards cards from the current state
- * @param filter filter from the current state
- * @returns a new CardsStore object containing the cards, filtered according to the given filter
- */
-function filterCards(cards: CardsStore, filter: Filter) {
-	// Create another empty cards object to avoid modifying the state containing all cards
-	const filteredCards = defaultCards();
+// TODO move filtering to its own store
+// /**
+//  * Filter the specified cards using the given filter.
+//  * @param cards cards from the current state
+//  * @param filter filter from the current state
+//  * @returns a new CardsStore object containing the cards, filtered according to the given filter
+//  */
+// function filterCards(cards: CardsStore, filter: Filter) {
+// 	// Create another empty cards object to avoid modifying the state containing all cards
+// 	const filteredCards = defaultCards();
 
-	// Browse each array of cards
-	for (const field in cards) {
-		const key = field as keyof typeof cards;
+// 	// Browse each array of cards
+// 	for (const field in cards) {
+// 		const key = field as keyof typeof cards;
 
-		// The filter is applied to each relevant key (can be ALL)
-		if (filter.category === CategoryFilter.ALL || filter.category === key) {
-			// Filter out corresponding cards from the initial cards object
+// 		// The filter is applied to each relevant key (can be ALL)
+// 		if (filter.category === CategoryFilter.ALL || filter.category === key) {
+// 			// Filter out corresponding cards from the initial cards object
 
-			(filteredCards[key] as CardTypes[]) = (cards[key] as CardTypes[]).filter((entry) => {
-				/* The predicate conditions are exclusive :
-				 * (1) if the first one is not fulfilled, the second one is not evaluated;
-				 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
-				 * In either case, the predicate returns false
-				 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
-				 */
-				let predicate = true;
+// 			(filteredCards[key] as CardTypes[]) = (cards[key] as CardTypes[]).filter((entry) => {
+// 				/* The predicate conditions are exclusive :
+// 				 * (1) if the first one is not fulfilled, the second one is not evaluated;
+// 				 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
+// 				 * In either case, the predicate returns false
+// 				 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
+// 				 */
+// 				let predicate = true;
 
-				// If specified, search for corresponding text in text fields of the current entry
-				if (filter.text) {
-					const str = filter.text;
-					predicate = getAllText(entry).some((text) => text.toLowerCase().includes(str));
-				}
+// 				// If specified, search for corresponding text in text fields of the current entry
+// 				if (filter.text) {
+// 					const str = filter.text;
+// 					predicate = getAllText(entry).some((text) => text.toLowerCase().includes(str));
+// 				}
 
-				// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
-				// search for the corresponding tags in the current entry tag list
-				if (predicate && filter?.tags?.length > 0) {
-					for (const tag of filter.tags) {
-						predicate &&= entry.tags.includes(tag);
-						// If the condition is false, stop searching and return (see (2))
-						if (!predicate) break;
-					}
-				}
+// 				// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
+// 				// search for the corresponding tags in the current entry tag list
+// 				if (predicate && filter?.tags?.length > 0) {
+// 					for (const tag of filter.tags) {
+// 						predicate &&= entry.tags.includes(tag);
+// 						// If the condition is false, stop searching and return (see (2))
+// 						if (!predicate) break;
+// 					}
+// 				}
 
-				return predicate;
-			});
-		}
-	}
-	return filteredCards;
-}
-
-/**
- * Sort (in-place) the specified cards in the alphanumeric order
- * @param cards the cards to sort
- */
-function sortCards(cards: CardsStore) {
-	for (const field in cards) {
-		cards[field as keyof typeof cards].sort((a: CardTypes, b: CardTypes) => {
-			const textA = getText(a).toLowerCase();
-			const textB = getText(b).toLowerCase();
-			return textA.localeCompare(textB);
-		});
-	}
-}
+// 				return predicate;
+// 			});
+// 		}
+// 	}
+// 	return filteredCards;
+// }
 
 export const useCardsStore = defineStore("cards", () => {
 	const cards = ref(defaultCards());
@@ -101,7 +86,6 @@ export const useCardsStore = defineStore("cards", () => {
 		return root.getFolder(currentFolderPath.value) ?? root;
 	});
 
-	const prefStore = usePreferencesStore();
 	const filter = useFilterStore();
 
 	const serializableState = computed(() => {
