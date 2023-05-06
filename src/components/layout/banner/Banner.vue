@@ -33,6 +33,13 @@
 		<div class="text-right">
 			<SearchView class="mt-1 mb-2" />
 			<span class="text-grey text-caption">{{ cardCount + $t("status.cardCount") }}</span>
+			<v-switch
+				v-model="dragndrop"
+				:disabled="!canDragndropBeEnabled"
+				:label="$t('actions.cardDragndrop')"
+				color="primary"
+				density="compact"
+			/>
 		</div>
 
 		<v-divider class="ml-3 mr-1" vertical />
@@ -48,6 +55,8 @@ import SearchView from "@/components/global/SearchView.vue";
 import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
+import { usePreferencesStore } from "@/store/preferences";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [
@@ -56,6 +65,8 @@ const rules = [
 ];
 const editName = ref(false);
 
+const filterStore = useFilterStore();
+const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 const campaignInfoStore = useCampaignInfoStore();
 
@@ -68,6 +79,19 @@ const campaignName = computed({
 	set(value) {
 		const name = value.trim();
 		if (name) campaignInfoStore.name = name;
+	},
+});
+
+const canDragndropBeEnabled = computed(
+	() => prefStore.cardsOrder !== "alphanumeric" && !filterStore.isFilterActive
+);
+
+const dragndrop = computed({
+	get() {
+		return prefStore.isDragdropEnabled;
+	},
+	set(value) {
+		if (canDragndropBeEnabled.value) prefStore.isDragdropEnabled = value;
 	},
 });
 </script>

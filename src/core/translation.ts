@@ -125,6 +125,7 @@ export interface Locale {
 		delete: string;
 		quickNote: string;
 		changeCategory: string;
+		cardDragndrop: string;
 	};
 
 	messages: {

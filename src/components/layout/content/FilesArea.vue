@@ -13,7 +13,7 @@
 		<draggable
 			v-model="files"
 			:animation="200"
-			:disabled="isSortDisabled"
+			:disabled="!isDragndropEnabled"
 			tag="v-row"
 			draggable=".item"
 			group="items"
@@ -23,7 +23,10 @@
 		>
 			<template #item="{ element }">
 				<v-col class="item" cols="12" v-bind="density">
-					<CardContainer :class="{ draggable: !isSortDisabled }" :item-data="element" />
+					<CardContainer
+						:class="{ draggable: isDragndropEnabled }"
+						:item-data="element"
+					/>
 				</v-col>
 			</template>
 		</draggable>
@@ -38,22 +41,18 @@ import { useGridDensity } from "@/composables/gridDensity";
 import { getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { useFilterStore } from "@/store/filter";
 import { useGlobalCardForm } from "@/store/globalCardForm";
 import { usePreferencesStore } from "@/store/preferences";
 
 const drag = ref(false);
 
-const filterStore = useFilterStore();
 const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 const formStore = useGlobalCardForm();
 
 const { density } = useGridDensity();
 
-const isSortDisabled = computed(() => {
-	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
-});
+const isDragndropEnabled = computed(() => prefStore.isDragdropEnabled);
 
 const category = computed(() => cardsStore.currentCategory);
 

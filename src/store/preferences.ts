@@ -29,6 +29,8 @@ export const usePreferencesStore = defineStore(
 
 		const cardsOrder = ref<Order>(_defaults.cardsOrder);
 		const cardsDensity = ref<Density>(_defaults.cardsDensity);
+		const isDragdropEnabled = ref(false);
+
 		const language = ref<SupportedLanguages>(_defaults.language);
 		const theme = ref(_themeStore.global.name.value); // Directly get default theme from Vuetify
 
@@ -38,7 +40,7 @@ export const usePreferencesStore = defineStore(
 			_themeStore.global.name.value = value;
 		});
 
-		return { cardsOrder, cardsDensity, language, theme };
+		return { cardsOrder, cardsDensity, isDragdropEnabled, language, theme };
 	},
 	{
 		persist: { key: LocalStorageKey.PREFERENCES_KEY },
