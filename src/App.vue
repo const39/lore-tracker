@@ -95,27 +95,6 @@
 			</v-card>
 		</v-dialog>
 
-		<!-- Domain name change - TEMPORARY -->
-		<v-snackbar
-			v-model="showDomainNameChangeNotif"
-			location="top"
-			timeout="-1"
-			multi-line
-			text
-		>
-			LoreTracker changes location and is now on
-			<a href="https://lore-tracker.app">lore-tracker.app</a>.<br>If you are still on
-			<a href="https://lore-tracker.herokuapp.com">lore-tracker.herokuapp.com</a>, you need to
-			move your data manually before 15 November 2022. See
-			<a href="https://github.com/const39/lore-tracker/releases/tag/v1.2.0" target="_blank">
-				this page
-			</a>
-			to learn how to do it.
-			<template #actions>
-				<v-btn icon="mdi-close" @click="showDomainNameChangeNotif = false" />
-			</template>
-		</v-snackbar>
-
 		<!-- Update release notification -->
 		<v-snackbar
 			v-model="showUpdateNotif"
@@ -164,7 +143,6 @@ const showMenu = ref(false);
 const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
-const showDomainNameChangeNotif = ref(Date.now() < new Date("2022-11-15T12:00:00").getTime()); // Displays until the 15/11/2022, 12:00
 
 const router = useRouter();
 const store = useStore();
