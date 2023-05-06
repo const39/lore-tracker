@@ -1,7 +1,18 @@
 <template>
 	<v-form ref="form" v-model="isValid">
 		<v-card>
-			<v-card-title v-if="!edit" class="text-h5">
+			<v-card-actions class="float-right">
+				<v-spacer />
+				<v-btn
+					:disabled="!isValid"
+					icon="mdi-check"
+					color="primary"
+					density="comfortable"
+					@click="submit"
+				/>
+				<v-btn icon="mdi-close" density="comfortable" @click="close" />
+			</v-card-actions>
+			<v-card-title v-if="!edit">
 				{{ $t("dialogs.addFolder") }}
 			</v-card-title>
 			<v-card-text class="d-flex text-body-2">
@@ -38,15 +49,6 @@
 					:rules="rules.name"
 				/>
 			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn variant="text" @click="close">
-					{{ $t("actions.close") }}
-				</v-btn>
-				<v-btn :disabled="!isValid" variant="text" color="primary" @click="submit">
-					{{ $t("actions.save") }}
-				</v-btn>
-			</v-card-actions>
 		</v-card>
 	</v-form>
 </template>
