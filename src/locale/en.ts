@@ -99,6 +99,7 @@ const en: Locale = {
 	},
 
 	dialogs: {
+		addFolder: "Add a folder",
 		addQuest: "Add a quest",
 		addEvent: "Add an event",
 		addLocation: "Add a location",
@@ -106,14 +107,15 @@ const en: Locale = {
 		addFaction: "Add a faction",
 		addNote: "Add a note",
 
-		deleteTitle: "Delete ",
-		deleteQuest: "Do you really want to delete this quest ?",
-		deleteEvent:
-			"Do you really want to delete this event ? This will also change the timeline.",
-		deleteLocation: "Do you really want to delete this location ?",
-		deleteCharacter: "Do you really want to delete this character ?",
-		deleteFaction: "Do you really want to delete this faction ?",
-		deleteNote: "Do you really want to delete this note ?",
+		deleteFolder: "Delete a folder",
+		deleteQuest: "Delete a quest",
+		deleteEvent: "Delete an event",
+		deleteLocation: "Delete a location",
+		deleteCharacter: "Delete a character",
+		deleteFaction: "Delete a faction",
+		deleteNote: "Delete a note",
+		deleteConfirm: "Do you really want to delete ",
+		deleteConfirmFolder: "This will delete all its subfolders and files.",
 	},
 
 	search: {

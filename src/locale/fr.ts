@@ -99,6 +99,7 @@ const fr: Locale = {
 	},
 
 	dialogs: {
+		addFolder: "Ajouter un dossier",
 		addQuest: "Ajouter une quête",
 		addEvent: "Ajouter un événement",
 		addLocation: "Ajouter une localité",
@@ -106,14 +107,15 @@ const fr: Locale = {
 		addFaction: "Ajouter une faction",
 		addNote: "Ajouter une note",
 
-		deleteTitle: "Supprimer ",
-		deleteQuest: "Voulez-vous vraiment supprimer cette quête ?",
-		deleteEvent:
-			"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.",
-		deleteLocation: "Voulez-vous vraiment supprimer cette localité ?",
-		deleteCharacter: "Voulez-vous vraiment supprimer ce personnage ?",
-		deleteFaction: "Voulez-vous vraiment supprimer cette faction ?",
-		deleteNote: "Voulez-vous vraiment supprimer cette note ?",
+		deleteFolder: "Supprimer un dossier",
+		deleteQuest: "Supprimer une quête",
+		deleteEvent: "Supprimer un événement",
+		deleteLocation: "Supprimer une localité",
+		deleteCharacter: "Supprimer un personnage",
+		deleteFaction: "Supprimer une faction",
+		deleteNote: "Supprimer une note",
+		deleteConfirm: "Voulez-vous vraiment supprimer ",
+		deleteConfirmFolder: "Cela supprimera tous ses sous-dossiers et fichiers.",
 	},
 
 	search: {

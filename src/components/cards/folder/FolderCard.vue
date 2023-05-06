@@ -3,6 +3,7 @@
 		v-if="!editMode"
 		:with-options="!editMode"
 		@edit="editMode = true"
+		@delete="onDelete"
 		@dblclick="openFolder(folder)"
 	>
 		<v-card-title class="pr-0 d-flex align-center">
@@ -27,7 +28,10 @@
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
 import { Icon } from "@/core/icons";
-import { CardFolder } from "@/core/model/cards";
+import { CardFolder, getText } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import { useCardsStore } from "@/store/cards";
+import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
@@ -39,6 +43,19 @@ const emit = defineEmits<{
 }>();
 
 const editMode = ref(false);
+
+const cardsStore = useCardsStore();
+const { showConfirmDialog } = useGlobalConfirmDialog();
+
+function onDelete() {
+	showConfirmDialog({
+		title: $t("dialogs.deleteFolder"),
+		message: `${$t("dialogs.deleteConfirm")} "${getText(props.folder)}" ? ${$t(
+			"dialogs.deleteConfirmFolder"
+		)}`,
+		confirmAction: () => cardsStore.deleteFolder(props.folder),
+	});
+}
 
 function openFolder(folder: CardFolder) {
 	emit("open-folder", folder);

@@ -178,9 +178,14 @@ export class Folder<File extends Indexable> implements IFolder<File> {
 
 		const childrenHashes: Key[] = [];
 		for (const subfolder of this.subfolders) {
-			const { map: res, hash } = subfolder._flatten(objHash);
-			mergeMaps(map, res);
-			childrenHashes.push(hash);
+			// Safeguard to prevent subfolder to be undefined
+			// -> Because this method is called immediately after ANY change to the folder data by the serialization system,
+			// 	  subfolder may still be in the subfolders as an undefined value (typically after a folder deletion)
+			if (subfolder) {
+				const { map: res, hash } = subfolder._flatten(objHash);
+				mergeMaps(map, res);
+				childrenHashes.push(hash);
+			}
 		}
 
 		const flatFolder: FlatFolder<File> = {

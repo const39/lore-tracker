@@ -117,19 +117,21 @@ export class Tag {
  * @param card
  * @returns the main text of the card
  */
-export function getText(card: CardTypes): string {
-	switch (card._category) {
-		case CardCategory.Character:
-		case CardCategory.Location:
-		case CardCategory.Faction:
-			return card.name || card.desc;
-		case CardCategory.Quest:
-			return card.title;
-		case CardCategory.Note:
-			return card.title || card.desc;
-		default:
-			return card.desc;
-	}
+export function getText(card: CardTypes | CardFolder): string {
+	if ("_category" in card) {
+		switch (card._category) {
+			case CardCategory.Character:
+			case CardCategory.Location:
+			case CardCategory.Faction:
+				return card.name || card.desc;
+			case CardCategory.Quest:
+				return card.title;
+			case CardCategory.Note:
+				return card.title || card.desc;
+			default:
+				return card.desc;
+		}
+	} else return card.metadata.name;
 }
 
 /**
@@ -137,17 +139,19 @@ export function getText(card: CardTypes): string {
  * @param card
  * @returns all texts of the card
  */
-export function getAllText(card: CardTypes): string[] {
-	switch (card._category) {
-		case CardCategory.Character:
-		case CardCategory.Location:
-		case CardCategory.Faction:
-			return [card.name, card.desc];
-		case CardCategory.Quest:
-			return [card.title, ...card.tasks.map((task) => task.desc)];
-		case CardCategory.Note:
-			return [card.title, card.desc];
-		default:
-			return [card.desc];
-	}
+export function getAllText(card: CardTypes | CardFolder): string[] {
+	if ("_category" in card) {
+		switch (card._category) {
+			case CardCategory.Character:
+			case CardCategory.Location:
+			case CardCategory.Faction:
+				return [card.name, card.desc];
+			case CardCategory.Quest:
+				return [card.title, ...card.tasks.map((task) => task.desc)];
+			case CardCategory.Note:
+				return [card.title, card.desc];
+			default:
+				return [card.desc];
+		}
+	} else return [card.metadata.name];
 }
