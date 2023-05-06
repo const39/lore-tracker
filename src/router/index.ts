@@ -27,14 +27,6 @@ const routes = [
 		component: () => import("../views/Timeline.vue"),
 	},
 	{
-		path: "/notepad/:folderURI*",
-		name: "Notepad",
-		component: () => import("../views/Notepad.vue"),
-		props: (route: RouteLocation) => ({
-			folderPath: route.params.folderURI ? new Path(...route.params.folderURI) : new Path(),
-		}),
-	},
-	{
 		path: "/:dummyParam(.*)*",
 		name: "NotFound",
 		component: () => import("../views/NotFound.vue"),

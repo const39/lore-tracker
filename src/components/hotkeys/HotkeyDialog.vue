@@ -52,12 +52,8 @@ const hotkeysDisplay = {
 			command: "F1",
 		},
 		{
-			text: $t("options.hotkeys.pages.toNotepad"),
-			command: "F2",
-		},
-		{
 			text: $t("options.hotkeys.pages.toTimeline"),
-			command: "F3",
+			command: "F2",
 		},
 	],
 	content: [

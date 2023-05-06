@@ -8,7 +8,6 @@ import saves, { SaveVersion } from "@/core/saves";
 import utilities from "@/core/utilities";
 import { useCampaignInfoStore } from "./campaignInfo";
 import { useCardsStore } from "./cards";
-import { useNotepadStore } from "./notepad";
 import { useQuickNoteStore } from "./quickNote";
 
 export interface MetaData {
@@ -37,7 +36,6 @@ export const useStore = defineStore("store", () => {
 	const stores = [
 		useCampaignInfoStore(),
 		useCardsStore(),
-		useNotepadStore(),
 		useQuickNoteStore(),
 	];
 

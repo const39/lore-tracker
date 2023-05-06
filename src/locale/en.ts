@@ -4,7 +4,6 @@ const en: Locale = {
 	pages: {
 		loreBook: "Lore book",
 		timeline: "Timeline",
-		notepad: "Notepad",
 	},
 
 	notFound: {
@@ -15,20 +14,6 @@ const en: Locale = {
 	timeline: {
 		campaignStart: "Campaign start",
 		noEvent: "No event registered. Add some on the ",
-	},
-
-	notepad: {
-		types: {
-			folder: "Folder",
-			file: "File",
-		},
-		folder: {
-			childElements: " elements",
-		},
-		folderNotFound: {
-			title: "Folder not found",
-			message: "Go back to ",
-		},
 	},
 
 	eventTypes: {
@@ -47,6 +32,9 @@ const en: Locale = {
 		character: "Character",
 		faction: "Faction",
 		note: "Note",
+
+		folder: "Folder",
+		file: "File",
 	},
 
 	status: {
@@ -184,7 +172,6 @@ const en: Locale = {
 			pages: {
 				title: "Pages",
 				toLoreBook: "Navigate to Lore Book",
-				toNotepad: "Navigate to Notepad",
 				toTimeline: "Navigate to Timeline",
 			},
 			content: {

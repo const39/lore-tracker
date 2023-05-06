@@ -6,7 +6,6 @@ export interface Locale {
 	pages: {
 		loreBook: string;
 		timeline: string;
-		notepad: string;
 	};
 
 	notFound: {
@@ -17,20 +16,6 @@ export interface Locale {
 	timeline: {
 		campaignStart: string;
 		noEvent: string;
-	};
-
-	notepad: {
-		types: {
-			folder: string;
-			file: string;
-		};
-		folder: {
-			childElements: string;
-		};
-		folderNotFound: {
-			title: string;
-			message: string;
-		};
 	};
 
 	eventTypes: {
@@ -49,6 +34,9 @@ export interface Locale {
 		character: string;
 		faction: string;
 		note: string;
+
+		folder: string;
+		file: string;
 	};
 
 	status: {
@@ -185,7 +173,6 @@ export interface Locale {
 			pages: {
 				title: string;
 				toLoreBook: string;
-				toNotepad: string;
 				toTimeline: string;
 			};
 			content: {

@@ -4,7 +4,6 @@ const fr: Locale = {
 	pages: {
 		loreBook: "Lore book",
 		timeline: "Frise des événements",
-		notepad: "Bloc-notes",
 	},
 
 	notFound: {
@@ -15,20 +14,6 @@ const fr: Locale = {
 	timeline: {
 		campaignStart: "Début de la campagne",
 		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
-	},
-
-	notepad: {
-		types: {
-			folder: "Dossier",
-			file: "Fichier",
-		},
-		folder: {
-			childElements: " éléments",
-		},
-		folderNotFound: {
-			title: "Dossier introuvable",
-			message: "Retourner au ",
-		},
 	},
 
 	eventTypes: {
@@ -47,6 +32,9 @@ const fr: Locale = {
 		character: "Personnage",
 		faction: "Faction",
 		note: "Note",
+
+		folder: "Dossier",
+		file: "Fichier",
 	},
 
 	status: {
@@ -184,7 +172,6 @@ const fr: Locale = {
 			pages: {
 				title: "Pages",
 				toLoreBook: "Naviguer vers le Lore book",
-				toNotepad: "Naviguer vers le Bloc-notes",
 				toTimeline: "Naviguer vers la Frise des événements",
 			},
 			content: {
