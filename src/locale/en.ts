@@ -87,13 +87,13 @@ const en: Locale = {
 	},
 
 	dialogs: {
-		addFolder: "Add a folder",
-		addQuest: "Add a quest",
-		addEvent: "Add an event",
-		addLocation: "Add a location",
-		addCharacter: "Add a character",
-		addFaction: "Add a faction",
-		addNote: "Add a note",
+		addFolder: "New folder",
+		addQuest: "New quest",
+		addEvent: "New event",
+		addLocation: "New location",
+		addCharacter: "New character",
+		addFaction: "New faction",
+		addNote: "New note",
 
 		deleteFolder: "Delete a folder",
 		deleteQuest: "Delete a quest",
@@ -128,6 +128,8 @@ const en: Locale = {
 	messages: {
 		success: {
 			saveFileImportSuccessful: "Save file imported.",
+			newCardStored: "saved",
+			newCardStoredInFolder: "saved in folder",
 		},
 		errors: {
 			corruptedSave: "Corrupted or incomplete save data.",

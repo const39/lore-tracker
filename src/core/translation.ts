@@ -130,6 +130,8 @@ export interface Locale {
 	messages: {
 		success: {
 			saveFileImportSuccessful: string;
+			newCardStored: string;
+			newCardStoredInFolder: string;
 		};
 		errors: {
 			corruptedSave: string;

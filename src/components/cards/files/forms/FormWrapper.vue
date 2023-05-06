@@ -1,141 +1,89 @@
 <template>
 	<v-form ref="form" v-model="isValid" validate-on="input">
-		<component
-			:is="formComponent"
-			v-model="model"
-			:variant="edit === undefined ? 'add' : 'edit'"
-		/>
-		<v-card-actions>
-			<v-spacer />
-			<v-btn variant="text" @click="close">
-				{{ $t("actions.close") }}
-			</v-btn>
-			<v-btn :disabled="!isValid" color="primary" variant="text" @click="submit">
-				{{ $t("actions.save") }}
-			</v-btn>
-		</v-card-actions>
+		<v-card class="pa-2 border" variant="outlined">
+			<v-card-actions class="float-right">
+				<v-spacer />
+				<v-btn
+					:disabled="!isValid"
+					icon="mdi-check"
+					color="primary"
+					density="comfortable"
+					@click="submit"
+				/>
+				<v-btn icon="mdi-close" density="comfortable" @click="close" />
+			</v-card-actions>
+			<!-- Show title if "Add" form variant -->
+			<v-card-title v-if="variant === 'add' && model" class="justify-center">
+				<v-icon :icon="getIcon(model)" />
+				<span class="mx-2">
+					{{ $t(`dialogs.add${utilities.capitalize(model._category)}`) }}
+				</span>
+			</v-card-title>
+			<v-card-text>
+				<component :is="formComponent" v-if="formComponent" v-model="model" />
+				<small>{{ "*" + $t("fields.requiredField") }}</small>
+			</v-card-text>
+		</v-card>
 	</v-form>
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from "pinia";
 import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
-import { CardCategory, CardTypes, EventType, ID } from "@/core/model/cards";
+import { getIcon } from "@/core/icons";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
-import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
-
-const props = defineProps<{
-	edit?: ID; // [Optional] leave undefined to use the "Add" form instead of "Edit" form
-	category: CardCategory;
-}>();
+import { useGlobalCardForm } from "@/store/globalCardForm";
+import { useGlobalSnackbar } from "@/store/snackbar";
 
 const emit = defineEmits<{
-	(e: "done"): void;
+	(e: "change", value: boolean): void;
 }>();
 
-const campaignInfoStore = useCampaignInfoStore();
 const cardsStore = useCardsStore();
+const globalSnackbar = useGlobalSnackbar();
+const formStore = useGlobalCardForm();
+const { isOpen, variant, parentFolder, model } = storeToRefs(formStore);
 
 const form = ref<VForm | undefined>();
 const isValid = ref(false);
-const model = ref<CardTypes>(initModel());
+
+watch(isOpen, (value) => emit("change", value));
 
 // Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
 watch(model, () => form.value?.validate(), { deep: true });
 
 const formComponent = computed(() => {
-	const componentName = "Form" + utilities.capitalize(props.category);
+	if (!model.value) return undefined;
+	const componentName = "Form" + utilities.capitalize(model.value._category);
 	return defineAsyncComponent({
 		loader: () => import(`./${componentName}.vue`),
 	});
 });
 
-function initModel(): CardTypes {
-	if (typeof props.edit !== "undefined") {
-		const data = cardsStore.findFileInCurrentFolder(props.edit);
-		// We return a clone of the object to avoid modifying directly the store
-		// Helpful when the user cancels their changes because we don't have to rollback
-		if (data) return utilities.deepCopy(data) as CardTypes;
-	}
-	return modelFactory();
-}
-
 function close() {
-	reset();
-	emit("done");
+	formStore.resetForm();
 }
 
 async function submit() {
-	if (await form.value?.validate()) {
+	if ((await form.value?.validate()) && model.value) {
 		// Update or add card based on form type
-		if (typeof props.edit !== "undefined") cardsStore.updateCard(model.value);
-		else cardsStore.addCard(model.value);
+		if (variant.value === "edit") cardsStore.updateCard(model.value, parentFolder.value);
+		else if (variant.value === "add") cardsStore.addCard(model.value, parentFolder.value);
+
+		// Provide feedback to user when card is saved
+		const msg = parentFolder.value?.absolutePath.isRoot()
+			? $t(`categories.${model.value?._category}`) + " " + $t("messages.success.newCardStored")
+			: $t(`categories.${model.value?._category}`) +
+				" " +
+				$t("messages.success.newCardStoredInFolder") +
+				" " +
+				parentFolder.value?.absolutePath;
+		globalSnackbar.showSnackbar(msg, "info", 7000);
 	}
+
 	close();
-}
-
-function reset() {
-	model.value = initModel();
-}
-
-function modelFactory(): CardTypes {
-	switch (props.category) {
-		case CardCategory.Quest:
-			return {
-				_category: CardCategory.Quest,
-				id: utilities.uid(),
-				tags: [],
-				title: "",
-				tasks: [],
-			};
-		case CardCategory.Event:
-			return {
-				_category: CardCategory.Event,
-				id: utilities.uid(),
-				desc: "",
-				tags: [],
-				type: EventType.OTHER,
-				day: campaignInfoStore.days,
-			};
-		case CardCategory.Location:
-			return {
-				_category: CardCategory.Location,
-				id: utilities.uid(),
-				desc: "",
-				tags: [],
-				name: "",
-			};
-		case CardCategory.Character:
-			return {
-				_category: CardCategory.Character,
-				id: utilities.uid(),
-				desc: "",
-				tags: [],
-				name: "",
-				race: "",
-				classes: "",
-				role: "",
-				isAlive: true,
-				isNPC: true,
-			};
-		case CardCategory.Faction:
-			return {
-				_category: CardCategory.Faction,
-				id: utilities.uid(),
-				desc: "",
-				tags: [],
-				name: "",
-			};
-		case CardCategory.Note:
-			return {
-				_category: CardCategory.Note,
-				id: utilities.uid(),
-				desc: "",
-				tags: [],
-				title: "",
-			};
-	}
 }
 </script>

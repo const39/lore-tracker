@@ -1,64 +1,49 @@
 <template>
-	<!-- Show title if "Add" form version -->
-	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon :icon="getIcon(model)" />
-		<span class="mx-2">{{ $t("dialogs.addQuest") }}</span>
-	</v-card-title>
-	<v-card-text>
-		<v-container>
-			<v-text-field
-				v-model="model.title"
-				:label="$t('fields.title') + '*'"
-				:rules="[requiredRule]"
-			/>
-			<ListPanel
-				:title="$t('fields.tasks')"
-				:empty-content-text="$t('fields.noTask')"
-				:is-filled="model.tasks.length > 0"
-			>
-				<template #action>
-					<v-btn variant="text" density="compact" icon="mdi-plus" @click="addTask" />
-				</template>
-				<v-text-field
-					v-for="(task, idx) in model.tasks"
-					:key="idx"
-					v-model="task.desc"
-					:rules="[requiredRule]"
-					append-icon="mdi-close"
-					@click:append="remove(idx)"
-				>
-					<template #prepend>
-						<v-tooltip location="bottom">
-							<template #activator="{ props: tooltipProps }">
-								<v-icon
-									v-bind="tooltipProps"
-									:icon="task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing"
-									@click="complete(idx)"
-								/>
-							</template>
-							{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
-						</v-tooltip>
+	<v-text-field v-model="model.title" :label="$t('fields.title') + '*'" :rules="[requiredRule]" />
+	<ListPanel
+		:title="$t('fields.tasks')"
+		:empty-content-text="$t('fields.noTask')"
+		:is-filled="model.tasks.length > 0"
+	>
+		<template #action>
+			<v-btn variant="text" density="compact" icon="mdi-plus" @click="addTask" />
+		</template>
+		<v-text-field
+			v-for="(task, idx) in model.tasks"
+			:key="idx"
+			v-model="task.desc"
+			:rules="[requiredRule]"
+			append-icon="mdi-close"
+			@click:append="remove(idx)"
+		>
+			<template #prepend>
+				<v-tooltip location="bottom">
+					<template #activator="{ props: tooltipProps }">
+						<v-icon
+							v-bind="tooltipProps"
+							:icon="task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing"
+							@click="complete(idx)"
+						/>
 					</template>
-				</v-text-field>
-			</ListPanel>
-			<TagListPanel v-model="model.tags" :exclude-id="model.id" />
-		</v-container>
-		<small>{{ "*" + $t("fields.requiredField") }}</small>
-	</v-card-text>
+					{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+				</v-tooltip>
+			</template>
+		</v-text-field>
+	</ListPanel>
+	<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon, getIcon } from "@/core/icons";
+import { Icon } from "@/core/icons";
 import { Quest, Task } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 
 const props = defineProps<{
 	modelValue: Quest; // v-model
-	variant: "edit" | "add";
 }>();
 
 const emit = defineEmits<{

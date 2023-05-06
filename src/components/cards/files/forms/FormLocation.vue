@@ -1,40 +1,24 @@
 <template>
-	<!-- Show title if "Add" form version -->
-	<v-card-title v-if="props.variant === 'add'" class="justify-center">
-		<v-icon :icon="getIcon(model)" />
-		<span class="mx-2">{{ $t("dialogs.addLocation") }}</span>
-	</v-card-title>
-	<v-card-text>
-		<v-container>
-			<v-text-field
-				v-model="model.name"
-				:label="$t('fields.name') + '*'"
-				:rules="[requiredRule]"
-			/>
-			<v-textarea
-				v-model="model.desc"
-				:label="$t('fields.desc')"
-				:hint="$t('fields.mdSupport')"
-				variant="outlined"
-				auto-grow
-			/>
-			<TagListPanel v-model="model.tags" :exclude-id="model.id" />
-		</v-container>
-		<small>{{ "*" + $t("fields.requiredField") }}</small>
-	</v-card-text>
+	<v-text-field v-model="model.name" :label="$t('fields.name') + '*'" :rules="[requiredRule]" />
+	<v-textarea
+		v-model="model.desc"
+		:label="$t('fields.desc')"
+		:hint="$t('fields.mdSupport')"
+		variant="outlined"
+		auto-grow
+	/>
+	<TagListPanel v-model="model.tags" :exclude-id="model.id" />
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { getIcon } from "@/core/icons";
 import { Location } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 
 const props = defineProps<{
 	modelValue: Location; // v-model
-	variant: "edit" | "add";
 }>();
 
 const emit = defineEmits<{
