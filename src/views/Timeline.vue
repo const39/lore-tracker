@@ -48,7 +48,8 @@ function getKey(node: Event | string) {
 
 const nodes = computed(() => {
 	// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-	const events = cardsStore.cards.event.slice().reverse();
+	// TODO update to new file tree structure
+	const events = cardsStore.cards.event.files.slice().reverse();
 
 	// Browse through events to index them by their day field
 	const indexedByDay: GroupByDayMapping = {};
