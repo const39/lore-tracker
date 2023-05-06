@@ -1,9 +1,7 @@
 <template>
-	<v-form ref="form">
+	<v-form ref="form" v-model="isValid">
 		<v-card>
-			<v-card-title class="text-h5">
-				Ajouter un dossier
-			</v-card-title>
+			<v-card-title v-if="!edit" class="text-h5">{{ $t("dialogs.addFolder") }}</v-card-title>
 			<v-card-text class="d-flex text-body-2">
 				<v-menu location="left">
 					<template #activator="{ props: menuProps }">
@@ -43,7 +41,7 @@
 				<v-btn variant="text" @click="close">
 					{{ $t("actions.close") }}
 				</v-btn>
-				<v-btn variant="text" color="primary" @click="submit">
+				<v-btn :disabled="!isValid" variant="text" color="primary" @click="submit">
 					{{ $t("actions.save") }}
 				</v-btn>
 			</v-card-actions>
@@ -82,6 +80,7 @@ const rules = {
 const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
 
 const model = ref(initModel());
+const isValid = ref(false);
 const form = ref<VForm | undefined>(undefined);
 
 const cardsStore = useCardsStore();
@@ -111,16 +110,8 @@ function close(): void {
 
 async function submit() {
 	if (await form.value?.validate()) {
-		console.log(parent.value.absolutePath);
-
-		if (props.edit) {
-			// TODO
-			console.warn("updateFolder() not implemented yet");
-			// notepadStore.updateFolder({
-			// 	pathToParent: utilities.joinPaths(true, parent.valuePath, model.value.name),
-			// 	folder: model.value,
-			// });
-		} else cardsStore.addFolder(new Folder(model.value));
+		if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
+		else cardsStore.addFolder(new Folder(model.value));
 		emit("submit");
 	}
 }

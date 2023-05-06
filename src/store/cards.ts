@@ -11,7 +11,7 @@ import {
 	getAllText,
 	getText,
 } from "@/core/model/cards";
-import { Folder, Path, createRootFolder } from "@/core/model/fileTree";
+import { Folder, FolderMetadata, Path, createRootFolder } from "@/core/model/fileTree";
 import { CategoryFilter, Filter, useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 import { SerializedState } from ".";
@@ -178,8 +178,8 @@ export const useCardsStore = defineStore("cards", () => {
 		currentFolder.value.addFolder(folder);
 	}
 
-	function updateFolder(folder: CardFolder) {
-		// TODO
+	function updateFolderMetadata(folder: CardFolder, newMetadata: FolderMetadata) {
+		folder.metadata = newMetadata;
 	}
 
 	function deleteFolder(folder: CardFolder) {
@@ -272,7 +272,7 @@ export const useCardsStore = defineStore("cards", () => {
 
 		// Folder actions
 		addFolder,
-		updateFolder,
+		updateFolderMetadata,
 		deleteFolder,
 
 		// Card actions
