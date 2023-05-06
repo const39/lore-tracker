@@ -3,23 +3,24 @@ import { computed, ref } from "vue";
 import {
 	CardCategory,
 	CardFolder,
+	CardFolderMetadata,
 	CardTypeBasedOnCategory,
 	CardTypes,
 	CardsStore,
 	CardsStoreSerialized,
 	ID,
-	getAllText
+	createRootFolder,
 } from "@/core/model/cards";
-import { Folder, FolderMetadata, Path, createRootFolder } from "@/core/model/fileTree";
-import { CategoryFilter, Filter, useFilterStore } from "./filter";
+import { Path } from "@/core/model/fileTree";
+import { useFilterStore } from "./filter";
 import { SerializedState } from ".";
 
 function defaultCards(): CardsStore {
 	// Generate automatically the CardsStore using the CardCategory enum values as keys
 	const cards = {} as CardsStore;
 	for (const category of Object.values(CardCategory)) {
-		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
-		cards[category] = createRootFolder(`${category}-root`);
+		// @ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
+		cards[category] = createRootFolder(category);
 	}
 	return cards;
 }
@@ -154,40 +155,44 @@ export const useCardsStore = defineStore("cards", () => {
 		return undefined;
 	}
 
-	// * Actions relative to the current folder * \\
-	function addFolder(folder: CardFolder) {
+	function addFolder(folder: CardFolder, inFolder?: CardFolder) {
+		const parentFolder = inFolder ?? currentFolder.value;
 		// Ensure the folder's parent is indeed the current one
-		folder.parent = currentFolder.value;
+		folder.parent = parentFolder;
 		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
 		currentFolder.value.addFolder(folder);
 	}
 
-	function updateFolderMetadata(folder: CardFolder, newMetadata: FolderMetadata) {
+	function updateFolderMetadata(folder: CardFolder, newMetadata: CardFolderMetadata) {
 		folder.metadata = newMetadata;
 	}
 
-	function deleteFolder(folder: CardFolder) {
-		currentFolder.value.deleteFolder(folder.relativePath);
+	function deleteFolder(folder: CardFolder, inFolder?: CardFolder) {
+		const parentFolder = inFolder ?? currentFolder.value;
+		parentFolder.deleteFolder(folder.relativePath);
 	}
 
-	function addCard(card: CardTypes) {
-		if (currentCategory.value === card._category) {
+	function addCard(card: CardTypes, inFolder?: CardFolder) {
+		const parentFolder = inFolder ?? currentFolder.value;
+		if (parentFolder.metadata._category === card._category) {
 			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
-			currentFolder.value.addFile(card);
+			parentFolder.addFile(card);
 		} else
 			throw new Error(
-				`Cannot add a card of category ${card._category} in a folder of category ${currentCategory.value}`
+				`Cannot add a card of category ${card._category} in a folder of category ${parentFolder.metadata._category}`
 			);
 	}
 
-	function updateCard(card: CardTypes) {
-		const list = currentFolder.value.files;
+	function updateCard(card: CardTypes, inFolder?: CardFolder) {
+		const parentFolder = inFolder ?? currentFolder.value;
+		const list = parentFolder.files;
 		const idx = list.findIndex((entry) => entry.id === card.id);
 		if (idx !== -1) list[idx] = card;
 	}
 
-	function deleteCard(card: CardTypes) {
-		const list = currentFolder.value.files;
+	function deleteCard(card: CardTypes, inFolder?: CardFolder) {
+		const parentFolder = inFolder ?? currentFolder.value;
+		const list = parentFolder.files;
 		const index = list.findIndex((entry) => entry.id === card.id);
 		if (index !== -1) {
 			// Search in each array for eventual entries referencing the object we're about to delete
@@ -208,9 +213,12 @@ export const useCardsStore = defineStore("cards", () => {
 		}
 	}
 
-	function updateWholeList<T extends CardCategory>(list: CardTypeBasedOnCategory<T>[]) {
+	function updateWholeList<T extends CardCategory>(
+		list: CardTypeBasedOnCategory<T>[],
+		inFolder?: CardFolder
+	) {
 		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
-		currentFolder.value.files = list;
+		(inFolder ?? currentFolder.value).files = list;
 	}
 
 	function $reset() {
@@ -221,12 +229,12 @@ export const useCardsStore = defineStore("cards", () => {
 	function $hydrate(payload: SerializedState) {
 		Object.keys(payload.cards).forEach((category) => {
 			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the current category
-			const deserialized = Folder.deserialize(payload.cards[category]);
+			const deserialized = CardFolder.deserialize(payload.cards[category]);
 			// Create default folder if deserialization fails
 			//@ts-ignore - Same reason
 			cards.value[category] = deserialized
 				? deserialized
-				: createRootFolder(`${category}-root`);
+				: createRootFolder(category as CardCategory);
 		});
 	}
 
