@@ -141,6 +141,10 @@ export interface Locale {
 			loadBackup: string;
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
+			folderNotFound: {
+				title: string;
+				message: string;
+			};
 		};
 		info: {
 			updateNotifTitle: string;

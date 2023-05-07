@@ -84,6 +84,8 @@ export const useCardsStore = defineStore("cards", () => {
 
 	const currentFolder = computed(() => {
 		const root = getCategoryFolder(currentCategory.value);
+		// Safeguard - If folder does not exist, set current folder to root
+		// -> this should not happen because setCurrentFolder() throws an error if folder does not exist
 		return root.getFolder(currentFolderPath.value) ?? root;
 	});
 
@@ -98,9 +100,20 @@ export const useCardsStore = defineStore("cards", () => {
 		return { cards: serializedCards };
 	});
 
+	/**
+	 * Set the current folder to folderPath in the specified category.
+	 * @param category the category of the root folder
+	 * @param folderPath an optional path to the target folder. Will use the root folder as current folder if not specified.
+	 * @throws if the specified folderPath does not resolve to an existing folder in the category root folder
+	 */
 	function setCurrentFolder(category: CardCategory, folderPath?: Path) {
-		currentCategory.value = category;
-		currentFolderPath.value = folderPath ? folderPath : new Path();
+		const rootFolder = getCategoryFolder(category);
+		const path = folderPath ? folderPath : new Path();
+		const exists = rootFolder.hasFolder(path);
+		if (exists) {
+			currentCategory.value = category;
+			currentFolderPath.value = path;
+		} else throw new Error(`Folder at path ${folderPath} in category '${category}' not found.`);
 	}
 
 	const filteredCards = computed(() => {
