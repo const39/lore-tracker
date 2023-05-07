@@ -14,6 +14,8 @@ const en: Locale = {
 	timeline: {
 		campaignStart: "Campaign start",
 		noEvent: "No event registered. Add some on the ",
+		ascOrder: "Ascending chronological order",
+		descOrder: "Descending chronological order",
 	},
 
 	eventTypes: {

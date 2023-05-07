@@ -1,14 +1,54 @@
 <template>
 	<div class="my-3">
-		<div class="text-xl-h4">
-			{{ $t("pages.timeline") }}
+		<div class="d-flex">
+			<div class="text-xl-h4">
+				{{ $t("pages.timeline") }}
+			</div>
+			<!-- Events order selector -->
+			<v-btn-toggle
+				v-model="sortOrder"
+				class="mx-4 d-flex justify-center"
+				color="primary"
+				variant="plain"
+				mandatory
+			>
+				<v-tooltip location="top">
+					<template #activator="{ props }">
+						<v-btn
+							v-bind="props"
+							:value="orderValues[0]"
+							:icon="getIcon('mdi-sort-clock-ascending', orderValues[0])"
+							class="full-opacity"
+							rounded="xl"
+						/>
+					</template>
+					{{ $t("timeline.ascOrder") }}
+				</v-tooltip>
+				<v-tooltip location="top">
+					<template #activator="{ props }">
+						<v-btn
+							v-bind="props"
+							:value="orderValues[1]"
+							:icon="getIcon('mdi-sort-clock-descending', orderValues[1])"
+							class="full-opacity"
+							rounded="xl"
+						/>
+					</template>
+					{{ $t("timeline.descOrder") }}
+				</v-tooltip>
+			</v-btn-toggle>
 		</div>
 		<v-timeline
 			v-if="nodes.length > 0"
+			:truncate-line="sortOrder === 'asc' ? 'start' : 'end'"
 			class="mx-16 my-6"
 			direction="vertical"
 			density="compact"
 		>
+			<!-- Place events before pivot node in descending order -->
+			<template v-if="sortOrder === 'desc'">
+				<TimelineEvent v-for="node in sortedNodes" :key="getKey(node)" :item="node" />
+			</template>
 			<v-timeline-item
 				icon="mdi-star"
 				dot-color="yellow-darken-1"
@@ -19,7 +59,10 @@
 					{{ $t("timeline.campaignStart") }}
 				</div>
 			</v-timeline-item>
-			<TimelineEvent v-for="node in nodes" :key="getKey(node)" :item="node" />
+			<!-- Place events after pivot node in ascending order -->
+			<template v-if="sortOrder === 'asc'">
+				<TimelineEvent v-for="node in sortedNodes" :key="getKey(node)" :item="node" />
+			</template>
 		</v-timeline>
 		<p v-else class="text-center">
 			{{ $t("timeline.noEvent") }}
@@ -31,15 +74,24 @@
 </template>
 <script lang="ts" setup>
 import { computed } from "vue";
+import { ref } from "vue";
 import TimelineEvent from "@/components/timeline/TimelineEvent.vue";
 import { CardCategory, Event } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 
-const cardsStore = useCardsStore();
-
 interface GroupByDayMapping {
 	[key: number]: Event[];
+}
+
+type Order = "asc" | "desc";
+const orderValues: Order[] = ["asc", "desc"];
+const sortOrder = ref<Order>("asc");
+
+const cardsStore = useCardsStore();
+
+function getIcon(baseIcon: string, order: Order) {
+	return sortOrder.value === order ? baseIcon : baseIcon + "-outline";
 }
 
 function getKey(node: Event | string) {
@@ -48,7 +100,7 @@ function getKey(node: Event | string) {
 
 const nodes = computed(() => {
 	// Get events from store and reverse it to obtain events in chronological order
-	const events = cardsStore.getAllFiles(CardCategory.Event).reverse()
+	const events = cardsStore.getAllFiles(CardCategory.Event).reverse();
 
 	// Browse through events to index them by their day field
 	const indexedByDay: GroupByDayMapping = {};
@@ -74,4 +126,8 @@ const nodes = computed(() => {
 
 	return nodes;
 });
+
+const sortedNodes = computed(() =>
+	sortOrder.value === "asc" ? nodes.value : [...nodes.value].reverse()
+);
 </script>

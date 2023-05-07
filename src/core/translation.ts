@@ -16,6 +16,8 @@ export interface Locale {
 	timeline: {
 		campaignStart: string;
 		noEvent: string;
+		ascOrder: string;
+		descOrder: string;
 	};
 
 	eventTypes: {
