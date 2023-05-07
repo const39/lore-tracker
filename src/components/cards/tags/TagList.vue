@@ -35,10 +35,10 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { eventBus } from "@/core/eventBus.js";
+import { useRouter } from "vue-router";
 import { Icon } from "@/core/icons";
 import { CardCategory, ID, Tag } from "@/core/model/cards";
-import utilities from "@/core/utilities";
+import { truncate } from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
 
 const props = withDefaults(
@@ -54,6 +54,7 @@ const emit = defineEmits<{
 }>();
 
 const cardsStore = useCardsStore();
+const router = useRouter();
 
 // v-model binding
 const model = computed({
@@ -74,17 +75,25 @@ function remove(tag: Tag) {
 	if (index >= 0) model.value.splice(index, 1);
 }
 /**
- * Send an event to the eventBus indicating that a tag referencing a card has been clicked.
- * This event can be used by layout components to redirect the user to the according card.
+ * Navigate to the card referenced by the specified tag.
  */
 function goToCard(tag: Tag) {
-	eventBus.emit("select-tag", tag);
+	// Find the folder hosting the card referenced by the tag
+	const res = cardsStore.getCategoryFolder(tag.category).getFolderWithFile(tag.id);
+	if (res) {
+		// Navigate to the card's folder, passing along the card ID in the URL's hash
+		router.push({
+			params: {
+				category: tag.category,
+				folderURI: [...res.folder.absolutePath.rawSegments],
+			},
+			hash: `#${tag.id}-card`,
+		});
+	}
 }
 
-const truncate = utilities.truncate;
-
 type TagsPerCategory = {
-	[Property in CardCategory]: Tag[];
+	[Category in CardCategory]: Tag[];
 };
 /**
  * Create a Tag for each object whose ID is given
@@ -99,7 +108,7 @@ const tags = computed(() => {
 		note: [],
 	};
 	for (const id of model.value) {
-		const elem = cardsStore.findFileInCardStore(id);
+		const elem = cardsStore.findFile(id);
 
 		// If the object is found, create a tag object from the element's data
 		if (elem) {

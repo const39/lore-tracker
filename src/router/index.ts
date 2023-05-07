@@ -3,7 +3,6 @@ import LayoutTabContent from "@/components/layout/content/LayoutTabContent.vue";
 import { CardCategory } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import LoreBook from "../views/LoreBook.vue";
-import { useCardsStore } from "@/store/cards";
 
 const routes = [
 	{

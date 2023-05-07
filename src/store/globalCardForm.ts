@@ -29,7 +29,7 @@ export const useGlobalCardForm = defineStore("globalCardForm", () => {
 		parentFolder.value = inFolder;
 
 		const cardsStore = useCardsStore();
-		const data = cardsStore.findFileInCurrentFolder(id);
+		const data = cardsStore.findFileInFolder(id, cardsStore.currentFolder);
 
 		// Clone object to keep a backup in case the user cancels their changes
 		if (data) model.value = utilities.deepCopy(data) as CardTypes;

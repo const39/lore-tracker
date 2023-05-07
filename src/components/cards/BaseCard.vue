@@ -1,13 +1,13 @@
 <template>
 	<v-card
-		:elevation="elevation"
+		:elevation="highlight ? undefined : elevation"
 		:draggable="isDraggable"
-		:class="{ draggable: isDraggable }"
+		:class="{ draggable: isDraggable, highlight }"
 		class="mb-4"
 		height="100%"
 		fill-height
-		@mouseenter="elevation = 1"
-		@mouseleave="elevation = 0"
+		@mouseenter="elevation++"
+		@mouseleave="elevation--"
 		@dragstart="onDragStart"
 	>
 		<!-- "Options" button menu (optional) -->
@@ -27,6 +27,10 @@ import CardOptions from "./CardOptions.vue";
 const props = defineProps<{
 	withOptions?: boolean;
 	/**
+	 * Whether this card should display the highlight animation 
+	 */
+	highlight?: boolean;
+	/**
 	 * Set with the transferred data if the card can be drag&dropped.
 	 * If undefined, the card cannot be drag & dropped.
 	 */
@@ -35,7 +39,7 @@ const props = defineProps<{
 
 defineEmits(["edit", "delete"]);
 
-const elevation = ref(0);
+const elevation = ref(1);
 
 const isDraggable = computed(() => !!props.draggableData);
 
@@ -50,5 +54,18 @@ function onDragStart(e: DragEvent) {
 <style scoped>
 .draggable {
 	cursor: grab;
+}
+
+.highlight {
+	animation: highlight-anim 500ms ease-in-out infinite;
+}
+
+@keyframes highlight-anim {
+	from {
+		box-shadow: 0 1px 2px lightgray;
+	}
+	to {
+		box-shadow: 0 1px 6px rgb(180, 180, 180);
+	}
 }
 </style>
