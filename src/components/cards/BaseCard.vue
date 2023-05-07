@@ -1,12 +1,14 @@
 <template>
 	<v-card
-		:variant="outlined ? 'outlined' : 'elevated'"
 		:elevation="elevation"
-		height="100%"
+		:draggable="isDraggable"
+		:class="{ draggable: isDraggable }"
 		class="mb-4"
+		height="100%"
 		fill-height
-		@mouseenter="hover = true"
-		@mouseleave="hover = false"
+		@mouseenter="elevation = 1"
+		@mouseleave="elevation = 0"
+		@dragstart="onDragStart"
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
@@ -19,19 +21,34 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { CardTypes } from "@/core/model/cards";
 import CardOptions from "./CardOptions.vue";
 
 const props = defineProps<{
-	outlined?: boolean;
 	withOptions?: boolean;
+	/**
+	 * Set with the transferred data if the card can be drag&dropped.
+	 * If undefined, the card cannot be drag & dropped.
+	 */
+	draggableData?: CardTypes;
 }>();
 
 defineEmits(["edit", "delete"]);
 
-const hover = ref(false);
-const elevation = computed(() => {
-	let elevation = props.outlined ? 0 : 1;
-	if (hover.value) elevation++;
-	return elevation;
-});
+const elevation = ref(0);
+
+const isDraggable = computed(() => !!props.draggableData);
+
+/**
+ * Callback triggered when the user grabs the cards for a drag & drop
+ */
+function onDragStart(e: DragEvent) {
+	if (props.draggableData)
+		e.dataTransfer?.setData("application/card-type", JSON.stringify(props.draggableData));
+}
 </script>
+<style scoped>
+.draggable {
+	cursor: grab;
+}
+</style>

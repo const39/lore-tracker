@@ -2,7 +2,7 @@
 	<v-text-field v-model="model.title" :label="$t('fields.title') + '*'" :rules="[requiredRule]" />
 	<ListPanel
 		:title="$t('fields.tasks')"
-		:empty-content-text="$t('fields.noTask')"
+		:placeholder="$t('fields.noTask')"
 		:is-filled="model.tasks.length > 0"
 	>
 		<template #action>

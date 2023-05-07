@@ -6,11 +6,13 @@ import { SupportedLanguages } from "@/core/translation";
 
 export type Order = "default" | "alphanumeric";
 export type Density = "large" | "comfortable" | "compact";
+export type DragAndDropMode = "disabled" | "sort" | "drop";
 
 interface Preferences {
 	cardsOrder: Order;
 	cardsDensity: Density;
 	language: SupportedLanguages;
+	dragAndDropMode: DragAndDropMode;
 }
 
 function getDefaults(): Preferences {
@@ -18,6 +20,7 @@ function getDefaults(): Preferences {
 		cardsOrder: "default",
 		cardsDensity: "comfortable",
 		language: SupportedLanguages.ENGLISH,
+		dragAndDropMode: "disabled",
 	};
 }
 
@@ -29,7 +32,7 @@ export const usePreferencesStore = defineStore(
 
 		const cardsOrder = ref<Order>(_defaults.cardsOrder);
 		const cardsDensity = ref<Density>(_defaults.cardsDensity);
-		const isDragdropEnabled = ref(false);
+		const dragAndDropMode = ref(_defaults.dragAndDropMode);
 
 		const language = ref<SupportedLanguages>(_defaults.language);
 		const theme = ref(_themeStore.global.name.value); // Directly get default theme from Vuetify
@@ -40,9 +43,12 @@ export const usePreferencesStore = defineStore(
 			_themeStore.global.name.value = value;
 		});
 
-		return { cardsOrder, cardsDensity, isDragdropEnabled, language, theme };
+		return { cardsOrder, cardsDensity, dragAndDropMode, language, theme };
 	},
 	{
-		persist: { key: LocalStorageKey.PREFERENCES_KEY },
+		persist: {
+			key: LocalStorageKey.PREFERENCES_KEY,
+			paths: ["cardsOrder", "cardsDensity", "language", "theme"],	// Persist all preferences except Drag&Drop mode
+		},
 	}
 );
