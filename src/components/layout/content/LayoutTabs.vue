@@ -13,8 +13,9 @@
 		<!-- Render LayoutTabContent component via vue-router -->
 		<!-- (rendered inside v-window-item's slot because of a vue-router limitation restricting the use of router-view inside a Transition component) -->
 		<router-view v-slot="{ Component }">
-			<v-window-item v-for="tab in tabs" :key="tab">
-				<component :is="Component" />
+			<v-window-item v-for="(tab, i) in tabs" :key="tab">
+				<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
+				<component :is="Component" v-if="i === activeTab" />
 			</v-window-item>
 		</router-view>
 	</v-window>
@@ -22,8 +23,7 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
-import { onBeforeUnmount, onMounted, ref } from "vue";
-import { eventBus } from "@/core/eventBus";
+import { ref } from "vue";
 import { Icon } from "@/core/icons";
 import { CardCategory } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
@@ -55,20 +55,4 @@ function hotkey(e: KeyboardEvent) {
 		}
 	}
 }
-
-onMounted(() => {
-	// Catch TagEvent, show the according tab and scroll to the card with the specified id
-	eventBus.on("select-tag", (tag) => {
-		// Change active tab dynamically based on index of category in the enum
-		const idx = Object.values(CardCategory).findIndex((val) => val === tag.category);
-		activeTab.value = idx !== -1 ? idx : 0;
-
-		// Scroll to card
-		document.getElementById(tag.id + "-card")?.scrollIntoView({ behavior: "smooth" });
-	});
-});
-
-onBeforeUnmount(() => {
-	eventBus.off("select-tag");
-});
 </script>

@@ -119,8 +119,8 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 		where === "head" ? this.files.unshift(file) : this.files.push(file);
 	}
 
-	getFile(id: ID) {
-		return this.files.find((f) => f.id === id);
+	getFile(id: ID): File | undefined {
+		return this.getFolderWithFile(id)?.file;
 	}
 
 	deleteFile(id: ID) {
@@ -143,6 +143,19 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 				const maybeFolder = folder.getFolder(path.getTail());
 				if (maybeFolder !== undefined) return maybeFolder;
 			}
+		}
+		return undefined;
+	}
+
+	getFolderWithFile(fileID: ID): { folder: Folder<Metadata, File>; file: File } | undefined {
+		// Search file in this folder
+		const maybeFile = this.files.find((file) => file.id === fileID);
+		if (maybeFile) return { folder: this, file: maybeFile };
+
+		// If the file is not in this folder, search recursively in all subfolders until we find it (DFS algorithm)
+		for (const folder of this.subfolders) {
+			const res = folder.getFolderWithFile(fileID);
+			if (res) return res;
 		}
 		return undefined;
 	}

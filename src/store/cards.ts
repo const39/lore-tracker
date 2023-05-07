@@ -151,18 +151,18 @@ export const useCardsStore = defineStore("cards", () => {
 		return cards.value[category];
 	}
 
-	function findFileInCurrentFolder<T extends CardCategory>(id: ID) {
-		return currentFolder.value.getFile(id) as CardTypeBasedOnCategory<T>;
+	function findFileInFolder(id: ID, folder: CardFolder) {
+		return folder.getFile(id);
 	}
 
-	function findFolderInCurrentFolder<T extends CardCategory>(path: Path) {
-		return currentFolder.value.getFolder(path);
-	}
-
-	function findFileInCardStore(id: ID) {
+	/**
+	 * Search the file with the specified ID in all category root folders.
+	 * @param id the file ID
+	 * @returns the file or undefined if it is not found
+	 */
+	function findFile(id: ID) {
 		for (const key in cards.value) {
-			const files = getAllFiles(key as CardCategory);
-			const ret = files.find((file) => file.id === id);
+			const ret = findFileInFolder(id, getCategoryFolder(key as CardCategory));
 			if (ret) return ret;
 		}
 		return undefined;
@@ -271,9 +271,8 @@ export const useCardsStore = defineStore("cards", () => {
 		getAllFiles,
 		getAllFolders,
 		getCategoryFolder,
-		findFileInCurrentFolder,
-		findFolderInCurrentFolder,
-		findFileInCardStore,
+		findFileInFolder,
+		findFile,
 
 		// Folder actions
 		addFolder,
