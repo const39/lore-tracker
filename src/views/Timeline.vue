@@ -32,7 +32,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TimelineEvent from "@/components/timeline/TimelineEvent.vue";
-import { Event } from "@/core/model/cards";
+import { CardCategory, Event } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 
@@ -47,9 +47,8 @@ function getKey(node: Event | string) {
 }
 
 const nodes = computed(() => {
-	// Get events from store, create a copy of the array and reverse it to obtain events in chronological order
-	// TODO update to new file tree structure
-	const events = cardsStore.cards.event.files.slice().reverse();
+	// Get events from store and reverse it to obtain events in chronological order
+	const events = cardsStore.getAllFiles(CardCategory.Event).reverse()
 
 	// Browse through events to index them by their day field
 	const indexedByDay: GroupByDayMapping = {};
