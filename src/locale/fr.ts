@@ -139,6 +139,10 @@ const fr: Locale = {
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			folderNotFound: {
+				title: "Dossier introuvable",
+				message: "Retourner au dossier racine",
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",

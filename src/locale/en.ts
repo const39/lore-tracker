@@ -139,6 +139,10 @@ const en: Locale = {
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled.",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
+			folderNotFound: {
+				title: "Folder not found",
+				message: "Go back to the root folder",
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker has been updated!",
