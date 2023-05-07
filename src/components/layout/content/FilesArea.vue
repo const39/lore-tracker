@@ -10,10 +10,11 @@
 				@click="newFile"
 			/>
 		</div>
+		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
 		<draggable
 			v-model="files"
 			:animation="200"
-			:disabled="!isDragndropEnabled"
+			:disabled="prefStore.dragAndDropMode !== 'sort'"
 			tag="v-row"
 			draggable=".item"
 			group="items"
@@ -23,8 +24,9 @@
 		>
 			<template #item="{ element }">
 				<v-col class="item" cols="12" v-bind="density">
+					<!-- Card is draggable if drag&drop is either in 'drag' or 'sort' mode -->
 					<CardContainer
-						:class="{ draggable: isDragndropEnabled }"
+						:draggable="prefStore.dragAndDropMode !== 'disabled'"
 						:item-data="element"
 					/>
 				</v-col>
@@ -52,8 +54,6 @@ const formStore = useGlobalCardForm();
 
 const { density } = useGridDensity();
 
-const isDragndropEnabled = computed(() => prefStore.isDragdropEnabled);
-
 const category = computed(() => cardsStore.currentCategory);
 
 const files = computed({
@@ -77,9 +77,3 @@ function newFile(): void {
 	formStore.newAddForm(category.value, cardsStore.currentFolder);
 }
 </script>
-
-<style scoped>
-.draggable {
-	cursor: grab;
-}
-</style>

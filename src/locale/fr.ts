@@ -122,8 +122,8 @@ const fr: Locale = {
 		edit: "Modifier",
 		delete: "Supprimer",
 		quickNote: "Note rapide",
-		changeCategory: "Clic ou Ctrl+Gauche/Droite pour changer de catégorie",
 		cardDragndrop: "Déplacement des cartes",
+		dropCardHere: "Déposer une carte ici",
 	},
 
 	messages: {

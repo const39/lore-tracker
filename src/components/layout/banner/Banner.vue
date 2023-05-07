@@ -34,11 +34,12 @@
 			<SearchView class="mt-1 mb-2" />
 			<span class="text-grey text-caption">{{ cardCount + $t("status.cardCount") }}</span>
 			<v-switch
-				v-model="dragndrop"
-				:disabled="!canDragndropBeEnabled"
+				v-model="dragAndDropSortState"
+				:disabled="!canDragAndDropBeEnabled"
 				:label="$t('actions.cardDragndrop')"
 				color="primary"
 				density="compact"
+				hide-details
 			/>
 		</div>
 
@@ -82,16 +83,24 @@ const campaignName = computed({
 	},
 });
 
-const canDragndropBeEnabled = computed(
-	() => prefStore.cardsOrder !== "alphanumeric" && !filterStore.isFilterActive
+// Disable drag and drop 'sort' mode switch if:
+// - Cards are sorted automatically (i.e. not in custom order)
+// - Drag&drop is not already enabled in another mode
+// - A search filter is active
+const canDragAndDropBeEnabled = computed(
+	() =>
+		prefStore.cardsOrder !== "alphanumeric" &&
+		prefStore.dragAndDropMode !== "drop" &&
+		!filterStore.isFilterActive
 );
 
-const dragndrop = computed({
+// Boolean computed property indicating if drag and drop is in 'sort' mode
+const dragAndDropSortState = computed({
 	get() {
-		return prefStore.isDragdropEnabled;
+		return prefStore.dragAndDropMode === "sort";
 	},
 	set(value) {
-		if (canDragndropBeEnabled.value) prefStore.isDragdropEnabled = value;
+		prefStore.dragAndDropMode = value && canDragAndDropBeEnabled.value ? "sort" : "disabled";
 	},
 });
 </script>

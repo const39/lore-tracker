@@ -10,18 +10,21 @@
 			<!-- Default slot -->
 			<slot />
 		</v-card-text>
-		<v-card-text v-else>
-			<p class="mb-0 text-grey text-left">
-				{{ emptyContentText }}
-			</p>
-		</v-card-text>
+		<slot v-else name="placeholder">
+			<v-card-text v-if="placeholder">
+				<p class="mb-0 text-grey text-left">
+					{{ placeholder }}
+				</p>
+			</v-card-text>
+		</slot>
+		<slot name="append" />
 	</v-card>
 </template>
 
 <script lang="ts" setup>
 defineProps<{
 	title: string;
-	emptyContentText: string;
+	placeholder?: string;
 	isFilled: boolean;
 }>();
 </script>

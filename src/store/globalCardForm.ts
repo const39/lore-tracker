@@ -1,8 +1,9 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "./cards";
+import { usePreferencesStore } from "./preferences";
 
 export type FormVariant = "edit" | "add";
 
@@ -12,6 +13,10 @@ export const useGlobalCardForm = defineStore("globalCardForm", () => {
 	const model = ref<CardTypes>();
 
 	const isOpen = computed(() => model.value !== undefined);
+
+	// Enable 'drop' drag and drop when form is open
+	const prefStore = usePreferencesStore();
+	watch(isOpen, (value) => (prefStore.dragAndDropMode = value ? "drop" : "disabled"));
 
 	function newAddForm(category: CardCategory, inFolder: CardFolder) {
 		variant.value = "add";
@@ -36,7 +41,7 @@ export const useGlobalCardForm = defineStore("globalCardForm", () => {
 
 	return {
 		variant,
-        parentFolder,
+		parentFolder,
 		model,
 
 		isOpen,

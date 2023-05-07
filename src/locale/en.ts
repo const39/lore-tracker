@@ -122,8 +122,8 @@ const en: Locale = {
 		edit: "Edit",
 		delete: "Delete",
 		quickNote: "Quick note",
-		changeCategory: "Click or Ctrl+Left/Right to change category",
 		cardDragndrop: "Move cards",
+		dropCardHere: "Drop a card here",
 	},
 
 	messages: {

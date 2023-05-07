@@ -1,6 +1,7 @@
 <template>
 	<BaseCard
 		:id="itemData.id + '-card'"
+		:draggable-data="draggable ? itemData : undefined"
 		with-options
 		@edit="showForm"
 		@delete="onDelete"
@@ -9,7 +10,6 @@
 		<!-- Dynamic Card content component -->
 		<component
 			:is="contentComponent"
-			:class="{ draggable: !isSortDisabled }"
 			:item-data="itemData"
 		/>
 	</BaseCard>
@@ -22,22 +22,14 @@ import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
-import { useFilterStore } from "@/store/filter";
 import { useGlobalCardForm } from "@/store/globalCardForm";
-import { usePreferencesStore } from "@/store/preferences";
 import BaseCard from "./BaseCard.vue";
 
-const props = defineProps<{ itemData: CardTypes }>();
+const props = defineProps<{ itemData: CardTypes; draggable?: boolean }>();
 
 const cardsStore = useCardsStore();
 const formStore = useGlobalCardForm();
-const filterStore = useFilterStore();
-const prefStore = usePreferencesStore();
 const { showConfirmDialog } = useGlobalConfirmDialog();
-
-const isSortDisabled = computed(() => {
-	return filterStore.isFilterActive || prefStore.cardsOrder !== "default";
-});
 
 function showForm() {
 	formStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
