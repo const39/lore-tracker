@@ -1,6 +1,10 @@
 <template>
 	<v-tabs v-model="activeTab" color="accent" fixed-tabs>
-		<v-tab v-for="tab in tabs" :key="tab" :to="{ name: `LoreBook-${tab}` }">
+		<v-tab
+			v-for="tab in tabs"
+			:key="tab"
+			:to="{ name: 'LoreBookTab', params: { category: tab } }"
+		>
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
 		</v-tab>

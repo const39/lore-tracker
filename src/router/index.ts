@@ -3,6 +3,7 @@ import LayoutTabContent from "@/components/layout/content/LayoutTabContent.vue";
 import { CardCategory } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import LoreBook from "../views/LoreBook.vue";
+import { useCardsStore } from "@/store/cards";
 
 const routes = [
 	{
@@ -12,8 +13,32 @@ const routes = [
 		children: [
 			{
 				path: "",
-				name: "LoreBook", // vue-router requires a name when using an empty path, but this route only serves as a redirection so we provide a dummy name
-				redirect: { name: `LoreBook-${CardCategory.Quest}` },
+				name: "LoreBook",
+				// Redirects to the first category
+				// ! To be changed manually if the LoreBook route changes because we cannot specify a name/params combinations on redirections
+				redirect: { path: `/lore-book/${CardCategory.Quest}` },
+			},
+			{
+				// Current folder sub-view
+				path: ":category/:folderURI*",
+				name: "LoreBookTab",
+				component: LayoutTabContent,
+				// Checks :category is indeed a valid category or redirect to 404 page if not
+				beforeEnter: (to: RouteLocation) => {
+					const cat = Array.isArray(to.params.category)
+						? to.params.category[0]
+						: to.params.category;
+
+					const isValidCategory = (Object.values(CardCategory) as string[]).includes(cat);
+					if (!isValidCategory) return { name: "NotFound" };
+				},
+				// Converts URI params to runtime objects passed as props to the component
+				props: (route: RouteLocation) => ({
+					category: route.params.category,
+					folderPath: route.params.folderURI
+						? new Path(...route.params.folderURI)
+						: undefined,
+				}),
 			},
 		],
 	},
@@ -36,19 +61,6 @@ const routes = [
 const router = createRouter({
 	routes,
 	history: createWebHistory(),
-});
-
-// Create a LoreBook sub-route dynamically for each card category
-Object.values(CardCategory).forEach((category) => {
-	router.addRoute("LoreBook", {
-		path: `${category}/:folderURI*`,
-		name: `LoreBook-${category}`,
-		component: LayoutTabContent,
-		props: (route: RouteLocation) => ({
-			category,
-			folderPath: route.params.folderURI ? new Path(...route.params.folderURI) : undefined,
-		}),
-	});
 });
 
 export default router;
