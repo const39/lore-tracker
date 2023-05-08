@@ -1,7 +1,9 @@
 <template>
+	<!-- Pass dummy draggable-data only to enable draggable state -->
 	<BaseCard
 		v-if="!editMode"
 		:with-options="!editMode"
+		:draggable-data="draggable ? 1 : undefined"
 		@edit="editMode = true"
 		@delete="onDelete"
 		@dblclick="openFolder(folder)"
@@ -36,6 +38,7 @@ import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
 	folder: CardFolder;
+	draggable?: boolean
 }>();
 
 const emit = defineEmits<{
