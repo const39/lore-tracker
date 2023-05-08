@@ -2,14 +2,14 @@
 	<ListPanel :title="$t('fields.tags')" :is-filled="model.length !== 0">
 		<TagList v-model="model" editable />
 		<template #append>
-			<DropZone @drop="onDrop" />
+			<CardDropZone @drop="onDrop" />
 		</template>
 	</ListPanel>
 </template>
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import DropZone from "@/components/common/DropZone.vue";
+import CardDropZone from "@/components/common/CardDropZone.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
 import { CardTypes, ID } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
