@@ -226,12 +226,18 @@ export const useCardsStore = defineStore("cards", () => {
 		}
 	}
 
-	function updateWholeList<T extends CardCategory>(
+	function updateWholeFileList<T extends CardCategory>(
 		list: CardTypeBasedOnCategory<T>[],
 		inFolder?: CardFolder
 	) {
-		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
 		(inFolder ?? currentFolder.value).files = list;
+	}
+
+	function updateWholeSubfolderList(
+		list: CardFolder[],
+		inFolder?: CardFolder
+	) {
+		(inFolder ?? currentFolder.value).subfolders = list;
 	}
 
 	function $reset() {
@@ -283,7 +289,8 @@ export const useCardsStore = defineStore("cards", () => {
 		addCard,
 		updateCard,
 		deleteCard,
-		updateWholeList,
+		updateWholeFileList,
+		updateWholeSubfolderList,
 
 		// Store management
 		$reset,

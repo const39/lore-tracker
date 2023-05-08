@@ -69,7 +69,7 @@ const files = computed({
 		else return files;
 	},
 	set(list) {
-		cardsStore.updateWholeList(list);
+		cardsStore.updateWholeFileList(list);
 	},
 });
 

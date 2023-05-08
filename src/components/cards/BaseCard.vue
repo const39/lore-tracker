@@ -21,7 +21,6 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { CardTypes } from "@/core/model/cards";
 import CardOptions from "./CardOptions.vue";
 
 const props = defineProps<{
@@ -34,7 +33,7 @@ const props = defineProps<{
 	 * Set with the transferred data if the card can be drag&dropped.
 	 * If undefined, the card cannot be drag & dropped.
 	 */
-	draggableData?: CardTypes;
+	draggableData?: any;
 }>();
 
 defineEmits(["edit", "delete"]);
