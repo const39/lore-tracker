@@ -4,6 +4,7 @@ export enum LocalStorageKey {
 	DATA_KEY = "DATA",
 	PREFERENCES_KEY = "PREFERENCES",
 }
+
 export enum Season {
 	SPRING = "spring",
 	SUMMER = "summer",
@@ -11,3 +12,7 @@ export enum Season {
 	WINTER = "winter",
 }
 
+export enum CustomMIMEType {
+	CardType = "application/card-type",
+	CardFolder = "application/card-folder",
+}
