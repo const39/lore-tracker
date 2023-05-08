@@ -33,14 +33,6 @@
 		<div class="text-right">
 			<SearchView class="mt-1 mb-2" />
 			<span class="text-grey text-caption">{{ cardCount + $t("status.cardCount") }}</span>
-			<v-switch
-				v-model="dragAndDropSortState"
-				:disabled="!canDragAndDropBeEnabled"
-				:label="$t('actions.cardDragndrop')"
-				color="primary"
-				density="compact"
-				hide-details
-			/>
 		</div>
 
 		<v-divider class="ml-3 mr-1" vertical />
@@ -56,8 +48,6 @@ import SearchView from "@/components/global/SearchView.vue";
 import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useCardsStore } from "@/store/cards";
-import { useFilterStore } from "@/store/filter";
-import { usePreferencesStore } from "@/store/preferences";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [
@@ -66,8 +56,6 @@ const rules = [
 ];
 const editName = ref(false);
 
-const filterStore = useFilterStore();
-const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
 const campaignInfoStore = useCampaignInfoStore();
 
@@ -80,27 +68,6 @@ const campaignName = computed({
 	set(value) {
 		const name = value.trim();
 		if (name) campaignInfoStore.name = name;
-	},
-});
-
-// Disable drag and drop 'sort' mode switch if:
-// - Cards are sorted automatically (i.e. not in custom order)
-// - Drag&drop is not already enabled in another mode
-// - A search filter is active
-const canDragAndDropBeEnabled = computed(
-	() =>
-		prefStore.cardsOrder !== "alphanumeric" &&
-		prefStore.dragAndDropMode !== "drop" &&
-		!filterStore.isFilterActive
-);
-
-// Boolean computed property indicating if drag and drop is in 'sort' mode
-const dragAndDropSortState = computed({
-	get() {
-		return prefStore.dragAndDropMode === "sort";
-	},
-	set(value) {
-		prefStore.dragAndDropMode = value && canDragAndDropBeEnabled.value ? "sort" : "disabled";
 	},
 });
 </script>

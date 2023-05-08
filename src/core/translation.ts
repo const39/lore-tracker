@@ -57,6 +57,7 @@ export interface Locale {
 			largeTabDensity: string;
 			comfortableTabDensity: string;
 			compactTabDensity: string;
+			cardDragAndDrop: string;
 		};
 	};
 
@@ -126,7 +127,6 @@ export interface Locale {
 		edit: string;
 		delete: string;
 		quickNote: string;
-		cardDragndrop: string;
 		dropCardHere: string;
 	};
 

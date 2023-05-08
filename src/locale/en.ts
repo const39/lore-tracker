@@ -55,6 +55,7 @@ const en: Locale = {
 			largeTabDensity: "Large density",
 			comfortableTabDensity: "Comfortable density",
 			compactTabDensity: "Compact density",
+			cardDragAndDrop: "Move cards",
 		},
 	},
 
@@ -124,7 +125,6 @@ const en: Locale = {
 		edit: "Edit",
 		delete: "Delete",
 		quickNote: "Quick note",
-		cardDragndrop: "Move cards",
 		dropCardHere: "Drop a card here",
 	},
 
