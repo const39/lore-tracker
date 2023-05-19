@@ -104,6 +104,14 @@ export interface Locale {
 		addFaction: string;
 		addNote: string;
 
+		editFolder: string;
+		editQuest: string;
+		editEvent: string;
+		editLocation: string;
+		editCharacter: string;
+		editFaction: string;
+		editNote: string;
+
 		deleteFolder: string;
 		deleteQuest: string;
 		deleteEvent: string;

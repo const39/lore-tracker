@@ -94,13 +94,21 @@ const fr: Locale = {
 	},
 
 	dialogs: {
-		addFolder: "Nouveau  dossier",
+		addFolder: "Nouveau dossier",
 		addQuest: "Nouvelle quête",
 		addEvent: "Nouveau événement",
 		addLocation: "Nouvelle localité",
 		addCharacter: "Nouveau  personnage",
 		addFaction: "Nouvelle faction",
 		addNote: "Nouvelle note",
+		
+		editFolder: "Modifier un dossier",
+		editQuest: "Modifier une quête",
+		editEvent: "Modifier un événement",
+		editLocation: "Modifier une localité",
+		editCharacter: "Modifier un personnage",
+		editFaction: "Modifier une faction",
+		editNote: "Modifier une note",
 
 		deleteFolder: "Supprimer un dossier",
 		deleteQuest: "Supprimer une quête",
