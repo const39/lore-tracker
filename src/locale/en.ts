@@ -102,6 +102,14 @@ const en: Locale = {
 		addFaction: "New faction",
 		addNote: "New note",
 
+		editFolder: "Edit a folder",
+		editQuest: "Edit a quest",
+		editEvent: "Edit an event",
+		editLocation: "Edit a location",
+		editCharacter: "Edit a character",
+		editFaction: "Edit a faction",
+		editNote: "Edit a note",
+
 		deleteFolder: "Delete a folder",
 		deleteQuest: "Delete a quest",
 		deleteEvent: "Delete an event",

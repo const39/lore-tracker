@@ -11,11 +11,10 @@
 			/>
 			<v-btn icon="mdi-close" density="comfortable" @click="close" />
 		</v-card-actions>
-		<!-- Show title if "Add" form variant -->
-		<v-card-title v-if="variant === 'add' && model" class="justify-center">
+		<v-card-title v-if="model" class="mb-1 justify-center">
 			<v-icon :icon="getIcon(model)" />
 			<span class="mx-2">
-				{{ $t(`dialogs.add${utilities.capitalize(model._category)}`) }}
+				{{ $t(`dialogs.${variant}${utilities.capitalize(model._category)}`) }}
 			</span>
 		</v-card-title>
 		<v-card-text>
@@ -44,7 +43,11 @@ const form = ref<VForm | undefined>();
 const isValid = ref(false);
 
 // Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
-watch(() => model, () => form.value?.validate(), { deep: true });
+watch(
+	() => model,
+	() => form.value?.validate(),
+	{ deep: true }
+);
 
 const formComponent = computed(() => {
 	if (!model) return undefined;
