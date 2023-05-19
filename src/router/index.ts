@@ -1,8 +1,7 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
-import LayoutTabContent from "@/components/layout/content/LayoutTabContent.vue";
 import { CardCategory } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
-import LoreBook from "../views/LoreBook.vue";
+import LoreBook from "../views/LoreBook/LoreBook.vue";
 
 const routes = [
 	{
@@ -21,7 +20,7 @@ const routes = [
 				// Current folder sub-view
 				path: ":category/:folderURI*",
 				name: "LoreBookTab",
-				component: LayoutTabContent,
+				component: () => import("../views/LoreBook/content/LayoutTabs.vue"),
 				// Checks :category is indeed a valid category or redirect to 404 page if not
 				beforeEnter: (to: RouteLocation) => {
 					const cat = Array.isArray(to.params.category)
