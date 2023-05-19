@@ -16,14 +16,14 @@
 			:animation="200"
 			:disabled="prefStore.dragAndDropMode !== 'sort'"
 			tag="v-row"
-			draggable=".item"
-			group="items"
+			draggable=".draggable-file"
+			group="files"
 			item-key="id"
 			@start="drag = true"
 			@end="drag = false"
 		>
 			<template #item="{ element }">
-				<v-col class="item" cols="12" v-bind="density">
+				<v-col class="draggable-file" cols="12" v-bind="density">
 					<!-- Card is draggable if drag&drop is either in 'drag' or 'sort' mode -->
 					<CardContainer
 						:draggable="prefStore.dragAndDropMode !== 'disabled'"
@@ -43,14 +43,14 @@ import { useGridDensity } from "@/composables/gridDensity";
 import { getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { useGlobalCardForm } from "@/store/globalCardForm";
 import { usePreferencesStore } from "@/store/preferences";
+import { useSidePanel } from "@/store/sidePanel";
 
 const drag = ref(false);
 
 const prefStore = usePreferencesStore();
 const cardsStore = useCardsStore();
-const formStore = useGlobalCardForm();
+const formStore = useSidePanel();
 
 const { density } = useGridDensity();
 

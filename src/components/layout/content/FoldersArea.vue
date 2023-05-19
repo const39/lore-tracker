@@ -16,15 +16,15 @@
 			:animation="200"
 			:disabled="prefStore.dragAndDropMode !== 'sort'"
 			tag="v-row"
-			draggable=".item"
-			group="items"
+			draggable=".draggable-folder"
+			group="folders"
 			item-key="id"
 			@start="drag = true"
 			@end="drag = false"
 		>
 			<template #item="{ element }">
 				<v-col
-					class="item"
+					class="draggable-folder"
 					cols="12"
 					v-bind="density"
 				>
