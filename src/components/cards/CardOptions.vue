@@ -5,7 +5,6 @@
 		</template>
 
 		<v-list density="compact">
-			<!-- Fire a custom event to the parent component. The parent can decide to catch this event to react to the user action. -->
 			<v-list-item
 				:title="$t('actions.edit')"
 				prepend-icon="mdi-pencil"
@@ -16,6 +15,11 @@
 				prepend-icon="mdi-delete"
 				@click="$emit('delete')"
 			/>
+			<v-list-item
+				:title="$t('actions.moveTo')"
+				prepend-icon="mdi-folder-move"
+				@click="$emit('move')"
+			/>
 		</v-list>
 	</v-menu>
 </template>
@@ -23,5 +27,5 @@
 <script lang="ts" setup>
 import { t as $t } from "@/core/translation";
 
-defineEmits(["edit", "delete"]);
+defineEmits(["edit", "delete", "move"]);
 </script>

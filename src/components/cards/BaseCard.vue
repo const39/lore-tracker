@@ -12,7 +12,7 @@
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
-			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" />
+			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" @move="$emit('move')" />
 		</v-card-actions>
 		<!-- Inner content of the card -->
 		<slot />
@@ -26,7 +26,7 @@ import CardOptions from "./CardOptions.vue";
 const props = defineProps<{
 	withOptions?: boolean;
 	/**
-	 * Whether this card should display the highlight animation 
+	 * Whether this card should display the highlight animation
 	 */
 	highlight?: boolean;
 	/**
@@ -36,7 +36,7 @@ const props = defineProps<{
 	draggableData?: any;
 }>();
 
-defineEmits(["edit", "delete"]);
+defineEmits(["edit", "delete", "move"]);
 
 const elevation = ref(1);
 

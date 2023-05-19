@@ -130,17 +130,31 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 
 	// ** Folder **
 
-	hasFolder(path: Path) {
-		return this.getFolder(path) !== undefined;
+	hasFolder(id: Path | ID): boolean;
+	hasFolder(path: Path): boolean;
+	hasFolder(arg: Path | ID) {
+		if (arg instanceof Path) return this.getFolderByPath(arg) !== undefined;
+		return this.getFolderByID(arg) !== undefined;
 	}
 
-	getFolder(path: Path): Folder<Metadata, File> | undefined {
+	getFolderByID(id: ID): Folder<Metadata, File> | undefined {
+		const res = this.subfolders.find((folder) => folder.metadata.id === id);
+		if (res) return res;
+
+		for (const folder of this.subfolders) {
+			const maybeFolder = folder.getFolderByID(id);
+			if (maybeFolder !== undefined) return maybeFolder;
+		}
+		return undefined;
+	}
+
+	getFolderByPath(path: Path): Folder<Metadata, File> | undefined {
 		if (path.isRoot()) return this;
 		else if (path.length === 1) {
 			return this.subfolders.find((folder) => folder.metadata.name === path.rawSegments[0]);
 		} else {
 			for (const folder of this.subfolders) {
-				const maybeFolder = folder.getFolder(path.getTail());
+				const maybeFolder = folder.getFolderByPath(path.getTail());
 				if (maybeFolder !== undefined) return maybeFolder;
 			}
 		}
@@ -160,33 +174,34 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 		return undefined;
 	}
 
-	addFolder(folder: Folder<Metadata, File>, parentPath?: Path, where: "head" | "tail" = "head") {
-		if (!parentPath || parentPath.isRoot())
-			where === "head" ? this.subfolders.unshift(folder) : this.subfolders.push(folder);
-		else {
-			const parent = this.getFolder(parentPath);
-			if (!parent)
-				throw new Error(
-					`Cannot create folder on inexistant parent. Tried to create folder on parent at path ${parentPath}.`
-				);
-			else
-				where === "head"
-					? parent.subfolders.unshift(folder)
-					: parent.subfolders.push(folder);
-		}
+	addFolder(folder: Folder<Metadata, File>, where: "head" | "tail" = "head") {
+		if (folder.hasFolder(this.metadata.id))
+			throw new Error(
+				`Cannot add a folder to one of its children. Tried to add folder ${folder.metadata.name} in parent ${this.metadata.name}.`
+			);
+
+		where === "head" ? this.subfolders.unshift(folder) : this.subfolders.push(folder);
+		folder.parent = this;
 	}
 
-	deleteFolder(path: Path) {
-		if (path.isRoot()) {
+	deleteFolder(folder: Folder<Metadata, File>) {
+		const idx = this.subfolders.findIndex((f) => f.metadata.id === folder.metadata.id);
+		if (idx !== -1) {
+			folder.parent = undefined;
+			this.subfolders.splice(idx, 1);
+		} else
 			throw new Error(
-				`Folder cannot delete itself. Tried to delete folder at path ${this.absolutePath}.`
+				`Cannot delete nonexistent folder. Tried to delete subfolder ${folder.metadata.name} in parent ${this.metadata.name}.`
 			);
-		} else if (path.length === 1) {
-			const idx = this.subfolders.findIndex((f) => f.metadata.name === path.rawSegments[0]);
-			if (idx !== -1) this.subfolders.splice(idx, 1);
-		} else {
-			this.deleteFolder(path.getTail());
-		}
+	}
+
+	moveFolder(to: Folder<Metadata, File>) {
+		if (this.hasFolder(to.metadata.id))
+			throw new Error(
+				`Cannot move a folder into one of its children. Tried to move folder ${this.metadata.name} in parent ${to.metadata.name}.`
+			);
+		this.parent?.deleteFolder(this);
+		to.addFolder(this);
 	}
 
 	// This method is intended to be private, but we cannot enforce it because TS clashes with Vue's reactivity system when dealing with private properties

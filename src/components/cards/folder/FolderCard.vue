@@ -5,7 +5,8 @@
 		:with-options="!editMode"
 		:draggable-data="draggable ? 1 : undefined"
 		@edit="editMode = true"
-		@delete="onDelete"
+		@delete="confirmDelete"
+		@move="showFileTree"
 		@dblclick="openFolder(folder)"
 	>
 		<v-card-title class="pr-0 d-flex align-center">
@@ -34,11 +35,12 @@ import { CardFolder, getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
+import { useSidePanel } from "@/store/sidePanel";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
 	folder: CardFolder;
-	draggable?: boolean
+	draggable?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -48,9 +50,14 @@ const emit = defineEmits<{
 const editMode = ref(false);
 
 const cardsStore = useCardsStore();
+const sidePanelStore = useSidePanel()
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
-function onDelete() {
+function showFileTree() {
+	sidePanelStore.newFileTree(props.folder, cardsStore.currentFolder);
+}
+
+function confirmDelete() {
 	showConfirmDialog({
 		title: $t("dialogs.deleteFolder"),
 		message: `${$t("dialogs.deleteConfirm")} "${getText(props.folder)}" ? ${$t(

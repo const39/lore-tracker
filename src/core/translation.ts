@@ -61,6 +61,10 @@ export interface Locale {
 		};
 	};
 
+	sidePanel: {
+		moveCard: string;
+	},
+
 	fields: {
 		category: string;
 		name: string;
@@ -126,6 +130,7 @@ export interface Locale {
 		no: string;
 		edit: string;
 		delete: string;
+		moveTo: string;
 		quickNote: string;
 		dropCardHere: string;
 	};

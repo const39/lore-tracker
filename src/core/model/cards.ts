@@ -121,6 +121,14 @@ export class Tag {
 	}
 }
 
+export function isCard(maybeCard: any): maybeCard is CardTypes {
+	return Object.values(CardCategory).includes(maybeCard._category);
+}
+
+export function isCardFolder(maybeFolder: any): maybeFolder is CardFolder {
+	return maybeFolder instanceof CardFolder;
+}
+
 export function createCard(category: CardCategory): CardTypes {
 	const campaignInfoStore = useCampaignInfoStore();
 	switch (category) {

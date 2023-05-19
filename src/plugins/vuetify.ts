@@ -2,6 +2,8 @@ import "vuetify/styles";
 import { createVuetify, type ThemeDefinition } from "vuetify";
 import colors from "@/core/colors";
 
+export type Theme = "light" | "dark";
+
 const light: ThemeDefinition = {
 	dark: false,
 	colors: {
