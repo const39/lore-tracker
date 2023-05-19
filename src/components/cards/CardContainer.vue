@@ -5,7 +5,8 @@
 		:highlight="isHighlighted"
 		with-options
 		@edit="showForm"
-		@delete="onDelete"
+		@delete="confirmDelete"
+		@move="showFileTree"
 		@dblclick="showForm"
 	>
 		<!-- Dynamic Card content component -->
@@ -22,7 +23,7 @@ import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
-import { useGlobalCardForm } from "@/store/globalCardForm";
+import { useSidePanel } from "@/store/sidePanel";
 import BaseCard from "./BaseCard.vue";
 
 const props = defineProps<{ itemData: CardTypes; draggable?: boolean }>();
@@ -31,14 +32,18 @@ const isHighlighted = ref(false);
 
 const route = useRoute();
 const cardsStore = useCardsStore();
-const formStore = useGlobalCardForm();
+const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
 function showForm() {
-	formStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
+	sidePanelStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
 }
 
-function onDelete() {
+function showFileTree() {
+	sidePanelStore.newFileTree(props.itemData, cardsStore.currentFolder);
+}
+
+function confirmDelete() {
 	showConfirmDialog({
 		title: $t(`dialogs.delete${utilities.capitalize(props.itemData._category)}`),
 		message: $t(`dialogs.deleteConfirm`) + `"${getText(props.itemData)}" ?`,

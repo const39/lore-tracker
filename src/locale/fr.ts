@@ -59,6 +59,10 @@ const fr: Locale = {
 		},
 	},
 
+	sidePanel: {
+		moveCard: "Déplacer",
+	},
+
 	fields: {
 		category: "Catégorie",
 		name: "Nom",
@@ -124,6 +128,7 @@ const fr: Locale = {
 		no: "Non",
 		edit: "Modifier",
 		delete: "Supprimer",
+		moveTo: "Déplacer vers",
 		quickNote: "Note rapide",
 		dropCardHere: "Déposer une carte ici",
 	},

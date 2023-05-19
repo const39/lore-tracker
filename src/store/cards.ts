@@ -86,7 +86,7 @@ export const useCardsStore = defineStore("cards", () => {
 		const root = getCategoryFolder(currentCategory.value);
 		// Safeguard - If folder does not exist, set current folder to root
 		// -> this should not happen because setCurrentFolder() throws an error if folder does not exist
-		return root.getFolder(currentFolderPath.value) ?? root;
+		return root.getFolderByPath(currentFolderPath.value) ?? root;
 	});
 
 	const filter = useFilterStore();
@@ -170,19 +170,20 @@ export const useCardsStore = defineStore("cards", () => {
 
 	function addFolder(folder: CardFolder, inFolder?: CardFolder) {
 		const parentFolder = inFolder ?? currentFolder.value;
-		// Ensure the folder's parent is indeed the current one
-		folder.parent = parentFolder;
 		//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
-		currentFolder.value.addFolder(folder);
+		parentFolder.addFolder(folder);
 	}
 
 	function updateFolderMetadata(folder: CardFolder, newMetadata: CardFolderMetadata) {
 		folder.metadata = newMetadata;
 	}
 
-	function deleteFolder(folder: CardFolder, inFolder?: CardFolder) {
-		const parentFolder = inFolder ?? currentFolder.value;
-		parentFolder.deleteFolder(folder.relativePath);
+	function deleteFolder(folder: CardFolder) {
+		folder.parent?.deleteFolder(folder);
+	}
+
+	function moveFolder(folder: CardFolder, to: CardFolder) {
+		folder.moveFolder(to);
 	}
 
 	function addCard(card: CardTypes, inFolder?: CardFolder) {
@@ -226,6 +227,11 @@ export const useCardsStore = defineStore("cards", () => {
 		}
 	}
 
+	function moveCard(card: CardTypes, from: CardFolder, to: CardFolder) {
+		deleteCard(card, from);
+		addCard(card, to);
+	}
+
 	function updateWholeFileList<T extends CardCategory>(
 		list: CardTypeBasedOnCategory<T>[],
 		inFolder?: CardFolder
@@ -233,10 +239,7 @@ export const useCardsStore = defineStore("cards", () => {
 		(inFolder ?? currentFolder.value).files = list;
 	}
 
-	function updateWholeSubfolderList(
-		list: CardFolder[],
-		inFolder?: CardFolder
-	) {
+	function updateWholeSubfolderList(list: CardFolder[], inFolder?: CardFolder) {
 		(inFolder ?? currentFolder.value).subfolders = list;
 	}
 
@@ -284,11 +287,14 @@ export const useCardsStore = defineStore("cards", () => {
 		addFolder,
 		updateFolderMetadata,
 		deleteFolder,
+		moveFolder,
 
 		// Card actions
 		addCard,
 		updateCard,
 		deleteCard,
+		moveCard,
+
 		updateWholeFileList,
 		updateWholeSubfolderList,
 
