@@ -18,7 +18,7 @@
 			</v-col>
 		</v-slide-x-transition>
 		<v-col cols="">
-			<LayoutTabs />
+			<router-view />
 		</v-col>
 	</v-row>
 </template>
@@ -29,7 +29,6 @@ import FormWrapper from "@/components/cards/files/forms/FormWrapper.vue";
 import FolderTree from "@/components/cards/folder/FolderTree.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
-import LayoutTabs from "@/components/layout/content/LayoutTabs.vue";
 import { isCard, isCardFolder, type CardTypes, type CardFolder } from "@/core/model/cards";
 import { useSidePanel } from "@/store/sidePanel";
 
