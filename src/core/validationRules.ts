@@ -1,3 +1,5 @@
+import { Path } from "./model/fileTree";
+
 export const required = (msg: string) => (v: string) => !!v || msg;
 
 export const counter = (msg: string, count: number) => (v: string) => v.length <= count || msg;
@@ -27,9 +29,12 @@ export const numberInRange =
 export const hex = (msg: string) => (v: string) =>
 	/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/.test(v) || msg;
 
+export const folderName = (msg: string) => (v: string) => !Path.ILLEGAL_CHARS_REGEX.test(v) || msg;
+
 export default {
 	required,
 	counter,
 	numberInRange,
 	hex,
+	folderName,
 };
