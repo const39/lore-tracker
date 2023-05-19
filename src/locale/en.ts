@@ -88,8 +88,9 @@ const en: Locale = {
 		unknownRace: "Unknown race",
 		unknownClass: "Unknown class",
 		unknownRole: "Unknown role",
-		requiredField: "required field",
-		dayNotValid: "invalid day",
+		requiredField: "Required field",
+		dayNotValid: "Invalid day",
+		illegalCharacters: "Name contains illegal characters",
 		nameAlreadyUsed: "Name already used",
 	},
 

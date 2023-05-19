@@ -12,7 +12,7 @@
 				/>
 				<v-btn icon="mdi-close" density="comfortable" @click="close" />
 			</v-card-actions>
-			<v-card-title v-if="!edit">
+			<v-card-title v-if="!edit" class="mb-1">
 				{{ $t("dialogs.addFolder") }}
 			</v-card-title>
 			<v-card-text class="d-flex text-body-2">
@@ -76,6 +76,7 @@ const rules = {
 	name: [
 		validationRules.required($t("fields.requiredField")),
 		validationRules.counter("", 25),
+		validationRules.folderName($t("fields.illegalCharacters")),
 		// Check name is not already used by another folder in the current parent folder
 		(name: string) => !parent.value.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
 	],

@@ -88,8 +88,9 @@ const fr: Locale = {
 		unknownRace: "Race inconnue",
 		unknownClass: "Classe inconnue",
 		unknownRole: "Rôle inconnu",
-		requiredField: "champ requis",
-		dayNotValid: "jour invalide",
+		requiredField: "Champ requis",
+		dayNotValid: "Jour invalide",
+		illegalCharacters: "Le nom contient des caractères invalides",
 		nameAlreadyUsed: "Nom déjà utilisé",
 	},
 
@@ -101,7 +102,7 @@ const fr: Locale = {
 		addCharacter: "Nouveau  personnage",
 		addFaction: "Nouvelle faction",
 		addNote: "Nouvelle note",
-		
+
 		editFolder: "Modifier un dossier",
 		editQuest: "Modifier une quête",
 		editEvent: "Modifier un événement",

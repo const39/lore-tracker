@@ -92,6 +92,7 @@ export interface Locale {
 		unknownRole: string;
 		requiredField: string;
 		dayNotValid: string;
+		illegalCharacters: string;
 		nameAlreadyUsed: string;
 	};
 
