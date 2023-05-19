@@ -7,7 +7,7 @@
 
 	<v-row>
 		<v-slide-x-transition mode="in-out">
-			<v-col v-show="status !== 'closed'" cols="3">
+			<v-col v-show="status !== 'closed'" :cols="status === 'form' ? 4 : 3">
 				<v-card class="pa-2 border sticky" variant="outlined">
 					<FormWrapper v-if="status === 'form'" />
 					<FolderTree
