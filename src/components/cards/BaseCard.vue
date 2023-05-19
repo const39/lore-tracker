@@ -53,6 +53,11 @@ function onDragStart(e: DragEvent) {
 <style scoped>
 .draggable {
 	cursor: grab;
+	transition: transform 250ms ease;
+}
+
+.draggable:hover {
+	transform: scale(1.02);
 }
 
 .highlight {
