@@ -7,7 +7,7 @@
 		@edit="showForm"
 		@delete="confirmDelete"
 		@move="showFileTree"
-		@dblclick="showForm"
+		@click="showForm"
 	>
 		<!-- Dynamic Card content component -->
 		<component :is="contentComponent" :item-data="itemData" />
@@ -66,7 +66,7 @@ const contentComponent = computed(() => {
  */
 const scrollIntoViewIfSelected = useDebounceFn(() => {
 	if (route.hash === `#${id.value}`) {
-		// Find the card's underlying DOM element to scroll it into view 
+		// Find the card's underlying DOM element to scroll it into view
 		const el = document.querySelector(`[id="${id.value}"]`);
 		el?.scrollIntoView({ behavior: "smooth", block: "center" });
 

@@ -7,7 +7,7 @@
 		@edit="editMode = true"
 		@delete="confirmDelete"
 		@move="showFileTree"
-		@dblclick="openFolder(folder)"
+		@click="openFolder(folder)"
 	>
 		<v-card-title class="pr-0 d-flex align-center">
 			<v-badge :content="childrenCount" color="grey">
