@@ -1,6 +1,7 @@
 <template>
 	<div class="my-3">
-		<div class="mb-4 text-h6">
+		<div class="mb-4 d-flex align-center text-h6">
+			<v-badge :content="subfolders.length" class="mr-2 mb-1" color="grey" inline />
 			<span> {{ $t("categories.folder") + "s" }} </span>
 			<v-btn
 				class="mx-2"

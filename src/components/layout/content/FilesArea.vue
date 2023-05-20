@@ -1,7 +1,8 @@
 <template>
 	<div class="my-3">
-		<div class="mb-4 text-h6">
-			<span> {{ $t("categories.file") + "s" }} </span>
+		<div class="mb-4 d-flex align-center text-h6">
+			<v-badge :content="files.length" class="mr-2 mb-1" color="grey" inline />
+			<span class=""> {{ $t("categories.file") + "s" }} </span>
 			<v-btn
 				class="mx-2"
 				icon="mdi-plus"
