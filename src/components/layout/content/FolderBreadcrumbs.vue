@@ -15,7 +15,6 @@ import { useRouter } from "vue-router";
 import { CardFolder } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
 
 interface BreadcrumbItem {
 	// Item text to display
@@ -32,17 +31,20 @@ interface BreadcrumbItem {
 	exact: true;
 }
 
+const props = defineProps<{
+	currentFolder: CardFolder;
+}>();
+
 const router = useRouter();
-const cardsStore = useCardsStore()
 
 function goBack() {
 	router.back();
 }
 
 const breadcrumbs = computed(() => {
-	if (cardsStore.currentFolder.absolutePath.isRoot()) return [];
+	if (props.currentFolder.absolutePath.isRoot()) return [];
 
-	const path = cardsStore.currentFolder.absolutePath;
+	const path = props.currentFolder.absolutePath;
 	let aggregatedPath = new Path();
 	const root: BreadcrumbItem = {
 		text: $t("pages.loreBook"),

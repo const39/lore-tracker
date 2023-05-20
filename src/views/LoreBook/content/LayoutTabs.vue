@@ -14,9 +14,9 @@
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
 				<template v-if="!alertState.isShown">
-					<FolderBreadcrumbs />
-					<FoldersArea />
-					<FilesArea />
+					<FolderBreadcrumbs :current-folder="cardsStore.currentFolder" />
+					<FoldersArea v-model="cardsStore.currentFolder" :category="cardsStore.currentCategory" />
+					<FilesArea v-model="cardsStore.currentFolder" :category="cardsStore.currentCategory" />
 				</template>
 				<!-- Display alert in case folder does not exist -->
 				<v-alert v-else variant="tonal" v-bind="alertState">

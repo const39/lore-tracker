@@ -1,6 +1,6 @@
 <template>
 	<GenericArea
-		v-model="cardsStore.currentFolder.subfolders"
+		v-model="currentFolder.subfolders"
 		:title="$t('categories.folder') + 's'"
 		group="folders"
 	>
@@ -21,19 +21,35 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
-import { CardFolder } from "@/core/model/cards";
+import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
 import GenericArea from "./GenericArea.vue";
+
+const props = defineProps<{
+	modelValue: CardFolder; // currentFolder v-model
+	category: CardCategory;
+}>();
+
+const emit = defineEmits<{
+	(e: "update:modelValue", value: typeof props.modelValue): void;
+}>();
 
 const showFolderDialog = ref(false);
 
 const router = useRouter();
-const cardsStore = useCardsStore();
+
+const currentFolder = computed({
+	get() {
+		return props.modelValue;
+	},
+	set(value) {
+		emit("update:modelValue", value);
+	},
+});
 
 function newFolder(): void {
 	showFolderDialog.value = true;
