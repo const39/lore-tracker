@@ -94,6 +94,7 @@
 </template>
 
 <script lang="ts" setup>
+import { onKeyDown } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
 import OnOffBtn from "@/components/common/OnOffBtn.vue";
 import { t as $t } from "@/core/translation";
@@ -116,6 +117,13 @@ const dragAndDropSortState = computed({
 	set(value) {
 		prefStore.dragAndDropMode = value ? "sort" : "disabled";
 	},
+});
+
+// * Register hotkeys
+// Ctrl+Shift+L to toggle 'sort' drag & drop mode (if not disabled)
+onKeyDown(["L", "l"], (e) => {
+	if (e.ctrlKey && e.shiftKey && !disableSwitch.value)
+		dragAndDropSortState.value = !dragAndDropSortState.value;
 });
 
 watch(

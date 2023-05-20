@@ -200,7 +200,7 @@ const en: Locale = {
 			},
 			misc: {
 				title: "Other",
-				openSearch: "Open/close search window",
+				toggleSort: "Lock/unlock card sort",
 				openOptions: "Open/close option menu",
 			},
 		},

@@ -200,7 +200,7 @@ const fr: Locale = {
 			},
 			misc: {
 				title: "Divers",
-				openSearch: "Ouvrir/fermer la fenêtre de recherche",
+				toggleSort: "Activer/désactiver le tri des cartes",
 				openOptions: "Ouvrir/fermer le menu des options",
 			},
 		},
