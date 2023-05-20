@@ -14,9 +14,17 @@
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
 				<template v-if="!alertState.isShown">
-					<FolderBreadcrumbs :current-folder="cardsStore.currentFolder" />
-					<FoldersArea v-model="cardsStore.currentFolder" :category="cardsStore.currentCategory" />
-					<FilesArea v-model="cardsStore.currentFolder" :category="cardsStore.currentCategory" />
+					<FolderBreadcrumbs :current-folder="currentFolder" />
+					<FoldersArea
+						v-model="currentFolder"
+						:category="cardsStore.currentCategory"
+						:disable-actions="filterStore.isFilterActive"
+					/>
+					<FilesArea
+						v-model="currentFolder"
+						:category="cardsStore.currentCategory"
+						:disable-actions="filterStore.isFilterActive"
+					/>
 				</template>
 				<!-- Display alert in case folder does not exist -->
 				<v-alert v-else variant="tonal" v-bind="alertState">
@@ -30,35 +38,55 @@
 </template>
 
 <script lang="ts" setup>
-import { onKeyDown } from "@vueuse/core";
+import { onKeyDown, useDebounceFn } from "@vueuse/core";
 import { ref, watch } from "vue";
 import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
 import { Icon } from "@/core/icons";
-import { CardCategory } from "@/core/model/cards";
+import { CardCategory, CardFolder } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
 
 const props = defineProps<{ category: CardCategory; folderPath?: Path }>();
 
 const cardsStore = useCardsStore();
+const filterStore = useFilterStore();
 const { alertState, setError, resetAlert } = useAlert();
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
 
+const currentFolder = ref<CardFolder>(cardsStore.currentFolder);
+
+const filterItems = useDebounceFn(
+	() => {
+		currentFolder.value = filterStore.isFilterActive
+			? filterStore.filter(cardsStore.currentFolder)
+			: cardsStore.currentFolder;
+	},
+	800,
+	{ maxWait: 1500 }
+);
+
+watch(
+	() => filterStore.rules,
+	() => filterItems(),
+	{ deep: true }
+);
+
 watch(
 	props,
 	({ category, folderPath }) => {
 		resetAlert();
-
 		// Try to set current folder to the one given by vue-router based on URI
 		// If this fails (i.e. this folder does not exist), display error message to user
 		try {
 			cardsStore.setCurrentFolder(category, folderPath);
+			filterItems();
 		} catch (e) {
 			console.error(e);
 			setError($t("messages.errors.folderNotFound.title"));

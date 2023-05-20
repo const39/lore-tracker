@@ -50,7 +50,7 @@ export interface Locale {
 			winter: string;
 		};
 		action: string;
-		cardCount: string;
+		search: string;
 		selectors: {
 			customOrder: string;
 			alphanumericOrder: string;
@@ -63,7 +63,7 @@ export interface Locale {
 
 	sidePanel: {
 		moveCard: string;
-	},
+	};
 
 	fields: {
 		category: string;
@@ -122,14 +122,6 @@ export interface Locale {
 		deleteNote: string;
 		deleteConfirm: string;
 		deleteConfirmFolder: string;
-	};
-
-	search: {
-		search: string;
-		containing: string;
-		taggedWith: string;
-		cardsMatching: string;
-		sortDisabled: string;
 	};
 
 	actions: {

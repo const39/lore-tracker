@@ -12,7 +12,6 @@ import {
 	createRootFolder,
 } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
-import { useFilterStore } from "./filter";
 import { SerializedState } from ".";
 
 function defaultCards(): CardsStore {
@@ -24,57 +23,6 @@ function defaultCards(): CardsStore {
 	}
 	return cards;
 }
-
-// TODO move filtering to its own store
-// /**
-//  * Filter the specified cards using the given filter.
-//  * @param cards cards from the current state
-//  * @param filter filter from the current state
-//  * @returns a new CardsStore object containing the cards, filtered according to the given filter
-//  */
-// function filterCards(cards: CardsStore, filter: Filter) {
-// 	// Create another empty cards object to avoid modifying the state containing all cards
-// 	const filteredCards = defaultCards();
-
-// 	// Browse each array of cards
-// 	for (const field in cards) {
-// 		const key = field as keyof typeof cards;
-
-// 		// The filter is applied to each relevant key (can be ALL)
-// 		if (filter.category === CategoryFilter.ALL || filter.category === key) {
-// 			// Filter out corresponding cards from the initial cards object
-
-// 			(filteredCards[key] as CardTypes[]) = (cards[key] as CardTypes[]).filter((entry) => {
-// 				/* The predicate conditions are exclusive :
-// 				 * (1) if the first one is not fulfilled, the second one is not evaluated;
-// 				 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
-// 				 * In either case, the predicate returns false
-// 				 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
-// 				 */
-// 				let predicate = true;
-
-// 				// If specified, search for corresponding text in text fields of the current entry
-// 				if (filter.text) {
-// 					const str = filter.text;
-// 					predicate = getAllText(entry).some((text) => text.toLowerCase().includes(str));
-// 				}
-
-// 				// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
-// 				// search for the corresponding tags in the current entry tag list
-// 				if (predicate && filter?.tags?.length > 0) {
-// 					for (const tag of filter.tags) {
-// 						predicate &&= entry.tags.includes(tag);
-// 						// If the condition is false, stop searching and return (see (2))
-// 						if (!predicate) break;
-// 					}
-// 				}
-
-// 				return predicate;
-// 			});
-// 		}
-// 	}
-// 	return filteredCards;
-// }
 
 export const useCardsStore = defineStore("cards", () => {
 	const cards = ref(defaultCards());
@@ -88,8 +36,6 @@ export const useCardsStore = defineStore("cards", () => {
 		// -> this should not happen because setCurrentFolder() throws an error if folder does not exist
 		return root.getFolderByPath(currentFolderPath.value) ?? root;
 	});
-
-	const filter = useFilterStore();
 
 	const serializableState = computed(() => {
 		const serializedCards = {} as CardsStoreSerialized;
@@ -115,22 +61,6 @@ export const useCardsStore = defineStore("cards", () => {
 			currentFolderPath.value = path;
 		} else throw new Error(`Folder at path ${folderPath} in category '${category}' not found.`);
 	}
-
-	const filteredCards = computed(() => {
-		// TODO
-		// const filtered = filterCards(cards.value, filter);
-		// if (prefStore.cardsOrder === "alphanumeric") sortCards(filtered);
-		// return filtered;
-		return cards;
-	});
-
-	const cardCount = computed(() => {
-		// TODO
-		// let count = 0;
-		// for (const key in cards.value) count += cards.value[key as keyof typeof cards.value].length;
-		// return count;
-		return 0;
-	});
 
 	function _getFlatTree<T extends CardCategory>(category: T) {
 		return getCategoryFolder(category).serialize();
@@ -245,7 +175,6 @@ export const useCardsStore = defineStore("cards", () => {
 
 	function $reset() {
 		cards.value = defaultCards();
-		filter.$reset();
 	}
 
 	function $hydrate(payload: SerializedState) {
@@ -270,11 +199,6 @@ export const useCardsStore = defineStore("cards", () => {
 
 		// State setter
 		setCurrentFolder,
-
-		// TODO remove or rework
-		filter,
-		filteredCards,
-		cardCount,
 
 		// Getters
 		getAllFiles,

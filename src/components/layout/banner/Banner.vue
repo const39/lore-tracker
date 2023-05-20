@@ -30,9 +30,15 @@
 			<StatusTray />
 		</div>
 		<v-spacer />
-		<div class="text-right">
-			<SearchView class="mt-1 mb-2" />
-			<span class="text-grey text-caption">{{ cardCount + $t("status.cardCount") }}</span>
+		<div class="text-right search-bar-min-width">
+			<v-text-field
+				v-model="search"
+				:label="$t('status.search')"
+				append-inner-icon="mdi-magnify"
+				density="comfortable"
+				hide-details
+				clearable
+			/>
 		</div>
 
 		<v-divider class="ml-3 mr-1" vertical />
@@ -44,10 +50,9 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import SearchView from "@/components/global/SearchView.vue";
 import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
-import { useCardsStore } from "@/store/cards";
+import { useFilterStore } from "@/store/filter";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [
@@ -56,10 +61,8 @@ const rules = [
 ];
 const editName = ref(false);
 
-const cardsStore = useCardsStore();
 const campaignInfoStore = useCampaignInfoStore();
-
-const cardCount = computed(() => cardsStore.cardCount);
+const filterStore = useFilterStore();
 
 const campaignName = computed({
 	get() {
@@ -70,4 +73,18 @@ const campaignName = computed({
 		if (name) campaignInfoStore.name = name;
 	},
 });
+
+const search = computed({
+	get() {
+		return filterStore.rules.text;
+	},
+	set(value) {
+		filterStore.rules.text = value?.trim();
+	},
+});
 </script>
+<style scoped>
+.search-bar-min-width {
+	min-width: 300px;
+}
+</style>

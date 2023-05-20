@@ -48,7 +48,7 @@ const en: Locale = {
 			winter: "Winter",
 		},
 		action: "Click to increase or decrease",
-		cardCount: " saved cards",
+		search: "Search",
 		selectors: {
 			customOrder: "Custom order",
 			alphanumericOrder: "Alphanumeric order",
@@ -120,14 +120,6 @@ const en: Locale = {
 		deleteNote: "Delete a note",
 		deleteConfirm: "Do you really want to delete ",
 		deleteConfirmFolder: "This will delete all its subfolders and files.",
-	},
-
-	search: {
-		search: "Search",
-		containing: "Containing",
-		taggedWith: "Tagged with",
-		cardsMatching: " cards match the search.",
-		sortDisabled: "Card sort disabled during search.",
 	},
 
 	actions: {

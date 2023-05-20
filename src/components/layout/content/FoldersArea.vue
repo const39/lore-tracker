@@ -6,6 +6,7 @@
 	>
 		<template #actions>
 			<v-btn
+				:disabled="disableActions"
 				class="mx-2"
 				icon="mdi-plus"
 				density="compact"
@@ -32,6 +33,7 @@ import GenericArea from "./GenericArea.vue";
 const props = defineProps<{
 	modelValue: CardFolder; // currentFolder v-model
 	category: CardCategory;
+	disableActions?: boolean;
 }>();
 
 const emit = defineEmits<{

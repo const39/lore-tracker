@@ -1,40 +1,48 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { CardCategory, ID } from "@/core/model/cards";
-
-export const CategoryFilter = {
-	ALL: "all",
-	QUEST: CardCategory.Quest,
-	EVENT: CardCategory.Event,
-	LOCATION: CardCategory.Location,
-	CHARACTER: CardCategory.Character,
-	FACTION: CardCategory.Faction,
-	NOTE: CardCategory.Note,
-} as const;
-
-export type CategoryFilter = (typeof CategoryFilter)[keyof typeof CategoryFilter];
+import {
+	CardFolder,
+	CardFolderMetadata,
+	CardTypes,
+	getAllText
+} from "@/core/model/cards";
+import utilities from "@/core/utilities";
 
 export interface Filter {
-	category: CategoryFilter;
-	text: string;
-	tags: ID[];
+	text?: string;
 }
 
 export const useFilterStore = defineStore("filter", () => {
-	const category = ref<CategoryFilter>(CategoryFilter.ALL);
-	const text = ref("");
-	const tags = ref<ID[]>([]);
+	const rules = ref<Filter>({});
 
-	const isFilterActive = computed(() => {
-		// Filter is active if at least one field of the filter is different from the default (blank) filter
-		return category.value !== CategoryFilter.ALL || text.value.length || tags.value.length;
-	});
+	const isFilterActive = computed(() => !!rules.value.text?.trim());
 
-	function $reset() {
-		category.value = CategoryFilter.ALL;
-		text.value = "";
-		tags.value = [];
+	function _getItemPredicate(item: CardTypes | CardFolder) {
+		let predicate = true;
+		if (rules.value.text) {
+			const str = rules.value.text;
+			predicate &&= getAllText(item).some((text) => text.toLowerCase().includes(str));
+		}
+		return predicate;
 	}
 
-	return { category, text, tags, isFilterActive, $reset };
+	function filter(toFilter: CardFolder) {
+		const filteredFiles = toFilter.files.filter((item) => _getItemPredicate(item));
+
+		const filteredFolders = toFilter.subfolders.filter((item) => _getItemPredicate(item));
+
+		const meta: CardFolderMetadata = {
+			id: utilities.uid(),
+			_category: toFilter.metadata._category,
+			color: "#ffffff",
+			name: "search-results",
+		};
+		return new CardFolder(meta, undefined, filteredFiles, filteredFolders);
+	}
+
+	function $reset() {
+		rules.value = {};
+	}
+
+	return { rules, isFilterActive, filter, $reset };
 });
