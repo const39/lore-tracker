@@ -202,7 +202,7 @@ export interface Locale {
 			};
 			misc: {
 				title: string;
-				openSearch: string;
+				toggleSort: string;
 				openOptions: string;
 			};
 		};
