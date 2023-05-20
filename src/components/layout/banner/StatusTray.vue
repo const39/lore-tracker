@@ -2,14 +2,22 @@
 	<v-tooltip location="bottom">
 		<template #activator="{ props }">
 			<div class="d-inline text-body-2" v-bind="props">
-				<span class="clickable" @click.left="daysCounter++" @click.right="daysCounter--">
-					<v-icon size="small" icon="mdi-white-balance-sunny" />
+				<span
+					class="clickable"
+					@click.left="daysCounter++"
+					@click.prevent.right="daysCounter--"
+				>
+					<v-icon color="yellow-darken-2" size="small" icon="mdi-white-balance-sunny" />
 					{{ $t("status.day") + daysCounter }}
 				</span>
 				|
-				<span class="clickable" @click.left="nextSeason" @click.right="previousSeason">
-					<v-icon size="small" icon="mdi-flower" />
-					{{ currentSeason }}
+				<span
+					class="clickable"
+					@click.left="nextSeason"
+					@click.prevent.right="previousSeason"
+				>
+					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
+					{{ $t(`status.seasons.${currentSeason}`) }}
 				</span>
 			</div>
 		</template>
@@ -36,10 +44,10 @@ const daysCounter = computed({
 
 const currentSeason = computed({
 	get() {
-		return $t(`status.seasons.${campaignInfoStore.season}`);
+		return campaignInfoStore.season;
 	},
 	set(val) {
-		campaignInfoStore.season = val as Season;
+		campaignInfoStore.season = val;
 	},
 });
 
@@ -59,4 +67,12 @@ function nextSeason() {
 		else currentSeason.value = values[0];
 	}
 }
+
+// * Style
+const seasonColors = {
+	[Season.SPRING]: "green-darken-1",
+	[Season.SUMMER]: "yellow-darken-2",
+	[Season.AUTUMN]: "deep-orange-darken-2",
+	[Season.WINTER]: "blue-grey-darken-1",
+} as const;
 </script>
