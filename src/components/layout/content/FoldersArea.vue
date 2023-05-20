@@ -2,6 +2,7 @@
 	<GenericArea
 		v-model="currentFolder.subfolders"
 		:title="$t('categories.folder') + 's'"
+		:loading="loading"
 		group="folders"
 	>
 		<template #actions>
@@ -33,6 +34,7 @@ import GenericArea from "./GenericArea.vue";
 const props = defineProps<{
 	modelValue: CardFolder; // currentFolder v-model
 	category: CardCategory;
+	loading?: boolean;
 	disableActions?: boolean;
 }>();
 
