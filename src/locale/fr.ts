@@ -48,7 +48,7 @@ const fr: Locale = {
 			winter: "Hiver",
 		},
 		action: "Cliquez pour augmenter ou diminuer",
-		cardCount: " carte(s) enregistrée(s)",
+		search: "Recherche",
 		selectors: {
 			customOrder: "Ordre personnalisé",
 			alphanumericOrder: "Ordre alphanumérique",
@@ -120,14 +120,6 @@ const fr: Locale = {
 		deleteNote: "Supprimer une note",
 		deleteConfirm: "Voulez-vous vraiment supprimer ",
 		deleteConfirmFolder: "Cela supprimera tous ses sous-dossiers et fichiers.",
-	},
-
-	search: {
-		search: "Recherche",
-		containing: "Contenant",
-		taggedWith: "Lié à",
-		cardsMatching: " carte(s) correspondent à la recherche.",
-		sortDisabled: "Tri des cartes désactivé pendant la recherche.",
 	},
 
 	actions: {
