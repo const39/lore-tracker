@@ -1,5 +1,10 @@
 <template>
-	<GenericArea v-model="currentFolder.files" :title="$t('categories.file') + 's'" group="files">
+	<GenericArea
+		v-model="currentFolder.files"
+		:title="$t('categories.file') + 's'"
+		:loading="loading"
+		group="files"
+	>
 		<template #actions>
 			<v-btn
 				:disabled="disableActions"
@@ -27,6 +32,7 @@ import GenericArea from "./GenericArea.vue";
 const props = defineProps<{
 	modelValue: CardFolder; // currentFolder v-model
 	category: CardCategory;
+	loading?: boolean;
 	disableActions?: boolean;
 }>();
 

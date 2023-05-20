@@ -13,16 +13,19 @@
 		<v-window-item v-for="(tab, i) in tabs" :key="tab">
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
-				<template v-if="!alertState.isShown">
+				<!-- Safe-guard - Ensure current folder exists before showing content -->
+				<template v-if="currentFolder && !alertState.isShown">
 					<FolderBreadcrumbs :current-folder="currentFolder" />
 					<FoldersArea
 						v-model="currentFolder"
 						:category="cardsStore.currentCategory"
+						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
 						v-model="currentFolder"
 						:category="cardsStore.currentCategory"
+						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 				</template>
@@ -45,7 +48,7 @@ import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
 import { Icon } from "@/core/icons";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { CardCategory, CardFolder, createRootFolder } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
@@ -59,22 +62,34 @@ const { alertState, setError, resetAlert } = useAlert();
 
 const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
+const loading = ref(false);
 
-const currentFolder = ref<CardFolder>(cardsStore.currentFolder);
+const emptyFolder = createRootFolder(CardCategory.Quest); // use a dummy empty folder on initial page load to trigger loading states without using an undefined object
+const currentFolder = ref<CardFolder>(emptyFolder);
 
-const filterItems = useDebounceFn(
-	() => {
-		currentFolder.value = filterStore.isFilterActive
-			? filterStore.filter(cardsStore.currentFolder)
-			: cardsStore.currentFolder;
-	},
-	800,
-	{ maxWait: 1500 }
-);
+const filterItems = useDebounceFn(() => filterStore.filter(cardsStore.currentFolder), 800);
+
+function updateItems() {
+	loading.value = true;
+
+	const promise = filterStore.isFilterActive
+		? new Promise<CardFolder>((resolve) => setTimeout(() => filterItems().then(resolve), 0))
+		: Promise.resolve(cardsStore.currentFolder);
+
+	promise.then((folder) => {
+		// Safe-guard: Ensure folder is defined 
+		// -> because when the debounced function is cancelled by a new call, the promise returns undefined
+		// @see https://vueuse.org/shared/useDebounceFn/#usage
+		if (folder) {
+			currentFolder.value = folder;
+			loading.value = false;
+		}
+	});
+}
 
 watch(
 	() => filterStore.rules,
-	() => filterItems(),
+	() => updateItems(),
 	{ deep: true }
 );
 
@@ -86,7 +101,7 @@ watch(
 		// If this fails (i.e. this folder does not exist), display error message to user
 		try {
 			cardsStore.setCurrentFolder(category, folderPath);
-			filterItems();
+			updateItems();
 		} catch (e) {
 			console.error(e);
 			setError($t("messages.errors.folderNotFound.title"));

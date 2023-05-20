@@ -1,12 +1,16 @@
 <template>
 	<div class="my-3">
 		<div class="mb-4 d-flex align-center text-h6">
-			<v-badge :content="items.length" class="mr-2 mb-1" color="grey" inline />
+			<span class="mr-2 mb-1">
+				<v-progress-circular v-if="loading" color="primary" size="small" indeterminate />
+				<v-badge v-else :content="items.length" color="grey" inline />
+			</span>
 			<span class=""> {{ title }} </span>
 			<slot name="actions" />
 		</div>
 		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
 		<draggable
+			v-if="!loading"
 			v-model="items"
 			:animation="200"
 			:disabled="prefStore.dragAndDropMode !== 'sort'"
@@ -43,6 +47,7 @@ const props = defineProps<{
 	modelValue: CardTypes[] | CardFolder[];
 	title: string;
 	group: string;
+	loading?: boolean;
 }>();
 
 const emit = defineEmits<{
