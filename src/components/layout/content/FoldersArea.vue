@@ -1,8 +1,10 @@
 <template>
-	<div class="my-3">
-		<div class="mb-4 d-flex align-center text-h6">
-			<v-badge :content="subfolders.length" class="mr-2 mb-1" color="grey" inline />
-			<span> {{ $t("categories.folder") + "s" }} </span>
+	<GenericArea
+		v-model="cardsStore.currentFolder.subfolders"
+		:title="$t('categories.folder') + 's'"
+		group="folders"
+	>
+		<template #actions>
 			<v-btn
 				class="mx-2"
 				icon="mdi-plus"
@@ -10,73 +12,28 @@
 				variant="text"
 				@click="newFolder"
 			/>
-		</div>
-		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
-		<draggable
-			v-model="subfolders"
-			:animation="200"
-			:disabled="prefStore.dragAndDropMode !== 'sort'"
-			tag="v-row"
-			draggable=".draggable-folder"
-			group="folders"
-			item-key="id"
-			@start="drag = true"
-			@end="drag = false"
-		>
-			<template #item="{ element }">
-				<v-col
-					class="draggable-folder"
-					cols="12"
-					v-bind="density"
-				>
-					<FolderCard
-						:draggable="prefStore.dragAndDropMode === 'sort'"
-						:folder="element"
-						@open-folder="openFolder"
-					/>
-				</v-col>
-			</template>
-		</draggable>
-	</div>
+		</template>
+		<template #default="{ isDraggable, itemData }">
+			<FolderCard :draggable="isDraggable" :folder="itemData" @open-folder="openFolder" />
+		</template>
+	</GenericArea>
 	<FolderDialog v-model="showFolderDialog" />
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useRouter } from "vue-router";
-import draggable from "vuedraggable";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
-import { useGridDensity } from "@/composables/gridDensity";
 import { CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { usePreferencesStore } from "@/store/preferences";
+import GenericArea from "./GenericArea.vue";
 
-const drag = ref(false);
 const showFolderDialog = ref(false);
 
 const router = useRouter();
 const cardsStore = useCardsStore();
-const prefStore = usePreferencesStore();
-const { density } = useGridDensity();
-
-const subfolders = computed({
-	get() {
-		const folders = cardsStore.currentFolder.subfolders;
-		if (prefStore.cardsOrder === "alphanumeric")
-			// Sort the shallow copy of the folders list in the alphanumeric order
-			return [...folders].sort((a, b) => {
-				const textA = a.metadata.name.toLowerCase();
-				const textB = b.metadata.name.toLowerCase();
-				return textA.localeCompare(textB);
-			});
-		else return folders;
-	},
-	set(list) {
-		cardsStore.updateWholeSubfolderList(list);
-	},
-});
 
 function newFolder(): void {
 	showFolderDialog.value = true;
