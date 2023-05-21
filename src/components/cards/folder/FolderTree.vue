@@ -11,7 +11,7 @@
 			v-for="folder in rootFolders"
 			:key="folder.metadata.id"
 			v-model:selected="selected"
-			v-model:opened="opened"
+			v-model:opened="openItems"
 			:title="$t(`categories.${folder.metadata._category}`)"
 			:folder="folder"
 			:level="0"
@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Icon } from "@/core/icons";
 import { CardFolder, ID } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
@@ -49,7 +49,7 @@ const emit = defineEmits<{
 	(e: "close"): void;
 }>();
 
-const opened = ref<CardFolder[]>([]);
+const openItems = ref<CardFolder[]>([]);
 
 const selected = computed({
 	get() {
@@ -59,6 +59,39 @@ const selected = computed({
 		emit("update:modelValue", value);
 	},
 });
+
+// Update open items if the 'openAt' prop changes
+// -> runs immediately on component load
+watch(
+	() => props.openAt,
+	(target) => {
+		openItems.value = target ? getHierarchy(target) : [];
+		// Set the selected item to the openAt value
+		selected.value = target;	
+	},
+	{ immediate: true }
+);
+
+// Clear the selected value if it is under closed items
+watch(openItems, () => {
+	if (selected.value && !openItems.value.includes(selected.value)) selected.value = undefined;
+});
+
+/**
+ * Walk the folder tree in reverse from the target folder to the root folder to get the target's hierarchy. 
+ * @param target the target folder to get the hierarchy of
+ */
+function getHierarchy(target: CardFolder) {
+	const hierarchy = [];
+	let folder: CardFolder | undefined = target;
+	do {
+		hierarchy.push(folder);
+		folder = folder.parent;
+	} while (folder !== undefined);
+
+	// Reverse the list to get the result in root > target order
+	return hierarchy.reverse();
+}
 </script>
 
 <style scoped>

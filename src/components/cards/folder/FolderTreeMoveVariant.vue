@@ -2,7 +2,7 @@
 	<FolderTree
 		v-model="selected"
 		:root-folders="rootFolder"
-		:open-at="openAt"
+		:open-at="cardsStore.currentFolder"
 		:title="title"
 		:disabled="disabledItems"
 		@close="close"
@@ -27,10 +27,6 @@ import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useSidePanel } from "@/store/sidePanel";
 import FolderTree from "./FolderTree.vue";
-
-const props = defineProps<{
-	openAt?: CardFolder;
-}>();
 
 const sidePanelStore = useSidePanel();
 const cardsStore = useCardsStore();
