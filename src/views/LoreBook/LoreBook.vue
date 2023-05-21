@@ -13,11 +13,9 @@
 					<template v-if="status === 'folder-tree'">
 						<FolderTreeNavVariant
 							v-if="sidePanelStore.folderTreeState.variant === 'nav'"
-							:open-at="cardsStore.currentFolder"
 						/>
 						<FolderTreeMoveVariant
 							v-if="sidePanelStore.folderTreeState.variant === 'card-move'"
-							:open-at="cardsStore.currentFolder"
 						/>
 					</template>
 				</v-card>
@@ -36,10 +34,8 @@ import FolderTreeMoveVariant from "@/components/cards/folder/FolderTreeMoveVaria
 import FolderTreeNavVariant from "@/components/cards/folder/FolderTreeNavVariant.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
-import { useCardsStore } from "@/store/cards";
 import { useSidePanel } from "@/store/sidePanel";
 
-const cardsStore = useCardsStore();
 const sidePanelStore = useSidePanel();
 
 const status = computed(() => sidePanelStore.sidePanelStatus);
