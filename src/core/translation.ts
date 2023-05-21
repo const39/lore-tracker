@@ -63,6 +63,8 @@ export interface Locale {
 
 	sidePanel: {
 		moveCard: string;
+		folderList: string;
+		openFolder: string;
 	};
 
 	fields: {

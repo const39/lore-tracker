@@ -6,6 +6,7 @@ import { useCardsStore } from "./cards";
 import { usePreferencesStore } from "./preferences";
 
 export type FormVariant = "edit" | "add";
+export type FolderTreeVariant = "card-move" | "nav";
 export type SidePanel = "closed" | "form" | "folder-tree";
 
 export const useSidePanel = defineStore("sidePanel", () => {
@@ -17,7 +18,8 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		model: ref<CardTypes>(),
 	});
 
-	const fileTreeState = reactive({
+	const folderTreeState = reactive({
+		variant: ref<FolderTreeVariant>("nav"),
 		parentFolder: ref<CardFolder>(),
 		itemToMove: ref<CardTypes | CardFolder>(),
 	});
@@ -61,15 +63,22 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		_resetSidePanel();
 	}
 
-	function newFileTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder) {
-		fileTreeState.itemToMove = itemToMove;
-		fileTreeState.parentFolder = inFolder;
+	function newFolderTree(): void;
+	function newFolderTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder): void;
+	function newFolderTree(itemToMove?: CardTypes | CardFolder, inFolder?: CardFolder) {
+		if (itemToMove && inFolder) {
+			folderTreeState.itemToMove = itemToMove;
+			folderTreeState.parentFolder = inFolder;
+			folderTreeState.variant = "card-move";
+		} else {
+			folderTreeState.variant = "nav";
+		}
 		sidePanelStatus.value = "folder-tree";
 	}
 
-	function resetFileTree() {
-		fileTreeState.itemToMove = undefined;
-		fileTreeState.parentFolder = undefined;
+	function resetFolderTree() {
+		folderTreeState.itemToMove = undefined;
+		folderTreeState.parentFolder = undefined;
 		_resetSidePanel();
 	}
 
@@ -86,9 +95,9 @@ export const useSidePanel = defineStore("sidePanel", () => {
 
 		// * File tree
 		// State
-		fileTreeState,
+		folderTreeState,
 		// Actions
-		newFileTree,
-		resetFileTree,
+		newFolderTree,
+		resetFolderTree,
 	};
 });
