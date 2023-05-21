@@ -30,8 +30,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import FormWrapper from "@/components/cards/files/forms/FormWrapper.vue";
-import FolderTreeMoveVariant from "@/components/cards/folder/FolderTreeMoveVariant.vue";
-import FolderTreeNavVariant from "@/components/cards/folder/FolderTreeNavVariant.vue";
+import FolderTreeMoveVariant from "@/components/cards/folder/tree/FolderTreeMoveVariant.vue";
+import FolderTreeNavVariant from "@/components/cards/folder/tree/FolderTreeNavVariant.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
 import { useSidePanel } from "@/store/sidePanel";
