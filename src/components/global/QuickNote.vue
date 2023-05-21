@@ -120,8 +120,6 @@ const interaction = {
 
 function startResize(e: MouseEvent) {
 	if (element.value) {
-		console.log(element.value);
-
 		e.preventDefault();
 		interaction.originalW = Number.parseFloat(
 			getComputedStyle(element.value, null).getPropertyValue("width").replace("px", "")
