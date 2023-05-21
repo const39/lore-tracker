@@ -6,7 +6,7 @@
 		:draggable-data="draggable ? 1 : undefined"
 		@edit="editMode = true"
 		@delete="confirmDelete"
-		@move="showFileTree"
+		@move="showFolderTree"
 		@click="openFolder(folder)"
 	>
 		<v-card-title class="pr-0 d-flex align-center">
@@ -53,8 +53,8 @@ const cardsStore = useCardsStore();
 const sidePanelStore = useSidePanel()
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
-function showFileTree() {
-	sidePanelStore.newFileTree(props.folder, cardsStore.currentFolder);
+function showFolderTree() {
+	sidePanelStore.newFolderTree(props.folder, cardsStore.currentFolder);
 }
 
 function confirmDelete() {

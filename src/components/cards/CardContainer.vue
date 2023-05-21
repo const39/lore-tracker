@@ -6,7 +6,7 @@
 		with-options
 		@edit="showForm"
 		@delete="confirmDelete"
-		@move="showFileTree"
+		@move="showFolderTree"
 		@click="showForm"
 	>
 		<!-- Dynamic Card content component -->
@@ -39,8 +39,8 @@ function showForm() {
 	sidePanelStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
 }
 
-function showFileTree() {
-	sidePanelStore.newFileTree(props.itemData, cardsStore.currentFolder);
+function showFolderTree() {
+	sidePanelStore.newFolderTree(props.itemData, cardsStore.currentFolder);
 }
 
 function confirmDelete() {

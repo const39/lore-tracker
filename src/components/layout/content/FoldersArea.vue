@@ -16,11 +16,11 @@
 			/>
 			<v-btn
 				:disabled="disableActions"
-				class="m1-2"
+				class="mx-1"
 				icon="mdi-file-tree"
 				density="compact"
 				variant="text"
-				@click="showFileTree"
+				@click="showFolderTree"
 			/>
 		</template>
 		<template #default="{ isDraggable, itemData }">
@@ -69,7 +69,7 @@ function newFolder(): void {
 	showFolderDialog.value = true;
 }
 
-function showFileTree() {
+function showFolderTree() {
 	sidePanelStore.newFolderTree();
 }
 
