@@ -52,6 +52,7 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import eventBus from "@/core/eventBus";
 import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
@@ -83,9 +84,10 @@ function uploadSave(): void {
 				try {
 					store.loadData(value);
 					store.save();
+					eventBus.emit("data-loaded");
 					showSnackbar({
 						message: $t("messages.success.saveFileImportSuccessful"),
-						timeout: -1,
+						timeout: 7000,
 						color: "success",
 					});
 				} catch (err) {

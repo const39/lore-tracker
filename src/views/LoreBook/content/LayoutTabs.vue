@@ -47,6 +47,7 @@ import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
+import eventBus from "@/core/eventBus";
 import { Icon } from "@/core/icons";
 import { CardCategory, CardFolder, createRootFolder } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
@@ -77,7 +78,7 @@ function updateItems() {
 		: Promise.resolve(cardsStore.currentFolder);
 
 	promise.then((folder) => {
-		// Safe-guard: Ensure folder is defined 
+		// Safe-guard: Ensure folder is defined
 		// -> because when the debounced function is cancelled by a new call, the promise returns undefined
 		// @see https://vueuse.org/shared/useDebounceFn/#usage
 		if (folder) {
@@ -87,12 +88,19 @@ function updateItems() {
 	});
 }
 
+// Trigger update on new save load
+eventBus.on((e) => {
+	if (e === "data-loaded") updateItems();
+});
+
+// Trigger update on filter rules change
 watch(
 	() => filterStore.rules,
 	() => updateItems(),
 	{ deep: true }
 );
 
+// Trigger update on navigation update (either category or folder path)
 watch(
 	props,
 	({ category, folderPath }) => {
