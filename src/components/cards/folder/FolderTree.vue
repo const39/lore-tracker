@@ -1,25 +1,29 @@
 <template>
 	<v-card-actions class="float-right">
-		<v-btn :disabled="!selected" prepend-icon="mdi-folder-move" color="primary" @click="move">
-			{{ $t("sidePanel.moveCard") }}
-		</v-btn>
+		<slot name="action" v-bind="{ props: { disabled: !selected } }" />
+		<v-btn icon="mdi-close" density="comfortable" @click="$emit('close')" />
 	</v-card-actions>
 	<v-card-title class="mb-1 text-truncate">
-		{{ `${$t("sidePanel.moveCard")} "${title}"` }}
+		{{ title }}
 	</v-card-title>
 	<v-list class="list" density="compact">
 		<FolderTreeGroup
-			v-for="rootFolder in rootFolders"
-			:key="rootFolder.folder.metadata.id"
+			v-for="folder in rootFolders"
+			:key="folder.metadata.id"
 			v-model:selected="selected"
 			v-model:opened="opened"
-			:title="$t(`categories.${rootFolder.category}`)"
-			:folder="rootFolder.folder"
+			:title="$t(`categories.${folder.metadata._category}`)"
+			:folder="folder"
 			:level="0"
-			:disabled="isCardFolder(itemToMove) ? [itemToMove.metadata.id] : false"
+			:disabled="disabled"
 		>
 			<template #prepend>
-				<v-icon :icon="Icon[rootFolder.category]" class="icon-color" size="small" end />
+				<v-icon
+					:icon="Icon[folder.metadata._category]"
+					class="icon-color"
+					size="small"
+					end
+				/>
 			</template>
 		</FolderTreeGroup>
 	</v-list>
@@ -28,57 +32,33 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { Icon } from "@/core/icons";
-import {
-	CardCategory,
-	CardFolder,
-	CardTypes,
-	getText,
-	isCard,
-	isCardFolder,
-} from "@/core/model/cards";
+import { CardFolder, ID } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
-import { useSidePanel } from "@/store/sidePanel";
 import FolderTreeGroup from "./FolderTreeGroup.vue";
 
 const props = defineProps<{
-	category?: CardCategory;
+	modelValue: CardFolder | undefined; // v-model
+	title: string;
+	rootFolders: CardFolder[];
 	openAt?: CardFolder;
+	disabled?: ID[];
 }>();
 
-const sidePanelStore = useSidePanel();
-const cardsStore = useCardsStore();
+const emit = defineEmits<{
+	(e: "update:modelValue", value: typeof props.modelValue): void;
+	(e: "close"): void;
+}>();
 
-const selected = ref<CardFolder>();
 const opened = ref<CardFolder[]>([]);
 
-const itemToMove = computed(() => sidePanelStore.fileTreeState.itemToMove);
-
-const title = computed(() => (itemToMove.value ? getText(itemToMove.value) : ""));
-
-const rootFolders = computed(() => {
-	const categories = props.category ? [props.category] : Object.values(CardCategory);
-	return categories.map((category) => {
-		const root = cardsStore.getCategoryFolder(category);
-		return {
-			category: category,
-			folder: root,
-		};
-	});
+const selected = computed({
+	get() {
+		return props.modelValue;
+	},
+	set(value) {
+		emit("update:modelValue", value);
+	},
 });
-
-function move() {
-	if (selected.value) {
-		const parentFolder = sidePanelStore.fileTreeState.parentFolder;
-		if (isCardFolder(itemToMove.value)) {
-			cardsStore.moveFolder(itemToMove.value, selected.value);
-		}
-		if (isCard(itemToMove.value) && parentFolder) {
-			cardsStore.moveCard(itemToMove.value, parentFolder, selected.value);
-		}
-	}
-	sidePanelStore.resetFileTree();
-}
 </script>
 
 <style scoped>

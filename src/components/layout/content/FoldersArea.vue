@@ -8,11 +8,19 @@
 		<template #actions>
 			<v-btn
 				:disabled="disableActions"
-				class="mx-2"
+				class="m1-2"
 				icon="mdi-plus"
 				density="compact"
 				variant="text"
 				@click="newFolder"
+			/>
+			<v-btn
+				:disabled="disableActions"
+				class="m1-2"
+				icon="mdi-file-tree"
+				density="compact"
+				variant="text"
+				@click="showFileTree"
 			/>
 		</template>
 		<template #default="{ isDraggable, itemData }">
@@ -29,6 +37,7 @@ import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
 import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
+import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
@@ -45,6 +54,7 @@ const emit = defineEmits<{
 const showFolderDialog = ref(false);
 
 const router = useRouter();
+const sidePanelStore = useSidePanel();
 
 const currentFolder = computed({
 	get() {
@@ -57,6 +67,10 @@ const currentFolder = computed({
 
 function newFolder(): void {
 	showFolderDialog.value = true;
+}
+
+function showFileTree() {
+	sidePanelStore.newFolderTree();
 }
 
 function openFolder(folder: CardFolder): void {

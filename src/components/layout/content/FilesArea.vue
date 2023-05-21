@@ -8,7 +8,7 @@
 		<template #actions>
 			<v-btn
 				:disabled="disableActions"
-				class="mx-2"
+				class="mx-1"
 				icon="mdi-plus"
 				density="compact"
 				variant="text"

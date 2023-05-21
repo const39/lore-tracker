@@ -5,7 +5,7 @@
 				<v-progress-circular v-if="loading" color="primary" size="small" indeterminate />
 				<v-badge v-else :content="items.length" color="grey" inline />
 			</span>
-			<span class=""> {{ title }} </span>
+			<span class="px-1"> {{ title }} </span>
 			<slot name="actions" />
 		</div>
 		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->

@@ -245,3 +245,8 @@ export function getAllText(card: CardTypes | CardFolder): string[] {
 		}
 	} else return [card.metadata.name];
 }
+
+export function getCategory(arg: CardTypes | CardFolder) {
+	if (isCardFolder(arg)) return arg.metadata._category;
+	else return arg._category;
+}

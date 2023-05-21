@@ -61,6 +61,8 @@ const fr: Locale = {
 
 	sidePanel: {
 		moveCard: "Déplacer",
+		folderList: "Liste des dossiers",
+		openFolder: "Ouvrir",
 	},
 
 	fields: {
