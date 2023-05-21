@@ -1,8 +1,8 @@
 <template>
 	<v-app>
 		<v-app-bar color="primary">
-			<div class="ma-2">
-				<v-img class="header-icon" max-width="48px" max-height="48px" src="logo.svg" />
+			<div class="ma-2 ml-4">
+				<v-img class="header-icon" max-width="48px" max-height="48px" src="/logo.svg" />
 			</div>
 
 			<v-app-bar-title class="text-xl-h4">
