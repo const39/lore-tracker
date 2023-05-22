@@ -84,10 +84,6 @@ const hotkeysDisplay = {
 	],
 	misc: [
 		{
-			text: $t("options.hotkeys.misc.toggleSort"),
-			command: "Ctrl+Shift+L",
-		},
-		{
 			text: $t("options.hotkeys.misc.openOptions"),
 			command: "ESC",
 		},

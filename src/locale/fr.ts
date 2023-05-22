@@ -55,7 +55,6 @@ const fr: Locale = {
 			largeTabDensity: "Densité spacieuse",
 			comfortableTabDensity: "Densité confortable",
 			compactTabDensity: "Densité compacte",
-			cardDragAndDrop: "Déplacement des cartes",
 		},
 	},
 
@@ -63,6 +62,15 @@ const fr: Locale = {
 		moveCard: "Déplacer",
 		folderList: "Liste des dossiers",
 		openFolder: "Ouvrir",
+	},
+
+	dragAndDrop: {
+		desc: "Mode de glisser-déposer",
+		modes: {
+			disabled: "Désactivé",
+			sort: "Tri des cartes",
+			link: "Lier une carte",
+		},
 	},
 
 	fields: {
@@ -202,7 +210,6 @@ const fr: Locale = {
 			},
 			misc: {
 				title: "Divers",
-				toggleSort: "Activer/désactiver le tri des cartes",
 				openOptions: "Ouvrir/fermer le menu des options",
 			},
 		},

@@ -35,7 +35,7 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		// Show side panel with form inside it
 		sidePanelStatus.value = "form";
 		// Enable 'drop' drag and drop when form is open
-		_prefStore.dragAndDropMode = "drop";
+		_prefStore.dragAndDropMode = "link";
 	}
 
 	function newAddForm(category: CardCategory, inFolder: CardFolder) {
