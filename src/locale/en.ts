@@ -55,7 +55,6 @@ const en: Locale = {
 			largeTabDensity: "Large density",
 			comfortableTabDensity: "Comfortable density",
 			compactTabDensity: "Compact density",
-			cardDragAndDrop: "Move cards",
 		},
 	},
 
@@ -63,6 +62,15 @@ const en: Locale = {
 		moveCard: "Move",
 		folderList: "Folder list",
 		openFolder: "Open",
+	},
+
+	dragAndDrop: {
+		desc: "Drag & drop mode",
+		modes: {
+			disabled: "Disabled",
+			sort: "Card sort",
+			link: "Link a card",
+		},
 	},
 
 	fields: {
@@ -202,7 +210,6 @@ const en: Locale = {
 			},
 			misc: {
 				title: "Other",
-				toggleSort: "Lock/unlock card sort",
 				openOptions: "Open/close option menu",
 			},
 		},

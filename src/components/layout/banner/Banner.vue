@@ -42,6 +42,11 @@
 		</div>
 
 		<v-divider class="ml-3 mr-1" vertical />
+
+		<DragAndDropModeSelector />
+		
+		<v-divider class="ml-3 mr-1" vertical />
+
 		<div>
 			<slot name="actions" />
 		</div>
@@ -53,6 +58,7 @@ import { computed, ref } from "vue";
 import { t as $t } from "@/core/translation";
 import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useFilterStore } from "@/store/filter";
+import DragAndDropModeSelector from "../content/DragAndDropModeSelector.vue";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [

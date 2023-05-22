@@ -57,7 +57,6 @@ export interface Locale {
 			largeTabDensity: string;
 			comfortableTabDensity: string;
 			compactTabDensity: string;
-			cardDragAndDrop: string;
 		};
 	};
 
@@ -65,6 +64,15 @@ export interface Locale {
 		moveCard: string;
 		folderList: string;
 		openFolder: string;
+	};
+
+	dragAndDrop: {
+		desc: string;
+		modes: {
+			disabled: string;
+			sort: string;
+			link: string;
+		}
 	};
 
 	fields: {
@@ -204,7 +212,6 @@ export interface Locale {
 			};
 			misc: {
 				title: string;
-				toggleSort: string;
 				openOptions: string;
 			};
 		};
