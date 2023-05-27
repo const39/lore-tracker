@@ -12,7 +12,3 @@ export enum Season {
 	WINTER = "winter",
 }
 
-export enum CustomMIMEType {
-	CardType = "application/card-type",
-	CardFolder = "application/card-folder",
-}

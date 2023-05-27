@@ -9,9 +9,8 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useTheme } from "vuetify/lib/framework.mjs";
-import { useDropZone } from "@/composables/dropZone";
-import { CustomMIMEType } from "@/core/constants";
-import { CardCategory, CardTypes } from "@/core/model/cards";
+import { useDropZone, CustomMIMEType, DropPayload } from "@/composables/dragAndDrop";
+import { CardTypes, isCard } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 
 const emit = defineEmits<{
@@ -39,22 +38,11 @@ const color = computed(() => {
 /**
  * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
  */
-function onDropAccepted(items: Array<File | string | null>) {
+function onDropAccepted(items: DropPayload[]) {
 	if (items.length) {
-		const content = items[0];
-		if (typeof content === "string") {
-			try {
-				// Extract the card data from the DataTransfer
-				const maybeCard = JSON.parse(content);
-				// Check it is valid card data - If it is, emit event to parent component with the card data
-				if (
-					"_category" in maybeCard &&
-					Object.values(CardCategory).includes(maybeCard._category)
-				)
-					emit("drop", maybeCard as CardTypes);
-			} catch (e) {
-				console.error(e);
-			}
+		const { dataType, data } = items[0];
+		if (dataType === CustomMIMEType.CardType && isCard(data)) {
+			emit("drop", data);
 		}
 	}
 }
