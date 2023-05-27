@@ -13,29 +13,35 @@
 				divided
 				mandatory
 			>
-				<v-tooltip location="top">
+				<v-tooltip location="bottom">
 					<template #activator="{ props }">
 						<v-btn v-bind="props" :value="modes[0]" size="small" icon="mdi-cancel" />
 					</template>
 					{{ $t(`dragAndDrop.modes.${modes[0]}`) }}
 				</v-tooltip>
-				<v-tooltip location="top">
+				<v-tooltip location="bottom">
 					<template #activator="{ props }">
-						<v-btn v-bind="props" :value="modes[1]" size="small" icon="mdi-sort" />
+						<v-btn v-bind="props" :value="modes[1]" size="small" icon="mdi-folder-move" />
 					</template>
 					{{ $t(`dragAndDrop.modes.${modes[1]}`) }}
 				</v-tooltip>
-				<v-tooltip location="top">
+				<v-tooltip location="bottom">
+					<template #activator="{ props }">
+						<v-btn v-bind="props" :value="modes[2]" size="small" icon="mdi-sort" />
+					</template>
+					{{ $t(`dragAndDrop.modes.${modes[2]}`) }}
+				</v-tooltip>
+				<v-tooltip location="bottom">
 					<template #activator="{ props }">
 						<v-btn
 							v-bind="props"
-							:value="modes[2]"
+							:value="modes[3]"
 							size="small"
 							icon="mdi-link-variant"
 							disabled
 						/>
 					</template>
-					{{ $t(`dragAndDrop.modes.${modes[2]}`) }}
+					{{ $t(`dragAndDrop.modes.${modes[3]}`) }}
 				</v-tooltip>
 			</v-btn-toggle>
 		</div>
@@ -51,7 +57,7 @@ import { usePreferencesStore, type DragAndDropMode } from "@/store/preferences";
 const filterStore = useFilterStore();
 const prefStore = usePreferencesStore();
 
-const modes: DragAndDropMode[] = ["disabled", "sort", "link"];
+const modes: DragAndDropMode[] = ["disabled", "moveToFolder", "sort", "link"];
 
 const disableSelector = ref(true);
 

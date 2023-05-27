@@ -8,7 +8,7 @@ import type { Theme } from "@/plugins/vuetify";
 export type { Theme } from "@/plugins/vuetify";
 export type Order = "default" | "alphanumeric";
 export type Density = "large" | "comfortable" | "compact";
-export type DragAndDropMode = "disabled" | "sort" | "link";
+export type DragAndDropMode = "disabled" | "moveToFolder" | "sort" | "link";
 export type QuickNoteSize = { width?: number; height?: number };
 
 interface Preferences {

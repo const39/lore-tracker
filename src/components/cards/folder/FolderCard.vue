@@ -2,12 +2,15 @@
 	<!-- Pass dummy draggable-data only to enable draggable state -->
 	<BaseCard
 		v-if="!editMode"
+		ref="refDropZone"
 		:with-options="!editMode"
-		:draggable-data="draggable ? 1 : undefined"
+		:draggable="draggable"
+		:class="{ 'bg-grey-lighten-4': status === 'accepted' }"
 		@edit="editMode = true"
 		@delete="confirmDelete"
 		@move="showFolderTree"
 		@click="openFolder(folder)"
+		@dragstart="onDragStart"
 	>
 		<v-card-title class="pr-0 d-flex align-center">
 			<v-badge :content="childrenCount" color="grey">
@@ -30,8 +33,14 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
+import {
+	useDropZone,
+	CustomMIMEType,
+	type DropPayload,
+	startDrag,
+} from "@/composables/dragAndDrop";
 import { Icon } from "@/core/icons";
-import { CardFolder, getText } from "@/core/model/cards";
+import { CardFolder, getText, isCard, isCardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
@@ -48,10 +57,38 @@ const emit = defineEmits<{
 }>();
 
 const editMode = ref(false);
+const refDropZone = ref<HTMLElement | null>(null);
 
 const cardsStore = useCardsStore();
-const sidePanelStore = useSidePanel()
+const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
+const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
+	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+});
+
+/**
+ * Callback triggered when the user grabs the cards for a drag & drop
+ */
+function onDragStart(e: DragEvent) {
+	startDrag(e, props.folder, CustomMIMEType.CardFolder);
+}
+
+/**
+ * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
+ */
+function onDropAccepted(items: DropPayload[]) {
+	if (items.length) {
+		const { dataType, data: itemToMove } = items[0];
+
+		if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
+			cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
+		}
+
+		if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
+			cardsStore.moveFolder(itemToMove, props.folder);
+		}
+	}
+}
 
 function showFolderTree() {
 	sidePanelStore.newFolderTree(props.folder, cardsStore.currentFolder);

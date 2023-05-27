@@ -70,6 +70,7 @@ export interface Locale {
 		desc: string;
 		modes: {
 			disabled: string;
+			moveToFolder: string;
 			sort: string;
 			link: string;
 		}

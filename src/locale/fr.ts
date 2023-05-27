@@ -68,7 +68,8 @@ const fr: Locale = {
 		desc: "Mode de glisser-déposer",
 		modes: {
 			disabled: "Désactivé",
-			sort: "Tri des cartes",
+			moveToFolder: "Déplacer vers dossier",
+			sort: "Trier les cartes",
 			link: "Lier une carte",
 		},
 	},
