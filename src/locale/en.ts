@@ -68,7 +68,8 @@ const en: Locale = {
 		desc: "Drag & drop mode",
 		modes: {
 			disabled: "Disabled",
-			sort: "Card sort",
+			moveToFolder: "Move to folder",
+			sort: "Sort cards",
 			link: "Link a card",
 		},
 	},
