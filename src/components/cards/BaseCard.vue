@@ -1,14 +1,15 @@
 <template>
 	<v-card
 		:elevation="highlight ? undefined : elevation"
-		:draggable="isDraggable"
-		:class="{ draggable: isDraggable, highlight }"
+		:draggable="draggable"
+		:ripple="false"
+		:class="{ draggable, highlight }"
 		class="mb-4"
 		height="100%"
 		fill-height
 		@mouseenter="elevation++"
 		@mouseleave="elevation--"
-		@dragstart="onDragStart"
+		@dragstart="($event) => $emit('dragstart', $event)"
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
@@ -20,35 +21,32 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import CardOptions from "./CardOptions.vue";
 
-const props = defineProps<{
+defineProps<{
+	/**
+	 * Whether this card should provide an options menu
+	 */
 	withOptions?: boolean;
 	/**
 	 * Whether this card should display the highlight animation
 	 */
 	highlight?: boolean;
 	/**
-	 * Set with the transferred data if the card can be drag&dropped.
-	 * If undefined, the card cannot be drag & dropped.
+	 * Whether this card should display the draggable animation
 	 */
-	draggableData?: any;
+	draggable?: boolean;
 }>();
 
-defineEmits(["edit", "delete", "move"]);
+defineEmits<{
+	(e: "edit"): void;
+	(e: "delete"): void;
+	(e: "move"): void;
+	(e: "dragstart", value: DragEvent): void;
+}>();
 
 const elevation = ref(1);
-
-const isDraggable = computed(() => !!props.draggableData);
-
-/**
- * Callback triggered when the user grabs the cards for a drag & drop
- */
-function onDragStart(e: DragEvent) {
-	if (props.draggableData)
-		e.dataTransfer?.setData("application/card-type", JSON.stringify(props.draggableData));
-}
 </script>
 <style scoped>
 .draggable {

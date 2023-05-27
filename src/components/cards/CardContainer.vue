@@ -1,13 +1,14 @@
 <template>
 	<BaseCard
 		:id="id"
-		:draggable-data="draggable ? itemData : undefined"
+		:draggable="draggable"
 		:highlight="isHighlighted"
 		with-options
 		@edit="showForm"
 		@delete="confirmDelete"
 		@move="showFolderTree"
 		@click="showForm"
+		@dragstart="onDragStart"
 	>
 		<!-- Dynamic Card content component -->
 		<component :is="contentComponent" :item-data="itemData" />
@@ -18,6 +19,7 @@
 import { useDebounceFn } from "@vueuse/core";
 import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { useRoute } from "vue-router";
+import { CustomMIMEType, startDrag } from "@/composables/dragAndDrop";
 import { CardTypes, getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
@@ -34,6 +36,13 @@ const route = useRoute();
 const cardsStore = useCardsStore();
 const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
+
+/**
+ * Callback triggered when the user grabs the cards for a drag & drop
+ */
+function onDragStart(e: DragEvent) {
+	startDrag(e, props.itemData, CustomMIMEType.CardType);
+}
 
 function showForm() {
 	sidePanelStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
