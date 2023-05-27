@@ -174,6 +174,23 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 		return undefined;
 	}
 
+	/**
+	 * Walk up the tree starting from this folder to the root folder to get this folder's hierarchy.
+	 * @returns the list of this folder's parents, from the higher one to this folder (included).
+	 */
+	getHierarchy() {
+		const hierarchy = [];
+		// eslint-disable-next-line @typescript-eslint/no-this-alias
+		let folder: Folder<Metadata, File> | undefined = this;
+		do {
+			hierarchy.push(folder);
+			folder = folder.parent;
+		} while (folder !== undefined);
+
+		// Reverse the list to get the result in root > target order
+		return hierarchy.reverse();
+	}
+
 	addFolder(folder: Folder<Metadata, File>, where: "head" | "tail" = "head") {
 		if (folder.hasFolder(this.metadata.id))
 			throw new Error(

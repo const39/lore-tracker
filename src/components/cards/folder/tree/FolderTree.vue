@@ -65,7 +65,7 @@ const selected = computed({
 watch(
 	() => props.openAt,
 	(target) => {
-		openItems.value = target ? getHierarchy(target) : [];
+		openItems.value = target?.getHierarchy() ?? [];
 		// Set the selected item to the openAt value
 		selected.value = target;	
 	},
@@ -76,22 +76,6 @@ watch(
 watch(openItems, () => {
 	if (selected.value && !openItems.value.includes(selected.value)) selected.value = undefined;
 });
-
-/**
- * Walk the folder tree in reverse from the target folder to the root folder to get the target's hierarchy. 
- * @param target the target folder to get the hierarchy of
- */
-function getHierarchy(target: CardFolder) {
-	const hierarchy = [];
-	let folder: CardFolder | undefined = target;
-	do {
-		hierarchy.push(folder);
-		folder = folder.parent;
-	} while (folder !== undefined);
-
-	// Reverse the list to get the result in root > target order
-	return hierarchy.reverse();
-}
 </script>
 
 <style scoped>
