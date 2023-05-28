@@ -1,12 +1,18 @@
 <template>
 	<div>
-		<v-row class="d-flex">
-			<v-col class="flex-grow-0 flex-shrink-1">
+		<v-row>
+			<v-col cols="3">
 				<v-chip size="small" label>
+					<v-icon
+						v-if="hold"
+						icon="mdi-arrow-down-bold-circle-outline"
+						color="grey-darken-1"
+						start
+					/>
 					{{ command }}
 				</v-chip>
 			</v-col>
-			<v-col class="flex-grow-1 flex-shrink-0">
+			<v-col>
 				<span>{{ text }} </span>
 			</v-col>
 		</v-row>
@@ -17,5 +23,6 @@
 defineProps<{
 	command: string;
 	text: string;
+	hold?: boolean;
 }>();
 </script>

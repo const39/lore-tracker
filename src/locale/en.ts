@@ -195,6 +195,7 @@ const en: Locale = {
 		hotkeys: {
 			optionName: "Show hotkeys",
 			title: "Hotkeys",
+			hold: "Hold",
 			pages: {
 				title: "Pages",
 				toLoreBook: "Navigate to Lore Book",
