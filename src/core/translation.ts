@@ -73,7 +73,7 @@ export interface Locale {
 			moveToFolder: string;
 			sort: string;
 			link: string;
-		}
+		};
 	};
 
 	fields: {
@@ -196,6 +196,7 @@ export interface Locale {
 		hotkeys: {
 			optionName: string;
 			title: string;
+			hold: string;
 			pages: {
 				title: string;
 				toLoreBook: string;

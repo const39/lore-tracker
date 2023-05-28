@@ -10,6 +10,10 @@
 							:hotkeys="hotkeysDisplay.pages"
 						/>
 						<HotkeyList
+							:title="$t('dragAndDrop.desc')"
+							:hotkeys="hotkeysDisplay.dragAndDrop"
+						/>
+						<HotkeyList
 							:title="$t('options.hotkeys.misc.title')"
 							:hotkeys="hotkeysDisplay.misc"
 						/>
@@ -81,6 +85,18 @@ const hotkeysDisplay = {
 			text: $t("options.hotkeys.content.showTabNote"),
 			command: "Alt+6",
 		},
+	],
+	dragAndDrop: [
+		{
+			text: $t("dragAndDrop.modes.moveToFolder"),
+			command: "Ctrl",
+			hold: true,
+		},
+		{
+			text: $t("dragAndDrop.modes.sort"),
+			command: "Ctrl+Alt",
+			hold: true,
+		}
 	],
 	misc: [
 		{

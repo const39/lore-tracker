@@ -195,6 +195,7 @@ const fr: Locale = {
 		hotkeys: {
 			optionName: "Afficher les raccourcis",
 			title: "Raccourcis clavier",
+			hold: "Maintenir",
 			pages: {
 				title: "Pages",
 				toLoreBook: "Naviguer vers le Lore book",
