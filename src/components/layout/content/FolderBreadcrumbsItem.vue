@@ -1,7 +1,7 @@
 <template>
 	<v-breadcrumbs-item
 		ref="refDropZone"
-		:class="{ 'bg-grey-lighten-4': status === 'accepted' }"
+		:class="{ 'bg-hovered-surface': status === 'accepted' }"
 		:title="title ?? folder.metadata.name"
 		:to="to"
 		:disabled="disabled"

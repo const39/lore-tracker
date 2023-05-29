@@ -8,8 +8,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { useTheme } from "vuetify/lib/framework.mjs";
-import { useDropZone, CustomMIMEType, DropPayload } from "@/composables/dragAndDrop";
+import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
 import { CardTypes, isCard } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 
@@ -19,7 +18,6 @@ const emit = defineEmits<{
 
 const refDropZone = ref<HTMLElement | null>(null);
 
-const theme = useTheme();
 const { status } = useDropZone(refDropZone, "copy", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.CardType],
 });
@@ -31,7 +29,7 @@ const color = computed(() => {
 		case "rejected":
 			return "error";
 		default:
-			return theme.current.value.colors["on-surface"];
+			return "on-surface"
 	}
 });
 

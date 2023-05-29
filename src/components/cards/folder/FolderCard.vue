@@ -5,7 +5,7 @@
 		ref="refDropZone"
 		:with-options="!editMode"
 		:draggable="draggable"
-		:class="{ 'bg-grey-lighten-4': status === 'accepted' }"
+		:class="{ 'bg-hovered-surface': status === 'accepted' }"
 		@edit="editMode = true"
 		@delete="confirmDelete"
 		@move="showFolderTree"

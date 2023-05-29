@@ -9,6 +9,8 @@ const light: ThemeDefinition = {
 	colors: {
 		primary: colors.blue.darken2,
 		accent: colors.green.base,
+		"hovered-surface": colors.grey.lighten5,
+		"selected-surface": colors.blue.lighten5,
 	},
 };
 
@@ -17,6 +19,8 @@ const dark: ThemeDefinition = {
 	colors: {
 		primary: colors.pink.darken3,
 		accent: colors.cyan.accent3,
+		"hovered-surface": colors.grey.darken3,
+		"selected-surface": colors.grey.darken2,
 	},
 };
 
