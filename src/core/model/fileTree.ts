@@ -109,10 +109,6 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 		return this.parent ? new Path(this.parent.absolutePath, this.metadata.name) : new Path();
 	}
 
-	get relativePath(): Path {
-		return new Path(this.metadata.name);
-	}
-
 	// ** File **
 
 	addFile(file: File, where: "head" | "tail" = "head") {
@@ -213,6 +209,14 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 	}
 
 	moveFolder(to: Folder<Metadata, File>) {
+		if (this === to)
+			throw new Error(
+				`Cannot move a folder into itself. Tried to move folder ${this.metadata.name}.`
+			);
+		if (to.hasFolder(new Path(this.metadata.name)))
+			throw new Error(
+				`Cannot move folder named ${this.metadata.name} to ${to.absolutePath}: a folder with the same name already exists.`
+			);
 		if (this.hasFolder(to.metadata.id))
 			throw new Error(
 				`Cannot move a folder into one of its children. Tried to move folder ${this.metadata.name} in parent ${to.metadata.name}.`
