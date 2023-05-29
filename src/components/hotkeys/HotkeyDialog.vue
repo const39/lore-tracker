@@ -96,7 +96,7 @@ const hotkeysDisplay = {
 			text: $t("dragAndDrop.modes.sort"),
 			command: "Ctrl+Alt",
 			hold: true,
-		}
+		},
 	],
 	misc: [
 		{

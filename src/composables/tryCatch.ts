@@ -4,7 +4,7 @@ import { useGlobalSnackbar } from "@/store/snackbar";
 
 export function useTryCatch(onTry: () => void, onCatch?: (e: any) => void, onFinally?: () => void) {
 	const snackbar = useGlobalSnackbar();
-	
+
 	try {
 		onTry();
 	} catch (error) {

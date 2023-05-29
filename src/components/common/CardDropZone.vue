@@ -29,7 +29,7 @@ const color = computed(() => {
 		case "rejected":
 			return "error";
 		default:
-			return "on-surface"
+			return "on-surface";
 	}
 });
 

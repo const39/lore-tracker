@@ -11,4 +11,3 @@ export enum Season {
 	AUTUMN = "autumn",
 	WINTER = "winter",
 }
-

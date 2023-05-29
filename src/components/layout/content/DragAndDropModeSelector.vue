@@ -109,7 +109,7 @@ onKeyStroke(
 			else if (e.ctrlKey) prefStore.dragAndDropMode = "moveToFolder";
 		}
 	},
-	{ dedupe: true }	// Fire event once on hold, instead of at each tick
+	{ dedupe: true } // Fire event once on hold, instead of at each tick
 );
 
 // Disable when key is released
