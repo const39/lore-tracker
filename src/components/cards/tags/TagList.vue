@@ -5,28 +5,22 @@
 				<v-icon :icon="Icon[category]" size="small" />
 				<!-- Editable version -->
 				<div v-if="editable">
-					<v-chip
+					<TagItem
 						v-for="tag in list"
 						:key="tag.id"
-						class="ma-1"
-						size="small"
+						:tag="tag"
 						closable
 						@click:close="remove(tag)"
-					>
-						{{ truncate(tag.text, 30) }}
-					</v-chip>
+					/>
 				</div>
 				<!-- Immutable version -->
 				<div v-else>
-					<v-chip
+					<TagItem
 						v-for="tag in list"
 						:key="tag.id"
-						class="ma-1"
-						size="small"
+						:tag="tag"
 						@click.stop="goToCard(tag)"
-					>
-						{{ truncate(tag.text, 30) }}
-					</v-chip>
+					/>
 				</div>
 			</div>
 		</v-row>
@@ -38,8 +32,8 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@/core/icons";
 import { CardCategory, ID, Tag } from "@/core/model/cards";
-import { truncate } from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
+import TagItem from "./TagItem.vue";
 
 const props = withDefaults(
 	defineProps<{

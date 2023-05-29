@@ -4,8 +4,7 @@
 		:draggable="draggable"
 		:ripple="false"
 		:class="{ draggable, highlight }"
-		class="mb-4"
-		height="100%"
+		class="mb-4 h-100"
 		fill-height
 		@mouseenter="elevation++"
 		@mouseleave="elevation--"

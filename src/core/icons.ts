@@ -1,4 +1,4 @@
-import { CardTypes } from "./model/cards";
+import { CardFolder, CardTypes, isCardFolder } from "./model/cards";
 
 export enum Icon {
 	quest = "mdi-star-circle",
@@ -18,7 +18,8 @@ export enum Icon {
 	folder = "mdi-folder",
 }
 
-export function getIcon(content: CardTypes): Icon {
+export function getIcon(content: CardTypes | CardFolder): Icon {
+	if (isCardFolder(content)) return Icon.folder;
 	if (content._category === "event") return Icon[content.type];
 	else return Icon[content._category];
 }

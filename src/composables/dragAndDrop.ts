@@ -1,17 +1,29 @@
-import { useEventListener } from "@vueuse/core";
+import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
 import utilities from "@/core/utilities";
 
 type DragAndDropID = string;
 type DragAndDropData = any;
 
+interface DragOptions {
+	/**
+	 * A custom drag image to use
+	 * @see DataTransfer.setDragImage
+	 */
+	dragImage?: {
+		image: MaybeElementRef;
+		offsetX: number;
+		offsetY: number;
+	};
+}
+
+interface DropOptions {
+	acceptMIME?: string[];
+}
+
 export interface DropPayload<T = unknown> {
 	dataType: CustomMIMEType | string;
 	data: T;
-}
-
-interface Options {
-	acceptMIME?: string[];
 }
 
 export enum CustomMIMEType {
@@ -40,11 +52,23 @@ export type Status = "idle" | "accepted" | "rejected";
 
 const buffer = new Map<DragAndDropID, DragAndDropData>();
 
-export function startDrag(e: DragEvent, data: any, dataType: CustomMIMEType | string) {
+export function startDrag(
+	e: DragEvent,
+	data: any,
+	dataType: CustomMIMEType | string,
+	options?: DragOptions
+) {
 	if (e.dataTransfer) {
 		const ID = "drag-" + utilities.uid();
 		buffer.set(ID, data);
 		e.dataTransfer.setData(compoundMIMETypes.create(dataType), ID);
+
+		// Set drag image if specified
+		if (options?.dragImage) {
+			const { image, offsetX, offsetY } = options.dragImage;
+			const img = unrefElement(image);
+			if (img) e.dataTransfer.setDragImage(img, offsetX, offsetY);
+		}
 	}
 }
 
@@ -52,7 +76,7 @@ export function useDropZone(
 	target: Ref<HTMLElement | null | undefined>,
 	operation: Operation,
 	onDropAccepted: (items: DropPayload[]) => void,
-	options?: Options
+	options?: DropOptions
 ) {
 	const acceptedMIMETypes = options?.acceptMIME
 		? [...options.acceptMIME, CustomMIMEType.DragAndDropID].map((type) => type.toLowerCase())
