@@ -56,6 +56,7 @@
 <script lang="ts" setup>
 import { computed, mergeProps, ref } from "vue";
 import { type VForm } from "vuetify/components";
+import { useTryCatch } from "@/composables/tryCatch";
 import colors from "@/core/colors";
 import { Icon } from "@/core/icons";
 import { CardFolder, CardFolderMetadata } from "@/core/model/cards";
@@ -64,6 +65,7 @@ import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
 import { useCardsStore } from "@/store/cards";
+import { useGlobalSnackbar } from "@/store/snackbar";
 
 const props = defineProps<{ edit?: CardFolder }>();
 const emit = defineEmits<{
@@ -116,9 +118,11 @@ function close(): void {
 
 async function submit() {
 	if (await form.value?.validate()) {
-		if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
-		else cardsStore.addFolder(new CardFolder(model.value));
-		emit("submit");
+		useTryCatch(() => {
+			if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
+			else cardsStore.addFolder(new CardFolder(model.value));
+			emit("submit");
+		});
 	}
 }
 </script>

@@ -11,7 +11,7 @@ import {
 	ID,
 	createRootFolder,
 } from "@/core/model/cards";
-import { Path } from "@/core/model/fileTree";
+import { FileError, FileErrorCodes, Path } from "@/core/model/fileTree";
 import { SerializedState } from ".";
 
 function defaultCards(): CardsStore {
@@ -59,7 +59,11 @@ export const useCardsStore = defineStore("cards", () => {
 		if (exists) {
 			currentCategory.value = category;
 			currentFolderPath.value = path;
-		} else throw new Error(`Folder at path ${folderPath} in category '${category}' not found.`);
+		} else
+			throw new FileError(
+				FileErrorCodes.FolderNotFound,
+				`Folder at path ${folderPath} in category '${category}' not found.`
+			);
 	}
 
 	function _getFlatTree<T extends CardCategory>(category: T) {
@@ -122,7 +126,8 @@ export const useCardsStore = defineStore("cards", () => {
 			//@ts-ignore - Ignore TS error because it is not able to deduce the type associated to the card's category
 			parentFolder.addFile(card);
 		} else
-			throw new Error(
+			throw new FileError(
+				FileErrorCodes.InvalidOperation,
 				`Cannot add a card of category ${card._category} in a folder of category ${parentFolder.metadata._category}`
 			);
 	}

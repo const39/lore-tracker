@@ -152,13 +152,22 @@ const en: Locale = {
 			newCardStoredInFolder: "saved in folder",
 		},
 		errors: {
+			genericError: "An error occurred.",
 			corruptedSave: "Corrupted or incomplete save data.",
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled.",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
-			folderNotFound: {
-				title: "Folder not found",
-				message: "Go back to the root folder",
+			files: {
+				invalidOperation: {
+					title: "Invalid operation",
+				},
+				folderNotFound: {
+					title: "Folder not found",
+					action: "Go back to the root folder",
+				},
+				nameAlreadyUsed: {
+					title: "Name already used",
+				},
 			},
 		},
 		info: {

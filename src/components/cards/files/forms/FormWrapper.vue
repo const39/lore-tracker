@@ -27,6 +27,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
+import { useTryCatch } from "@/composables/tryCatch";
 import { getIcon } from "@/core/icons";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
@@ -63,19 +64,21 @@ function close() {
 
 async function submit() {
 	if ((await form.value?.validate()) && model) {
-		// Update or add card based on form type
-		if (variant === "edit") cardsStore.updateCard(model, parentFolder);
-		else if (variant === "add") cardsStore.addCard(model, parentFolder);
-
-		// Provide feedback to user when card is saved
-		const msg = parentFolder?.absolutePath.isRoot()
-			? $t(`categories.${model?._category}`) + " " + $t("messages.success.newCardStored")
-			: $t(`categories.${model?._category}`) +
-				" " +
-				$t("messages.success.newCardStoredInFolder") +
-				" " +
-				parentFolder?.absolutePath;
-		globalSnackbar.showSnackbar(msg, "info", 7000);
+		useTryCatch(() => {
+			// Update or add card based on form type
+			if (variant === "edit") cardsStore.updateCard(model, parentFolder);
+			else if (variant === "add") cardsStore.addCard(model, parentFolder);
+	
+			// Provide feedback to user when card is saved
+			const msg = parentFolder?.absolutePath.isRoot()
+				? $t(`categories.${model?._category}`) + " " + $t("messages.success.newCardStored")
+				: $t(`categories.${model?._category}`) +
+					" " +
+					$t("messages.success.newCardStoredInFolder") +
+					" " +
+					parentFolder?.absolutePath;
+			globalSnackbar.showSnackbar(msg, "info", 7000);
+		})
 	}
 
 	close();

@@ -34,11 +34,12 @@
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
 import {
-	useDropZone,
 	CustomMIMEType,
-	type DropPayload,
 	startDrag,
+	useDropZone,
+	type DropPayload,
 } from "@/composables/dragAndDrop";
+import { useTryCatch } from "@/composables/tryCatch";
 import { Icon } from "@/core/icons";
 import { CardFolder, getText, isCard, isCardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
@@ -78,15 +79,17 @@ function onDragStart(e: DragEvent) {
  */
 function onDropAccepted(items: DropPayload[]) {
 	if (items.length) {
-		const { dataType, data: itemToMove } = items[0];
+		useTryCatch(() => {
+			const { dataType, data: itemToMove } = items[0];
 
-		if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
-			cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
-		}
+			if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
+				cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
+			}
 
-		if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
-			cardsStore.moveFolder(itemToMove, props.folder);
-		}
+			if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
+				cardsStore.moveFolder(itemToMove, props.folder);
+			}
+		});
 	}
 }
 
@@ -100,7 +103,7 @@ function confirmDelete() {
 		message: `${$t("dialogs.deleteConfirm")} "${getText(props.folder)}" ? ${$t(
 			"dialogs.deleteConfirmFolder"
 		)}`,
-		confirmAction: () => cardsStore.deleteFolder(props.folder),
+		confirmAction: () => useTryCatch(() => cardsStore.deleteFolder(props.folder)),
 	});
 }
 

@@ -152,13 +152,22 @@ const fr: Locale = {
 			newCardStoredInFolder: "sauvegardé(e) dans le dossier",
 		},
 		errors: {
+			genericError: "Une erreur est survenue.",
 			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
-			folderNotFound: {
-				title: "Dossier introuvable",
-				message: "Retourner au dossier racine",
+			files: {
+				invalidOperation: {
+					title: "Opération impossible",
+				},
+				folderNotFound: {
+					title: "Dossier introuvable",
+					action: "Retourner au dossier racine",
+				},
+				nameAlreadyUsed: {
+					title: "Nom déjà utilisé",
+				},
 			},
 		},
 		info: {
