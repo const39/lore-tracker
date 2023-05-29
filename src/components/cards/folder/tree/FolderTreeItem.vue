@@ -20,7 +20,6 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { CardFolder } from "@/core/model/cards";
-import { usePreferencesStore } from "@/store/preferences";
 
 const props = defineProps<{
 	selected: CardFolder | undefined;
@@ -33,8 +32,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: "update:selected", value: typeof props.selected): void;
 }>();
-
-const prefStore = usePreferencesStore();
 
 const isHovered = ref(false);
 
@@ -50,10 +47,8 @@ const selectModelValue = computed({
 const isSelected = computed(() => selectModelValue.value === props.folder);
 
 const color = computed(() => {
-	if (isSelected.value)
-		return prefStore.theme === "dark" ? "bg-grey-darken-2" : "bg-blue-lighten-5";
-	if (isHovered.value)
-		return prefStore.theme === "dark" ? "bg-grey-darken-3" : "bg-grey-lighten-5";
+	if (isSelected.value) return "bg-selected-surface";
+	if (isHovered.value) return "bg-hovered-surface";
 	return undefined;
 });
 

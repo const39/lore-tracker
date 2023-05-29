@@ -14,7 +14,6 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { useTheme } from "vuetify";
 import { getIcon } from "@/core/icons";
 import { CardCategory, Event, EventType } from "@/core/model/cards";
 
@@ -32,7 +31,6 @@ const props = defineProps<{
 	item: ItemType;
 }>();
 
-const theme = useTheme();
 /**
  * Return a custom object with the node's data, depending on the item prop type.
  */
@@ -47,7 +45,7 @@ const node = computed(() => {
 		info.isHeader = true;
 		info.text = props.item;
 		info.icon = "";
-		info.color = theme.global.current.value.dark ? "white" : "black";
+		info.color = "on-surface";
 	} else if (props.item._category === CardCategory.Event) {
 		info.text = props.item.desc;
 		info.icon = getIcon(props.item);
