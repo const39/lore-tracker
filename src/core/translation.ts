@@ -154,13 +154,22 @@ export interface Locale {
 			newCardStoredInFolder: string;
 		};
 		errors: {
+			genericError: string;
 			corruptedSave: string;
 			loadBackup: string;
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
-			folderNotFound: {
-				title: string;
-				message: string;
+			files: {
+				invalidOperation: {
+					title: string;
+				};
+				folderNotFound: {
+					title: string;
+					action: string;
+				};
+				nameAlreadyUsed: {
+					title: string;
+				};
 			};
 		};
 		info: {

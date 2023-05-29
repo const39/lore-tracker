@@ -1,6 +1,8 @@
 import { MD5 } from "object-hash";
 import { ID } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
 import { deserializeMap, mergeMaps, serializeMap } from "../utilities";
+import { LocalisableError } from "../error";
 
 export interface FolderMetadata {
 	id: ID;
@@ -31,6 +33,29 @@ export type SerializedFolder<M extends FolderMetadata, T extends Indexable> = Re
 	Key,
 	FlatFolder<M, T>
 >;
+
+export enum FileErrorCodes {
+	InvalidOperation,
+	FolderNotFound,
+	NameAlreadyUsed,
+}
+
+export class FileError extends Error implements LocalisableError {
+	constructor(public code: FileErrorCodes, message?: string) {
+		super(message);
+	}
+
+	toLocaleString() {
+		switch (this.code) {
+			case FileErrorCodes.InvalidOperation:
+				return $t("messages.errors.files.invalidOperation.title");
+			case FileErrorCodes.FolderNotFound:
+				return $t("messages.errors.files.folderNotFound.title");
+			case FileErrorCodes.NameAlreadyUsed:
+				return $t("messages.errors.files.nameAlreadyUsed.title");
+		}
+	}
+}
 
 export class Path {
 	static readonly ILLEGAL_CHARS_REGEX = /(\/|\\|:|\||<|>|\?|"|\*|%)+/g;
@@ -189,8 +214,9 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 
 	addFolder(folder: Folder<Metadata, File>, where: "head" | "tail" = "head") {
 		if (folder.hasFolder(this.metadata.id))
-			throw new Error(
-				`Cannot add a folder to one of its children. Tried to add folder ${folder.metadata.name} in parent ${this.metadata.name}.`
+			throw new FileError(
+				FileErrorCodes.InvalidOperation,
+				`Cannot add a folder to one of its own children. Tried to add folder ${folder.metadata.name} in parent ${this.metadata.name}.`
 			);
 
 		where === "head" ? this.subfolders.unshift(folder) : this.subfolders.push(folder);
@@ -203,22 +229,26 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 			folder.parent = undefined;
 			this.subfolders.splice(idx, 1);
 		} else
-			throw new Error(
+			throw new FileError(
+				FileErrorCodes.FolderNotFound,
 				`Cannot delete nonexistent folder. Tried to delete subfolder ${folder.metadata.name} in parent ${this.metadata.name}.`
 			);
 	}
 
 	moveFolder(to: Folder<Metadata, File>) {
 		if (this === to)
-			throw new Error(
+			throw new FileError(
+				FileErrorCodes.InvalidOperation,
 				`Cannot move a folder into itself. Tried to move folder ${this.metadata.name}.`
 			);
 		if (to.hasFolder(new Path(this.metadata.name)))
-			throw new Error(
+			throw new FileError(
+				FileErrorCodes.NameAlreadyUsed,
 				`Cannot move folder named ${this.metadata.name} to ${to.absolutePath}: a folder with the same name already exists.`
 			);
 		if (this.hasFolder(to.metadata.id))
-			throw new Error(
+			throw new FileError(
+				FileErrorCodes.InvalidOperation,
 				`Cannot move a folder into one of its children. Tried to move folder ${this.metadata.name} in parent ${to.metadata.name}.`
 			);
 		this.parent?.deleteFolder(this);

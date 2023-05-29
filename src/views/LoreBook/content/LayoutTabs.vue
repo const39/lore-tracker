@@ -32,7 +32,7 @@
 				<!-- Display alert in case folder does not exist -->
 				<v-alert v-else variant="tonal" v-bind="alertState">
 					<router-link :to="{ name: 'LoreBookTab', params: { category } }">
-						{{ $t("messages.errors.folderNotFound.message") }}
+						{{ $t("messages.errors.files.folderNotFound.action") }}
 					</router-link>
 				</v-alert>
 			</v-container>
@@ -112,7 +112,7 @@ watch(
 			updateItems();
 		} catch (e) {
 			console.error(e);
-			setError($t("messages.errors.folderNotFound.title"));
+			setError($t("messages.errors.files.folderNotFound.title"));
 		}
 	},
 	{ immediate: true }

@@ -13,6 +13,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
+import { useTryCatch } from "@/composables/tryCatch";
 import { CardFolder, isCard, isCardFolder } from "@/core/model/cards";
 import { useCardsStore } from "@/store/cards";
 
@@ -40,15 +41,17 @@ const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
  */
 function onDropAccepted(items: DropPayload[]) {
 	if (items.length) {
-		const { dataType, data: itemToMove } = items[0];
+		useTryCatch(() => {
+			const { dataType, data: itemToMove } = items[0];
 
-		if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
-			cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
-		}
+			if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
+				cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
+			}
 
-		if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
-			cardsStore.moveFolder(itemToMove, props.folder);
-		}
+			if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
+				cardsStore.moveFolder(itemToMove, props.folder);
+			}
+		});
 	}
 }
 </script>

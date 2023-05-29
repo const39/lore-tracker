@@ -22,6 +22,7 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
+import { useTryCatch } from "@/composables/tryCatch";
 import { CardFolder, getCategory, getText, isCard, isCardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
@@ -49,16 +50,18 @@ const disabledItems = computed(() => {
 });
 
 function move() {
-	if (selected.value) {
-		const parentFolder = sidePanelStore.folderTreeState.parentFolder;
-		if (isCardFolder(itemToMove.value)) {
-			cardsStore.moveFolder(itemToMove.value, selected.value);
+	useTryCatch(() => {
+		if (selected.value) {
+			const parentFolder = sidePanelStore.folderTreeState.parentFolder;
+			if (isCardFolder(itemToMove.value)) {
+				cardsStore.moveFolder(itemToMove.value, selected.value);
+			}
+			if (isCard(itemToMove.value) && parentFolder) {
+				cardsStore.moveCard(itemToMove.value, parentFolder, selected.value);
+			}
 		}
-		if (isCard(itemToMove.value) && parentFolder) {
-			cardsStore.moveCard(itemToMove.value, parentFolder, selected.value);
-		}
-	}
-	close();
+		close();
+	});
 }
 
 function close() {
