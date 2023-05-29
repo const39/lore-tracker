@@ -28,6 +28,8 @@
 		@close="editMode = false"
 		@submit="editMode = false"
 	/>
+	<!-- Custom drag image used when dragging the card -->
+	<CardDragImage ref="refDragImage" :item-data="folder" />
 </template>
 
 <script lang="ts" setup>
@@ -46,6 +48,7 @@ import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";
+import CardDragImage from "../CardDragImage.vue";
 import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
@@ -59,6 +62,7 @@ const emit = defineEmits<{
 
 const editMode = ref(false);
 const refDropZone = ref<HTMLElement | null>(null);
+const refDragImage = ref<HTMLElement | null>();
 
 const cardsStore = useCardsStore();
 const sidePanelStore = useSidePanel();
@@ -71,7 +75,9 @@ const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
  * Callback triggered when the user grabs the cards for a drag & drop
  */
 function onDragStart(e: DragEvent) {
-	startDrag(e, props.folder, CustomMIMEType.CardFolder);
+	startDrag(e, props.folder, CustomMIMEType.CardFolder, {
+		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
+	});
 }
 
 /**

@@ -21,9 +21,9 @@
 			@start="drag = true"
 			@end="drag = false"
 		>
+			<!-- v-col MUST have "position: relative" to prevent the card's custom drag image to by included in its size -->
 			<template #item="{ element }">
-				<v-col class="draggable-item" cols="12" v-bind="density">
-					<!-- Card is draggable if drag&drop is either in 'drag' or 'sort' mode -->
+				<v-col class="draggable-item relative" cols="12" v-bind="density">
 					<slot
 						v-bind="{
 							isDraggable: prefStore.dragAndDropMode !== 'disabled',
@@ -76,3 +76,9 @@ const items = computed({
 	},
 });
 </script>
+
+<style scoped>
+.relative {
+	position: relative;
+}
+</style>

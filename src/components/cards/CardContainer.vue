@@ -13,6 +13,8 @@
 		<!-- Dynamic Card content component -->
 		<component :is="contentComponent" :item-data="itemData" />
 	</BaseCard>
+	<!-- Custom drag image used when dragging the card -->
+	<CardDragImage ref="refDragImage" :item-data="itemData" />
 </template>
 
 <script lang="ts" setup>
@@ -27,10 +29,12 @@ import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";
 import BaseCard from "./BaseCard.vue";
+import CardDragImage from "./CardDragImage.vue";
 
 const props = defineProps<{ itemData: CardTypes; draggable?: boolean }>();
 
 const isHighlighted = ref(false);
+const refDragImage = ref<HTMLElement | null>();
 
 const route = useRoute();
 const cardsStore = useCardsStore();
@@ -41,7 +45,9 @@ const { showConfirmDialog } = useGlobalConfirmDialog();
  * Callback triggered when the user grabs the cards for a drag & drop
  */
 function onDragStart(e: DragEvent) {
-	startDrag(e, props.itemData, CustomMIMEType.CardType);
+	startDrag(e, props.itemData, CustomMIMEType.CardType, {
+		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
+	});
 }
 
 function showForm() {

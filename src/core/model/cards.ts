@@ -113,10 +113,10 @@ export class Tag {
 	category: CardCategory;
 	icon: Icon;
 
-	constructor(refObject: CardTypes) {
-		this.id = refObject.id;
+	constructor(refObject: CardTypes | CardFolder) {
+		this.id = isCardFolder(refObject) ? refObject.metadata.id : refObject.id;
 		this.text = getText(refObject);
-		this.category = refObject._category;
+		this.category = getCategory(refObject);
 		this.icon = getIcon(refObject);
 	}
 }
