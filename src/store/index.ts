@@ -33,11 +33,7 @@ export interface SaveFormat extends SerializedState {
 }
 
 export const useStore = defineStore("store", () => {
-	const stores = [
-		useCampaignInfoStore(),
-		useCardsStore(),
-		useQuickNoteStore(),
-	];
+	const stores = [useCampaignInfoStore(), useCardsStore(), useQuickNoteStore()];
 
 	const serializedState = computed(() => {
 		const aggregatedState = stores.reduce(

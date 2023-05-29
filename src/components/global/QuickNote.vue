@@ -47,7 +47,7 @@ import { useQuickNoteStore } from "@/store/quickNote";
 
 const open = ref(false);
 const resizing = ref(false);
-const el = ref<VNodeRef | null>(null);	// Vuetify underlying element
+const el = ref<VNodeRef | null>(null); // Vuetify underlying element
 
 /**
  * QuickNote text area DOM element
@@ -56,8 +56,8 @@ const element = computed<HTMLElement | undefined>(() => el.value?.$el);
 
 const quickNoteStore = useQuickNoteStore();
 const prefStore = usePreferencesStore();
-const { width: windowWidth, height: windowHeight } = useWindowSize();	// Reactive window size
-const elementSize = useElementSize(element);	// Reactive element size
+const { width: windowWidth, height: windowHeight } = useWindowSize(); // Reactive window size
+const elementSize = useElementSize(element); // Reactive element size
 
 const content = computed({
 	get() {

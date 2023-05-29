@@ -65,7 +65,6 @@ import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
 import { useCardsStore } from "@/store/cards";
-import { useGlobalSnackbar } from "@/store/snackbar";
 
 const props = defineProps<{ edit?: CardFolder }>();
 const emit = defineEmits<{

@@ -145,7 +145,7 @@ class V2SaveProcessor extends SaveProcessor {
 			const folder = createRootFolder(category as CardCategory, converted.cards[category]);
 			converted.cards[category] = folder.serialize();
 		});
-		
+
 		return converted;
 	}
 }

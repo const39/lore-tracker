@@ -1,11 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import {
-	CardFolder,
-	CardFolderMetadata,
-	CardTypes,
-	getAllText
-} from "@/core/model/cards";
+import { CardFolder, CardFolderMetadata, CardTypes, getAllText } from "@/core/model/cards";
 import utilities from "@/core/utilities";
 
 export interface Filter {

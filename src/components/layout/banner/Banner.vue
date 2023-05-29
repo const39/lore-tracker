@@ -44,7 +44,7 @@
 		<v-divider class="ml-3 mr-1" vertical />
 
 		<DragAndDropModeSelector />
-		
+
 		<v-divider class="ml-3 mr-1" vertical />
 
 		<div>

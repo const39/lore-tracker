@@ -67,7 +67,7 @@ watch(
 	(target) => {
 		openItems.value = target?.getHierarchy() ?? [];
 		// Set the selected item to the openAt value
-		selected.value = target;	
+		selected.value = target;
 	},
 	{ immediate: true }
 );
