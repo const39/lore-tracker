@@ -52,9 +52,8 @@ watch(
 
 const formComponent = computed(() => {
 	if (!model) return undefined;
-	const componentName = "Form" + utilities.capitalize(model._category);
 	return defineAsyncComponent({
-		loader: () => import(`./${componentName}.vue`),
+		loader: () => import(`./Form${utilities.capitalize(model._category)}.vue`),
 	});
 });
 
@@ -73,10 +72,10 @@ async function submit() {
 			const msg = parentFolder?.absolutePath.isRoot()
 				? $t(`categories.${model?._category}`) + " " + $t("messages.success.newCardStored")
 				: $t(`categories.${model?._category}`) +
-					" " +
-					$t("messages.success.newCardStoredInFolder") +
-					" " +
-					parentFolder?.absolutePath;
+				  " " +
+				  $t("messages.success.newCardStoredInFolder") +
+				  " " +
+				  parentFolder?.absolutePath;
 			globalSnackbar.showSnackbar(msg, "info", 7000);
 		});
 	}
