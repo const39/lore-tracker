@@ -34,6 +34,7 @@ const refDropZone = ref<HTMLElement | null>(null);
 const cardsStore = useCardsStore();
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+	acceptMode: ["moveToFolder"],
 });
 
 /**

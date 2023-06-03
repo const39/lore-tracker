@@ -69,6 +69,7 @@ const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+	acceptMode: ["moveToFolder"],
 });
 
 /**
