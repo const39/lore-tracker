@@ -4,6 +4,9 @@ import { UnionOfTupleValues } from "@/core/utilities";
 import { useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 
+/**
+ * Tuple of drag & drop mode values.
+ */
 export const ModeValues = ["disabled", "moveToFolder", "sort", "link"] as const;
 export type DragAndDropMode = UnionOfTupleValues<typeof ModeValues>;
 
@@ -13,39 +16,47 @@ export const useDragAndDropMode = defineStore("dragAndDropMode", () => {
 	const _prefStore = usePreferencesStore();
 	const _filterStore = useFilterStore();
 
+    // Current state
 	const mode = ref<DragAndDropMode>("disabled");
 	const disabledModes = ref<DisabledModes>("none");
 
+    // Exposed readonly state
 	const readonlyMode = computed(() => mode.value);
 	const readonlyDisabledModes = computed(() => disabledModes.value);
 
 	watch(
 		[() => _prefStore.cardsOrder, () => _filterStore.isFilterActive, () => mode.value],
 		([order, filter, currentMode]) => {
-			// Disable drag and drop 'sort' mode switch if:
-			// - Cards are sorted automatically (i.e. not in custom order)
-			// - A search filter is active
-			// - Drag&drop is not already enabled in another mode
-			disabledModes.value =
-				order === "alphanumeric" || !!filter || currentMode === "link" ? "all" : "none";
-			// if (mode.value === "link") disabledModes.value = "all";
-			// else if (order === "alphanumeric" || !!filter) disabledModes.value = ["sort"];
+			// Disable some modes based on current context
+			if (currentMode === "link") disabledModes.value = "all";
+			else if (order === "alphanumeric" || !!filter) disabledModes.value = ["sort"];
+			else disabledModes.value = "none";
 
-			// if (order === "alphanumeric" || !!filter) disabledModes.value = ["sort"];
-			// else disabledModes.value = "none";
-
-			// Reset drag & drop sort state if the switch is disabled only if it is not already enabled in another mode
-			if (disabledModes.value === "all" && mode.value !== "link") mode.value = "disabled";
+			// Reset drag & drop sort state if the current mode is disabled (except if it is the 'link' mode)
+			if (_isModeDisabled(currentMode) && currentMode !== "link") mode.value = "disabled";
 		},
 		{ immediate: true }
 	);
 
+	/**
+	 * Check if the specified mode is currently disabled.
+	 * @param arg the mode to check
+	 * @returns true if the specified mode is disabled, false otherwise.
+	 */
+	function _isModeDisabled(arg: DragAndDropMode) {
+		if (arg === "disabled") return false;
+		return disabledModes.value === "all" || disabledModes.value.includes(arg);
+	}
+
+	/**
+	 * Set the current drag & drop mode.
+	 *
+	 * If the specified mode is currently disabled, this function has no effect.
+	 *
+	 * @param arg the mode to set
+	 */
 	function setMode(arg: DragAndDropMode) {
-		if (arg === "disabled") {
-			mode.value = arg;
-		} else if (disabledModes.value !== "all" && !disabledModes.value.includes(arg)) {
-			mode.value = arg;
-		}
+		if (!_isModeDisabled(arg)) mode.value = arg;
 	}
 
 	return {
