@@ -2,23 +2,27 @@
 	<MenuActivator :title="$t('options.themes.optionName')" icon="mdi-brightness-6">
 		<v-card>
 			<v-card-text>
-				<v-item-group mandatory active-class="active" v-model="selectedTheme">
+				<v-item-group v-model="prefStore.theme" active-class="active" mandatory>
 					<v-container>
 						<v-row class="d-flex justify-space-between">
 							<v-item
-								class="ma-1 text-center text--primary"
 								v-for="item in themeList"
 								:key="item.key"
-								:value="item.key"
 								v-slot="{ toggle }"
+								:value="item.key"
 							>
-								<div @click="toggle">
+								<div class="ma-1 text-center" @click="toggle">
 									<v-sheet
+										:style="
+											computeSheetStyle(
+												item.colors.primary,
+												item.colors.background
+											)
+										"
 										height="72"
 										width="72"
 										class="clickable"
-										:style="computeSheetStyle(item.colors.primary, item.colors.background)"
-									></v-sheet>
+									/>
 									<span> {{ item.name }} </span>
 								</div>
 							</v-item>
@@ -30,60 +34,39 @@
 	</MenuActivator>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import { LocalStorageKey } from "@/js/types";
-
+<script lang="ts" setup>
+import { computed } from "vue";
+import { useTheme } from "vuetify";
+import { t as $t } from "@/core/translation";
+import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 
-export default Vue.extend({
-	components: {
-		MenuActivator,
-	},
-	data() {
-		return {
-			selectedTheme: this.$vuetify.theme.dark ? "dark" : "light",
-		};
-	},
-	methods: {
-		computeSheetStyle(primary: any, background: any) {
-			let p = primary?.base || primary;
-			let b = background?.base || background;
+const theme = useTheme();
+const prefStore = usePreferencesStore();
 
-			return `background: linear-gradient(45deg, ${b} 50%, ${p} 50%); `;
-		},
-	},
-	computed: {
-		themeList() {
-			let list = [];
+function computeSheetStyle(primary: string, background: string) {
+	return `background: linear-gradient(45deg, ${background} 50%, ${primary} 50%); `;
+}
 
-			// Browse Vuetify theme settings
-			const themes = this.$vuetify.theme.themes;
-			for (const key in themes) {
-				list.push({
-					key,
-					name: this.$t(`options.themes.${key}`),
-					colors: themes[key as keyof typeof themes],
-				});
-			}
+const themeList = computed(() => {
+	const list = [];
 
-			return list;
-		},
-	},
-	watch: {
-		selectedTheme(themeKey: string) {
-			this.$vuetify.theme.dark = themeKey === "dark";
-			localStorage.setItem(LocalStorageKey.THEME_KEY, themeKey);
-		},
-	},
+	// Browse Vuetify theme settings
+	const themes = theme.themes.value;
+	for (const key in themes) {
+		list.push({
+			key,
+			name: $t(`options.themes.${key}`),
+			colors: themes[key as keyof typeof themes].colors,
+		});
+	}
+
+	return list;
 });
 </script>
 <style scoped>
 .active {
-	background-color: var(--v-accent-base);
-	border: 3px solid var(--v-accent-base);
-}
-.clickable:hover {
-	cursor: pointer;
+	background-color: rgb(var(--v-theme-accent));
+	border: 3px solid rgb(var(--v-theme-accent));
 }
 </style>

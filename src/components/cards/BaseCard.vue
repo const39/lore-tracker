@@ -1,40 +1,72 @@
 <template>
-	<v-card height="100%" :outlined="outlined" :elevation="elevation" fill-height class="mb-4" @mouseenter="hover = true" @mouseleave="hover = false" @dblclick="$emit('edit')">
+	<v-card
+		:elevation="highlight ? undefined : elevation"
+		:draggable="draggable"
+		:ripple="false"
+		:class="{ draggable, highlight }"
+		class="mb-4 h-100"
+		fill-height
+		@mouseenter="elevation++"
+		@mouseleave="elevation--"
+		@dragstart="($event) => $emit('dragstart', $event)"
+	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
-			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" />
+			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" @move="$emit('move')" />
 		</v-card-actions>
 		<!-- Inner content of the card -->
-		<slot></slot>
-    </v-card>
+		<slot />
+	</v-card>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
+<script lang="ts" setup>
+import { ref } from "vue";
 import CardOptions from "./CardOptions.vue";
 
-export default Vue.extend({
-	components: {
-		CardOptions
-	},
-	props: {
-		outlined: Boolean,
-		withOptions: Boolean
-	},
-	data() {
-		return {
-			hover: false,
-		};
-	},
-	computed: {
-		elevation(): number {
-			let elevation = this.outlined ? 0 : 1;
-			if (this.hover) elevation++;
+defineProps<{
+	/**
+	 * Whether this card should provide an options menu
+	 */
+	withOptions?: boolean;
+	/**
+	 * Whether this card should display the highlight animation
+	 */
+	highlight?: boolean;
+	/**
+	 * Whether this card should display the draggable animation
+	 */
+	draggable?: boolean;
+}>();
 
-			return elevation;
-		},
-	},
-});
+defineEmits<{
+	(e: "edit"): void;
+	(e: "delete"): void;
+	(e: "move"): void;
+	(e: "dragstart", value: DragEvent): void;
+}>();
+
+const elevation = ref(1);
 </script>
+<style scoped>
+.draggable {
+	cursor: grab;
+	transition: transform 250ms ease;
+}
 
-<style></style>
+.draggable:hover {
+	transform: scale(1.02);
+}
+
+.highlight {
+	animation: highlight-anim 500ms ease-in-out infinite;
+}
+
+@keyframes highlight-anim {
+	from {
+		box-shadow: 0 1px 2px lightgray;
+	}
+	to {
+		box-shadow: 0 1px 6px rgb(180, 180, 180);
+	}
+}
+</style>

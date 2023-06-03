@@ -1,54 +1,47 @@
 <template>
 	<MenuActivator :title="$t('options.lang.optionName')" icon="mdi-translate">
-		<v-list dense>
-			<v-list-item-group mandatory v-model="selectedLang">
-				<v-list-item v-for="lang in langList" :key="lang.key" :value="lang.key">
-					<v-list-item-icon>
-						<v-img max-width="32" max-height="32" :src="require(`@/assets/${lang.key}.png`)"></v-img>
-					</v-list-item-icon>
-					<v-list-item-title>{{ lang.name }}</v-list-item-title>
-				</v-list-item>
-			</v-list-item-group>
+		<v-list v-model:selected="selectedLang" density="compact" mandatory>
+			<v-list-item
+				v-for="lang in langList"
+				:key="lang.key"
+				:value="lang.key"
+				:title="lang.name"
+			>
+				<template #prepend>
+					<v-img
+						:src="`/lang/${lang.key}.png`"
+						class="mr-2"
+						max-width="32"
+						max-height="32"
+					/>
+				</template>
+			</v-list-item>
 		</v-list>
 	</MenuActivator>
 </template>
 
-<script lang="ts">
-import Vue from "vue";
-import translation, { SupportedLanguages } from "@/js/translation";
-
+<script lang="ts" setup>
+import { ref, watch } from "vue";
+import { t as $t, SupportedLanguages } from "@/core/translation";
+import { usePreferencesStore } from "@/store/preferences";
 import MenuActivator from "./MenuActivator.vue";
 
-export default Vue.extend({
-	components: {
-		MenuActivator,
+const prefStore = usePreferencesStore();
+
+const selectedLang = ref([prefStore.language]);
+
+const langList = [
+	{
+		key: SupportedLanguages.FRENCH,
+		name: "Français",
 	},
-	data() {
-		return {
-			selectedLang: translation.getLanguage(),
-		};
+	{
+		key: SupportedLanguages.ENGLISH,
+		name: "English",
 	},
-	computed: {
-		langList() {
-			return [
-				{
-					key: SupportedLanguages.FRENCH,
-					name: "Français",
-				},
-				{
-					key: SupportedLanguages.ENGLISH,
-					name: "English",
-				},
-			];
-		},
-	},
-	watch: {
-		selectedLang(val: SupportedLanguages) {
-			translation.setLanguage(val);
-			window.location.reload();
-		},
-	},
+];
+
+watch(selectedLang, (val) => {
+	if (val.length) prefStore.language = val[0];
 });
 </script>
-
-<style></style>
