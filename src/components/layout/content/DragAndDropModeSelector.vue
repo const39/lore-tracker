@@ -30,7 +30,7 @@
 					</template>
 					<div class="text-center">
 						{{ $t(`dragAndDrop.modes.${modes[1]}`) }}
-						<br />
+						<br>
 						({{ $t("options.hotkeys.hold") + " Ctrl" }})
 					</div>
 				</v-tooltip>
@@ -46,7 +46,7 @@
 					</template>
 					<div class="text-center">
 						{{ $t(`dragAndDrop.modes.${modes[2]}`) }}
-						<br />
+						<br>
 						({{ $t("options.hotkeys.hold") + " Ctrl+Alt" }})
 					</div>
 				</v-tooltip>

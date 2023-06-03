@@ -16,11 +16,11 @@ export const useDragAndDropMode = defineStore("dragAndDropMode", () => {
 	const _prefStore = usePreferencesStore();
 	const _filterStore = useFilterStore();
 
-    // Current state
+	// Current state
 	const mode = ref<DragAndDropMode>("disabled");
 	const disabledModes = ref<DisabledModes>("none");
 
-    // Exposed readonly state
+	// Exposed readonly state
 	const readonlyMode = computed(() => mode.value);
 	const readonlyDisabledModes = computed(() => disabledModes.value);
 

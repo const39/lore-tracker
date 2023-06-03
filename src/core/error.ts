@@ -6,7 +6,7 @@ export type StateTypes = UnionOfTupleValues<typeof StateTypes>;
 /**
  * Helper function indicating if the specified arg is a {@link StateTypes}.
  * Acts as a TS type-guard.
- * 
+ *
  * @param arg the object to check
  * @returns true if arg is a {@link StateTypes}, false otherwise.
  */

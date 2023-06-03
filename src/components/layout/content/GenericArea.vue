@@ -58,7 +58,7 @@ const emit = defineEmits<{
 const drag = ref(false);
 
 const prefStore = usePreferencesStore();
-const dndStore = useDragAndDropMode()
+const dndStore = useDragAndDropMode();
 const { density } = useGridDensity();
 
 const items = computed({

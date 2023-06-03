@@ -5,7 +5,7 @@ import { Folder, FolderMetadata, SerializedFolder } from "./fileTree";
 
 export type ID = number;
 
-// * Card types * \\ 
+// * Card types * \\
 
 export enum CardCategory {
 	Quest = "quest",
@@ -99,7 +99,7 @@ export type CardTypesMapping = {
  */
 export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T];
 
-// * Folder types * \\ 
+// * Folder types * \\
 
 export interface CardFolderMetadata extends FolderMetadata {
 	_category: CardCategory;
