@@ -11,7 +11,7 @@
 			/>
 			<v-btn icon="mdi-close" density="comfortable" @click="close" />
 		</v-card-actions>
-		<v-card-title v-if="model" class="mb-1 justify-center">
+		<v-card-title v-if="model" class="mb-4 justify-center">
 			<v-icon :icon="getIcon(model)" />
 			<span class="mx-2">
 				{{ $t(`dialogs.${variant}${utilities.capitalize(model._category)}`) }}

@@ -1,32 +1,28 @@
 <template>
 	<v-row>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-text-field
 				v-model="model.name"
 				:label="$t('fields.name') + '*'"
 				:rules="[requiredRule]"
 			/>
 		</v-col>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-text-field v-model="model.race" :label="$t('fields.race')" />
 		</v-col>
-	</v-row>
-	<v-row>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-text-field v-model="model.classes" :label="$t('fields.class')" />
 		</v-col>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-text-field v-model="model.role" :label="$t('fields.role')" />
 		</v-col>
-	</v-row>
-	<v-row>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-radio-group v-model="model.isNPC" column mandatory>
 				<v-radio :label="$t('fields.player')" :value="false" />
 				<v-radio :label="$t('fields.npc')" :value="true" />
 			</v-radio-group>
 		</v-col>
-		<v-col cols="12" sm="12" md="6">
+		<v-col cols="6">
 			<v-checkbox v-model="model.isAlive" :label="$t('fields.alive')" />
 		</v-col>
 	</v-row>
