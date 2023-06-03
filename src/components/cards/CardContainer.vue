@@ -1,82 +1,99 @@
 <template>
-	<BaseCard :with-options="!showForm" :outlined="outlined" :id="itemData.id + '-card'" @edit="showForm = true" @delete="onDelete">
-		<v-expand-transition>
-			<!-- Dynamic Form component -->
-			<component v-if="showForm" :is="formComponent" :category="itemData._category" :edit="itemData.id" @close="showForm = false" />
-			<!-- Dynamic Card content component -->
-			<component v-else :is="contentComponent" :class="{ draggable: !isSortDisabled }" :item-data="itemData" />
-		</v-expand-transition>
+	<BaseCard
+		:id="id"
+		:draggable="draggable"
+		:highlight="isHighlighted"
+		with-options
+		@edit="showForm"
+		@delete="confirmDelete"
+		@move="showFolderTree"
+		@click="showForm"
+		@dragstart="onDragStart"
+	>
+		<!-- Dynamic Card content component -->
+		<component :is="contentComponent" :item-data="itemData" />
 	</BaseCard>
+	<!-- Custom drag image used when dragging the card -->
+	<CardDragImage ref="refDragImage" :item-data="itemData" />
 </template>
 
-<script lang="ts">
-import Vue, { PropType } from 'vue';
-import { CardTypes } from "@/js/types";
-import { eventHub, CardEvent } from '@/js/eventHub';
-
+<script lang="ts" setup>
+import { useDebounceFn } from "@vueuse/core";
+import { computed, defineAsyncComponent, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { CustomMIMEType, startDrag } from "@/composables/dragAndDrop";
+import { CardTypes, getText } from "@/core/model/cards";
+import { t as $t } from "@/core/translation";
+import utilities from "@/core/utilities";
+import { useCardsStore } from "@/store/cards";
+import { useGlobalConfirmDialog } from "@/store/confirmDialog";
+import { useSidePanel } from "@/store/sidePanel";
 import BaseCard from "./BaseCard.vue";
+import CardDragImage from "./CardDragImage.vue";
 
-import ContentQuest from "./content/ContentQuest.vue";
-import ContentEvent from "./content/ContentEvent.vue";
-import ContentLocation from "./content/ContentLocation.vue";
-import ContentCharacter from "./content/ContentCharacter.vue";
-import ContentFaction from "./content/ContentFaction.vue";
-import ContentNote from "./content/ContentNote.vue";
+const props = defineProps<{ itemData: CardTypes; draggable?: boolean }>();
 
-import FormQuest from "./forms/FormQuest.vue";
-import FormEvent from "./forms/FormEvent.vue";
-import FormLocation from "./forms/FormLocation.vue";
-import FormCharacter from "./forms/FormCharacter.vue";
-import FormFaction from "./forms/FormFaction.vue";
-import FormNote from "./forms/FormNote.vue";
-import utilities from '@/js/utilities';
+const isHighlighted = ref(false);
+const refDragImage = ref<HTMLElement | null>();
 
-export default Vue.extend({
-	components: {
-		BaseCard,
-		FormQuest,
-		FormEvent,
-		FormLocation,
-		FormCharacter,
-		FormFaction,
-		FormNote,
-		ContentQuest,
-		ContentEvent,
-		ContentLocation,
-		ContentCharacter,
-		ContentFaction,
-		ContentNote,
-	},
-	props: {
-		itemData: {
-			type: Object as PropType<CardTypes>,
-			required: true,
-		},
-		outlined: Boolean,
-	},
-	data() {
-		return {
-			showForm: false,
-			showContent: true,
-		};
-	},
-	methods: {
-		onDelete() {
-			eventHub.$emit(CardEvent.ID, new CardEvent(this.itemData));
-		},
-	},
-	computed: {
-		contentComponent(): string {
-			return `Content${utilities.capitalize(this.itemData._category)}`;
-		},
-		formComponent(): string {
-			return `Form${utilities.capitalize(this.itemData._category)}`;
-		},
-		isSortDisabled(): boolean {
-			return this.$store.getters.isFilterActive || !this.$store.getters.isDefaultOrder;
-		},
-	},
+const route = useRoute();
+const cardsStore = useCardsStore();
+const sidePanelStore = useSidePanel();
+const { showConfirmDialog } = useGlobalConfirmDialog();
+
+/**
+ * Callback triggered when the user grabs the cards for a drag & drop
+ */
+function onDragStart(e: DragEvent) {
+	startDrag(e, props.itemData, CustomMIMEType.CardType, {
+		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
+	});
+}
+
+function showForm() {
+	sidePanelStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
+}
+
+function showFolderTree() {
+	sidePanelStore.newFolderTree(props.itemData, cardsStore.currentFolder);
+}
+
+function confirmDelete() {
+	showConfirmDialog({
+		title: $t(`dialogs.delete${utilities.capitalize(props.itemData._category)}`),
+		message: $t(`dialogs.deleteConfirm`) + `"${getText(props.itemData)}" ?`,
+		confirmAction: () => cardsStore.deleteCard(props.itemData),
+	});
+}
+
+const id = computed(() => props.itemData.id + "-card");
+
+const contentComponent = computed(() => {
+	const componentName = "Content" + utilities.capitalize(props.itemData._category);
+	return defineAsyncComponent({
+		loader: () => import(`./files/content/${componentName}.vue`),
+	});
 });
-</script>
 
-<style></style>
+/**
+ * Scroll this card into view if the URL's hash contains its ID.
+ * This function is debounced to only trigger after a certain delay and avoid multiple calls in rapid succession.
+ */
+const scrollIntoViewIfSelected = useDebounceFn(() => {
+	if (route.hash === `#${id.value}`) {
+		// Find the card's underlying DOM element to scroll it into view
+		const el = document.querySelector(`[id="${id.value}"]`);
+		el?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+		// Highlight the selected card for 3s
+		isHighlighted.value = true;
+		setTimeout(() => (isHighlighted.value = false), 3000);
+	}
+}, 700);
+
+watch(
+	() => route.hash,
+	() => scrollIntoViewIfSelected(),
+	{ immediate: true }
+);
+</script>

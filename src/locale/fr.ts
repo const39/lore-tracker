@@ -1,19 +1,21 @@
-import { Locale } from "@/js/translation";
+import { Locale } from "@/core/translation";
 
 const fr: Locale = {
 	pages: {
-		home: "Accueil",
+		loreBook: "Lore book",
 		timeline: "Frise des événements",
 	},
 
 	notFound: {
 		title: "Page Introuvable",
-		message: "Retourner à l'",
+		message: "Retourner au ",
 	},
 
 	timeline: {
 		campaignStart: "Début de la campagne",
-		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur l'",
+		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
+		ascOrder: "Ordre chronologique croissant",
+		descOrder: "Ordre chronologique décroissant",
 	},
 
 	eventTypes: {
@@ -32,6 +34,9 @@ const fr: Locale = {
 		character: "Personnage",
 		faction: "Faction",
 		note: "Note",
+
+		folder: "Dossier",
+		file: "Fichier",
 	},
 
 	status: {
@@ -43,12 +48,29 @@ const fr: Locale = {
 			winter: "Hiver",
 		},
 		action: "Cliquez pour augmenter ou diminuer",
-		cardCount: " carte(s) enregistrée(s)",
+		search: "Recherche",
 		selectors: {
 			customOrder: "Ordre personnalisé",
 			alphanumericOrder: "Ordre alphanumérique",
-			tabLayout: "Disposition en onglets",
-			columnLayout: "Disposition en colonnes",
+			largeTabDensity: "Densité spacieuse",
+			comfortableTabDensity: "Densité confortable",
+			compactTabDensity: "Densité compacte",
+		},
+	},
+
+	sidePanel: {
+		moveCard: "Déplacer",
+		folderList: "Liste des dossiers",
+		openFolder: "Ouvrir",
+	},
+
+	dragAndDrop: {
+		desc: "Mode de glisser-déposer",
+		modes: {
+			disabled: "Désactivé",
+			moveToFolder: "Déplacer vers dossier",
+			sort: "Trier les cartes",
+			link: "Lier une carte",
 		},
 	},
 
@@ -77,34 +99,38 @@ const fr: Locale = {
 		unknownRace: "Race inconnue",
 		unknownClass: "Classe inconnue",
 		unknownRole: "Rôle inconnu",
-		requiredField: "champ requis",
-		dayNotValid: "jour invalide",
+		requiredField: "Champ requis",
+		dayNotValid: "Jour invalide",
+		illegalCharacters: "Le nom contient des caractères invalides",
+		nameAlreadyUsed: "Nom déjà utilisé",
 	},
 
 	dialogs: {
-		addQuest: "Ajouter une quête",
-		addEvent: "Ajouter un événement",
-		addLocation: "Ajouter une localité",
-		addCharacter: "Ajouter un personnage",
-		addFaction: "Ajouter une faction",
-		addNote: "Ajouter une note",
+		addFolder: "Nouveau dossier",
+		addQuest: "Nouvelle quête",
+		addEvent: "Nouveau événement",
+		addLocation: "Nouvelle localité",
+		addCharacter: "Nouveau  personnage",
+		addFaction: "Nouvelle faction",
+		addNote: "Nouvelle note",
 
-		deleteTitle: "Supprimer ",
-		deleteQuest: "Voulez-vous vraiment supprimer cette quête ?",
-		deleteEvent:
-			"Voulez-vous vraiment supprimer cet événement ? Cette action modifiera également la frise des événements.",
-		deleteLocation: "Voulez-vous vraiment supprimer cette localité ?",
-		deleteCharacter: "Voulez-vous vraiment supprimer ce personnage ?",
-		deleteFaction: "Voulez-vous vraiment supprimer cette faction ?",
-		deleteNote: "Voulez-vous vraiment supprimer cette note ?",
-	},
+		editFolder: "Modifier un dossier",
+		editQuest: "Modifier une quête",
+		editEvent: "Modifier un événement",
+		editLocation: "Modifier une localité",
+		editCharacter: "Modifier un personnage",
+		editFaction: "Modifier une faction",
+		editNote: "Modifier une note",
 
-	search: {
-		search: "Recherche",
-		containing: "Contenant",
-		taggedWith: "Lié à",
-		cardsMatching: " carte(s) correspondent à la recherche.",
-		sortDisabled: "Tri des cartes désactivé pendant la recherche.",
+		deleteFolder: "Supprimer un dossier",
+		deleteQuest: "Supprimer une quête",
+		deleteEvent: "Supprimer un événement",
+		deleteLocation: "Supprimer une localité",
+		deleteCharacter: "Supprimer un personnage",
+		deleteFaction: "Supprimer une faction",
+		deleteNote: "Supprimer une note",
+		deleteConfirm: "Voulez-vous vraiment supprimer ",
+		deleteConfirmFolder: "Cela supprimera tous ses sous-dossiers et fichiers.",
 	},
 
 	actions: {
@@ -114,19 +140,35 @@ const fr: Locale = {
 		no: "Non",
 		edit: "Modifier",
 		delete: "Supprimer",
+		moveTo: "Déplacer vers",
 		quickNote: "Note rapide",
-		changeCategory: "Clic ou Ctrl+Gauche/Droite pour changer de catégorie",
+		dropCardHere: "Déposer une carte ici",
 	},
 
 	messages: {
 		success: {
 			saveFileImportSuccessful: "Fichier de sauvegarde importé.",
+			newCardStored: "sauvegardé(e)",
+			newCardStoredInFolder: "sauvegardé(e) dans le dossier",
 		},
 		errors: {
+			genericError: "Une erreur est survenue.",
 			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			files: {
+				invalidOperation: {
+					title: "Opération impossible",
+				},
+				folderNotFound: {
+					title: "Dossier introuvable",
+					action: "Retourner au dossier racine",
+				},
+				nameAlreadyUsed: {
+					title: "Nom déjà utilisé",
+				},
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",
@@ -162,24 +204,23 @@ const fr: Locale = {
 		hotkeys: {
 			optionName: "Afficher les raccourcis",
 			title: "Raccourcis clavier",
+			hold: "Maintenir",
 			pages: {
 				title: "Pages",
-				toHome: "Naviguer vers l'Accueil",
+				toLoreBook: "Naviguer vers le Lore book",
 				toTimeline: "Naviguer vers la Frise des événements",
 			},
 			content: {
 				title: "Contenu",
-				// showTabPrefix: "Afficher l'onglet/la colonne ",
-				showTabQuest: "Afficher l'onglet/la colonne Quêtes",
-				showTabEvent: "Afficher l'onglet/la colonne Événements",
-				showTabLocation: "Afficher l'onglet/la colonne Localités",
-				showTabCharacter: "Afficher l'onglet/la colonne Personnages",
-				showTabFaction: "Afficher l'onglet/la colonne Factions",
-				showTabNote: "Afficher l'onglet/la colonne Notes",
+				showTabQuest: "Afficher l'onglet Quêtes",
+				showTabEvent: "Afficher l'onglet Événements",
+				showTabLocation: "Afficher l'onglet Localités",
+				showTabCharacter: "Afficher l'onglet Personnages",
+				showTabFaction: "Afficher l'onglet Factions",
+				showTabNote: "Afficher l'onglet Notes",
 			},
 			misc: {
 				title: "Divers",
-				openSearch: "Ouvrir/fermer la fenêtre de recherche",
 				openOptions: "Ouvrir/fermer le menu des options",
 			},
 		},

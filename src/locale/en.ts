@@ -1,8 +1,8 @@
-import { Locale } from "@/js/translation";
+import { Locale } from "@/core/translation";
 
 const en: Locale = {
 	pages: {
-		home: "Home",
+		loreBook: "Lore book",
 		timeline: "Timeline",
 	},
 
@@ -14,6 +14,8 @@ const en: Locale = {
 	timeline: {
 		campaignStart: "Campaign start",
 		noEvent: "No event registered. Add some on the ",
+		ascOrder: "Ascending chronological order",
+		descOrder: "Descending chronological order",
 	},
 
 	eventTypes: {
@@ -32,6 +34,9 @@ const en: Locale = {
 		character: "Character",
 		faction: "Faction",
 		note: "Note",
+
+		folder: "Folder",
+		file: "File",
 	},
 
 	status: {
@@ -43,12 +48,29 @@ const en: Locale = {
 			winter: "Winter",
 		},
 		action: "Click to increase or decrease",
-		cardCount: " saved cards",
+		search: "Search",
 		selectors: {
 			customOrder: "Custom order",
 			alphanumericOrder: "Alphanumeric order",
-			tabLayout: "Tab layout",
-			columnLayout: "Column layout",
+			largeTabDensity: "Large density",
+			comfortableTabDensity: "Comfortable density",
+			compactTabDensity: "Compact density",
+		},
+	},
+
+	sidePanel: {
+		moveCard: "Move",
+		folderList: "Folder list",
+		openFolder: "Open",
+	},
+
+	dragAndDrop: {
+		desc: "Drag & drop mode",
+		modes: {
+			disabled: "Disabled",
+			moveToFolder: "Move to folder",
+			sort: "Sort cards",
+			link: "Link a card",
 		},
 	},
 
@@ -77,33 +99,38 @@ const en: Locale = {
 		unknownRace: "Unknown race",
 		unknownClass: "Unknown class",
 		unknownRole: "Unknown role",
-		requiredField: "required field",
-		dayNotValid: "invalid day",
+		requiredField: "Required field",
+		dayNotValid: "Invalid day",
+		illegalCharacters: "Name contains illegal characters",
+		nameAlreadyUsed: "Name already used",
 	},
 
 	dialogs: {
-		addQuest: "Add a quest",
-		addEvent: "Add an event",
-		addLocation: "Add a location",
-		addCharacter: "Add a character",
-		addFaction: "Add a faction",
-		addNote: "Add a note",
+		addFolder: "New folder",
+		addQuest: "New quest",
+		addEvent: "New event",
+		addLocation: "New location",
+		addCharacter: "New character",
+		addFaction: "New faction",
+		addNote: "New note",
 
-		deleteTitle: "Delete ",
-		deleteQuest: "Do you really want to delete this quest ?",
-		deleteEvent: "Do you really want to delete this event ? This will also change the timeline.",
-		deleteLocation: "Do you really want to delete this location ?",
-		deleteCharacter: "Do you really want to delete this character ?",
-		deleteFaction: "Do you really want to delete this faction ?",
-		deleteNote: "Do you really want to delete this note ?",
-	},
+		editFolder: "Edit a folder",
+		editQuest: "Edit a quest",
+		editEvent: "Edit an event",
+		editLocation: "Edit a location",
+		editCharacter: "Edit a character",
+		editFaction: "Edit a faction",
+		editNote: "Edit a note",
 
-	search: {
-		search: "Search",
-		containing: "Containing",
-		taggedWith: "Tagged with",
-		cardsMatching: " cards match the search.",
-		sortDisabled: "Card sort disabled during search.",
+		deleteFolder: "Delete a folder",
+		deleteQuest: "Delete a quest",
+		deleteEvent: "Delete an event",
+		deleteLocation: "Delete a location",
+		deleteCharacter: "Delete a character",
+		deleteFaction: "Delete a faction",
+		deleteNote: "Delete a note",
+		deleteConfirm: "Do you really want to delete ",
+		deleteConfirmFolder: "This will delete all its subfolders and files.",
 	},
 
 	actions: {
@@ -113,19 +140,35 @@ const en: Locale = {
 		no: "No",
 		edit: "Edit",
 		delete: "Delete",
+		moveTo: "Move to",
 		quickNote: "Quick note",
-		changeCategory: "Click or Ctrl+Left/Right to change category",
+		dropCardHere: "Drop a card here",
 	},
 
 	messages: {
 		success: {
 			saveFileImportSuccessful: "Save file imported.",
+			newCardStored: "saved",
+			newCardStoredInFolder: "saved in folder",
 		},
 		errors: {
+			genericError: "An error occurred.",
 			corruptedSave: "Corrupted or incomplete save data.",
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled.",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
+			files: {
+				invalidOperation: {
+					title: "Invalid operation",
+				},
+				folderNotFound: {
+					title: "Folder not found",
+					action: "Go back to the root folder",
+				},
+				nameAlreadyUsed: {
+					title: "Name already used",
+				},
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker has been updated!",
@@ -150,7 +193,8 @@ const en: Locale = {
 			uploadInputHint: "JSON file required",
 			deleteText: "Delete save",
 			deleteDialogTitle: "Delete save?",
-			deleteDialogMessage: "All saved data will be lost. Please consider to backup your data first.",
+			deleteDialogMessage:
+				"All saved data will be lost. Please consider to backup your data first.",
 		},
 		about: {
 			optionName: "About",
@@ -160,24 +204,23 @@ const en: Locale = {
 		hotkeys: {
 			optionName: "Show hotkeys",
 			title: "Hotkeys",
+			hold: "Hold",
 			pages: {
 				title: "Pages",
-				toHome: "Navigate to Home",
+				toLoreBook: "Navigate to Lore Book",
 				toTimeline: "Navigate to Timeline",
 			},
 			content: {
 				title: "Content",
-				// showTabPrefix: "Afficher l'onglet/la colonne ",
-				showTabQuest: "Show Quest tab/column",
-				showTabEvent: "Show Event tab/column",
-				showTabLocation: "Show Location tab/column",
-				showTabCharacter: "Show Character tab/column",
-				showTabFaction: "Show Faction tab/column",
-				showTabNote: "Show Note tab/column",
+				showTabQuest: "Show Quest tab",
+				showTabEvent: "Show Event tab",
+				showTabLocation: "Show Location tab",
+				showTabCharacter: "Show Character tab",
+				showTabFaction: "Show Faction tab",
+				showTabNote: "Show Note tab",
 			},
 			misc: {
 				title: "Other",
-				openSearch: "Open/close search window",
 				openOptions: "Open/close option menu",
 			},
 		},

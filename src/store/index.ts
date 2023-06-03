@@ -1,258 +1,105 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import { LocalStorageKey, Season, CardsStore, CategoryFilter, Filter, State, CardCategory, CardTypes, ID, SaveFormat, Order } from "@/js/types";
-import saves, { SaveVersion } from "@/js/saves";
-import utilities from "@/js/utilities";
+import { watchIgnorable } from "@vueuse/core";
+import { defineStore } from "pinia";
+import { computed, reactive } from "vue";
+import { deepUnref } from "@/composables/deepUnref";
+import { LocalStorageKey, Season } from "@/core/constants";
+import { CardsStoreSerialized } from "@/core/model/cards";
+import saves, { SaveVersion } from "@/core/saves";
+import utilities from "@/core/utilities";
+import { useCampaignInfoStore } from "./campaignInfo";
+import { useCardsStore } from "./cards";
+import { useQuickNoteStore } from "./quickNote";
 
-Vue.use(Vuex);
-
-
-function defaultCards(): CardsStore {
-	// Generate automatically the CardsStore using the CardCategory enum values as keys
-	const cards = {} as CardsStore;
-	for(const category of Object.values(CardCategory)) cards[category] = [];
-	return cards;
+export interface MetaData {
+	version: SaveVersion.Latest;
+	lastUpdate: string; // ISO date-time format | Format not enforced !
 }
 
-function defaultFilter(): Filter {
-	return {
-		category: CategoryFilter.ALL,
-		text: "",
-		tags: [],
-	};
+export interface SerializedState {
+	// _meta: MetaData;
+	name: string;
+	days: number;
+	season: Season;
+	cards: CardsStoreSerialized;
+	quickNote: string;
 }
 
-function defaultState(): State {
-	return {
-		_meta: {
-			version: SaveVersion.Latest,
-			lastUpdate: new Date().toISOString()
-		},
-		name: "Campaign",
-		days: 0,
-		season: Season.SPRING,
-		cards: defaultCards(),
-		filter: defaultFilter(),
-		order: Order.DEFAULT,
-		quickNote: "",
+// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
+// *** Update/Create save format converter in saves.ts
+// *** Regenerate JSON Schema on each update :
+// * => npx ts-json-schema-generator --path .\src\store\index.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
+export interface SaveFormat extends SerializedState {
+	_meta: MetaData;
+}
+
+export const useStore = defineStore("store", () => {
+	const stores = [useCampaignInfoStore(), useCardsStore(), useQuickNoteStore()];
+
+	const serializedState = computed(() => {
+		const aggregatedState = stores.reduce(
+			(acc, store) => ({ ...acc, ...store.serializableState }),
+			{}
+		) as SerializedState; // Type assertion because before deepUnref(), aggregatedState still contains the stores's deep Refs
+
+		return deepUnref(reactive(aggregatedState));
+	});
+
+	const { ignoreUpdates } = watchIgnorable(serializedState, () => save(), {
+		deep: true,
+	});
+
+	function setState(payload: SerializedState) {
+		stores.forEach((store) => store.$hydrate(payload));
 	}
-}
 
-export default new Vuex.Store({
-	state: defaultState(),
-	getters: {
-		isFilterActive: (state) => {
-			const defFilter = defaultFilter();
-			// Filter is active if at least one field of the filter is different from the default (blank) filter
-			// ! HARDCODE 'tags' array comparison because it would need a deep equal comparison otherwise
-			return state.filter.category !== defFilter.category || state.filter.text !== defFilter.text || state.filter.tags.length !== 0 
-		},
-		isDefaultOrder: (state) => {
-			return state.order === Order.DEFAULT;
-		},
-		getCards: (state) => {
+	function resetState() {
+		stores.forEach((store) => store.$reset());
+	}
 
-			/**
-			 * Filter the specified cards using the given filter.
-			 * @param cards cards from the current state
-			 * @param filter filter from the current state
-			 * @returns a new CardsStore object containing the cards, filtered according to the given filter 
-			 */
-			function filterCards(cards:CardsStore, filter: Filter) {
+	function toJSON() {
+		// Clone state to avoid modifying it
+		const serialized: any = utilities.deepCopy(serializedState.value);
+		serialized._meta = {
+			version: SaveVersion.Latest,
+			lastUpdate: new Date().toISOString(),
+		};
+		return JSON.stringify(serialized);
+	}
 
-				// Create another empty cards object to avoid modifying the state containing all cards
-				const filteredCards = defaultCards();
+	function toFile() {
+		return new Blob([toJSON()], { type: "application/json" });
+	}
 
-				// Browse each array of cards
-				for (const field in cards) {
-					const key = field as keyof typeof cards;
-	
-					// The filter is applied to each relevant key (can be ALL)
-					if (filter.category === CategoryFilter.ALL || filter.category === key) {
-						// Filter out corresponding cards from the initial cards object
-	
-						(filteredCards[key] as CardTypes[]) = (cards[key] as CardTypes[]).filter((entry) => {
-							/* The predicate conditions are exclusive :
-							 * (1) if the first one is not fulfilled, the second one is not evaluated;
-							 * (2) if any condition is evaluated to false, the predicate is considered not fulfilled
-							 * In either case, the predicate returns false
-							 * In other words, the only way for the predicate to return true is that each specified condition is evaluated to true
-							 */
-							let predicate = true;
-	
-							// If specified, search for corresponding text in text fields of the current entry
-							if (filter.text) {
-								const str = filter.text;
-								predicate = utilities.getAllText(entry).some(text => text.toLowerCase().includes(str));
-							}
-	
-							// If the previous condition has been fulfilled (if specified) and a tag condition is present (see (1)),
-							// search for the corresponding tags in the current entry tag list
-							if (predicate && filter?.tags?.length > 0) {
-								for (const tag of filter.tags) {
-									predicate &&= entry.tags.includes(tag);
-									// If the condition is false, stop searching and return (see (2))
-									if (!predicate) break;
-								}
-							}
-	
-							return predicate;
-						});
-					}
-				}
-				return filteredCards;
-			}
+	function loadData(json?: string) {
+		// Get persisted raw data (from argument or from LocalStorage if no argument)
+		const rawData = json || localStorage.getItem(LocalStorageKey.DATA_KEY);
 
-			/**
-			 * Sort (in-place) the specified cards in the alphanumeric order
-			 * @param cards the cards to sort
-			 */
-			function sortCards(cards:CardsStore) {
-
-				for (const field in cards) {
-					cards[field as keyof typeof cards].sort((a: CardTypes, b: CardTypes) => {
-						const textA = utilities.getText(a).toLowerCase();
-						const textB = utilities.getText(b).toLowerCase();
-						return textA.localeCompare(textB);
-					});
-				}
-			}
-
-			const cards = filterCards(state.cards, state.filter);
-			if(state.order === Order.ALPHANUMERIC) sortCards(cards);
-			return cards;
-		},
-		getByIdInCategory: (state) => (id: ID, category: CardCategory): CardTypes | undefined => {
-			const idx = state.cards[category].findIndex((entry: CardTypes) => entry.id === id);
-			return idx != -1 ? state.cards[category][idx] : undefined;
-		},
-		getById: (state, getters) => (id: ID): CardTypes | undefined => {
-			for (const key in state.cards) {
-				const ret = getters.getByIdInCategory(id, key);
-				if(ret) return ret;
-			}
-			return undefined;
-		},
-		cardCount: (state) => {
-			let count = 0;
-			for (const key in state.cards) count += state.cards[key as keyof typeof state.cards].length
-			return count;
-		},
-		toJSON: (state) => {
-			// Split state data to exclude filter and order from JSON
-			const { filter, order, ...toSave } = { ...state };
-			// Update date
-			toSave._meta.lastUpdate = new Date().toISOString();
-			return JSON.stringify(toSave);
-		},
-	},
-	mutations: {
-		// ** Whole state mutations **
-		resetState(state) {
-			// We use Object.assign() to replace the object at index with our new object while allowing Vue to still track changes to that object
-			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Objects
-			Object.assign(state, defaultState());
-		},
-		/**
-		 * Assign or add new values to the current state properties.
-		 * The current state and the specified payload are merged: 
-		 * 	- Payload new properties are added to the state;
-		 * 	- Colliding properties are overwritten with payload values;
-		 * 	- Pre-existing state properties not set in payload are left unchanged. 
-		 * @param state 
-		 * @param payload Payload to merge with current state. Can be either a State or SaveFormat object.
-		 */
-		setState(state, payload: State | SaveFormat) {
-			Object.assign(state, payload);
-		},
-		// ** Card mutations **
-		addCard(state, payload: CardTypes) {
-			state.cards[payload._category].unshift(payload as any);
-		},
-		updateCard(state, payload: CardTypes) {
-			const list: CardTypes[] = state.cards[payload._category];
-			const index = list.findIndex((entry) => entry.id === payload.id);
-			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
-			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
-			if (index !== -1) Vue.set(list, index, payload);
-		},
-		deleteCard(state, payload: CardTypes) {
-			const list: CardTypes[] = state.cards[payload._category];
-			const index = list.findIndex((entry) => entry.id === payload.id);
-			if (index !== -1) {
-				// Search in each array for eventual entries referencing the object we're about to delete
-				for (const key in state.cards) {
-					state.cards[key as keyof typeof state.cards].forEach((entry: CardTypes) => {
-						// If this entry's tags contain a reference to the object we're about to delete, remove it
-						const referenceIndex = entry.tags.findIndex((event: number) => event === payload.id);
-						if (referenceIndex != -1) entry.tags.splice(referenceIndex, 1);
-					});
-				}
-
-				// Finally delete the payload object from state
-				list.splice(index, 1);
-			}
-		},
-		updateWholeList(state, payload: {category: CardCategory, list: CardTypes[]}) {
-			Vue.set(state.cards, payload.category, payload.list);
-		},
-		// ** Other data mutations **
-		setName(state, payload: string) {
-			if (payload) state.name = payload.trim();
-		},
-		setDaysCount(state, payload: number) {
-			if (Number.isSafeInteger(payload) && payload > -1) state.days = payload;
-		},
-		setSeason(state, payload: Season) {
-			if(payload) state.season = payload;
-		},
-		setQuickNote(state, payload: string) {
-			state.quickNote = payload.trim() ?? "";
-		},
-		// ** Filter mutations **
-		updateFilter(state, payload: Filter) {
-			// ! Only check for undefined/null using '??' instead of '||' to allow setting empty strings or booleans  
-			state.filter.category = payload.category ?? state.filter.category;
-			state.filter.text = (payload.text ?? state.filter.text).toLowerCase();
-			state.filter.tags = payload.tags ?? state.filter.tags;
-		},
-		resetFilter(state) {
-			// We use Vue.set() to replace the object at index with our new object while allowing Vue to still track changes to that object
-			// @see https://v2.vuejs.org/v2/guide/reactivity.html#For-Arrays
-			Vue.set(state, "filter", {});
-		},
-		setOrder(state, payload: Order) {
-			if(Object.values(Order).includes(payload)) state.order = payload;
-			else state.order = Order.DEFAULT;
+		// Perform parsing, validation and conversion if there is data
+		// If there is no data to be used, leave the default state as is
+		if (rawData) {
+			// * Validate (and convert if necessary) save format
+			// The conversion method will throw an error if the save cannot be used. If an error is thrown:
+			//  - It is not caught to propagate it to UI
+			//  - Current state is not lost because it has not been cleared
+			const validData = saves.ensureLatestVersion(JSON.parse(rawData));
+			// Disable auto persistence during state setting to avoid persisting the data immediately
+			ignoreUpdates(() => setState(validData));
 		}
-	},
-	actions: {
-		commitAndSave({commit, dispatch}, obj: { commit: string, payload: object }) {
-			commit(obj.commit, obj.payload);
-			dispatch('save');
-		},
-		// ** Save actions
-		loadData({commit}, payload?: string) {
-			// Get persisted raw data (from payload or from LocalStorage if no payload)
-			const rawData = payload || localStorage.getItem(LocalStorageKey.DATA_KEY);
+	}
 
-			// Perform parsing, validation and conversion if there is data
-			// If there is no data to be used, leave the default state as is
-			if(rawData) {
-				// * Validate (and convert if necessary) save format
-				// The conversion method will throw an error if the save cannot be used. If an error is thrown:
-				//  - It is not caught to propagate it to UI
-				//  - Current state is not lost because it has not been cleared
-				const parsedData = saves.convertToLatest(JSON.parse(rawData));
-				commit('setState', parsedData);
-			}
-		},
-		save({getters}) {
-			localStorage.setItem(LocalStorageKey.DATA_KEY, getters.toJSON);
-		},
-		deleteSave() {
-			localStorage.removeItem(LocalStorageKey.DATA_KEY);
-		},
-	},
-	modules: {},
+	function save() {
+		localStorage.setItem(LocalStorageKey.DATA_KEY, toJSON());
+	}
+
+	function deleteSave() {
+		localStorage.removeItem(LocalStorageKey.DATA_KEY);
+	}
+
+	return {
+		resetState,
+		toFile,
+		loadData,
+		save,
+		deleteSave,
+	};
 });

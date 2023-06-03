@@ -1,0 +1,16 @@
+.clickable:hover {
+	cursor: pointer;
+}
+
+.scrollable {
+	overflow: auto !important;
+}
+
+/* Hides the drag-image below its parent, while still being in the DOM to be included as a drag image */
+/* This avoids the need to render the component dynamically */
+.drag-image {
+	z-index: -5 !important;
+	position: absolute !important;
+	top: 16px;
+	left: 16px;
+}
