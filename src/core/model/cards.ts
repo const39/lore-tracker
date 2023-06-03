@@ -5,6 +5,8 @@ import { Folder, FolderMetadata, SerializedFolder } from "./fileTree";
 
 export type ID = number;
 
+// * Card types * \\ 
+
 export enum CardCategory {
 	Quest = "quest",
 	Event = "event",
@@ -75,8 +77,14 @@ export interface Note extends BaseCard {
 	desc: string;
 }
 
+/**
+ * Union type of all card types.
+ */
 export type CardTypes = Quest | Event | Location | Character | Faction | Note;
 
+/**
+ * (CardCategory, Card type) mapping.
+ */
 export type CardTypesMapping = {
 	[CardCategory.Quest]: Quest;
 	[CardCategory.Event]: Event;
@@ -86,7 +94,12 @@ export type CardTypesMapping = {
 	[CardCategory.Note]: Note;
 };
 
+/**
+ * Helper type to get the card type associated to generic category type.
+ */
 export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T];
+
+// * Folder types * \\ 
 
 export interface CardFolderMetadata extends FolderMetadata {
 	_category: CardCategory;
@@ -94,18 +107,22 @@ export interface CardFolderMetadata extends FolderMetadata {
 
 export class CardFolder extends Folder<CardFolderMetadata, CardTypes> {}
 
-// Runtime type
+// * Store * \\
+
+// Runtime store type
 export type CardsStore = {
 	[Category in CardCategory]: Folder<CardFolderMetadata, CardTypeBasedOnCategory<Category>>;
 };
 
-// Serialized type
+// Serialized store type
 export type CardsStoreSerialized = {
 	[Category in CardCategory]: SerializedFolder<
 		CardFolderMetadata,
 		CardTypeBasedOnCategory<Category>
 	>;
 };
+
+// * Utils & misc. * \\
 
 export class Tag {
 	id: ID;
@@ -121,14 +138,25 @@ export class Tag {
 	}
 }
 
+/**
+ * Type-guard function with indicates if an object is a Card.
+ */
 export function isCard(maybeCard: any): maybeCard is CardTypes {
 	return Object.values(CardCategory).includes(maybeCard._category);
 }
 
+/**
+ * Type-guard function with indicates if an object is a CardFolder instance.
+ */
 export function isCardFolder(maybeFolder: any): maybeFolder is CardFolder {
 	return maybeFolder instanceof CardFolder;
 }
 
+/**
+ * Card factory function.
+ * @param category the category of the card to create
+ * @returns an empty card based on the specified category
+ */
 export function createCard(category: CardCategory): CardTypes {
 	const campaignInfoStore = useCampaignInfoStore();
 	switch (category) {
@@ -189,6 +217,11 @@ export function createCard(category: CardCategory): CardTypes {
 	}
 }
 
+/**
+ * Root CardFolder tree factory function.
+ * @param category the category of the folder to create
+ * @returns an empty folder based on the specified category
+ */
 export function createRootFolder<T extends CardCategory>(
 	category: T,
 	files?: CardTypeBasedOnCategory<T>[]
