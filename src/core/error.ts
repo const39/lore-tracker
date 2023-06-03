@@ -1,3 +1,19 @@
+import { UnionOfTupleValues } from "./utilities";
+
+export const StateTypes = ["error", "warning", "success", "info"] as const;
+export type StateTypes = UnionOfTupleValues<typeof StateTypes>;
+
+/**
+ * Helper function indicating if the specified arg is a {@link StateTypes}.
+ * Acts as a TS type-guard.
+ * 
+ * @param arg the object to check
+ * @returns true if arg is a {@link StateTypes}, false otherwise.
+ */
+export function isStateType(arg: any): arg is StateTypes {
+	return StateTypes.includes(arg);
+}
+
 export interface LocalisableError {
 	/**
 	 * @returns the localized error message

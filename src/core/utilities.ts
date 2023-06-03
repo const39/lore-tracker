@@ -1,12 +1,15 @@
 import { klona } from "klona/lite";
 
+// Type utilities
+export type UnionOfTupleValues<T extends Readonly<string[] | number[] | symbol[]>> = T[number];
+
 // Map utility functions
 
 /**
  * Merge mapB onto mapA.
- * 
+ *
  * In case of conflicting keys, the second map's values prevail.
- * 
+ *
  * @param a the base Map
  * @param b the map to merge
  */
