@@ -1,5 +1,5 @@
 <template>
-	<v-form ref="form" v-model="isValid" validate-on="input">
+	<v-form ref="form" v-model="isValid" validate-on="input" @submit.prevent="submit">
 		<v-card-actions class="float-right">
 			<v-spacer />
 			<v-btn

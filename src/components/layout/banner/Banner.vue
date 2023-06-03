@@ -3,16 +3,16 @@
 		<div>
 			<v-hover v-slot="{ isHovering, props }">
 				<div class="text-xl-h4 mb-2" v-bind="props">
-					<v-form v-if="editName">
+					<v-form v-if="editName" @submit.prevent="editName = false">
 						<v-text-field
 							v-model="campaignName"
 							:rules="rules"
+							class="campaign-name-field min-width"
 							maxlength="30"
 							append-inner-icon="mdi-check"
 							autofocus
 							counter
 							@click:append-inner="editName = false"
-							@keypress.enter="editName = false"
 						/>
 					</v-form>
 					<span v-else>
@@ -30,7 +30,7 @@
 			<StatusTray />
 		</div>
 		<v-spacer />
-		<div class="text-right search-bar-min-width">
+		<div class="text-right search-bar min-width">
 			<v-text-field
 				v-model="search"
 				:label="$t('status.search')"
@@ -90,7 +90,11 @@ const search = computed({
 });
 </script>
 <style scoped>
-.search-bar-min-width {
+.campaign-name-field.min-width {
+	min-width: 300px;
+}
+
+.search-bar.min-width {
 	min-width: 300px;
 }
 </style>
