@@ -96,7 +96,7 @@ export class Path {
 		if (segments) {
 			segs = segments
 				.flatMap((s) => (typeof s === "string" ? Path.sanitize(s) : s.rawSegments))
-				.filter((s) => s.trim().length > 0);
+				.filter((s) => s.length > 0);
 		}
 		this.rawSegments = Object.freeze(segs);
 	}
@@ -318,7 +318,9 @@ export class Folder<Metadata extends FolderMetadata, File extends Indexable>
 		if (path.isRoot()) return this;
 		else if (path.length === 1) {
 			// Search through this folder's children
-			return this.subfolders.find((folder) => folder.metadata.name === path.rawSegments[0]);
+			return this.subfolders.find(
+				(folder) => folder.metadata.name.toLowerCase() === path.rawSegments[0]
+			);
 		} else {
 			// Search recursively in all subfolders until we find it (DFS algorithm)
 			for (const folder of this.subfolders) {

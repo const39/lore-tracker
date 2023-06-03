@@ -1,6 +1,6 @@
 import { Path } from "./model/fileTree";
 
-export const required = (msg: string) => (v: string) => !!v || msg;
+export const required = (msg: string) => (v: string) => !!v.trim() || msg;
 
 export const counter = (msg: string, count: number) => (v: string) => v.length <= count || msg;
 
