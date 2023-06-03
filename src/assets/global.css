@@ -11,6 +11,6 @@
 .drag-image {
 	z-index: -5 !important;
 	position: absolute !important;
-	top: 0;
-	left: 0;
+	top: 16px;
+	left: 16px;
 }
