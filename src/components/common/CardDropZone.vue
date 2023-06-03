@@ -20,6 +20,7 @@ const refDropZone = ref<HTMLElement | null>(null);
 
 const { status } = useDropZone(refDropZone, "copy", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.CardType],
+	acceptMode: ["link"],
 });
 
 const color = computed(() => {

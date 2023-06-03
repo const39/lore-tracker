@@ -1,6 +1,7 @@
 import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
 import utilities from "@/core/utilities";
+import { DragAndDropMode, useDragAndDropMode } from "@/store/dragAndDropMode";
 
 type DragAndDropID = string;
 type DragAndDropData = any;
@@ -19,6 +20,7 @@ interface DragOptions {
 
 interface DropOptions {
 	acceptMIME?: string[];
+	acceptMode?: DragAndDropMode[];
 }
 
 export interface DropPayload<T = unknown> {
@@ -78,6 +80,8 @@ export function useDropZone(
 	onDropAccepted: (items: DropPayload[]) => void,
 	options?: DropOptions
 ) {
+	const _dndStore = useDragAndDropMode();
+
 	const acceptedMIMETypes = options?.acceptMIME
 		? [...options.acceptMIME, CustomMIMEType.DragAndDropID].map((type) => type.toLowerCase())
 		: undefined;
@@ -99,6 +103,10 @@ export function useDropZone(
 				}
 			}
 		}
+
+		// Reject if current drag & drop mode is not among the accepted ones
+		if (options?.acceptMode && !options.acceptMode.includes(_dndStore.mode)) return false;
+
 		return true;
 	}
 
