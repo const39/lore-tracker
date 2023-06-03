@@ -8,14 +8,12 @@ import type { Theme } from "@/plugins/vuetify";
 export type { Theme } from "@/plugins/vuetify";
 export type Order = "default" | "alphanumeric";
 export type Density = "large" | "comfortable" | "compact";
-export type DragAndDropMode = "disabled" | "moveToFolder" | "sort" | "link";
 export type QuickNoteSize = { width?: number; height?: number };
 
 interface Preferences {
 	cardsOrder: Order;
 	cardsDensity: Density;
 	language: SupportedLanguages;
-	dragAndDropMode: DragAndDropMode;
 	quickNoteSize?: QuickNoteSize;
 }
 
@@ -24,7 +22,6 @@ function getDefaults(): Preferences {
 		cardsOrder: "default",
 		cardsDensity: "comfortable",
 		language: SupportedLanguages.ENGLISH,
-		dragAndDropMode: "disabled",
 	};
 }
 
@@ -36,7 +33,6 @@ export const usePreferencesStore = defineStore(
 
 		const cardsOrder = ref<Order>(_defaults.cardsOrder);
 		const cardsDensity = ref<Density>(_defaults.cardsDensity);
-		const dragAndDropMode = ref(_defaults.dragAndDropMode);
 		const quickNoteSize = ref<QuickNoteSize>();
 
 		const language = ref<SupportedLanguages>(_defaults.language);
@@ -48,12 +44,11 @@ export const usePreferencesStore = defineStore(
 			_themeStore.global.name.value = value;
 		});
 
-		return { cardsOrder, cardsDensity, dragAndDropMode, language, theme, quickNoteSize };
+		return { cardsOrder, cardsDensity, language, theme, quickNoteSize };
 	},
 	{
 		persist: {
 			key: LocalStorageKey.PREFERENCES_KEY,
-			paths: ["cardsOrder", "cardsDensity", "language", "theme", "quickNoteSize"], // Persist all preferences except Drag&Drop mode
 		},
 	}
 );

@@ -3,14 +3,14 @@ import { reactive, ref } from "vue";
 import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "./cards";
-import { usePreferencesStore } from "./preferences";
+import { useDragAndDropMode } from "./dragAndDropMode";
 
 export type FormVariant = "edit" | "add";
 export type FolderTreeVariant = "card-move" | "nav";
 export type SidePanel = "closed" | "form" | "folder-tree";
 
 export const useSidePanel = defineStore("sidePanel", () => {
-	const _prefStore = usePreferencesStore();
+	const _dndStore = useDragAndDropMode();
 
 	const formState = reactive({
 		variant: ref<FormVariant>("add"),
@@ -28,14 +28,14 @@ export const useSidePanel = defineStore("sidePanel", () => {
 
 	function _resetSidePanel() {
 		sidePanelStatus.value = "closed";
-		_prefStore.dragAndDropMode = "disabled";
+		_dndStore.setMode("disabled");
 	}
 
 	function _showForm() {
 		// Show side panel with form inside it
 		sidePanelStatus.value = "form";
 		// Enable 'drop' drag and drop when form is open
-		_prefStore.dragAndDropMode = "link";
+		_dndStore.setMode("link");
 	}
 
 	function newAddForm(category: CardCategory, inFolder: CardFolder) {

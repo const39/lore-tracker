@@ -13,7 +13,7 @@
 			v-if="!loading"
 			v-model="items"
 			:animation="200"
-			:disabled="prefStore.dragAndDropMode !== 'sort'"
+			:disabled="dndStore.mode !== 'sort'"
 			:group="group"
 			tag="v-row"
 			draggable=".draggable-item"
@@ -26,7 +26,7 @@
 				<v-col class="draggable-item relative" cols="12" v-bind="density">
 					<slot
 						v-bind="{
-							isDraggable: prefStore.dragAndDropMode !== 'disabled',
+							isDraggable: dndStore.mode !== 'disabled',
 							itemData: element,
 						}"
 					/>
@@ -41,6 +41,7 @@ import { computed, ref } from "vue";
 import draggable from "vuedraggable";
 import { useGridDensity } from "@/composables/gridDensity";
 import { CardFolder, CardTypes, getText } from "@/core/model/cards";
+import { useDragAndDropMode } from "@/store/dragAndDropMode";
 import { usePreferencesStore } from "@/store/preferences";
 
 const props = defineProps<{
@@ -57,6 +58,7 @@ const emit = defineEmits<{
 const drag = ref(false);
 
 const prefStore = usePreferencesStore();
+const dndStore = useDragAndDropMode()
 const { density } = useGridDensity();
 
 const items = computed({
