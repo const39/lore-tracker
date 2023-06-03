@@ -116,7 +116,8 @@ function close(): void {
 }
 
 async function submit() {
-	if (await form.value?.validate()) {
+	await form.value?.validate();
+	if (isValid.value) {
 		useTryCatch(() => {
 			if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
 			else cardsStore.addFolder(new CardFolder(model.value));

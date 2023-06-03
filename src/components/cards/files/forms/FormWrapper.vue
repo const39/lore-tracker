@@ -62,7 +62,8 @@ function close() {
 }
 
 async function submit() {
-	if ((await form.value?.validate()) && model) {
+	await form.value?.validate();
+	if (isValid.value && model) {
 		useTryCatch(() => {
 			// Update or add card based on form type
 			if (variant === "edit") cardsStore.updateCard(model, parentFolder);
@@ -72,14 +73,13 @@ async function submit() {
 			const msg = parentFolder?.absolutePath.isRoot()
 				? $t(`categories.${model?._category}`) + " " + $t("messages.success.newCardStored")
 				: $t(`categories.${model?._category}`) +
-				  " " +
-				  $t("messages.success.newCardStoredInFolder") +
-				  " " +
-				  parentFolder?.absolutePath;
+					" " +
+					$t("messages.success.newCardStoredInFolder") +
+					" " +
+					parentFolder?.absolutePath;
 			globalSnackbar.showSnackbar(msg, "info", 7000);
 		});
+		close();
 	}
-
-	close();
 }
 </script>
