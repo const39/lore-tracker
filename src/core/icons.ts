@@ -20,7 +20,7 @@ export enum Icon {
 	taskOngoing = "mdi-star-outline",
 	// Folder
 	folder = "mdi-folder",
-	// Snackbar 
+	// Snackbar
 	error = "mdi-close-circle",
 	warning = "mdi-alert",
 	info = "mdi-information",
