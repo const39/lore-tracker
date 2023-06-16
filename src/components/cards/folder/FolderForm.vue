@@ -76,7 +76,7 @@ const rules = {
 	color: [validationRules.required($t("fields.requiredField")), validationRules.hex("")],
 	name: [
 		validationRules.required($t("fields.requiredField")),
-		validationRules.counter("", 25),
+		validationRules.counter(100 + $t("fields.maxCharacterCount"), 100),
 		validationRules.folderName($t("fields.illegalCharacters")),
 		// Check name is not already used by another folder in the current parent folder
 		(name: string) => !parent.value.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
