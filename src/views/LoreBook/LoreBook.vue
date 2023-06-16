@@ -42,7 +42,7 @@ const status = computed(() => sidePanelStore.sidePanelStatus);
 </script>
 
 <style scoped>
-.sticky-form {
+.sticky {
 	position: sticky;
 	top: 78px;
 }
