@@ -7,7 +7,7 @@
 
 	<v-row>
 		<v-slide-x-transition mode="in-out">
-			<v-col v-show="status !== 'closed'" :cols="status === 'form' ? 4 : 3">
+			<v-col v-show="status !== 'closed'" v-bind="cols">
 				<v-card class="pa-2 border sticky" variant="outlined">
 					<FormWrapper v-if="status === 'form'" />
 					<template v-if="status === 'folder-tree'">
@@ -39,6 +39,11 @@ import { useSidePanel } from "@/store/sidePanel";
 const sidePanelStore = useSidePanel();
 
 const status = computed(() => sidePanelStore.sidePanelStatus);
+
+const cols = computed(() => {
+	const base = status.value === "form" ? 4 : 3;
+	return { xs: 12, sm: 12, md: 12, lg: base };
+});
 </script>
 
 <style scoped>
