@@ -98,10 +98,10 @@
 		<!-- Update release notification -->
 		<v-snackbar
 			v-model="showUpdateNotif"
-			variant="outlined"
+			:color="preferences.theme === 'light' ? 'grey-lighten-3' : 'grey-darken-3'"
+			variant="flat"
 			timeout="-1"
 			multi-line
-			text
 		>
 			<div class="text-subtitle-1">
 				{{ $t("messages.info.updateNotifTitle") }}
@@ -136,6 +136,7 @@ import { VERSION } from "@/core/constants";
 import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
+import { usePreferencesStore } from "./store/preferences";
 import { useGlobalSnackbar } from "./store/snackbar";
 
 const version = ref(VERSION);
@@ -146,6 +147,7 @@ const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Dis
 
 const router = useRouter();
 const store = useStore();
+const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
