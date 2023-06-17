@@ -1,4 +1,7 @@
-export const VERSION = "1.3.0";
+/**
+ * App version generated during the build phase.
+ */
+export const VERSION = APP_VERSION;
 
 export enum LocalStorageKey {
 	DATA_KEY = "DATA",
