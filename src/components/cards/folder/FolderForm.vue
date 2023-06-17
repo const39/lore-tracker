@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { type VForm } from "vuetify/components";
 import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
 import { useTryCatch } from "@/composables/tryCatch";
@@ -57,7 +57,13 @@ const rules = {
 		validationRules.counter(100 + $t("fields.maxCharacterCount"), 100),
 		validationRules.folderName($t("fields.illegalCharacters")),
 		// Check name is not already used by another folder in the current parent folder
-		(name: string) => !parent.value.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
+		(name: string) => {
+			// If name is the current folder name, accept value
+			const isCurrentName = name === props.edit?.metadata.name;
+			// If name is already used by another folder, reject value
+			const isUsedByOther = parent.value.hasFolder(new Path(name));
+			return isCurrentName || !isUsedByOther || $t("fields.nameAlreadyUsed");
+		},
 	],
 };
 
@@ -104,4 +110,11 @@ async function submit() {
 		});
 	}
 }
+
+// Because Vuetify's v-color-picker does not support validation, it does not trigger form validation when updated
+// so we have to trigger it manually 
+watch(
+	() => model.value.color,
+	() => form.value?.validate()
+);
 </script>
