@@ -103,6 +103,7 @@ const fr: Locale = {
 		dayNotValid: "Jour invalide",
 		illegalCharacters: "Le nom contient des caractères invalides",
 		nameAlreadyUsed: "Nom déjà utilisé",
+		maxCharacterCount: " caractères max.",
 	},
 
 	dialogs: {
