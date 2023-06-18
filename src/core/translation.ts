@@ -105,6 +105,7 @@ export interface Locale {
 		dayNotValid: string;
 		illegalCharacters: string;
 		nameAlreadyUsed: string;
+		maxCharacterCount: string;
 	};
 
 	dialogs: {

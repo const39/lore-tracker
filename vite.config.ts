@@ -9,7 +9,11 @@ export default defineConfig({
 	plugins: [vue(), vuetify({ autoImport: true })],
 	resolve: {
 		alias: {
-			"@": path.resolve(__dirname, "src")
-		}
-	}
+			"@": path.resolve(__dirname, "src"),
+		},
+	},
+	define: {
+		// Generate app version from package.json version during build phase
+		APP_VERSION: JSON.stringify(process.env.npm_package_version),
+	},
 });

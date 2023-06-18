@@ -16,33 +16,11 @@
 				{{ $t("dialogs.addFolder") }}
 			</v-card-title>
 			<v-card-text class="d-flex text-body-2">
-				<v-menu location="left">
-					<template #activator="{ props: menuProps }">
-						<v-hover>
-							<template #default="{ isHovering, props: hoverProps }">
-								<div v-bind="mergeProps(menuProps, hoverProps)">
-									<v-btn class="mr-1" size="x-large" variant="text" icon>
-										<v-icon
-											:icon="Icon.folder"
-											:color="model.color"
-											size="x-large"
-										/>
-										<v-fade-transition>
-											<v-icon
-												v-if="isHovering"
-												class="picker-btn-overlay"
-												size="x-small"
-												icon="mdi-eyedropper-variant"
-												color="white"
-											/>
-										</v-fade-transition>
-									</v-btn>
-								</div>
-							</template>
-						</v-hover>
+				<ColorPickerMenu v-model="model.color" :modes="['rgb', 'hsl', 'hex']" mode="rgb">
+					<template #activator="{ color }">
+						<v-icon :icon="Icon.folder" :color="color" size="x-large" />
 					</template>
-					<v-color-picker v-model="model.color" :rules="rules.color" />
-				</v-menu>
+				</ColorPickerMenu>
 				<v-text-field
 					v-model="model.name"
 					:label="$t('fields.name') + '*'"
@@ -54,8 +32,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, mergeProps, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { type VForm } from "vuetify/components";
+import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
 import { useTryCatch } from "@/composables/tryCatch";
 import colors from "@/core/colors";
 import { Icon } from "@/core/icons";
@@ -73,13 +52,18 @@ const emit = defineEmits<{
 }>();
 
 const rules = {
-	color: [validationRules.required($t("fields.requiredField")), validationRules.hex("")],
 	name: [
 		validationRules.required($t("fields.requiredField")),
-		validationRules.counter("", 25),
+		validationRules.counter(100 + $t("fields.maxCharacterCount"), 100),
 		validationRules.folderName($t("fields.illegalCharacters")),
 		// Check name is not already used by another folder in the current parent folder
-		(name: string) => !parent.value.hasFolder(new Path(name)) || $t("fields.nameAlreadyUsed"),
+		(name: string) => {
+			// If name is the current folder name, accept value
+			const isCurrentName = name === props.edit?.metadata.name;
+			// If name is already used by another folder, reject value
+			const isUsedByOther = parent.value.hasFolder(new Path(name));
+			return isCurrentName || !isUsedByOther || $t("fields.nameAlreadyUsed");
+		},
 	],
 };
 
@@ -126,10 +110,11 @@ async function submit() {
 		});
 	}
 }
+
+// Because Vuetify's v-color-picker does not support validation, it does not trigger form validation when updated
+// so we have to trigger it manually 
+watch(
+	() => model.value.color,
+	() => form.value?.validate()
+);
 </script>
-<style scoped>
-.picker-btn-overlay {
-	position: absolute;
-	opacity: 0.75;
-}
-</style>
