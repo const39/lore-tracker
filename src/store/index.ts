@@ -24,10 +24,9 @@ export interface SerializedState {
 	quickNote: string;
 }
 
-// ! On each update to to SaveFormat or its type dependencies (i.e. any of the above types)
-// *** Update/Create save format converter in saves.ts
-// *** Regenerate JSON Schema on each update :
-// * => npx ts-json-schema-generator --path .\src\store\index.ts --type SaveFormat --tsconfig tsconfig_schema-generation.json -o .\src\schemas\save_format_<SAVE-VERSION>.json
+// ! On each update to to SaveFormat or its type dependencies
+// * 1. Update/Create save format converter in saves.ts
+// * 2. Generate the save format's JSON Schema => npm run generate-save-schema
 export interface SaveFormat extends SerializedState {
 	_meta: MetaData;
 }
