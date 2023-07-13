@@ -1,5 +1,6 @@
 <template>
 	<v-card
+		:id="id"
 		:elevation="highlight ? undefined : elevation"
 		:draggable="draggable"
 		:ripple="false"
@@ -20,18 +21,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { useDebounceFn } from "@vueuse/core";
+import { computed, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import { ID } from "@/core/model/cards";
 import CardOptions from "./CardOptions.vue";
 
-defineProps<{
+const props = defineProps<{
+	id: ID;
 	/**
 	 * Whether this card should provide an options menu
 	 */
 	withOptions?: boolean;
-	/**
-	 * Whether this card should display the highlight animation
-	 */
-	highlight?: boolean;
 	/**
 	 * Whether this card should display the draggable animation
 	 */
@@ -45,7 +46,34 @@ defineEmits<{
 	(e: "dragstart", value: DragEvent): void;
 }>();
 
+const route = useRoute();
+
+const highlight = ref(false);
 const elevation = ref(1);
+
+const id = computed(() => props.id + "-card");
+
+/**
+ * Scroll this card into view if the URL's hash contains its ID.
+ * This function is debounced to only trigger after a certain delay and avoid multiple calls in rapid succession.
+ */
+const scrollIntoViewIfSelected = useDebounceFn(() => {
+	if (route.hash === `#${id.value}`) {
+		// Find the card's underlying DOM element to scroll it into view
+		const el = document.querySelector(`[id="${id.value}"]`);
+		el?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+		// Highlight the selected card for 3s
+		highlight.value = true;
+		setTimeout(() => (highlight.value = false), 3000);
+	}
+}, 700);
+
+watch(
+	() => route.hash,
+	() => scrollIntoViewIfSelected(),
+	{ immediate: true }
+);
 </script>
 <style scoped>
 .draggable {

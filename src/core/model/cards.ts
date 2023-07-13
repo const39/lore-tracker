@@ -103,6 +103,7 @@ export type CardTypeBasedOnCategory<T extends CardCategory> = CardTypesMapping[T
 
 export interface CardFolderMetadata extends FolderMetadata {
 	_category: CardCategory;
+	tags: ID[];
 }
 
 export class CardFolder extends Folder<CardFolderMetadata, CardTypes> {}
@@ -125,12 +126,14 @@ export type CardsStoreSerialized = {
 // * Utils & misc. * \\
 
 export class Tag {
+	type: "file" | "folder";
 	id: ID;
 	text: string;
 	category: CardCategory;
 	icon: Icon;
 
 	constructor(refObject: CardTypes | CardFolder) {
+		this.type = isCardFolder(refObject) ? "folder" : "file";
 		this.id = isCardFolder(refObject) ? refObject.metadata.id : refObject.id;
 		this.text = getText(refObject);
 		this.category = getCategory(refObject);
@@ -231,6 +234,7 @@ export function createRootFolder<T extends CardCategory>(
 		_category: category,
 		color: "#ffffff",
 		name: `${category}-root`,
+		tags: [],
 	};
 	return new CardFolder(meta, undefined, files);
 }

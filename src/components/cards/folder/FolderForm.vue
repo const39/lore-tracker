@@ -1,21 +1,21 @@
 <template>
-	<v-form ref="form" v-model="isValid" @submit.prevent="submit">
-		<v-card>
-			<v-card-actions class="float-right">
-				<v-spacer />
-				<v-btn
-					:disabled="!isValid"
-					icon="mdi-check"
-					color="primary"
-					density="comfortable"
-					@click="submit"
-				/>
-				<v-btn icon="mdi-close" density="comfortable" @click="close" />
-			</v-card-actions>
-			<v-card-title v-if="!edit" class="mb-1">
-				{{ $t("dialogs.addFolder") }}
-			</v-card-title>
-			<v-card-text class="d-flex text-body-2">
+	<v-form ref="form" v-model="isValid" validate-on="input" @submit.prevent="submit">
+		<v-card-actions class="float-right">
+			<v-spacer />
+			<v-btn
+				:disabled="!isValid"
+				icon="mdi-check"
+				color="primary"
+				density="comfortable"
+				@click="submit"
+			/>
+			<v-btn icon="mdi-close" density="comfortable" @click="$emit('close')" />
+		</v-card-actions>
+		<v-card-title class="mb-1">
+			{{ $t(`dialogs.${variant}Folder`) }}
+		</v-card-title>
+		<v-card-text>
+			<div class="d-flex text-body-2">
 				<ColorPickerMenu v-model="model.color" :modes="['rgb', 'hsl', 'hex']" mode="rgb">
 					<template #activator="{ color }">
 						<v-icon :icon="Icon.folder" :color="color" size="x-large" />
@@ -26,17 +26,18 @@
 					:label="$t('fields.name') + '*'"
 					:rules="rules.name"
 				/>
-			</v-card-text>
-		</v-card>
+			</div>
+			<TagListPanel v-model="model.tags" :exclude-id="model.id" />
+		</v-card-text>
 	</v-form>
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { type VForm } from "vuetify/components";
+import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import colors from "@/core/colors";
 import { Icon } from "@/core/icons";
 import { CardFolder, CardFolderMetadata } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
@@ -45,11 +46,13 @@ import utilities from "@/core/utilities";
 import validationRules from "@/core/validationRules";
 import { useCardsStore } from "@/store/cards";
 
-const props = defineProps<{ edit?: CardFolder }>();
-const emit = defineEmits<{
-	(e: "close"): void;
-	(e: "submit"): void;
+const props = defineProps<{
+	variant: "add" | "edit";
+	parentFolder: CardFolder;
+	folderToEdit: CardFolder;
 }>();
+
+const emit = defineEmits(["close", "submit"]);
 
 const rules = {
 	name: [
@@ -59,62 +62,40 @@ const rules = {
 		// Check name is not already used by another folder in the current parent folder
 		(name: string) => {
 			// If name is the current folder name, accept value
-			const isCurrentName = name === props.edit?.metadata.name;
+			const isCurrentName = name === props.folderToEdit.metadata.name;
 			// If name is already used by another folder, reject value
-			const isUsedByOther = parent.value.hasFolder(new Path(name));
+			const isUsedByOther = props.parentFolder.hasFolder(new Path(name));
 			return isCurrentName || !isUsedByOther || $t("fields.nameAlreadyUsed");
 		},
 	],
 };
 
-const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
-
 const cardsStore = useCardsStore();
 
-const model = ref(initModel());
+const model = ref<CardFolderMetadata>(utilities.deepCopy(props.folderToEdit.metadata)); // Clone object to keep a backup in case the user cancels their changes
 const isValid = ref(false);
 const form = ref<VForm | undefined>(undefined);
 
-const parent = computed(() => cardsStore.currentFolder);
+// Clone object to keep a backup in case the user cancels their changes
+watch(
+	() => props.folderToEdit.metadata,
+	() => (model.value = utilities.deepCopy(props.folderToEdit.metadata)),
+	{ deep: true }
+);
 
-function getRandomColor(): string {
-	const idx = Math.floor(Math.random() * baseColors.length);
-	return baseColors[idx];
-}
-
-function initModel(): CardFolderMetadata {
-	// We return a clone of the object to avoid modifying directly the store
-	// Helpful when the user cancels their changes because we don't have to rollback
-	if (typeof props.edit !== "undefined") return utilities.deepCopy(props.edit.metadata);
-	return {
-		id: utilities.uid(),
-		_category: cardsStore.currentCategory,
-		name: "",
-		color: getRandomColor(),
-	};
-}
-
-function close(): void {
-	model.value = initModel();
-	emit("close");
-}
+// Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
+watch(model, () => form.value?.validate(), { deep: true });
 
 async function submit() {
 	await form.value?.validate();
 	if (isValid.value) {
 		model.value.name = model.value.name.trim();
 		useTryCatch(() => {
-			if (props.edit) cardsStore.updateFolderMetadata(props.edit, model.value);
+			if (props.variant === "edit")
+				cardsStore.updateFolderMetadata(props.folderToEdit, model.value);
 			else cardsStore.addFolder(new CardFolder(model.value));
 			emit("submit");
 		});
 	}
 }
-
-// Because Vuetify's v-color-picker does not support validation, it does not trigger form validation when updated
-// so we have to trigger it manually 
-watch(
-	() => model.value.color,
-	() => form.value?.validate()
-);
 </script>

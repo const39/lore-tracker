@@ -52,4 +52,12 @@ interface Colors {
 }
 
 const colors: Colors = vuetifyColors;
+
+const baseColors = Object.values(colors).map((color) => color.base ?? "#ffffff");
+
+export function getRandomColor(): string {
+	const idx = Math.floor(Math.random() * baseColors.length);
+	return baseColors[idx];
+}
+
 export default colors;

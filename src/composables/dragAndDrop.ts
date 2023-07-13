@@ -74,10 +74,10 @@ export function startDrag(
 	}
 }
 
-export function useDropZone(
+export function useDropZone<T>(
 	target: Ref<HTMLElement | null | undefined>,
 	operation: Operation,
-	onDropAccepted: (items: DropPayload[]) => void,
+	onDropAccepted: (items: DropPayload<T>[]) => void,
 	options?: DropOptions
 ) {
 	const _dndStore = useDragAndDropMode();
@@ -142,14 +142,14 @@ export function useDropZone(
 				const isCompound = compoundMIMETypes.detect(item.type);
 				const dataType = compoundMIMETypes.extract(item.type) ?? item.type;
 				promises.push(
-					new Promise<DropPayload>((resolve) => {
+					new Promise<DropPayload<T>>((resolve) => {
 						if (item.kind === "string")
 							item.getAsString((str) => {
 								const data = isCompound ? buffer.get(str) : str;
 								resolve({ dataType, data });
 							});
 						else if (item.kind === "file")
-							resolve({ dataType, data: item.getAsFile() });
+							resolve({ dataType, data: item.getAsFile() as T });
 					})
 				);
 			}

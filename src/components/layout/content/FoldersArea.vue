@@ -27,14 +27,12 @@
 			<FolderCard :draggable="isDraggable" :folder="itemData" @open-folder="openFolder" />
 		</template>
 	</GenericArea>
-	<FolderDialog v-model="showFolderDialog" />
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
 import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useSidePanel } from "@/store/sidePanel";
@@ -51,8 +49,6 @@ const emit = defineEmits<{
 	(e: "update:modelValue", value: typeof props.modelValue): void;
 }>();
 
-const showFolderDialog = ref(false);
-
 const router = useRouter();
 const sidePanelStore = useSidePanel();
 
@@ -66,7 +62,7 @@ const currentFolder = computed({
 });
 
 function newFolder(): void {
-	showFolderDialog.value = true;
+	sidePanelStore.newFolderAddForm(props.category, currentFolder.value);
 }
 
 function showFolderTree() {
