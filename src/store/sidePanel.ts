@@ -1,103 +1,119 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { ref, computed } from "vue";
 import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
-import utilities from "@/core/utilities";
 import { useCardsStore } from "./cards";
 import { useDragAndDropMode } from "./dragAndDropMode";
 
-export type FormVariant = "edit" | "add";
-export type FolderTreeVariant = "card-move" | "nav";
-export type SidePanel = "closed" | "form" | "folder-tree";
+interface FileFormState {
+	status: "file-form";
+	variant: "add" | "edit";
+	data: {
+		parentFolder: CardFolder;
+		baseModel: CardTypes;
+	};
+}
+
+interface FolderTreeMoveState {
+	status: "folder-tree";
+	variant: "card-move";
+	data: {
+		parentFolder: CardFolder;
+		itemToMove: CardTypes | CardFolder;
+	};
+}
+
+interface FolderTreeNavState {
+	status: "folder-tree";
+	variant: "nav";
+}
+
+type FormState = FileFormState;
+type FolderTreeState = FolderTreeMoveState | FolderTreeNavState;
+
+export type SidePanelState = FormState | FolderTreeState | undefined;
 
 export const useSidePanel = defineStore("sidePanel", () => {
 	const _dndStore = useDragAndDropMode();
 
-	const formState = reactive({
-		variant: ref<FormVariant>("add"),
-		parentFolder: ref<CardFolder>(),
-		model: ref<CardTypes>(),
-	});
+	const state = ref<SidePanelState>();
 
-	const folderTreeState = reactive({
-		variant: ref<FolderTreeVariant>("nav"),
-		parentFolder: ref<CardFolder>(),
-		itemToMove: ref<CardTypes | CardFolder>(),
-	});
+	const isOpen = computed(() => !!state.value);
 
-	const sidePanelStatus = ref<SidePanel>("closed");
+	function _preventOverwrite() {
+		if (isOpen.value) throw new Error("Side panel is already open.");
+	}
 
-	function _resetSidePanel() {
-		sidePanelStatus.value = "closed";
+	function close() {
+		state.value = undefined;
 		_dndStore.setMode("disabled");
 	}
 
-	function _showForm() {
-		// Show side panel with form inside it
-		sidePanelStatus.value = "form";
+	function newFileAddForm(category: CardCategory, inFolder: CardFolder) {
+		_preventOverwrite();
 		// Enable 'drop' drag and drop when form is open
 		_dndStore.setMode("link");
+		// Show side panel with form inside it
+		state.value = {
+			status: "file-form",
+			variant: "add",
+			data: {
+				baseModel: createCard(category),
+				parentFolder: inFolder,
+			},
+		};
 	}
 
-	function newAddForm(category: CardCategory, inFolder: CardFolder) {
-		formState.variant = "add";
-		formState.parentFolder = inFolder;
-		formState.model = createCard(category);
-		_showForm();
-	}
-
-	function newEditForm(id: ID, inFolder: CardFolder) {
-		formState.variant = "edit";
-		formState.parentFolder = inFolder;
-
+	function newFileEditForm(id: ID, inFolder: CardFolder) {
+		_preventOverwrite();
 		const cardsStore = useCardsStore();
 		const data = cardsStore.findFileInFolder(id, cardsStore.currentFolder);
+		if (!data)
+			throw new Error(`Cannot edit card with ID ${id}. Cause: the card could not be found.`);
 
-		// Clone object to keep a backup in case the user cancels their changes
-		if (data) formState.model = utilities.deepCopy(data) as CardTypes;
-		_showForm();
-	}
-
-	function resetForm() {
-		formState.model = undefined;
-		formState.parentFolder = undefined;
-		_resetSidePanel();
+		// Enable 'drop' drag and drop when form is open
+		_dndStore.setMode("link");
+		// Show side panel with form inside it
+		state.value = {
+			status: "file-form",
+			variant: "edit",
+			data: {
+				baseModel: data,
+				parentFolder: inFolder,
+			},
+		};
 	}
 
 	function newFolderTree(): void;
 	function newFolderTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder): void;
 	function newFolderTree(itemToMove?: CardTypes | CardFolder, inFolder?: CardFolder) {
+		_preventOverwrite();
 		if (itemToMove && inFolder) {
-			folderTreeState.itemToMove = itemToMove;
-			folderTreeState.parentFolder = inFolder;
-			folderTreeState.variant = "card-move";
+			state.value = {
+				status: "folder-tree",
+				variant: "card-move",
+				data: {
+					itemToMove,
+					parentFolder: inFolder,
+				},
+			};
 		} else {
-			folderTreeState.variant = "nav";
+			state.value = {
+				status: "folder-tree",
+				variant: "nav",
+			};
 		}
-		sidePanelStatus.value = "folder-tree";
-	}
-
-	function resetFolderTree() {
-		folderTreeState.itemToMove = undefined;
-		folderTreeState.parentFolder = undefined;
-		_resetSidePanel();
 	}
 
 	return {
-		sidePanelStatus,
+		state,
+		isOpen,
+		close,
 
 		// * Form
-		// State
-		formState,
-		// Actions
-		newAddForm,
-		newEditForm,
-		resetForm,
+		newFileAddForm,
+		newFileEditForm,
 
 		// * File tree
-		// State
-		folderTreeState,
-		// Actions
 		newFolderTree,
-		resetFolderTree,
 	};
 });

@@ -51,7 +51,7 @@ function onDragStart(e: DragEvent) {
 }
 
 function showForm() {
-	sidePanelStore.newEditForm(props.itemData.id, cardsStore.currentFolder);
+	sidePanelStore.newFileEditForm(props.itemData.id, cardsStore.currentFolder);
 }
 
 function showFolderTree() {

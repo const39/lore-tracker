@@ -5,7 +5,7 @@
 		:open-at="cardsStore.currentFolder"
 		:title="title"
 		:disabled="disabledItems"
-		@close="close"
+		@close="$emit('close')"
 	>
 		<template #action="{ props: actionProps }">
 			<v-btn
@@ -23,48 +23,53 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import { CardFolder, getCategory, getText, isCard, isCardFolder } from "@/core/model/cards";
+import {
+	CardFolder,
+	CardTypes,
+	getCategory,
+	getText,
+	isCard,
+	isCardFolder,
+} from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { useSidePanel } from "@/store/sidePanel";
 import FolderTree from "./FolderTree.vue";
 
-const sidePanelStore = useSidePanel();
+const props = defineProps<{
+	parentFolder: CardFolder;
+	itemToMove: CardTypes | CardFolder;
+}>();
+
+const emit = defineEmits(["close", "submit"]);
+
 const cardsStore = useCardsStore();
 
 const selected = ref<CardFolder>();
 
-const itemToMove = computed(() => sidePanelStore.folderTreeState.itemToMove);
-
 const title = computed(() => {
-	const cardTitle = itemToMove.value ? getText(itemToMove.value) : "";
+	const cardTitle = props.itemToMove ? getText(props.itemToMove) : "";
 	return `${$t("sidePanel.moveCard")} "${cardTitle}"`;
 });
 
 const rootFolder = computed(() => {
-	return itemToMove.value ? [cardsStore.getCategoryFolder(getCategory(itemToMove.value))] : [];
+	return props.itemToMove ? [cardsStore.getCategoryFolder(getCategory(props.itemToMove))] : [];
 });
 
 const disabledItems = computed(() => {
-	return isCardFolder(itemToMove.value) ? [itemToMove.value.metadata.id] : undefined;
+	return isCardFolder(props.itemToMove) ? [props.itemToMove.metadata.id] : undefined;
 });
 
 function move() {
 	useTryCatch(() => {
 		if (selected.value) {
-			const parentFolder = sidePanelStore.folderTreeState.parentFolder;
-			if (isCardFolder(itemToMove.value)) {
-				cardsStore.moveFolder(itemToMove.value, selected.value);
+			if (isCardFolder(props.itemToMove)) {
+				cardsStore.moveFolder(props.itemToMove, selected.value);
 			}
-			if (isCard(itemToMove.value) && parentFolder) {
-				cardsStore.moveCard(itemToMove.value, parentFolder, selected.value);
+			if (isCard(props.itemToMove) && props.parentFolder) {
+				cardsStore.moveCard(props.itemToMove, props.parentFolder, selected.value);
 			}
 		}
-		close();
+		emit("submit");
 	});
-}
-
-function close() {
-	sidePanelStore.resetFolderTree();
 }
 </script>

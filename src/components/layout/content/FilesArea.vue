@@ -52,6 +52,6 @@ const currentFolder = computed({
 });
 
 function newFile(): void {
-	formStore.newAddForm(props.category, currentFolder.value);
+	formStore.newFileAddForm(props.category, currentFolder.value);
 }
 </script>

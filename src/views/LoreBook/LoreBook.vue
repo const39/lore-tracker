@@ -7,18 +7,8 @@
 
 	<v-row>
 		<v-slide-x-transition mode="in-out">
-			<v-col v-show="status !== 'closed'" v-bind="cols">
-				<v-card class="pa-2 border sticky" variant="outlined">
-					<FormWrapper v-if="status === 'form'" />
-					<template v-if="status === 'folder-tree'">
-						<FolderTreeNavVariant
-							v-if="sidePanelStore.folderTreeState.variant === 'nav'"
-						/>
-						<FolderTreeMoveVariant
-							v-if="sidePanelStore.folderTreeState.variant === 'card-move'"
-						/>
-					</template>
-				</v-card>
+			<v-col v-show="sidePanel.isOpen" v-bind="cols">
+				<SidePanel />
 			</v-col>
 		</v-slide-x-transition>
 		<v-col cols="">
@@ -29,19 +19,15 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import FormWrapper from "@/components/cards/files/forms/FormWrapper.vue";
-import FolderTreeMoveVariant from "@/components/cards/folder/tree/FolderTreeMoveVariant.vue";
-import FolderTreeNavVariant from "@/components/cards/folder/tree/FolderTreeNavVariant.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
 import { useSidePanel } from "@/store/sidePanel";
+import SidePanel from "./content/SidePanel.vue";
 
-const sidePanelStore = useSidePanel();
-
-const status = computed(() => sidePanelStore.sidePanelStatus);
+const sidePanel = useSidePanel();
 
 const cols = computed(() => {
-	const base = status.value === "form" ? 4 : 3;
+	const base = sidePanel.state?.status === "file-form" ? 4 : 3;
 	return { xs: 12, sm: 12, md: 12, lg: base };
 });
 </script>
