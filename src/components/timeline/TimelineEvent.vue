@@ -1,10 +1,12 @@
 <template>
 	<v-timeline-item
+		:class="{ clickable: !node.isHeader }"
 		:icon="node.icon"
 		:dot-color="node.color"
 		:size="node.isHeader ? 'small' : undefined"
 		:fill-dot="!node.isHeader"
 		icon-color="white"
+		@click="goToCard"
 	>
 		<div :class="{ 'font-weight-medium': node.isHeader }">
 			<MarkdownView :text="node.text" />
@@ -14,8 +16,10 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
+import { useRouter } from "vue-router";
 import { getIcon } from "@/core/icons";
 import { CardCategory, Event, EventType } from "@/core/model/cards";
+import { useCardsStore } from "@/store/cards";
 import MarkdownView from "../common/MarkdownView.vue";
 
 interface Node {
@@ -31,6 +35,9 @@ type ItemType = Event | string;
 const props = defineProps<{
 	item: ItemType;
 }>();
+
+const cardsStore = useCardsStore();
+const router = useRouter();
 
 /**
  * Return a custom object with the node's data, depending on the item prop type.
@@ -72,6 +79,30 @@ const node = computed(() => {
 
 	return info;
 });
+
+/**
+ * Navigate to the card referenced by the current event.
+ */
+function goToCard() {
+	if (typeof props.item !== "string") {
+		const category = props.item._category;
+		// Find the folder hosting the card referenced by the tag
+		const folder = cardsStore
+			.getCategoryFolder(category)
+			.getFolderWithFile(props.item.id)?.folder;
+		if (folder) {
+			// Navigate to the card's folder, passing along the card ID in the URL's hash
+			router.push({
+				name: "LoreBookTab",
+				params: {
+					category,
+					folderURI: [...folder.absolutePath.rawSegments],
+				},
+				hash: `#${props.item.id}-card`,
+			});
+		}
+	}
+}
 </script>
 <style>
 /* Set zoom on hover animation on the compiled Vuetify class of the dot */
