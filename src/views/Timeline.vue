@@ -44,6 +44,7 @@
 			class="mx-16 my-6"
 			direction="vertical"
 			density="compact"
+			align="start"
 		>
 			<!-- Place events before pivot node in descending order -->
 			<template v-if="sortOrder === 'desc'">
