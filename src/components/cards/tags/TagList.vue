@@ -1,7 +1,7 @@
 <template>
 	<template v-for="(list, category) in tags" :key="category">
-		<div v-if="list.length" class="d-flex align-center">
-			<v-icon :icon="Icon[category]" size="small" />
+		<div v-if="list.length" class="d-flex align-start">
+			<v-icon :icon="Icon[category]" class="my-2" size="small" />
 			<!-- Editable version -->
 			<div v-if="editable">
 				<TagItem
