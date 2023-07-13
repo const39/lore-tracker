@@ -13,15 +13,15 @@
 		@click="openFolder(folder)"
 		@dragstart="onDragStart"
 	>
-		<v-card-title class="pr-0 d-flex align-center">
-			<v-badge :content="childrenCount" color="grey">
+		<v-card-title class="d-flex align-center">
+			<v-badge :content="childrenCount" color="grey" offset-x="2" offset-y="6">
 				<v-icon :icon="Icon.folder" :color="folder.metadata.color" size="x-large" />
 			</v-badge>
-			<div class="pl-4 pt-2 flex-grow-1 text-subtitle-1">
+			<div class="px-4 flex-grow-1 text-subtitle-1">
 				{{ folder.metadata.name }}
 			</div>
 		</v-card-title>
-		<v-card-text class="pa-3">
+		<v-card-text v-if="folder.metadata.tags?.length" class="pa-3">
 			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
 			<TagList v-model="folder.metadata.tags" :editable="false" />
 		</v-card-text>

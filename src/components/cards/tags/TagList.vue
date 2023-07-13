@@ -1,30 +1,23 @@
 <template>
-	<div class="pa-3">
-		<v-row v-for="(list, category) in tags" :key="category">
-			<div v-if="list.length" class="d-flex align-center">
-				<v-icon :icon="Icon[category]" size="small" />
-				<!-- Editable version -->
-				<div v-if="editable">
-					<TagItem
-						v-for="tag in list"
-						:key="tag.id"
-						:tag="tag"
-						closable
-						@click:close="remove(tag)"
-					/>
-				</div>
-				<!-- Immutable version -->
-				<div v-else>
-					<TagItem
-						v-for="tag in list"
-						:key="tag.id"
-						:tag="tag"
-						@click.stop="goToCard(tag)"
-					/>
-				</div>
+	<template v-for="(list, category) in tags" :key="category">
+		<div v-if="list.length" class="d-flex align-center">
+			<v-icon :icon="Icon[category]" size="small" />
+			<!-- Editable version -->
+			<div v-if="editable">
+				<TagItem
+					v-for="tag in list"
+					:key="tag.id"
+					:tag="tag"
+					closable
+					@click:close="remove(tag)"
+				/>
 			</div>
-		</v-row>
-	</div>
+			<!-- Immutable version -->
+			<div v-else>
+				<TagItem v-for="tag in list" :key="tag.id" :tag="tag" @click.stop="goToCard(tag)" />
+			</div>
+		</div>
+	</template>
 </template>
 
 <script lang="ts" setup>
@@ -73,13 +66,16 @@ function remove(tag: Tag) {
  */
 function goToCard(tag: Tag) {
 	// Find the folder hosting the card referenced by the tag
-	const res = cardsStore.getCategoryFolder(tag.category).getFolderWithFile(tag.id);
-	if (res) {
+	const rootFolder = cardsStore.getCategoryFolder(tag.category);
+	let folder;
+	if (tag.type === "file") folder = rootFolder.getFolderWithFile(tag.id)?.folder;
+	else if (tag.type === "folder") folder = rootFolder.getFolderByID(tag.id)?.parent;
+	if (folder) {
 		// Navigate to the card's folder, passing along the card ID in the URL's hash
 		router.push({
 			params: {
 				category: tag.category,
-				folderURI: [...res.folder.absolutePath.rawSegments],
+				folderURI: [...folder.absolutePath.rawSegments],
 			},
 			hash: `#${tag.id}-card`,
 		});
@@ -102,13 +98,24 @@ const tags = computed(() => {
 		note: [],
 	};
 	for (const id of model.value) {
-		const elem = cardsStore.findFile(id);
-
-		// If the object is found, create a tag object from the element's data
-		if (elem) {
-			// Add the tag in the list of its type
-			tagLists[elem._category].push(new Tag(elem));
-		} else console.error(`TagList: No card with id ${id} found.`);
+		const card = cardsStore.findFile(id);
+		// If the ID matches a card file, add the tag in the list of its type
+		if (card) {
+			tagLists[card._category].push(new Tag(card));
+		} else {
+			const rootFolders = Object.values(cardsStore.cards);
+			let folder;
+			for (const root of rootFolders) {
+				folder = root.getFolderByID(id);
+				if (folder) break;
+			}
+			// If the ID matches a card folder, add the tag in the list of its type
+			if (folder) {
+				tagLists[folder.metadata._category].push(new Tag(folder));
+			} else {
+				console.error(`TagList: No card with id ${id} found.`);
+			}
+		}
 	}
 	return tagLists;
 });
