@@ -13,8 +13,8 @@
 			<p class="text-h6">
 				{{ itemData.title }}
 			</p>
-			<div class="pa-3">
-				<v-row v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">
+			<div class="my-2">
+				<div v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">
 					<v-tooltip location="bottom">
 						<template #activator="{ props: tooltipProps }">
 							<v-icon class="ma-2" v-bind="tooltipProps">
@@ -23,10 +23,10 @@
 						</template>
 						{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
 					</v-tooltip>
-					<p class="ma-2">
+					<p class="pa-2">
 						{{ task.desc }}
 					</p>
-				</v-row>
+				</div>
 			</div>
 			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
 			<TagList v-model="itemData.tags" :editable="false" />
