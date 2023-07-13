@@ -4,7 +4,7 @@
 		:root-folders="rootFolders"
 		:open-at="cardsStore.currentFolder"
 		:title="$t('sidePanel.folderList')"
-		@close="close"
+		@close="$emit('close')"
 	>
 		<template #action="{ props: actionProps }">
 			<v-btn
@@ -25,12 +25,12 @@ import { useRouter } from "vue-router";
 import { CardCategory, CardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";
-import { useSidePanel } from "@/store/sidePanel";
 import FolderTree from "./FolderTree.vue";
+
+const emit = defineEmits(["close", "submit"]);
 
 const router = useRouter();
 const cardsStore = useCardsStore();
-const sidePanelStore = useSidePanel();
 
 const selected = ref<CardFolder>();
 
@@ -47,10 +47,6 @@ function openFolder(): void {
 			},
 		});
 	}
-	close();
-}
-
-function close() {
-	sidePanelStore.resetFolderTree();
+	emit("submit");
 }
 </script>

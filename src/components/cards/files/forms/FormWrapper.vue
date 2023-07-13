@@ -9,7 +9,7 @@
 				density="comfortable"
 				@click="submit"
 			/>
-			<v-btn icon="mdi-close" density="comfortable" @click="close" />
+			<v-btn icon="mdi-close" density="comfortable" @click="$emit('close')" />
 		</v-card-actions>
 		<v-card-title v-if="model" class="mb-4 justify-center">
 			<v-icon :icon="getIcon(model)" />
@@ -29,57 +29,64 @@ import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
 import { useTryCatch } from "@/composables/tryCatch";
 import { getIcon } from "@/core/icons";
+import { CardFolder, CardTypes } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import utilities from "@/core/utilities";
 import { useCardsStore } from "@/store/cards";
-import { useSidePanel } from "@/store/sidePanel";
 import { useGlobalSnackbar } from "@/store/snackbar";
+
+const props = defineProps<{
+	variant: "add" | "edit";
+	parentFolder: CardFolder;
+	baseModel: CardTypes;
+}>();
+
+const emit = defineEmits(["close", "submit"]);
 
 const cardsStore = useCardsStore();
 const globalSnackbar = useGlobalSnackbar();
-const sidePanelStore = useSidePanel();
-const { variant, parentFolder, model } = sidePanelStore.formState;
 
 const form = ref<VForm | undefined>();
+const model = ref<CardTypes>(utilities.deepCopy(props.baseModel)); // Clone object to keep a backup in case the user cancels their changes
 const isValid = ref(false);
 
-// Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
+// Clone object to keep a backup in case the user cancels their changes
 watch(
-	() => model,
-	() => form.value?.validate(),
+	() => props.baseModel,
+	() => (model.value = utilities.deepCopy(props.baseModel)),
 	{ deep: true }
 );
 
+// Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
+watch(model, () => form.value?.validate(), { deep: true });
+
 const formComponent = computed(() => {
-	if (!model) return undefined;
 	return defineAsyncComponent({
-		loader: () => import(`./Form${utilities.capitalize(model._category)}.vue`),
+		loader: () => import(`./Form${utilities.capitalize(model.value._category)}.vue`),
 	});
 });
 
-function close() {
-	sidePanelStore.resetForm();
-}
-
 async function submit() {
 	await form.value?.validate();
-	if (isValid.value && model) {
+	if (isValid.value && model.value) {
 		useTryCatch(() => {
 			// Update or add card based on form type
-			if (variant === "edit") cardsStore.updateCard(model, parentFolder);
-			else if (variant === "add") cardsStore.addCard(model, parentFolder);
+			if (props.variant === "edit") cardsStore.updateCard(model.value, props.parentFolder);
+			else if (props.variant === "add") cardsStore.addCard(model.value, props.parentFolder);
 
 			// Provide feedback to user when card is saved
-			const msg = parentFolder?.absolutePath.isRoot()
-				? $t(`categories.${model?._category}`) + " " + $t("messages.success.newCardStored")
-				: $t(`categories.${model?._category}`) +
+			const msg = props.parentFolder?.absolutePath.isRoot()
+				? $t(`categories.${model.value?._category}`) +
+					" " +
+					$t("messages.success.newCardStored")
+				: $t(`categories.${model.value?._category}`) +
 					" " +
 					$t("messages.success.newCardStoredInFolder") +
 					" " +
-					parentFolder?.absolutePath;
+					props.parentFolder?.absolutePath;
 			globalSnackbar.showSnackbar(msg, "info", 7000);
 		});
-		close();
+		emit("submit");
 	}
 }
 </script>
