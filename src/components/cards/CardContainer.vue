@@ -6,7 +6,6 @@
 		@edit="showForm"
 		@delete="confirmDelete"
 		@move="showFolderTree"
-		@click="showForm"
 		@dragstart="onDragStart"
 	>
 		<!-- Dynamic Card content component -->
