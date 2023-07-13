@@ -7,7 +7,7 @@
 		icon-color="white"
 	>
 		<div :class="{ 'font-weight-medium': node.isHeader }">
-			{{ node.text }}
+			<MarkdownView :text="node.text" />
 		</div>
 	</v-timeline-item>
 </template>
@@ -16,6 +16,7 @@
 import { computed } from "vue";
 import { getIcon } from "@/core/icons";
 import { CardCategory, Event, EventType } from "@/core/model/cards";
+import MarkdownView from "../common/MarkdownView.vue";
 
 interface Node {
 	isHeader: boolean;
