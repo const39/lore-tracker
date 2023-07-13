@@ -9,17 +9,17 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
-import { CardTypes, isCard } from "@/core/model/cards";
+import { CardFolder, CardTypes } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 
 const emit = defineEmits<{
-	(e: "drop", value: CardTypes): void;
+	(e: "drop", value: CardTypes | CardFolder): void;
 }>();
 
 const refDropZone = ref<HTMLElement | null>(null);
 
 const { status } = useDropZone(refDropZone, "copy", onDropAccepted, {
-	acceptMIME: [CustomMIMEType.CardType],
+	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
 	acceptMode: ["link"],
 });
 
@@ -37,12 +37,10 @@ const color = computed(() => {
 /**
  * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
  */
-function onDropAccepted(items: DropPayload[]) {
+function onDropAccepted(items: DropPayload<CardTypes | CardFolder>[]) {
 	if (items.length) {
-		const { dataType, data } = items[0];
-		if (dataType === CustomMIMEType.CardType && isCard(data)) {
-			emit("drop", data);
-		}
+		const { data } = items[0];
+		emit("drop", data);
 	}
 }
 </script>

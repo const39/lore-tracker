@@ -3,6 +3,7 @@ import Ajv from "ajv";
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
+import schemaV3 from "@/schemas/save_format_v3.json";
 import { SaveFormat, SerializedState } from "@/store";
 import { CardCategory, createRootFolder } from "./model/cards";
 import utilities from "./utilities";
@@ -11,13 +12,15 @@ export enum SaveVersion {
 	Legacy = "save-legacy",
 	v1 = "save-v1",
 	v2 = "save-v2",
-	Latest = "save-v2",
+	v3 = "save-v3",
+	Latest = "save-v3",
 }
 
 const validator = new Ajv()
 	.addSchema(schemaLegacy, SaveVersion.Legacy)
 	.addSchema(schemaV1, SaveVersion.v1)
-	.addSchema(schemaV2, SaveVersion.v2);
+	.addSchema(schemaV2, SaveVersion.v2)
+	.addSchema(schemaV3, SaveVersion.v3);
 
 abstract class SaveProcessor {
 	inputSaveVersion: SaveVersion;
@@ -137,13 +140,41 @@ class V2SaveProcessor extends SaveProcessor {
 	 * @param save data to convert to v2 format
 	 * @returns input data converted to v2 format
 	 */
-	protected convert(save: any): SerializedState {
+	protected convert(save: any): any {
 		const converted = utilities.deepCopy(save);
 
 		// For each category, create a root folder and set all existing cards as its files
 		Object.keys(converted.cards).forEach((category) => {
 			const folder = createRootFolder(category as CardCategory, converted.cards[category]);
 			converted.cards[category] = folder.serialize();
+		});
+
+		return converted;
+	}
+}
+
+class V3SaveProcessor extends SaveProcessor {
+	constructor() {
+		super(SaveVersion.v2, SaveVersion.v3);
+	}
+
+	/**
+	 * Convert v2-format data to v3-format.
+	 * Changes between v2 and v3 formats are:
+	 * - Add a 'tags' list to the folders' metadata
+	 *
+	 * @param save data to convert to v3 format
+	 * @returns input data converted to v3 format
+	 */
+	protected convert(save: any): SerializedState {
+		const converted = utilities.deepCopy(save);
+
+		// Add a new 'tags' array in every folder's metadata
+		Object.keys(converted.cards).forEach((category) => {
+			const rootFolder = converted.cards[category];
+			Object.keys(rootFolder).forEach((folderID) => {
+				rootFolder[folderID].metadata.tags = [];
+			});
 		});
 
 		return converted;
@@ -157,6 +188,8 @@ function getProcessorFromInputVersion(inputSaveVersion: SaveVersion): SaveProces
 		case SaveVersion.v1:
 			return new V2SaveProcessor();
 		case SaveVersion.v2:
+			return new V3SaveProcessor();
+		case SaveVersion.v3:
 		case SaveVersion.Latest:
 			return undefined;
 	}

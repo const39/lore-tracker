@@ -31,6 +31,7 @@ export const useFilterStore = defineStore("filter", () => {
 			_category: toFilter.metadata._category,
 			color: "#ffffff",
 			name: "search-results",
+			tags: [],
 		};
 		return new CardFolder(meta, undefined, filteredFiles, filteredFolders);
 	}

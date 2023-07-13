@@ -2,11 +2,12 @@
 	<!-- Pass dummy draggable-data only to enable draggable state -->
 	<BaseCard
 		v-if="!editMode"
+		:id="folder.metadata.id"
 		ref="refDropZone"
 		:with-options="!editMode"
 		:draggable="draggable"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
-		@edit="editMode = true"
+		@edit="editFolder"
 		@delete="confirmDelete"
 		@move="showFolderTree"
 		@click="openFolder(folder)"
@@ -20,14 +21,11 @@
 				{{ folder.metadata.name }}
 			</div>
 		</v-card-title>
+		<v-card-text class="pa-3">
+			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+			<TagList v-model="folder.metadata.tags" :editable="false" />
+		</v-card-text>
 	</BaseCard>
-	<FolderForm
-		v-else-if="folder.parent"
-		:parent="folder.parent"
-		:edit="folder"
-		@close="editMode = false"
-		@submit="editMode = false"
-	/>
 	<!-- Custom drag image used when dragging the card -->
 	<CardDragImage ref="refDragImage" :item-data="folder" />
 </template>
@@ -35,6 +33,7 @@
 <script lang="ts" setup>
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
+import TagList from "@/components/cards/tags/TagList.vue";
 import {
 	CustomMIMEType,
 	startDrag,
@@ -49,7 +48,6 @@ import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";
 import CardDragImage from "../CardDragImage.vue";
-import FolderForm from "./FolderForm.vue";
 
 const props = defineProps<{
 	folder: CardFolder;
@@ -102,6 +100,10 @@ function onDropAccepted(items: DropPayload[]) {
 
 function showFolderTree() {
 	sidePanelStore.newFolderTree(props.folder, cardsStore.currentFolder);
+}
+
+function editFolder() {
+	sidePanelStore.newFolderEditForm(props.folder, cardsStore.currentFolder);
 }
 
 function confirmDelete() {

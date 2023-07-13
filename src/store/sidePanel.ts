@@ -1,6 +1,8 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { computed, ref } from "vue";
+import { getRandomColor } from "@/core/colors";
 import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
+import utilities from "@/core/utilities";
 import { useCardsStore } from "./cards";
 import { useDragAndDropMode } from "./dragAndDropMode";
 
@@ -10,6 +12,15 @@ interface FileFormState {
 	data: {
 		parentFolder: CardFolder;
 		baseModel: CardTypes;
+	};
+}
+
+interface FolderFormState {
+	status: "folder-form";
+	variant: "add" | "edit";
+	data: {
+		parentFolder: CardFolder;
+		folderToEdit: CardFolder;
 	};
 }
 
@@ -27,7 +38,7 @@ interface FolderTreeNavState {
 	variant: "nav";
 }
 
-type FormState = FileFormState;
+type FormState = FileFormState | FolderFormState;
 type FolderTreeState = FolderTreeMoveState | FolderTreeNavState;
 
 export type SidePanelState = FormState | FolderTreeState | undefined;
@@ -83,6 +94,45 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		};
 	}
 
+	function newFolderAddForm(category: CardCategory, inFolder: CardFolder) {
+		_preventOverwrite();
+		// Enable 'drop' drag and drop when form is open
+		_dndStore.setMode("link");
+		// Show side panel with form inside it
+		state.value = {
+			status: "folder-form",
+			variant: "add",
+			data: {
+				folderToEdit: new CardFolder(
+					{
+						id: utilities.uid(),
+						_category: category,
+						name: "",
+						color: getRandomColor(),
+						tags: [],
+					},
+					inFolder
+				),
+				parentFolder: inFolder,
+			},
+		};
+	}
+
+	function newFolderEditForm(toEdit: CardFolder, inFolder: CardFolder) {
+		_preventOverwrite();
+		// Enable 'drop' drag and drop when form is open
+		_dndStore.setMode("link");
+		// Show side panel with form inside it
+		state.value = {
+			status: "folder-form",
+			variant: "edit",
+			data: {
+				folderToEdit: toEdit,
+				parentFolder: inFolder,
+			},
+		};
+	}
+
 	function newFolderTree(): void;
 	function newFolderTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder): void;
 	function newFolderTree(itemToMove?: CardTypes | CardFolder, inFolder?: CardFolder) {
@@ -109,9 +159,13 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		isOpen,
 		close,
 
-		// * Form
+		// * File form
 		newFileAddForm,
 		newFileEditForm,
+
+		// * Folder form
+		newFolderAddForm,
+		newFolderEditForm,
 
 		// * File tree
 		newFolderTree,

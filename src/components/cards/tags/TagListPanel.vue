@@ -11,7 +11,7 @@
 import { computed } from "vue";
 import CardDropZone from "@/components/common/CardDropZone.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { CardTypes, ID } from "@/core/model/cards";
+import { CardFolder, CardTypes, ID, isCardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import TagList from "./TagList.vue";
 
@@ -37,7 +37,8 @@ const model = computed({
 /**
  * Add the dropped card in the tag list if it is not already in it (or if it is not the excluded ID)
  */
-function onDrop(card: CardTypes) {
-	if (!model.value.includes(card.id) && card.id !== props.excludeId) model.value.push(card.id);
+function onDrop(item: CardTypes | CardFolder) {
+	const id = isCardFolder(item) ? item.metadata.id : item.id;
+	if (!model.value.includes(id) && id !== props.excludeId) model.value.push(id);
 }
 </script>
