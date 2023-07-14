@@ -162,6 +162,7 @@ class V3SaveProcessor extends SaveProcessor {
 	 * Convert v2-format data to v3-format.
 	 * Changes between v2 and v3 formats are:
 	 * - Add a 'tags' list to the folders' metadata
+	 * - Add a 'desc' fields to quests
 	 *
 	 * @param save data to convert to v3 format
 	 * @returns input data converted to v3 format
@@ -174,6 +175,14 @@ class V3SaveProcessor extends SaveProcessor {
 			const rootFolder = converted.cards[category];
 			Object.keys(rootFolder).forEach((folderID) => {
 				rootFolder[folderID].metadata.tags = [];
+			});
+		});
+
+		// Add a new 'desc' field on every quest
+		Object.keys(converted.cards.quest).forEach((folderID) => {
+			const folder = converted.cards.quest[folderID];
+			folder.files.forEach((quest: any) => {
+				quest.desc = "";
 			});
 		});
 
