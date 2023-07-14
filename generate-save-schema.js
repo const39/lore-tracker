@@ -1,12 +1,18 @@
 import fs from "fs";
+import process from "node:process";
 import tsj from "ts-json-schema-generator";
 
 const OUTPUT_DIR = "./src/schemas";
 
 function getNextSaveFormatVersion() {
-	const lastFile = fs.readdirSync(OUTPUT_DIR).sort().slice(-1)[0];
-	const lastFileVersionNumber = lastFile.match(/\d/g)[0];
-	return Number(lastFileVersionNumber) + 1;
+	const input = process.argv[2];
+	const match = /v\d+/.test(input);
+	if (match) return input;
+	else {
+		if (!input?.trim()) console.error("ERROR: No save format version specified.");
+		else console.error("ERROR: The specified save format version is invalid.");
+		process.exit(1);
+	}
 }
 
 /** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
@@ -17,7 +23,7 @@ const config = {
 };
 
 const nextVersionNumber = getNextSaveFormatVersion();
-const output = `${OUTPUT_DIR}/save_format_v${nextVersionNumber}.json`;
+const output = `${OUTPUT_DIR}/save_format_${nextVersionNumber}.json`;
 
 console.log("Generating schema...");
 const schema = tsj.createGenerator(config).createSchema(config.type);
