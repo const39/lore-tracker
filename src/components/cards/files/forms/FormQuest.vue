@@ -1,5 +1,13 @@
 <template>
 	<v-text-field v-model="model.title" :label="$t('fields.title') + '*'" :rules="[requiredRule]" />
+	<v-textarea
+		v-model="model.desc"
+		:label="$t('fields.desc') + '*'"
+		:hint="$t('fields.mdSupport')"
+		:rules="[requiredRule]"
+		variant="outlined"
+		auto-grow
+	/>
 	<ListPanel
 		:title="$t('fields.tasks')"
 		:placeholder="$t('fields.noTask')"

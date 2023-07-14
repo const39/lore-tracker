@@ -13,6 +13,7 @@
 			<p class="text-h6">
 				{{ itemData.title }}
 			</p>
+			<MarkdownView :text="itemData.desc" />
 			<div class="my-2">
 				<div v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">
 					<v-tooltip location="bottom">
@@ -37,6 +38,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagList from "@/components/cards/tags/TagList.vue";
+import MarkdownView from "@/components/common/MarkdownView.vue";
 import { Icon } from "@/core/icons";
 import { Quest } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";

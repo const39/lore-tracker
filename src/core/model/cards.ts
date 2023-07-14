@@ -30,6 +30,7 @@ export interface Task {
 export interface Quest extends BaseCard {
 	readonly _category: CardCategory.Quest;
 	title: string;
+	desc: string;
 	tasks: Task[];
 }
 
@@ -169,6 +170,7 @@ export function createCard(category: CardCategory): CardTypes {
 				id: utilities.uid(),
 				tags: [],
 				title: "",
+				desc: "",
 				tasks: [],
 			};
 		case CardCategory.Event:
