@@ -9,6 +9,7 @@ export type ILoreEntry = IQuest | ICharacter | ILocation | IEvent | IFaction | I
 
 export * from "./BaseLoreEntry";
 export * from "./Character";
+export * from "./Campaign";
 export * from "./Event";
 export * from "./Faction";
 export * from "./Folder";
