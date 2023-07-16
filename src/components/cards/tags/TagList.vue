@@ -23,7 +23,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { CardCategory, ID, Tag } from "@/core/model/cards";
 import { useCardsStore } from "@/store/cards";
 import TagItem from "./TagItem.vue";

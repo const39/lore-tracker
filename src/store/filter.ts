@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { CardFolder, CardFolderMetadata, CardTypes, getAllText } from "@/core/model/cards";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 
 export interface Filter {
 	text?: string;

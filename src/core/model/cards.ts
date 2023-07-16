@@ -1,6 +1,6 @@
 import { useCampaignInfoStore } from "@/store/campaignInfo";
-import { Icon, getIcon } from "../icons";
-import utilities from "../utilities";
+import { Icon, getIcon } from "../utils/icons";
+import utilities from "@/core/utils/functions";
 import { Folder, FolderMetadata, SerializedFolder } from "./fileTree";
 
 export type ID = number;

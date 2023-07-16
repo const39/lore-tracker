@@ -38,11 +38,11 @@ import { type VForm } from "vuetify/components";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { CardFolder, CardFolderMetadata } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import validationRules from "@/core/validationRules";
 import { useCardsStore } from "@/store/cards";
 

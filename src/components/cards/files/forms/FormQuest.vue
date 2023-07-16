@@ -45,7 +45,7 @@
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { Quest, Task } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";

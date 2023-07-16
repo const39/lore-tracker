@@ -38,7 +38,7 @@ type PropsType<TComponent> = TComponent extends new () => {
 	? P
 	: never;
 
-interface Props extends PropsType<typeof VColorPicker> {
+interface Props extends /* @vue-ignore */ PropsType<typeof VColorPicker> {
 	modelValue: string;
 }
 

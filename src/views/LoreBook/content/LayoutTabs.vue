@@ -48,7 +48,7 @@ import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
 import eventBus from "@/core/eventBus";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { CardCategory, CardFolder, createRootFolder } from "@/core/model/cards";
 import { Path } from "@/core/model/fileTree";
 import { t as $t } from "@/core/translation";

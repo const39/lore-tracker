@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { reactive } from "vue";
 import { StateTypes, isStateType } from "@/core/error";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 
 interface SnackbarState {
 	show: boolean;

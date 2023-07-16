@@ -20,7 +20,7 @@ import { computed, defineAsyncComponent, ref } from "vue";
 import { CustomMIMEType, startDrag } from "@/composables/dragAndDrop";
 import { CardTypes, getText } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";

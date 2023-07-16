@@ -11,7 +11,7 @@
 
 <script lang="ts" setup>
 import { Tag } from "@/core/model/cards";
-import { truncate } from "@/core/utilities";
+import { truncate } from "@/core/utils/functions";
 
 defineProps<{
 	tag: Tag;

@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { getRandomColor } from "@/core/colors";
+import { getRandomColor } from "@/core/utils/colors";
 import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import { useCardsStore } from "./cards";
 import { useDragAndDropMode } from "./dragAndDropMode";
 

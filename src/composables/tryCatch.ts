@@ -1,5 +1,5 @@
 import { isLocalisableError } from "@/core/error";
-import { t as $t } from "@/core/translation";
+import { t as $t } from "@/core/translation/translation";
 import { useGlobalSnackbar } from "@/store/snackbar";
 
 export function useTryCatch(onTry: () => void, onCatch?: (e: any) => void, onFinally?: () => void) {

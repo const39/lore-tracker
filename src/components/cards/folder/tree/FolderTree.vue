@@ -31,7 +31,7 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from "vue";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { CardFolder, ID } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import FolderTreeGroup from "./FolderTreeGroup.vue";

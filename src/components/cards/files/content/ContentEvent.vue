@@ -27,7 +27,7 @@
 <script lang="ts" setup>
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { getIcon } from "@/core/icons";
+import { getIcon } from "@/core/utils/icons";
 import { Event } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 

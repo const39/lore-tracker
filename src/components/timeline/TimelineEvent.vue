@@ -17,7 +17,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { getIcon } from "@/core/icons";
+import { getIcon } from "@/core/utils/icons";
 import { CardCategory, Event, EventType } from "@/core/model/cards";
 import { useCardsStore } from "@/store/cards";
 import MarkdownView from "../common/MarkdownView.vue";

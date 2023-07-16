@@ -1,8 +1,8 @@
 import { MD5 } from "object-hash";
 import { ID } from "@/core/model/cards";
-import { t as $t } from "@/core/translation";
+import { t as $t } from "@/core/translation/translation";
 import { LocalisableError } from "../error";
-import { deserializeMap, mergeMaps, serializeMap } from "../utilities";
+import { deserializeMap, mergeMaps, serializeMap } from "@/core/utils/functions";
 
 export interface FolderMetadata {
 	id: ID;

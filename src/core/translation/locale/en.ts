@@ -1,4 +1,4 @@
-import { Locale } from "@/core/translation";
+import { Locale } from "@/core/translation/translation";
 
 const en: Locale = {
 	pages: {

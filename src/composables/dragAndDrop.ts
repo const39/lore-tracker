@@ -1,6 +1,6 @@
 import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import { DragAndDropMode, useDragAndDropMode } from "@/store/dragAndDropMode";
 
 type DragAndDropID = string;

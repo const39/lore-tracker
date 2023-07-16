@@ -28,10 +28,10 @@
 import { computed, defineAsyncComponent, ref, watch } from "vue";
 import { VForm } from "vuetify/components";
 import { useTryCatch } from "@/composables/tryCatch";
-import { getIcon } from "@/core/icons";
+import { getIcon } from "@/core/utils/icons";
 import { CardFolder, CardTypes } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import { useCardsStore } from "@/store/cards";
 import { useGlobalSnackbar } from "@/store/snackbar";
 

@@ -48,7 +48,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { Event, EventType } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { number, numberInRange, required } from "@/core/validationRules";

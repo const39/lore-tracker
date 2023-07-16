@@ -41,7 +41,7 @@ import {
 	type DropPayload,
 } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { CardFolder, getText, isCard, isCardFolder } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 import { useCardsStore } from "@/store/cards";

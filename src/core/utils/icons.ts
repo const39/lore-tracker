@@ -1,4 +1,4 @@
-import { CardFolder, CardTypes, isCardFolder } from "./model/cards";
+import { CardFolder, CardTypes, isCardFolder } from "../model/cards";
 
 export enum Icon {
 	// Card types

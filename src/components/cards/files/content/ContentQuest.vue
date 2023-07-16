@@ -39,7 +39,7 @@
 import { computed } from "vue";
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { Icon } from "@/core/icons";
+import { Icon } from "@/core/utils/icons";
 import { Quest } from "@/core/model/cards";
 import { t as $t } from "@/core/translation";
 

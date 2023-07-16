@@ -1,6 +1,6 @@
 import "vuetify/styles";
 import { createVuetify, type ThemeDefinition } from "vuetify";
-import colors from "@/core/colors";
+import colors from "@/core/utils/colors";
 
 export type Theme = "light" | "dark";
 
