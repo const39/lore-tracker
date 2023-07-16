@@ -10,7 +10,7 @@ export interface IBaseLoreEntry {
 }
 
 export class BaseLoreEntry extends Model implements IBaseLoreEntry {
-	static entity: string | CardCategory = "lore-entity";
+	static entity: string | CardCategory = "lore-entry";
 	static typeKey = "_category";
 
 	@Uid() declare id: ID;

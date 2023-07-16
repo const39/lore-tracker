@@ -133,6 +133,8 @@ import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
 import { VERSION } from "@/core/constants";
+import { BaseLoreEntry, Folder } from "@/core/models";
+import * as persistence from "@/core/persistence";
 import { t as $t } from "@/core/translation";
 import { useStore } from "@/store";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
@@ -185,6 +187,9 @@ onMounted(() => {
 			color: "error",
 		});
 	}
+
+	// Bind ORM models to a persistence back-end (IndexedDB)
+	[Folder, BaseLoreEntry].forEach(persistence.bind);
 });
 </script>
 
