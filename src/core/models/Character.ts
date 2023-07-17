@@ -3,7 +3,7 @@ import { CardCategory } from "../model/cards";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
 
 export interface ICharacter extends IBaseLoreEntry {
-	readonly _category: CardCategory.Character;
+	readonly category: CardCategory.Character;
 	name: string;
 	race: string;
 	classes: string;
@@ -17,7 +17,7 @@ export class Character extends BaseLoreEntry implements ICharacter {
 	static entity = CardCategory.Character;
 	static baseEntity = BaseLoreEntry.entity;
 
-	@Str(CardCategory.Character) declare _category: CardCategory.Character;
+	@Str(CardCategory.Character) declare category: CardCategory.Character;
 	@Str("") declare name: string;
 	@Str("") declare race: string;
 	@Str("") declare classes: string;

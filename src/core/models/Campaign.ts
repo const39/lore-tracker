@@ -16,8 +16,10 @@ export interface ICampaign {
 	quickNote: string;
 }
 
+export const campaignEntityName = "campaign";
+
 export class Campaign extends Model implements ICampaign {
-	static entity = "campaign";
+	static entity = campaignEntityName;
 
 	@Uid() declare id: ID;
 	@Str("") declare name: string;

@@ -1,4 +1,6 @@
 import { klona } from "klona/lite";
+import { nanoid } from "nanoid";
+import { UUID } from "./types";
 
 /**
  * Merge mapB onto mapA.
@@ -44,6 +46,13 @@ export function uid() {
 }
 
 /**
+ * Generate a UUID.
+ */
+export function uuid(): UUID {
+	return nanoid();
+}
+
+/**
  * Capitalize the specified string.
  */
 export function capitalize(str: string) {
@@ -84,6 +93,7 @@ export default {
 	serializeMap,
 	deserializeMap,
 	uid,
+	uuid,
 	capitalize,
 	truncate,
 	deepCopy,

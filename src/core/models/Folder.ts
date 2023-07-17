@@ -1,29 +1,36 @@
 import { Model } from "pinia-orm";
-import { Attr, BelongsTo, HasMany, Str, Uid } from "pinia-orm/dist/decorators";
-import { ID } from "@/core/model/cards";
+import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorators";
+import { CardCategory } from "../model/cards";
+import { UUID } from "../utils/types";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
 
 /**
  * Minimal data structure that a Folder class should implement.
  */
 export interface IFolder<File extends IBaseLoreEntry> {
-	id: ID;
+	readonly id: UUID;
+	readonly category: CardCategory;
 	name: string;
 	color: string;
-	tags: ID[];
+	position: number;
+	tags: UUID[];
 	parent?: IFolder<File>;
 	files: File[];
 	subfolders: IFolder<File>[];
 }
 
-export class Folder<File extends IBaseLoreEntry> extends Model implements IFolder<File> {
-	static entity = "folder";
+export const folderEntityName = "folder";
 
-	@Uid() declare id: ID;
+export class Folder<File extends IBaseLoreEntry> extends Model implements IFolder<File> {
+	static entity = folderEntityName;
+
+	@Uid() declare id: UUID;
+	@Str("") declare category: CardCategory;
 	@Str("") declare name: string;
 	@Str("") declare color: string;
-	@Attr([]) declare tags: ID[];
-	@Attr(null) declare parentId: ID | null;
+	@Num(0) declare position: number;
+	@Attr([]) declare tags: UUID[];
+	@Attr(null) declare parentId: UUID | null;
 
 	@BelongsTo(() => Folder, "parentId") declare parent: Folder<File> | undefined;
 	@HasMany(() => BaseLoreEntry, "folderId") declare files: File[];

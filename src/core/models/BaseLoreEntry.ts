@@ -1,24 +1,29 @@
 import { Model } from "pinia-orm";
-import { Attr, BelongsTo, Str, Uid } from "pinia-orm/dist/decorators";
-import { CardCategory, ID } from "../model/cards";
+import { Attr, BelongsTo, Num, Str, Uid } from "pinia-orm/dist/decorators";
+import { UUID } from "@/core/utils/types";
+import { CardCategory } from "../model/cards";
 import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
 export interface IBaseLoreEntry {
-	readonly _category: CardCategory;
-	readonly id: ID;
-	tags: ID[];
+	readonly id: UUID;
+	readonly category: CardCategory;
+	position: number;
+	tags: UUID[];
 }
 
+export const loreEntryEntityName = "lore-entry";
+
 export class BaseLoreEntry extends Model implements IBaseLoreEntry {
-	static entity: string | CardCategory = "lore-entry";
+	static entity: string | CardCategory = loreEntryEntityName;
 	static typeKey = "_category";
 
-	@Uid() declare id: ID;
-	@Str("") declare _category: CardCategory;
-	@Attr([]) declare tags: ID[];
-	@Attr(null) declare folderId: ID | null;
+	@Uid() declare id: UUID;
+	@Str("") declare category: CardCategory;
+	@Num(0) declare position: number;
+	@Attr([]) declare tags: UUID[];
+	@Attr(null) declare folderId: UUID | null;
 
-	@BelongsTo(() => Folder, 'folderId') declare parent: Folder<BaseLoreEntry> | undefined;
+	@BelongsTo(() => Folder, "folderId") declare parent: Folder<BaseLoreEntry> | undefined;
 
 	static types() {
 		return {
