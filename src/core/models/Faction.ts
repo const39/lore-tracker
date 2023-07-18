@@ -1,18 +1,18 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { CardCategory } from "@/core/model/cards";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { Category } from "./types";
 
 export interface IFaction extends IBaseLoreEntry {
-	readonly category: CardCategory.Faction;
+	readonly category: Category.Faction;
 	name: string;
 	desc: string;
 }
 
 export class Faction extends BaseLoreEntry implements IFaction {
-	static entity = CardCategory.Faction;
+	static entity = Category.Faction;
 	static baseEntity = BaseLoreEntry.entity;
 
-	@Str(CardCategory.Faction) declare category: CardCategory.Faction;
+	@Str(Category.Faction) declare category: Category.Faction;
 	@Str("") declare name: string;
 	@Str("") declare desc: string;
 

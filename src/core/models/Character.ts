@@ -1,9 +1,9 @@
 import { Bool, Str } from "pinia-orm/dist/decorators";
-import { CardCategory } from "../model/cards";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { Category } from "./types";
 
 export interface ICharacter extends IBaseLoreEntry {
-	readonly category: CardCategory.Character;
+	readonly category: Category.Character;
 	name: string;
 	race: string;
 	classes: string;
@@ -14,10 +14,10 @@ export interface ICharacter extends IBaseLoreEntry {
 }
 
 export class Character extends BaseLoreEntry implements ICharacter {
-	static entity = CardCategory.Character;
+	static entity = Category.Character;
 	static baseEntity = BaseLoreEntry.entity;
 
-	@Str(CardCategory.Character) declare category: CardCategory.Character;
+	@Str(Category.Character) declare category: Category.Character;
 	@Str("") declare name: string;
 	@Str("") declare race: string;
 	@Str("") declare classes: string;

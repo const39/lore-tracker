@@ -1,6 +1,6 @@
 import { Attr, Str } from "pinia-orm/dist/decorators";
-import { CardCategory } from "@/core/model/cards";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { Category } from "./types";
 
 export interface Task {
 	isCompleted: boolean;
@@ -8,17 +8,17 @@ export interface Task {
 }
 
 export interface IQuest extends IBaseLoreEntry {
-	readonly category: CardCategory.Quest;
+	readonly category: Category.Quest;
 	title: string;
 	desc: string;
 	tasks: Task[];
 }
 
 export class Quest extends BaseLoreEntry implements IQuest {
-	static entity = CardCategory.Quest;
+	static entity = Category.Quest;
 	static baseEntity = BaseLoreEntry.entity;
 
-	@Str(CardCategory.Quest) declare category: CardCategory.Quest;
+	@Str(Category.Quest) declare category: Category.Quest;
 	@Str("") declare title: string;
 	@Str("") declare desc: string;
 	@Attr([]) declare tasks: Task[];

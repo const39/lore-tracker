@@ -1,15 +1,15 @@
 import { Model } from "pinia-orm";
 import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorators";
-import { CardCategory } from "../model/cards";
 import { UUID } from "../utils/types";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { Category } from "./types";
 
 /**
  * Minimal data structure that a Folder class should implement.
  */
 export interface IFolder<File extends IBaseLoreEntry> {
 	readonly id: UUID;
-	readonly category: CardCategory;
+	readonly category: Category;
 	name: string;
 	color: string;
 	position: number;
@@ -25,7 +25,7 @@ export class Folder<File extends IBaseLoreEntry> extends Model implements IFolde
 	static entity = folderEntityName;
 
 	@Uid() declare id: UUID;
-	@Str("") declare category: CardCategory;
+	@Str("") declare category: Category;
 	@Str("") declare name: string;
 	@Str("") declare color: string;
 	@Num(0) declare position: number;

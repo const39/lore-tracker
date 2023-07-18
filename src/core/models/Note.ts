@@ -1,18 +1,18 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { CardCategory } from "@/core/model/cards";
 import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { Category } from "./types";
 
 export interface INote extends IBaseLoreEntry {
-	readonly category: CardCategory.Note;
+	readonly category: Category.Note;
 	title: string;
 	desc: string;
 }
 
 export class Note extends BaseLoreEntry implements INote {
-	static entity = CardCategory.Note;
+	static entity = Category.Note;
 	static baseEntity = BaseLoreEntry.entity;
 
-	@Str(CardCategory.Note) declare category: CardCategory.Note;
+	@Str(Category.Note) declare category: Category.Note;
 	@Str("") declare title: string;
 	@Str("") declare desc: string;
 
