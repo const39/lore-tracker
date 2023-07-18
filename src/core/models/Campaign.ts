@@ -1,6 +1,6 @@
 import { Model } from "pinia-orm";
 import { Num, Str, Uid } from "pinia-orm/dist/decorators";
-import { ID } from "../model/cards";
+import { UUID } from "../utils/types";
 
 export enum Season {
 	SPRING = "spring",
@@ -21,10 +21,10 @@ export const campaignEntityName = "campaigns";
 export class Campaign extends Model implements ICampaign {
 	static entity = campaignEntityName;
 
-	@Uid() declare id: ID;
-	@Str("") declare name: string;
+	@Uid() declare id: UUID;
+	@Str("Campaign") declare name: string;
 	@Num(1) declare days: number;
-	@Str("") declare season: Season;
+	@Str(Season.SPRING) declare season: Season;
 	@Str("") declare quickNote: string;
 
 	constructor(data?: ICampaign) {

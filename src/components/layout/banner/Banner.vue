@@ -12,7 +12,7 @@
 							append-inner-icon="mdi-check"
 							autofocus
 							counter
-							@click:append-inner="editName = false"
+							@click:append-inner="updateName"
 						/>
 					</v-form>
 					<span v-else>
@@ -27,7 +27,7 @@
 				</div>
 			</v-hover>
 
-			<StatusTray />
+			<StatusTray v-model:day="campaign.days" v-model:season="campaign.season" />
 		</div>
 		<v-spacer />
 		<div class="text-right search-bar min-width">
@@ -54,9 +54,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { useRepo } from "pinia-orm";
+import { computed, ref, watch } from "vue";
+import { Campaign } from "@/core/models";
+import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useCampaignInfoStore } from "@/store/campaignInfo";
 import { useFilterStore } from "@/store/filter";
 import DragAndDropModeSelector from "../content/DragAndDropModeSelector.vue";
 import StatusTray from "./StatusTray.vue";
@@ -67,18 +69,29 @@ const rules = [
 ];
 const editName = ref(false);
 
-const campaignInfoStore = useCampaignInfoStore();
 const filterStore = useFilterStore();
+const campaignRepo = useRepo(CampaignRepo);
 
-const campaignName = computed({
-	get() {
-		return campaignInfoStore.name;
+const campaign = ref<Campaign>(campaignRepo.getCurrentCampaign() ?? new Campaign());
+
+// eslint-disable-next-line vue/no-ref-object-destructure
+const campaignName = ref(campaign.value.name);	// Intended separate ref for the name to validate input before committing the change (see updateName())
+
+watch(
+	campaign,
+	(newCampaign) => {
+		campaignRepo.update(newCampaign);
 	},
-	set(value) {
-		const name = value.trim();
-		if (name) campaignInfoStore.name = name;
-	},
-});
+	{ deep: true }
+);
+
+function updateName() {
+	// Update name if it is not empty
+	const name = campaignName.value.trim();
+	if (name) campaign.value.name = name;
+	// Close edit field
+	editName.value = true;
+}
 
 const search = computed({
 	get() {
