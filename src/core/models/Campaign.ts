@@ -16,7 +16,7 @@ export interface ICampaign {
 	quickNote: string;
 }
 
-export const campaignEntityName = "campaign";
+export const campaignEntityName = "campaigns";
 
 export class Campaign extends Model implements ICampaign {
 	static entity = campaignEntityName;

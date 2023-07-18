@@ -11,11 +11,11 @@ export interface IBaseLoreEntry {
 	tags: UUID[];
 }
 
-export const loreEntryEntityName = "lore-entry";
+export const loreEntryEntityName = "loreEntries";
 
 export class BaseLoreEntry extends Model implements IBaseLoreEntry {
 	static entity: string | CardCategory = loreEntryEntityName;
-	static typeKey = "_category";
+	static typeKey = "category";
 
 	@Uid() declare id: UUID;
 	@Str("") declare category: CardCategory;

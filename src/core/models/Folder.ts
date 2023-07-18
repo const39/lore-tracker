@@ -19,7 +19,7 @@ export interface IFolder<File extends IBaseLoreEntry> {
 	subfolders: IFolder<File>[];
 }
 
-export const folderEntityName = "folder";
+export const folderEntityName = "folders";
 
 export class Folder<File extends IBaseLoreEntry> extends Model implements IFolder<File> {
 	static entity = folderEntityName;

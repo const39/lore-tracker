@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Ajv from "ajv";
-import { SaveFormat } from "@/core/persistence/save-file";
+import { SaveFormat } from "@/core/persistence/save-manager";
 import utilities from "@/core/utils/functions";
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
@@ -189,7 +189,7 @@ class V3SaveProcessor extends SaveProcessor {
 				folder.metadata.tags = []; // [1]
 				folder.metadata.position = idx; // [2]
 				folder.metadata.category = folder.metadata._category; // [3]
-				delete folder.metadata._category // [3]
+				delete folder.metadata._category; // [3]
 				folder.metadata.id = utilities.uuid(); // [4]
 				folder.files.forEach((file: any, i: number) => {
 					file.id = utilities.uuid(); // [4]
@@ -228,10 +228,8 @@ class V3SaveProcessor extends SaveProcessor {
 				const metadata = rootFolder[folderHash].metadata;
 				const folderId = metadata.id;
 				// Add the 'parentId' foreign key to the folder
-				const parentHash = rootFolder[folderHash].parent
-				const parentId = parentHash 
-					? rootFolder[parentHash].metadata.id
-					: undefined;
+				const parentHash = rootFolder[folderHash].parent;
+				const parentId = parentHash ? rootFolder[parentHash].metadata.id : undefined;
 				// Merge metadata with the other fields
 				folders[folderId] = {
 					id: folderId,
@@ -245,17 +243,20 @@ class V3SaveProcessor extends SaveProcessor {
 			});
 		});
 
+		const campaign = {
+			id: utilities.uuid(),
+			name: save.name,
+			days: save.days,
+			season: save.season,
+			quickNote: save.quickNote,
+		};
 		const converted = {
 			_meta: save._meta,
-			campaign: {
-				id: utilities.uuid(),
-				name: save.name,
-				days: save.days,
-				season: save.season,
-				quickNote: save.quickNote,
+			campaigns: {
+				[campaign.id]: campaign,
 			},
-			"lore-entry": loreEntries,
-			folder: folders,
+			loreEntries: loreEntries,
+			folders: folders,
 		};
 
 		return converted;
