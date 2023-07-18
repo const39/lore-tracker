@@ -40,10 +40,11 @@
 
 <script lang="ts" setup>
 import { useElementSize, useWindowSize } from "@vueuse/core";
+import { useRepo } from "pinia-orm";
 import { VNodeRef, computed, ref, watch } from "vue";
+import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { usePreferencesStore } from "@/store/preferences";
-import { useQuickNoteStore } from "@/store/quickNote";
 
 const open = ref(false);
 const resizing = ref(false);
@@ -54,17 +55,21 @@ const el = ref<VNodeRef | null>(null); // Vuetify underlying element
  */
 const element = computed<HTMLElement | undefined>(() => el.value?.$el);
 
-const quickNoteStore = useQuickNoteStore();
+const campaignRepo = useRepo(CampaignRepo);
 const prefStore = usePreferencesStore();
 const { width: windowWidth, height: windowHeight } = useWindowSize(); // Reactive window size
 const elementSize = useElementSize(element); // Reactive element size
 
+const campaign = computed(() => campaignRepo.getCurrentCampaign());
+
 const content = computed({
 	get() {
-		return quickNoteStore.content;
+		return campaign.value?.quickNote;
 	},
 	set(value) {
-		quickNoteStore.content = value.trim() ?? "";
+		// Type-guard
+		if (campaign.value)
+			campaignRepo.update({ id: campaign.value.id, quickNote: value?.trim() ?? "" });
 	},
 });
 
