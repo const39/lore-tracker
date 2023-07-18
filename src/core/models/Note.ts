@@ -5,7 +5,6 @@ import { Category } from "./types";
 export interface INote extends ILoreEntry {
 	readonly category: Category.Note;
 	title: string;
-	desc: string;
 }
 
 export class Note extends LoreEntry implements INote {
@@ -14,7 +13,6 @@ export class Note extends LoreEntry implements INote {
 
 	@Str(Category.Note) declare category: Category.Note;
 	@Str("") declare title: string;
-	@Str("") declare desc: string;
 
 	// Inherit super class model fields
 	static fields() {
@@ -23,5 +21,10 @@ export class Note extends LoreEntry implements INote {
 
 	constructor(data?: INote) {
 		super(data);
+	}
+
+	getText() {
+		if (this.title.trim()) return this.title;
+		return super.getText();
 	}
 }

@@ -10,7 +10,6 @@ export interface ICharacter extends ILoreEntry {
 	role: string;
 	isNPC: boolean;
 	isAlive: boolean;
-	desc: string;
 }
 
 export class Character extends LoreEntry implements ICharacter {
@@ -24,7 +23,6 @@ export class Character extends LoreEntry implements ICharacter {
 	@Str("") declare role: string;
 	@Bool(true) declare isNPC: boolean;
 	@Bool(true) declare isAlive: boolean;
-	@Str("") declare desc: string;
 
 	// Inherit super class model fields
 	static fields() {
@@ -33,5 +31,10 @@ export class Character extends LoreEntry implements ICharacter {
 
 	constructor(data?: ICharacter) {
 		super(data);
+	}
+
+	getText() {
+		if (this.name.trim()) return this.name;
+		return super.getText();
 	}
 }

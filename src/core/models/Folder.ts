@@ -2,7 +2,7 @@ import { Model } from "pinia-orm";
 import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorators";
 import { UUID } from "../utils/types";
 import { LoreEntry, ILoreEntry } from "./LoreEntry";
-import { Category } from "./types";
+import { Category, Describable } from "./types";
 
 /**
  * Minimal data structure that a Folder class should implement.
@@ -21,7 +21,7 @@ export interface IFolder<File extends ILoreEntry> {
 
 export const folderEntityName = "folders";
 
-export class Folder<File extends ILoreEntry> extends Model implements IFolder<File> {
+export class Folder<File extends ILoreEntry> extends Model implements IFolder<File>, Describable {
 	static entity = folderEntityName;
 
 	@Uid() declare id: UUID;
@@ -38,5 +38,9 @@ export class Folder<File extends ILoreEntry> extends Model implements IFolder<Fi
 
 	constructor(data?: IFolder<File>) {
 		super(data);
+	}
+
+	getText() {
+		return this.name;
 	}
 }

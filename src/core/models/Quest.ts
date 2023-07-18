@@ -10,7 +10,6 @@ export interface Task {
 export interface IQuest extends ILoreEntry {
 	readonly category: Category.Quest;
 	title: string;
-	desc: string;
 	tasks: Task[];
 }
 
@@ -20,7 +19,6 @@ export class Quest extends LoreEntry implements IQuest {
 
 	@Str(Category.Quest) declare category: Category.Quest;
 	@Str("") declare title: string;
-	@Str("") declare desc: string;
 	@Attr([]) declare tasks: Task[];
 
 	// Inherit super class model fields
@@ -30,5 +28,10 @@ export class Quest extends LoreEntry implements IQuest {
 
 	constructor(data?: IQuest) {
 		super(data);
+	}
+
+	getText() {
+		if (this.title.trim()) return this.title;
+		return super.getText();
 	}
 }

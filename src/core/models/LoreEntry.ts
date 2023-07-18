@@ -1,21 +1,23 @@
 import { Model } from "pinia-orm";
 import { Attr, BelongsTo, Num, Str, Uid } from "pinia-orm/dist/decorators";
 import { UUID } from "@/core/utils/types";
-import { Categorizable, Category, Indexable, Orderable, Taggable } from "./types";
+import { Categorizable, Category, Describable, Indexable, Orderable, Taggable } from "./types";
 import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
 export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
+	desc: string;
 	folderId: UUID | null;
 }
 
 export const loreEntryEntityName = "loreEntries";
 
-export class LoreEntry extends Model implements ILoreEntry {
+export class LoreEntry extends Model implements ILoreEntry, Describable {
 	static entity: string | Category = loreEntryEntityName;
 	static typeKey = "category";
 
 	@Uid() declare id: UUID;
 	@Str("") declare category: Category;
+	@Str("") declare desc: string;
 	@Num(0) declare position: number;
 	@Attr([]) declare tags: UUID[];
 	@Attr(null) declare folderId: UUID | null;
@@ -31,5 +33,9 @@ export class LoreEntry extends Model implements ILoreEntry {
 			[Category.Faction]: Faction,
 			[Category.Note]: Note,
 		};
+	}
+
+	getText() {
+		return this.desc;
 	}
 }

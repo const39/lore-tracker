@@ -14,7 +14,6 @@ export interface IEvent extends ILoreEntry {
 	readonly category: Category.Event;
 	type: EventType;
 	day: number;
-	desc: string;
 }
 
 export class Event extends LoreEntry implements IEvent {
@@ -22,7 +21,6 @@ export class Event extends LoreEntry implements IEvent {
 	static baseEntity = LoreEntry.entity;
 
 	@Str(Category.Event) declare category: Category.Event;
-	@Str("") declare desc: string;
 	@Str(EventType.OTHER) declare type: EventType;
 	@Num(1) declare day: number;
 

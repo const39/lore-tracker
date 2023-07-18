@@ -5,7 +5,6 @@ import { Category } from "./types";
 export interface ILocation extends ILoreEntry {
 	readonly category: Category.Location;
 	name: string;
-	desc: string;
 }
 
 export class Location extends LoreEntry implements ILocation {
@@ -14,7 +13,6 @@ export class Location extends LoreEntry implements ILocation {
 
 	@Str(Category.Location) declare category: Category.Location;
 	@Str("") declare name: string;
-	@Str("") declare desc: string;
 
 	// Inherit super class model fields
 	static fields() {
@@ -23,5 +21,10 @@ export class Location extends LoreEntry implements ILocation {
 
 	constructor(data?: ILocation) {
 		super(data);
+	}
+
+	getText() {
+		if (this.name.trim()) return this.name;
+		return super.getText();
 	}
 }

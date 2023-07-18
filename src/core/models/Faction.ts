@@ -5,7 +5,6 @@ import { Category } from "./types";
 export interface IFaction extends ILoreEntry {
 	readonly category: Category.Faction;
 	name: string;
-	desc: string;
 }
 
 export class Faction extends LoreEntry implements IFaction {
@@ -14,7 +13,6 @@ export class Faction extends LoreEntry implements IFaction {
 
 	@Str(Category.Faction) declare category: Category.Faction;
 	@Str("") declare name: string;
-	@Str("") declare desc: string;
 
 	// Inherit super class model fields
 	static fields() {
@@ -23,5 +21,10 @@ export class Faction extends LoreEntry implements IFaction {
 
 	constructor(data?: IFaction) {
 		super(data);
+	}
+
+	getText() {
+		if (this.name.trim()) return this.name;
+		return super.getText();
 	}
 }

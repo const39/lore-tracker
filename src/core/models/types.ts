@@ -26,6 +26,10 @@ export interface Taggable {
 	tags: UUID[];
 }
 
+export interface Describable {
+	getText(): string;
+}
+
 export type ORMClass = Constructor<Model> & { entity: string };
 
 export type ORMInstance = Model;
