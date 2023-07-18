@@ -1,16 +1,16 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { LoreEntry, ILoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface IFaction extends IBaseLoreEntry {
+export interface IFaction extends ILoreEntry {
 	readonly category: Category.Faction;
 	name: string;
 	desc: string;
 }
 
-export class Faction extends BaseLoreEntry implements IFaction {
+export class Faction extends LoreEntry implements IFaction {
 	static entity = Category.Faction;
-	static baseEntity = BaseLoreEntry.entity;
+	static baseEntity = LoreEntry.entity;
 
 	@Str(Category.Faction) declare category: Category.Faction;
 	@Str("") declare name: string;

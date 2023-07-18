@@ -1,7 +1,7 @@
 import { useRepo } from "pinia-orm";
 import { ID } from "../model/cards";
 import {
-	IBaseLoreEntry,
+	ILoreEntry,
 	ICampaign,
 	IFolder,
 	campaignEntityName,
@@ -26,8 +26,8 @@ export interface MetaData {
 export interface SaveFormat {
 	_meta: MetaData;
 	[campaignEntityName]: Record<ID, ICampaign>;
-	[folderEntityName]: Record<ID, IFolder<IBaseLoreEntry>>;
-	[loreEntryEntityName]: Record<ID, IBaseLoreEntry>;
+	[folderEntityName]: Record<ID, IFolder<ILoreEntry>>;
+	[loreEntryEntityName]: Record<ID, ILoreEntry>;
 }
 
 /**

@@ -1,4 +1,4 @@
-export * from "./BaseLoreEntry";
+export * from "./LoreEntry";
 export * from "./Campaign";
 export * from "./Character";
 export * from "./Event";

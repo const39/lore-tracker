@@ -1,5 +1,5 @@
 import { Attr, Str } from "pinia-orm/dist/decorators";
-import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { LoreEntry, ILoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
 export interface Task {
@@ -7,16 +7,16 @@ export interface Task {
 	desc: string;
 }
 
-export interface IQuest extends IBaseLoreEntry {
+export interface IQuest extends ILoreEntry {
 	readonly category: Category.Quest;
 	title: string;
 	desc: string;
 	tasks: Task[];
 }
 
-export class Quest extends BaseLoreEntry implements IQuest {
+export class Quest extends LoreEntry implements IQuest {
 	static entity = Category.Quest;
-	static baseEntity = BaseLoreEntry.entity;
+	static baseEntity = LoreEntry.entity;
 
 	@Str(Category.Quest) declare category: Category.Quest;
 	@Str("") declare title: string;

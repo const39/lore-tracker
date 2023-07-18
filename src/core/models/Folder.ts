@@ -1,13 +1,13 @@
 import { Model } from "pinia-orm";
 import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorators";
 import { UUID } from "../utils/types";
-import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { LoreEntry, ILoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
 /**
  * Minimal data structure that a Folder class should implement.
  */
-export interface IFolder<File extends IBaseLoreEntry> {
+export interface IFolder<File extends ILoreEntry> {
 	readonly id: UUID;
 	readonly category: Category;
 	name: string;
@@ -21,7 +21,7 @@ export interface IFolder<File extends IBaseLoreEntry> {
 
 export const folderEntityName = "folders";
 
-export class Folder<File extends IBaseLoreEntry> extends Model implements IFolder<File> {
+export class Folder<File extends ILoreEntry> extends Model implements IFolder<File> {
 	static entity = folderEntityName;
 
 	@Uid() declare id: UUID;
@@ -33,7 +33,7 @@ export class Folder<File extends IBaseLoreEntry> extends Model implements IFolde
 	@Attr(null) declare parentId: UUID | null;
 
 	@BelongsTo(() => Folder, "parentId") declare parent: Folder<File> | undefined;
-	@HasMany(() => BaseLoreEntry, "folderId") declare files: File[];
+	@HasMany(() => LoreEntry, "folderId") declare files: File[];
 	@HasMany(() => Folder, "parentId") declare subfolders: Folder<File>[];
 
 	constructor(data?: IFolder<File>) {

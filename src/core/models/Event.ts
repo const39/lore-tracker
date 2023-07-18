@@ -1,5 +1,5 @@
 import { Num, Str } from "pinia-orm/dist/decorators";
-import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { LoreEntry, ILoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
 export enum EventType {
@@ -10,16 +10,16 @@ export enum EventType {
 	OTHER = "other",
 }
 
-export interface IEvent extends IBaseLoreEntry {
+export interface IEvent extends ILoreEntry {
 	readonly category: Category.Event;
 	type: EventType;
 	day: number;
 	desc: string;
 }
 
-export class Event extends BaseLoreEntry implements IEvent {
+export class Event extends LoreEntry implements IEvent {
 	static entity = Category.Event;
-	static baseEntity = BaseLoreEntry.entity;
+	static baseEntity = LoreEntry.entity;
 
 	@Str(Category.Event) declare category: Category.Event;
 	@Str("") declare desc: string;

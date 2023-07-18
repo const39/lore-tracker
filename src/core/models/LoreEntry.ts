@@ -4,13 +4,13 @@ import { UUID } from "@/core/utils/types";
 import { Categorizable, Category, Indexable, Orderable, Taggable } from "./types";
 import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
-export interface IBaseLoreEntry extends Indexable, Orderable, Categorizable, Taggable {
+export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
 	folderId: UUID | null;
 }
 
 export const loreEntryEntityName = "loreEntries";
 
-export class BaseLoreEntry extends Model implements IBaseLoreEntry {
+export class LoreEntry extends Model implements ILoreEntry {
 	static entity: string | Category = loreEntryEntityName;
 	static typeKey = "category";
 
@@ -20,7 +20,7 @@ export class BaseLoreEntry extends Model implements IBaseLoreEntry {
 	@Attr([]) declare tags: UUID[];
 	@Attr(null) declare folderId: UUID | null;
 
-	@BelongsTo(() => Folder, "folderId") declare parent: Folder<BaseLoreEntry> | undefined;
+	@BelongsTo(() => Folder, "folderId") declare parent: Folder<LoreEntry> | undefined;
 
 	static types() {
 		return {

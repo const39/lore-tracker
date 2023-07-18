@@ -1,8 +1,8 @@
 import { Bool, Str } from "pinia-orm/dist/decorators";
-import { BaseLoreEntry, IBaseLoreEntry } from "./BaseLoreEntry";
+import { LoreEntry, ILoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface ICharacter extends IBaseLoreEntry {
+export interface ICharacter extends ILoreEntry {
 	readonly category: Category.Character;
 	name: string;
 	race: string;
@@ -13,9 +13,9 @@ export interface ICharacter extends IBaseLoreEntry {
 	desc: string;
 }
 
-export class Character extends BaseLoreEntry implements ICharacter {
+export class Character extends LoreEntry implements ICharacter {
 	static entity = Category.Character;
-	static baseEntity = BaseLoreEntry.entity;
+	static baseEntity = LoreEntry.entity;
 
 	@Str(Category.Character) declare category: Category.Character;
 	@Str("") declare name: string;
