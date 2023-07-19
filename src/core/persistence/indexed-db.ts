@@ -30,9 +30,12 @@ async function loadInto(model: ORMClass, dbStore: LocalForage) {
 function enablePersistence(model: ORMClass, dbStore: LocalForage) {
 	useRepo(model)
 		.piniaStore()
-		.$subscribe((mutation, state) => {
-			Object.entries(state.data).forEach(([key, val]) => {
-				dbStore.setItem(key, deepCopy(val)); // We have to clone the data to remove the Proxy wrapper around each object
+		.$subscribe(async (mutation, state) => {
+			// Clear whole DB store first
+			await dbStore.clear();
+			// Store every element in the DB
+			Object.entries(state.data).forEach(async ([key, val]) => {
+				await dbStore.setItem(key, deepCopy(val)); // We have to clone the data to remove the Proxy wrapper around each object
 			});
 		});
 }
@@ -47,8 +50,8 @@ function enablePersistence(model: ORMClass, dbStore: LocalForage) {
  * @param model the ORM class to bind
  */
 export async function bind(model: ORMClass) {
-	if (dbStores.has(model.entity))
-		throw new Error(`Model ${model.name} is already bound to a local persistence back-end.`);
+	// Do nothing if model is already bound
+	if (dbStores.has(model.entity)) return;
 
 	// Create the IndexedDB store for the model
 	const dbStore = localForage.createInstance({
@@ -66,10 +69,10 @@ export async function bind(model: ORMClass) {
 }
 
 /**
- * Delete all IndexedDB stores and clear any data stored within them.
+ * Clear any data stored within the IndexedDB stores.
  */
 export async function clearPersistedData() {
 	[...dbStores.values()].forEach(async (dbStore) => {
-		await dbStore.dropInstance({ name: DB_NAME });
+		await dbStore.clear();
 	});
 }
