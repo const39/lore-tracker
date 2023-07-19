@@ -19,8 +19,8 @@ export class Faction extends LoreEntry implements IFaction {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IFaction) {
-		super(data);
+	constructor(data?: IFaction, ...args: any[]) {
+		super(data, ...args);
 	}
 
 	getText() {

@@ -29,8 +29,8 @@ export class Character extends LoreEntry implements ICharacter {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: ICharacter) {
-		super(data);
+	constructor(data?: ICharacter, ...args: any[]) {
+		super(data, ...args);
 	}
 
 	getText() {

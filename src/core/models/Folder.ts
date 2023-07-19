@@ -36,8 +36,12 @@ export class Folder<File extends ILoreEntry> extends Model implements IFolder<Fi
 	@HasMany(() => LoreEntry, "folderId") declare files: File[];
 	@HasMany(() => Folder, "parentId") declare subfolders: Folder<File>[];
 
-	constructor(data?: IFolder<File>) {
-		super(data);
+	constructor(data?: IFolder<File>, ...args: any[]) {
+		super(data, ...args);
+	}
+
+	static revive(data: IFolder<ILoreEntry>) {
+		return new Folder(data);
 	}
 
 	getText() {

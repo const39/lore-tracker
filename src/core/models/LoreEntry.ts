@@ -1,6 +1,6 @@
 import { Model } from "pinia-orm";
 import { Attr, BelongsTo, Num, Str, Uid } from "pinia-orm/dist/decorators";
-import { UUID } from "@/core/utils/types";
+import { Constructor, UUID } from "@/core/utils/types";
 import { Categorizable, Category, Describable, Indexable, Orderable, Taggable } from "./types";
 import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
@@ -24,7 +24,7 @@ export class LoreEntry extends Model implements ILoreEntry, Describable {
 
 	@BelongsTo(() => Folder, "folderId") declare parent: Folder<LoreEntry> | undefined;
 
-	static types() {
+	static override types() {
 		return {
 			[Category.Quest]: Quest,
 			[Category.Event]: Event,
@@ -33,6 +33,11 @@ export class LoreEntry extends Model implements ILoreEntry, Describable {
 			[Category.Faction]: Faction,
 			[Category.Note]: Note,
 		};
+	}
+
+	static revive(data: ILoreEntry) {
+		const constructor: Constructor<LoreEntry> = this.types()[data.category];
+		return new constructor(data);
 	}
 
 	getText() {

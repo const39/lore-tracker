@@ -30,6 +30,12 @@ export interface Describable {
 	getText(): string;
 }
 
-export type ORMClass = Constructor<Model> & { entity: string };
+export interface Revivable<T> {
+	revive(data: Record<UUID, any>): T;
+}
+
+export interface ORMClass<T = Model> extends Constructor<T>, Revivable<T> {
+	entity: string;
+}
 
 export type ORMInstance = Model;

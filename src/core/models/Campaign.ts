@@ -27,7 +27,11 @@ export class Campaign extends Model implements ICampaign {
 	@Str(Season.SPRING) declare season: Season;
 	@Str("") declare quickNote: string;
 
-	constructor(data?: ICampaign) {
-		super(data);
+	constructor(data?: ICampaign, ...args: any[]) {
+		super(data, ...args);
+	}
+
+	static revive(data: ICampaign) {
+		return new Campaign(data);
 	}
 }

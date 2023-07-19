@@ -29,7 +29,7 @@ export class Event extends LoreEntry implements IEvent {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IEvent) {
-		super(data);
+	constructor(data?: IEvent, ...args: any[]) {
+		super(data, ...args);
 	}
 }

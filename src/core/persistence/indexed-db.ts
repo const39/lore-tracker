@@ -1,6 +1,7 @@
 import localForage from "localforage";
 import { useRepo } from "pinia-orm";
 import { deepCopy } from "@/core/utils/functions";
+import { UUID } from "../utils/types";
 import type { ORMClass } from "../models";
 
 const DB_NAME = "lore-tracker-main-db";
@@ -17,8 +18,8 @@ const dbStores = new Map<string, LocalForage>();
  */
 async function loadInto(model: ORMClass, dbStore: LocalForage) {
 	const repo = useRepo(model);
-	await dbStore.iterate((value) => {
-		repo.save(new model(value));
+	await dbStore.iterate((value: Record<UUID, any>) => {
+		repo.save(model.revive(value));
 	});
 }
 

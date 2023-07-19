@@ -19,8 +19,8 @@ export class Location extends LoreEntry implements ILocation {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: ILocation) {
-		super(data);
+	constructor(data?: ILocation, ...args: any[]) {
+		super(data, ...args);
 	}
 
 	getText() {

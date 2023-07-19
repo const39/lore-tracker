@@ -26,8 +26,8 @@ export class Quest extends LoreEntry implements IQuest {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IQuest) {
-		super(data);
+	constructor(data?: IQuest, ...args: any[]) {
+		super(data, ...args);
 	}
 
 	getText() {

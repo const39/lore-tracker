@@ -1,16 +1,13 @@
 import { useRepo } from "pinia-orm";
 import { ID } from "../model/cards";
 import {
-	ILoreEntry,
-	ICampaign,
-	IFolder,
+	Campaign,
+	Folder,
+	LoreEntry,
 	campaignEntityName,
 	folderEntityName,
 	getPersistentModels,
-	loreEntryEntityName,
-	LoreEntry,
-	SubModelsMapping,
-	Category,
+	loreEntryEntityName
 } from "../models";
 import { clearPersistedData } from "./indexed-db";
 import converter, { SaveVersion } from "./save-converter";
@@ -28,9 +25,9 @@ export interface MetaData {
  */
 export interface SaveFormat {
 	_meta: MetaData;
-	[campaignEntityName]: Record<ID, ICampaign>;
-	[folderEntityName]: Record<ID, IFolder<ILoreEntry>>;
-	[loreEntryEntityName]: Record<ID, ILoreEntry>;
+	[campaignEntityName]: Record<ID, Campaign>;
+	[folderEntityName]: Record<ID, Folder<LoreEntry>>;
+	[loreEntryEntityName]: Record<ID, LoreEntry>;
 }
 
 /**
@@ -52,11 +49,7 @@ export async function importSave(json: string) {
 		const items = converted[orm.entity];
 		for (const key in items) {
 			const item = items[key];
-			// For lore entries, use the subclass constructor to include subclass' specific fields
-			const ormConstructor =
-				orm === LoreEntry ? SubModelsMapping[item.category as Category] : orm;
-			const m = new ormConstructor(item);
-			repo.save(m);
+			repo.save(orm.revive(item));
 		}
 	});
 }

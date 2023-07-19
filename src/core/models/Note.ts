@@ -19,8 +19,8 @@ export class Note extends LoreEntry implements INote {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: INote) {
-		super(data);
+	constructor(data?: INote, ...args: any[]) {
+		super(data, ...args);
 	}
 
 	getText() {
