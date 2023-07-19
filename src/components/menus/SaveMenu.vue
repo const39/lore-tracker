@@ -53,8 +53,8 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import eventBus from "@/core/eventBus";
+import { deleteSave, exportSave, importSave } from "@/core/persistence/save-manager";
 import { t as $t } from "@/core/translation";
-import { useStore } from "@/store";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useGlobalSnackbar } from "@/store/snackbar";
 import MenuActivator from "./MenuActivator.vue";
@@ -62,28 +62,26 @@ import MenuActivator from "./MenuActivator.vue";
 const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
 const showUploadDialog = ref(false);
 
-const store = useStore();
 const { showSnackbar } = useGlobalSnackbar();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
 function downloadSave(): void {
-	const file = store.toFile();
+	const file = exportSave({ asFile: true }) as Blob;
 	const a = document.createElement("a");
 	a.href = URL.createObjectURL(file);
 	a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;
 	a.click();
 }
 
-function uploadSave(): void {
+function uploadSave() {
 	// v-file-input only accepts an array of files, but we do not use the 'multiple' prop
 	// so we only use the first element in the array
 	if (uploadedFile.value.length) {
 		uploadedFile.value[0]
 			.text()
-			.then((value: string) => {
+			.then(async (value: string) => {
 				try {
-					store.loadData(value);
-					store.save();
+					await importSave(value);
 					eventBus.emit("data-loaded");
 					showSnackbar({
 						message: $t("messages.success.saveFileImportSuccessful"),
@@ -124,10 +122,5 @@ function confirmDeletion() {
 		message: $t("options.save.deleteDialogMessage"),
 		confirmAction: deleteSave,
 	});
-}
-
-function deleteSave(): void {
-	store.resetState();
-	store.deleteSave();
 }
 </script>

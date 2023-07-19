@@ -132,11 +132,11 @@ import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import { VERSION } from "@/core/constants";
-import { BaseLoreEntry, Folder } from "@/core/models";
-import * as persistence from "@/core/persistence";
+import { LocalStorageKey, VERSION } from "@/core/constants";
+import { getPersistentModels } from "@/core/models";
+import * as persistence from "@/core/persistence/indexed-db";
+import { importSave } from "@/core/persistence/save-manager";
 import { t as $t } from "@/core/translation";
-import { useStore } from "@/store";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
 import { usePreferencesStore } from "./store/preferences";
 import { useGlobalSnackbar } from "./store/snackbar";
@@ -148,7 +148,6 @@ const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
 const router = useRouter();
-const store = useStore();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
@@ -175,10 +174,16 @@ function closeUpdateNotif() {
 	showUpdateNotif.value = false;
 }
 
-onMounted(() => {
-	// Initialise the store at application start
+async function loadFromLegacyStorage() {
+	const rawData = localStorage.getItem(LocalStorageKey.DATA_KEY);
+	if (rawData) await importSave(rawData);
+}
+
+// Load stored data at application start
+onMounted(async () => {
 	try {
-		store.loadData();
+		// Load any previous save file stored in LocalStorage (legacy method)
+		await loadFromLegacyStorage();
 	} catch (err) {
 		console.error(err);
 		showSnackbar({
@@ -189,7 +194,7 @@ onMounted(() => {
 	}
 
 	// Bind ORM models to a persistence back-end (IndexedDB)
-	[Folder, BaseLoreEntry].forEach(persistence.bind);
+	await Promise.all(getPersistentModels().map((model) => persistence.bind(model)));
 });
 </script>
 

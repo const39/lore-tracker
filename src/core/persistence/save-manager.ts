@@ -8,6 +8,9 @@ import {
 	folderEntityName,
 	getPersistentModels,
 	loreEntryEntityName,
+	LoreEntry,
+	SubModelsMapping,
+	Category,
 } from "../models";
 import { clearPersistedData } from "./indexed-db";
 import converter, { SaveVersion } from "./save-converter";
@@ -36,17 +39,24 @@ export interface SaveFormat {
  *
  * @param json the JSON save to import
  */
-export function importSave(json: string) {
+export async function importSave(json: string) {
 	// Parse JSON data
 	const data: Record<string, any> = JSON.parse(json);
 	// Convert save to latest format (if needed)
 	const converted = converter.ensureLatestVersion(data) as Record<string, any>;
+	// Delete previous data
+	await deleteSave();
 	// Load data into the ORM stores
-	getPersistentModels().forEach((model) => {
-		const repo = useRepo(model);
-		const modelData = converted[model.entity];
-		for (const key in modelData) {
-			repo.save(new model(modelData[key]));
+	getPersistentModels().forEach((orm) => {
+		const repo = useRepo(orm);
+		const items = converted[orm.entity];
+		for (const key in items) {
+			const item = items[key];
+			// For lore entries, use the subclass constructor to include subclass' specific fields
+			const ormConstructor =
+				orm === LoreEntry ? SubModelsMapping[item.category as Category] : orm;
+			const m = new ormConstructor(item);
+			repo.save(m);
 		}
 	});
 }
