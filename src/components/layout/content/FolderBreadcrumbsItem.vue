@@ -2,10 +2,10 @@
 	<v-breadcrumbs-item
 		ref="refDropZone"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
-		:title="title ?? folder.metadata.name"
+		:title="title ?? folder.name"
 		:to="to"
 		:disabled="disabled"
-		class="px-4 py-2 rounded-xl"
+		class="px-4 py-2 rounded-xl without-color"
 		exact
 	/>
 </template>
@@ -14,18 +14,19 @@
 import { computed, ref } from "vue";
 import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
-import { CardFolder, isCard, isCardFolder } from "@/core/model/cards";
+import { isCard, isCardFolder } from "@/core/model/cards";
+import { Folder } from "@/core/models";
 import { useCardsStore } from "@/store/cards";
 
 const props = defineProps<{
-	folder: CardFolder;
+	folder: Folder;
 	title?: string;
 	disabled?: boolean;
 }>();
 
 const to = computed(() => ({
 	params: {
-		folderURI: [...props.folder.absolutePath.rawSegments],
+		folderId: props.folder.id,
 	},
 }));
 
@@ -56,3 +57,9 @@ function onDropAccepted(items: DropPayload[]) {
 	}
 }
 </script>
+<style scoped>
+/* Fix the folder's color being used text color due to Vuetify forwarding the folder object as props to the v-breadcrumbs-item for some reason */
+.without-color {
+	color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)) !important;
+}
+</style>

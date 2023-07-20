@@ -35,7 +35,6 @@ import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { CardFolder } from "@/core/model/cards";
 import { Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -81,7 +80,7 @@ function showFolderTree() {
 	sidePanelStore.newFolderTree();
 }
 
-function openFolder(folder: CardFolder): void {
-	router.push({ params: { folderURI: [...folder.absolutePath.rawSegments] } });
+function openFolder(folder: Folder): void {
+	router.push({ params: { folderId: folder.id } });
 }
 </script>
