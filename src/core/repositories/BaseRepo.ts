@@ -1,5 +1,5 @@
 import { Model, Repository } from "pinia-orm";
-import { Indexable } from "../models";
+import { Indexable, Orderable } from "../models";
 import { UUID } from "../utils/types";
 
 interface QueryOptions {
@@ -25,5 +25,9 @@ export default class BaseRepo<M extends Model> extends Repository<M> {
 
 	delete(id: UUID) {
 		this.destroy(id);
+	}
+
+	changeOrder(items: Array<Indexable & Orderable>) {
+		this.save(items);
 	}
 }

@@ -1,9 +1,10 @@
 <template>
 	<GenericArea
-		v-model="currentFolder.subfolders"
+		:items="currentFolder.subfolders"
 		:title="$t('categories.folder') + 's'"
 		:loading="loading"
 		group="folders"
+		@sort="onSort"
 	>
 		<template #actions>
 			<v-btn
@@ -30,17 +31,20 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { CardFolder } from "@/core/model/cards";
+import { Category, Folder, LoreEntry } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder; // currentFolder v-model
-	category: CardCategory;
+	modelValue: Folder<LoreEntry>; // currentFolder v-model
+	category: Category;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
@@ -60,6 +64,14 @@ const currentFolder = computed({
 		emit("update:modelValue", value);
 	},
 });
+
+/**
+ * Save the new items order.
+ * @param movedItems the items with their new position.
+ */
+function onSort(movedItems: Folder<LoreEntry>[]) {
+	useRepo(FolderRepo).changeOrder(movedItems);
+}
 
 function newFolder(): void {
 	sidePanelStore.newFolderAddForm(props.category, currentFolder.value);

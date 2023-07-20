@@ -3,7 +3,7 @@
 		<div class="mb-4 d-flex align-center text-h6">
 			<span class="mr-2 mb-1">
 				<v-progress-circular v-if="loading" color="primary" size="small" indeterminate />
-				<v-badge v-else :content="items.length" color="grey" inline />
+				<v-badge v-else :content="list.length" color="grey" inline />
 			</span>
 			<span class="px-1"> {{ title }} </span>
 			<slot name="actions" />
@@ -11,7 +11,7 @@
 		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
 		<draggable
 			v-if="!loading"
-			v-model="items"
+			v-model="list"
 			:animation="200"
 			:disabled="dndStore.mode !== 'sort'"
 			:group="group"
@@ -19,7 +19,7 @@
 			draggable=".draggable-item"
 			item-key="id"
 			@start="drag = true"
-			@end="drag = false"
+			@end="swap"
 		>
 			<!-- v-col MUST have "position: relative" to prevent the card's custom drag image to by included in its size -->
 			<template #item="{ element }">
@@ -40,19 +40,21 @@
 import { computed, ref } from "vue";
 import draggable from "vuedraggable";
 import { useGridDensity } from "@/composables/gridDensity";
-import { CardFolder, CardTypes, getText } from "@/core/model/cards";
+import { Describable, Indexable, Orderable } from "@/core/models";
 import { useDragAndDropMode } from "@/store/dragAndDropMode";
 import { usePreferencesStore } from "@/store/preferences";
 
+type Item = Indexable & Orderable & Describable;
+
 const props = defineProps<{
-	modelValue: CardTypes[] | CardFolder[];
+	items: Item[];
 	title: string;
 	group: string;
 	loading?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
+	(e: "sort", movedItems: Item[]): void;
 }>();
 
 const drag = ref(false);
@@ -61,22 +63,59 @@ const prefStore = usePreferencesStore();
 const dndStore = useDragAndDropMode();
 const { density } = useGridDensity();
 
-const items = computed({
+const list = computed({
 	get() {
-		const items = props.modelValue;
-		if (prefStore.cardsOrder === "alphanumeric")
-			// Sort the shallow copy of the files list in the alphanumeric order
-			return [...items].sort((a, b) => {
-				const textA = getText(a).toLowerCase();
-				const textB = getText(b).toLowerCase();
-				return textA.localeCompare(textB);
-			}) as typeof items;
-		else return items;
+		const comparator =
+			prefStore.cardsOrder === "alphanumeric"
+				? getAlphanumericComparator()
+				: getPositionComparator();
+		// Make a shallow copy of the list and sort it
+		return [...props.items].sort(comparator);
 	},
-	set(list) {
-		emit("update:modelValue", list);
+	set() {
+		// Left empty to allow list to be mutated without emitting the mutation itself to the parent.
+		// Instead, the 'sort' event is sent to the parent. See onDrop().
 	},
 });
+
+/**
+ * Swap the position of two elements after a drop event.
+ * @param e the drop event
+ */
+function swap(e: { oldIndex: number; newIndex: number }) {
+	// Get the elements
+	const sourceItem = list.value[e.oldIndex];
+	const targetItem = list.value[e.newIndex];
+
+	// Swap their position (only update their 'position' field, not their actual place in the array: vue-draggable performs that itself)
+	sourceItem.position = e.newIndex;
+	targetItem.position = e.oldIndex;
+
+	// Emit 'sort' event to parent with the updated items
+	emit("sort", [sourceItem, targetItem]);
+	// Finish drag & drop operation
+	drag.value = false;
+}
+
+/**
+ * Returns a comparator function that sorts items in the alphanumeric order of their text.
+ */
+function getAlphanumericComparator() {
+	return (a: Item, b: Item) => {
+		const textA = a.getText().toLowerCase();
+		const textB = b.getText().toLowerCase();
+		return textA.localeCompare(textB);
+	};
+}
+
+/**
+ * Returns a comparator function that sorts items in the ascending order of their 'position' field.
+ */
+function getPositionComparator() {
+	return (a: Item, b: Item) => {
+		return a.position - b.position;
+	};
+}
 </script>
 
 <style scoped>

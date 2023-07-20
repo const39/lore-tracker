@@ -1,9 +1,10 @@
 <template>
 	<GenericArea
-		v-model="currentFolder.files"
+		:items="currentFolder.files"
 		:title="$t('categories.file') + 's'"
 		:loading="loading"
 		group="files"
+		@sort="onSort"
 	>
 		<template #actions>
 			<v-btn
@@ -22,16 +23,18 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { Category, Folder, LoreEntry } from "@/core/models";
+import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder; // currentFolder v-model
-	category: CardCategory;
+	modelValue: Folder<LoreEntry>; // currentFolder v-model
+	category: Category;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
@@ -50,6 +53,14 @@ const currentFolder = computed({
 		emit("update:modelValue", value);
 	},
 });
+
+/**
+ * Save the new items order.
+ * @param movedItems the items with their new position.
+ */
+function onSort(movedItems: LoreEntry[]) {
+	useRepo(LoreEntryRepo).changeOrder(movedItems);
+}
 
 function newFile(): void {
 	formStore.newFileAddForm(props.category, currentFolder.value);
