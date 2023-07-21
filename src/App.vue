@@ -53,8 +53,11 @@
 
 		<!-- Mount point for VueRouter -->
 		<v-main>
-			<v-container>
-				<router-view />
+			<v-container class="h-100">
+				<div v-if="loading" class="h-100 d-flex align-center justify-center">
+					<v-progress-circular color="primary" size="large" indeterminate />
+				</div>
+				<router-view v-else />
 			</v-container>
 		</v-main>
 
@@ -142,6 +145,7 @@ import { usePreferencesStore } from "./store/preferences";
 import { useGlobalSnackbar } from "./store/snackbar";
 
 const version = ref(VERSION);
+const loading = ref(false);
 const showMenu = ref(false);
 const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
@@ -181,6 +185,8 @@ async function loadFromLegacyStorage() {
 
 // Load stored data at application start
 onMounted(async () => {
+	loading.value = true;
+
 	try {
 		// Load any previous save file stored in LocalStorage (legacy method)
 		await loadFromLegacyStorage();
@@ -195,6 +201,8 @@ onMounted(async () => {
 
 	// Bind ORM models to a persistence back-end (IndexedDB)
 	await Promise.all(getPersistentModels().map((model) => persistence.bind(model)));
+
+	loading.value = false;
 });
 </script>
 
