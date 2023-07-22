@@ -1,5 +1,6 @@
 import { Model } from "pinia-orm";
-import { Constructor, UUID } from "../utils/types";
+import { Icon } from "@/core/utils/icons";
+import { Constructor, UUID } from "@/core/utils/types";
 
 export enum Category {
 	Quest = "quest",
@@ -35,7 +36,7 @@ export interface Describable {
 }
 
 export interface HasIcon {
-	getIcon(): string;
+	getIcon(): Icon;
 }
 
 export interface ORMClass<T = Model> extends Constructor<T>, Revivable<T> {

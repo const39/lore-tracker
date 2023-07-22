@@ -7,6 +7,7 @@ export * from "./Folder";
 export * from "./Location";
 export * from "./Note";
 export * from "./Quest";
+export * from "./Tag";
 export * from "./helpers";
 export * from "./types";
 

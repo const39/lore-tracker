@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Tag } from "@/core/model/cards";
+import { Tag } from "@/core/models";
 import { truncate } from "@/core/utils/functions";
 
 defineProps<{

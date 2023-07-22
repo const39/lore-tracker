@@ -24,11 +24,11 @@
 import { useDebounceFn } from "@vueuse/core";
 import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { ID } from "@/core/model/cards";
+import { UUID } from "@/core/utils/types";
 import CardOptions from "./CardOptions.vue";
 
 const props = defineProps<{
-	id: ID;
+	id: UUID;
 	/**
 	 * Whether this card should provide an options menu
 	 */

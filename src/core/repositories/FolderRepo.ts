@@ -1,6 +1,7 @@
 import { Category, Folder } from "../models";
 import { UUID } from "../utils/types";
 import BaseRepo, { QueryOptions } from "./BaseRepo";
+import LoreEntryRepo from "./LoreEntryRepo";
 
 export default class FolderRepo extends BaseRepo<Folder> {
 	use = Folder;
@@ -47,6 +48,14 @@ export default class FolderRepo extends BaseRepo<Folder> {
 
 	getSubfolders(folder: Folder, options?: QueryOptions) {
 		return this.createQuery(options).where("parentId", folder.id).get();
+	}
+
+	getFiles(folder: Folder) {
+		return this.repo(LoreEntryRepo).where("folderId", folder.id).get();
+	}
+
+	getChildrenCount(folder: Folder) {
+		return this.getSubfolders(folder).length + this.getFiles(folder).length;
 	}
 
 	createRootFolder(category: Category) {
