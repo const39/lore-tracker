@@ -31,14 +31,7 @@
 		</div>
 		<v-spacer />
 		<div class="text-right search-bar min-width">
-			<v-text-field
-				v-model="search"
-				:label="$t('status.search')"
-				append-inner-icon="mdi-magnify"
-				density="comfortable"
-				hide-details
-				clearable
-			/>
+			<SearchBar />
 		</div>
 
 		<v-divider class="ml-3 mr-1" vertical />
@@ -55,12 +48,12 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { Campaign } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useFilterStore } from "@/store/filter";
 import DragAndDropModeSelector from "./actions/DragAndDropModeSelector.vue";
+import SearchBar from "./actions/SearchBar.vue";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [
@@ -69,7 +62,6 @@ const rules = [
 ];
 const editName = ref(false);
 
-const filterStore = useFilterStore();
 const campaignRepo = useRepo(CampaignRepo);
 
 const campaign = ref<Campaign>(campaignRepo.getCurrentCampaign() ?? new Campaign());
@@ -92,16 +84,8 @@ function updateName() {
 	// Close edit field
 	editName.value = true;
 }
-
-const search = computed({
-	get() {
-		return filterStore.rules.text;
-	},
-	set(value) {
-		filterStore.rules.text = value?.trim();
-	},
-});
 </script>
+
 <style scoped>
 .campaign-name-field.min-width {
 	min-width: 300px;
