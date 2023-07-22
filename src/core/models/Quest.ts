@@ -1,5 +1,5 @@
 import { Attr, Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
 export interface Task {
@@ -7,11 +7,13 @@ export interface Task {
 	desc: string;
 }
 
-export interface IQuest extends ILoreEntry {
+interface IQuest extends ILoreEntry {
 	readonly category: Category.Quest;
 	title: string;
 	tasks: Task[];
 }
+
+type MinimalQuest = MinimalLoreEntry & Partial<IQuest>;
 
 export class Quest extends LoreEntry implements IQuest {
 	static entity = Category.Quest;
@@ -26,7 +28,7 @@ export class Quest extends LoreEntry implements IQuest {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IQuest, ...args: any[]) {
+	constructor(data: MinimalQuest, ...args: any[]) {
 		super(data, ...args);
 	}
 

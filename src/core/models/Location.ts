@@ -1,11 +1,13 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface ILocation extends ILoreEntry {
+interface ILocation extends ILoreEntry {
 	readonly category: Category.Location;
 	name: string;
 }
+
+type MinimalLocation = MinimalLoreEntry & Partial<ILocation>;
 
 export class Location extends LoreEntry implements ILocation {
 	static entity = Category.Location;
@@ -19,7 +21,7 @@ export class Location extends LoreEntry implements ILocation {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: ILocation, ...args: any[]) {
+	constructor(data: MinimalLocation, ...args: any[]) {
 		super(data, ...args);
 	}
 

@@ -3,3 +3,17 @@ export type UnionOfTupleValues<T extends Readonly<string[] | number[] | symbol[]
 export type Constructor<T> = new (...args: any[]) => T;
 
 export type UUID = string;
+
+/**
+ * Make the specified properties in T optional.
+ */
+export type Optional<T, TOptional extends keyof T> = Required<Omit<T, TOptional>> &
+	Partial<Pick<T, TOptional>>;
+
+/**
+ * Make all properties in T optional except for the specified ones.
+ */
+export type OptionalExceptFor<T, TRequired extends keyof T> = Partial<
+	Pick<T, Exclude<keyof T, TRequired>>
+> &
+	Required<Pick<T, TRequired>>;

@@ -1,5 +1,6 @@
 import { Num, Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { Icon } from "../utils/icons";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
 export enum EventType {
@@ -10,11 +11,13 @@ export enum EventType {
 	OTHER = "other",
 }
 
-export interface IEvent extends ILoreEntry {
+interface IEvent extends ILoreEntry {
 	readonly category: Category.Event;
 	type: EventType;
 	day: number;
 }
+
+type MinimalEvent = MinimalLoreEntry & Partial<IEvent>;
 
 export class Event extends LoreEntry implements IEvent {
 	static entity = Category.Event;
@@ -29,7 +32,11 @@ export class Event extends LoreEntry implements IEvent {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IEvent, ...args: any[]) {
+	constructor(data: MinimalEvent, ...args: any[]) {
 		super(data, ...args);
+	}
+
+	override getIcon() {
+		return Icon[this.type];
 	}
 }

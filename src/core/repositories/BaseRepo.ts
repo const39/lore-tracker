@@ -2,7 +2,7 @@ import { Model, Repository } from "pinia-orm";
 import { Indexable, Orderable } from "../models";
 import { UUID } from "../utils/types";
 
-interface QueryOptions {
+export interface QueryOptions {
 	shallow?: boolean;
 }
 

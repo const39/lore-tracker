@@ -1,6 +1,6 @@
 import { Category, Folder, LoreEntry } from "../models";
 import { UUID } from "../utils/types";
-import BaseRepo from "./BaseRepo";
+import BaseRepo, { QueryOptions } from "./BaseRepo";
 
 export default class FolderRepo extends BaseRepo<Folder<LoreEntry>> {
 	use = Folder;
@@ -10,11 +10,10 @@ export default class FolderRepo extends BaseRepo<Folder<LoreEntry>> {
 	}
 
 	getFolder(id: UUID, category?: Category, options?: QueryOptions) {
-		const res = this.createQuery(options).find(id);
 		if (category) {
-			return res?.category === category ? res : undefined;
+			return this.createQuery(options).whereId(id).where("category", category).first();
 		} else {
-			return res;
+			return this.createQuery(options).find(id);
 		}
 	}
 

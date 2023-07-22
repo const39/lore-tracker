@@ -1,11 +1,13 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface IFaction extends ILoreEntry {
+interface IFaction extends ILoreEntry {
 	readonly category: Category.Faction;
 	name: string;
 }
+
+type MinimalFaction = MinimalLoreEntry & Partial<IFaction>;
 
 export class Faction extends LoreEntry implements IFaction {
 	static entity = Category.Faction;
@@ -19,7 +21,7 @@ export class Faction extends LoreEntry implements IFaction {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: IFaction, ...args: any[]) {
+	constructor(data: MinimalFaction, ...args: any[]) {
 		super(data, ...args);
 	}
 

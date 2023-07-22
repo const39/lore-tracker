@@ -1,8 +1,8 @@
 import { Bool, Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface ICharacter extends ILoreEntry {
+interface ICharacter extends ILoreEntry {
 	readonly category: Category.Character;
 	name: string;
 	race: string;
@@ -11,6 +11,8 @@ export interface ICharacter extends ILoreEntry {
 	isNPC: boolean;
 	isAlive: boolean;
 }
+
+type MinimalCharacter = MinimalLoreEntry & Partial<ICharacter>;
 
 export class Character extends LoreEntry implements ICharacter {
 	static entity = Category.Character;
@@ -29,7 +31,7 @@ export class Character extends LoreEntry implements ICharacter {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: ICharacter, ...args: any[]) {
+	constructor(data: MinimalCharacter, ...args: any[]) {
 		super(data, ...args);
 	}
 

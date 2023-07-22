@@ -1,11 +1,13 @@
 import { Str } from "pinia-orm/dist/decorators";
-import { LoreEntry, ILoreEntry } from "./LoreEntry";
+import { ILoreEntry, LoreEntry, MinimalLoreEntry } from "./LoreEntry";
 import { Category } from "./types";
 
-export interface INote extends ILoreEntry {
+interface INote extends ILoreEntry {
 	readonly category: Category.Note;
 	title: string;
 }
+
+type MinimalNote = MinimalLoreEntry & Partial<INote>;
 
 export class Note extends LoreEntry implements INote {
 	static entity = Category.Note;
@@ -19,7 +21,7 @@ export class Note extends LoreEntry implements INote {
 		return { ...super.schemas[super.entity] };
 	}
 
-	constructor(data?: INote, ...args: any[]) {
+	constructor(data: MinimalNote, ...args: any[]) {
 		super(data, ...args);
 	}
 

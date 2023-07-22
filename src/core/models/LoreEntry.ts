@@ -1,7 +1,16 @@
 import { Model } from "pinia-orm";
 import { Attr, BelongsTo, Num, Str, Uid } from "pinia-orm/dist/decorators";
-import { Constructor, UUID } from "@/core/utils/types";
-import { Categorizable, Category, Describable, Indexable, Orderable, Taggable } from "./types";
+import { Constructor, OptionalExceptFor, UUID } from "@/core/utils/types";
+import { Icon } from "../utils/icons";
+import {
+	Categorizable,
+	Category,
+	Describable,
+	HasIcon,
+	Indexable,
+	Orderable,
+	Taggable,
+} from "./types";
 import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
 export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
@@ -9,9 +18,11 @@ export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggabl
 	folderId: UUID | null;
 }
 
+export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId">;
+
 export const loreEntryEntityName = "loreEntries";
 
-export class LoreEntry extends Model implements ILoreEntry, Describable {
+export class LoreEntry extends Model implements ILoreEntry, Describable, HasIcon {
 	static entity: string | Category = loreEntryEntityName;
 	static typeKey = "category";
 
@@ -35,12 +46,21 @@ export class LoreEntry extends Model implements ILoreEntry, Describable {
 		};
 	}
 
-	static revive(data: ILoreEntry) {
+	// TODO remove
+	static revive(data: MinimalLoreEntry) {
+		return LoreEntry.create(data);
+	}
+
+	static create(data: MinimalLoreEntry) {
 		const constructor: Constructor<LoreEntry> = this.types()[data.category];
 		return new constructor(data);
 	}
 
-	getText() {
+	getText(): string {
 		return this.desc;
+	}
+
+	getIcon(): string {
+		return Icon[this.category];
 	}
 }

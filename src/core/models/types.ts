@@ -26,12 +26,16 @@ export interface Taggable {
 	tags: UUID[];
 }
 
+export interface Revivable<T> {
+	revive(data: Record<UUID, any>): T;
+}
+
 export interface Describable {
 	getText(): string;
 }
 
-export interface Revivable<T> {
-	revive(data: Record<UUID, any>): T;
+export interface HasIcon {
+	getIcon(): string;
 }
 
 export interface ORMClass<T = Model> extends Constructor<T>, Revivable<T> {

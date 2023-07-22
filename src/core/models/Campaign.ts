@@ -9,12 +9,14 @@ export enum Season {
 	WINTER = "winter",
 }
 
-export interface ICampaign {
+interface ICampaign {
 	name: string;
 	days: number;
 	season: Season;
 	quickNote: string;
 }
+
+type MinimalCampaign = Partial<ICampaign>;
 
 export const campaignEntityName = "campaigns";
 
@@ -27,11 +29,11 @@ export class Campaign extends Model implements ICampaign {
 	@Str(Season.SPRING) declare season: Season;
 	@Str("") declare quickNote: string;
 
-	constructor(data?: ICampaign, ...args: any[]) {
+	constructor(data?: MinimalCampaign, ...args: any[]) {
 		super(data, ...args);
 	}
 
-	static revive(data: ICampaign) {
+	static revive(data: MinimalCampaign) {
 		return new Campaign(data);
 	}
 }
