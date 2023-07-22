@@ -1,6 +1,6 @@
 <template>
 	<GenericArea
-		:items="currentFolder.files"
+		:items="items"
 		:title="$t('categories.file') + 's'"
 		:loading="loading"
 		group="files"
@@ -8,12 +8,12 @@
 	>
 		<template #actions>
 			<v-btn
-				:disabled="disableActions"
+				:disabled="disableActions || !folderId"
 				class="mx-1"
 				icon="mdi-plus"
 				density="compact"
 				variant="text"
-				@click="newFile"
+				@click="newLoreEntry"
 			/>
 		</template>
 		<template #default="{ isDraggable, itemData }">
@@ -24,35 +24,23 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed } from "vue";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { Category, Folder, LoreEntry } from "@/core/models";
+import { Category, LoreEntry } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: Folder<LoreEntry>; // currentFolder v-model
+	items: LoreEntry[];
 	category: Category;
+	folderId?: UUID;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
-const formStore = useSidePanel();
-
-const currentFolder = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const sidePanel = useSidePanel();
 
 /**
  * Save the new items order.
@@ -62,7 +50,12 @@ function onSort(movedItems: LoreEntry[]) {
 	useRepo(LoreEntryRepo).changeOrder(movedItems);
 }
 
-function newFile(): void {
-	formStore.newFileAddForm(props.category, currentFolder.value);
+function newLoreEntry(): void {
+	if (props.folderId) {
+		sidePanel.showLoreEntryForm(
+			"add",
+			LoreEntry.create({ category: props.category, folderId: props.folderId })
+		);
+	}
 }
 </script>

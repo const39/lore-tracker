@@ -46,7 +46,9 @@ export class Folder<File extends LoreEntry = LoreEntry>
 	@HasMany(() => Folder, "parentId") declare subfolders: Folder<File>[];
 
 	constructor(data: MinimalFolder, ...args: any[]) {
-		super(data, ...args);
+		// Generate a random color if none is given
+		const d = data?.color ? data : { ...data, color: getRandomColor() };
+		super(d, ...args);
 	}
 
 	static revive(data: MinimalFolder) {

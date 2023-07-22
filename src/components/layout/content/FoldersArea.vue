@@ -1,6 +1,6 @@
 <template>
 	<GenericArea
-		:items="currentFolder.subfolders"
+		:items="items"
 		:title="$t('categories.folder') + 's'"
 		:loading="loading"
 		group="folders"
@@ -8,7 +8,7 @@
 	>
 		<template #actions>
 			<v-btn
-				:disabled="disableActions"
+				:disabled="disableActions || !folderId"
 				class="m1-2"
 				icon="mdi-plus"
 				density="compact"
@@ -32,37 +32,25 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import { Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: Folder<LoreEntry>; // currentFolder v-model
+	items: Folder[];
 	category: Category;
+	folderId?: UUID;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
 const router = useRouter();
 const sidePanelStore = useSidePanel();
-
-const currentFolder = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 
 /**
  * Save the new items order.
@@ -73,11 +61,15 @@ function onSort(movedItems: Folder<LoreEntry>[]) {
 }
 
 function newFolder(): void {
-	sidePanelStore.newFolderAddForm(props.category, currentFolder.value);
+	if (props.folderId)
+		sidePanelStore.showFolderForm(
+			"add",
+			new Folder({ category: props.category, parentId: props.folderId })
+		);
 }
 
 function showFolderTree() {
-	sidePanelStore.newFolderTree();
+	sidePanelStore.showFolderTree();
 }
 
 function openFolder(folder: Folder): void {

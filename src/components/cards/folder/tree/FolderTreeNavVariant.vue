@@ -2,7 +2,7 @@
 	<FolderTree
 		v-model="selected"
 		:root-folders="rootFolders"
-		:open-at="cardsStore.currentFolder"
+		:open-at="appStore.currentFolder"
 		:title="$t('sidePanel.folderList')"
 		@close="$emit('close')"
 	>
@@ -20,32 +20,32 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { Category, Folder } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
+import { useAppStore } from "@/store/app";
 import FolderTree from "./FolderTree.vue";
 
 const emit = defineEmits(["close", "submit"]);
 
+const appStore = useAppStore();
 const router = useRouter();
-const cardsStore = useCardsStore();
 
-const selected = ref<CardFolder>();
+const folderRepo = useRepo(FolderRepo);
+
+const selected = ref<Folder>();
 
 const rootFolders = computed(() => {
-	return Object.values(CardCategory).map((cat) => cardsStore.getCategoryFolder(cat));
+	return Object.values(Category).map((cat) => folderRepo.getRootFolder(cat));
 });
 
 function openFolder(): void {
 	if (selected.value) {
-		router.push({
-			params: {
-				category: selected.value.metadata._category,
-				folderURI: [...selected.value.absolutePath.rawSegments],
-			},
-		});
+		const { category, id } = selected.value;
+		router.push({ params: { category, folderId: id } });
 	}
 	emit("submit");
 }

@@ -1,36 +1,26 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { getRandomColor } from "@/core/utils/colors";
-import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
-import utilities from "@/core/utils/functions";
-import { useCardsStore } from "./cards";
+import { Folder, LoreEntry } from "@/core/models";
 import { useDragAndDropMode } from "./dragAndDropMode";
+
+type FormVariant = "add" | "edit";
 
 interface FileFormState {
 	status: "file-form";
-	variant: "add" | "edit";
-	data: {
-		parentFolder: CardFolder;
-		baseModel: CardTypes;
-	};
+	variant: FormVariant;
+	baseModel: LoreEntry;
 }
 
 interface FolderFormState {
 	status: "folder-form";
 	variant: "add" | "edit";
-	data: {
-		parentFolder: CardFolder;
-		folderToEdit: CardFolder;
-	};
+	baseModel: Folder;
 }
 
 interface FolderTreeMoveState {
 	status: "folder-tree";
 	variant: "card-move";
-	data: {
-		parentFolder: CardFolder;
-		itemToMove: CardTypes | CardFolder;
-	};
+	itemToMove: LoreEntry | Folder;
 }
 
 interface FolderTreeNavState {
@@ -59,92 +49,37 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		_dndStore.setMode("disabled");
 	}
 
-	function newFileAddForm(category: CardCategory, inFolder: CardFolder) {
+	function showLoreEntryForm<T extends LoreEntry>(variant: FormVariant, model: T) {
 		_preventOverwrite();
 		// Enable 'drop' drag and drop when form is open
 		_dndStore.setMode("link");
 		// Show side panel with form inside it
 		state.value = {
 			status: "file-form",
-			variant: "add",
-			data: {
-				baseModel: createCard(category),
-				parentFolder: inFolder,
-			},
+			variant,
+			baseModel: model,
 		};
 	}
 
-	function newFileEditForm(id: ID, inFolder: CardFolder) {
-		_preventOverwrite();
-		const cardsStore = useCardsStore();
-		const data = cardsStore.findFileInFolder(id, cardsStore.currentFolder);
-		if (!data)
-			throw new Error(`Cannot edit card with ID ${id}. Cause: the card could not be found.`);
-
-		// Enable 'drop' drag and drop when form is open
-		_dndStore.setMode("link");
-		// Show side panel with form inside it
-		state.value = {
-			status: "file-form",
-			variant: "edit",
-			data: {
-				baseModel: data,
-				parentFolder: inFolder,
-			},
-		};
-	}
-
-	function newFolderAddForm(category: CardCategory, inFolder: CardFolder) {
+	function showFolderForm(variant: FormVariant, model: Folder) {
 		_preventOverwrite();
 		// Enable 'drop' drag and drop when form is open
 		_dndStore.setMode("link");
 		// Show side panel with form inside it
 		state.value = {
 			status: "folder-form",
-			variant: "add",
-			data: {
-				folderToEdit: new CardFolder(
-					{
-						id: utilities.uid(),
-						_category: category,
-						name: "",
-						color: getRandomColor(),
-						tags: [],
-					},
-					inFolder
-				),
-				parentFolder: inFolder,
-			},
+			variant,
+			baseModel: model,
 		};
 	}
 
-	function newFolderEditForm(toEdit: CardFolder, inFolder: CardFolder) {
+	function showFolderTree(itemToMove?: LoreEntry | Folder) {
 		_preventOverwrite();
-		// Enable 'drop' drag and drop when form is open
-		_dndStore.setMode("link");
-		// Show side panel with form inside it
-		state.value = {
-			status: "folder-form",
-			variant: "edit",
-			data: {
-				folderToEdit: toEdit,
-				parentFolder: inFolder,
-			},
-		};
-	}
-
-	function newFolderTree(): void;
-	function newFolderTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder): void;
-	function newFolderTree(itemToMove?: CardTypes | CardFolder, inFolder?: CardFolder) {
-		_preventOverwrite();
-		if (itemToMove && inFolder) {
+		if (itemToMove) {
 			state.value = {
 				status: "folder-tree",
 				variant: "card-move",
-				data: {
-					itemToMove,
-					parentFolder: inFolder,
-				},
+				itemToMove,
 			};
 		} else {
 			state.value = {
@@ -159,15 +94,11 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		isOpen,
 		close,
 
-		// * File form
-		newFileAddForm,
-		newFileEditForm,
-
-		// * Folder form
-		newFolderAddForm,
-		newFolderEditForm,
+		// * Forms
+		showLoreEntryForm,
+		showFolderForm,
 
 		// * File tree
-		newFolderTree,
+		showFolderTree,
 	};
 });

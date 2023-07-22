@@ -2,7 +2,7 @@
 	<FolderTree
 		v-model="selected"
 		:root-folders="rootFolder"
-		:open-at="cardsStore.currentFolder"
+		:open-at="appStore.currentFolder"
 		:title="title"
 		:disabled="disabledItems"
 		@close="$emit('close')"
@@ -21,52 +21,48 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import {
-	CardFolder,
-	CardTypes,
-	getCategory,
-	getText,
-	isCard,
-	isCardFolder,
-} from "@/core/model/cards";
+import { Folder, LoreEntry } from "@/core/models";
+import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
+import { useAppStore } from "@/store/app";
 import FolderTree from "./FolderTree.vue";
 
 const props = defineProps<{
-	parentFolder: CardFolder;
-	itemToMove: CardTypes | CardFolder;
+	itemToMove: Folder | LoreEntry;
 }>();
 
 const emit = defineEmits(["close", "submit"]);
 
-const cardsStore = useCardsStore();
+const appStore = useAppStore();
 
-const selected = ref<CardFolder>();
+const loreEntryRepo = useRepo(LoreEntryRepo);
+const folderRepo = useRepo(FolderRepo);
+
+const selected = ref<Folder>();
 
 const title = computed(() => {
-	const cardTitle = props.itemToMove ? getText(props.itemToMove) : "";
-	return `${$t("sidePanel.moveCard")} "${cardTitle}"`;
+	return `${$t("sidePanel.moveCard")} "${props.itemToMove.getText()}"`;
 });
 
 const rootFolder = computed(() => {
-	return props.itemToMove ? [cardsStore.getCategoryFolder(getCategory(props.itemToMove))] : [];
+	return [folderRepo.getRootFolder(props.itemToMove.category)];
 });
 
 const disabledItems = computed(() => {
-	return isCardFolder(props.itemToMove) ? [props.itemToMove.metadata.id] : undefined;
+	return props.itemToMove instanceof Folder ? [props.itemToMove.id] : undefined;
 });
 
 function move() {
 	useTryCatch(() => {
 		if (selected.value) {
-			if (isCardFolder(props.itemToMove)) {
-				cardsStore.moveFolder(props.itemToMove, selected.value);
+			if (props.itemToMove instanceof Folder) {
+				folderRepo.update({ id: props.itemToMove.id, parentId: selected.value.id });
 			}
-			if (isCard(props.itemToMove) && props.parentFolder) {
-				cardsStore.moveCard(props.itemToMove, props.parentFolder, selected.value);
+			if (props.itemToMove instanceof LoreEntry) {
+				loreEntryRepo.update({ id: props.itemToMove.id, folderId: selected.value.id });
 			}
 		}
 		emit("submit");

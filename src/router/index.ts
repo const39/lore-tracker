@@ -29,8 +29,6 @@ const routes = [
 					const isValidCategory = (Object.values(Category) as string[]).includes(cat);
 					if (!isValidCategory) return { name: "NotFound" };
 				},
-				// Converts URI params to runtime objects passed as props to the component
-				props: (route: RouteLocation) => route.params,
 			},
 		],
 	},

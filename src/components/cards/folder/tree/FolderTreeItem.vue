@@ -1,7 +1,7 @@
 <template>
 	<v-list-item
 		:class="color"
-		:title="title ?? folder.metadata.name"
+		:title="title ?? folder.name"
 		:disabled="disabled"
 		class="rounded default-cursor"
 		@mouseenter="isHovered = true"
@@ -19,11 +19,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { CardFolder } from "@/core/model/cards";
+import { Folder } from "@/core/models";
+import { Maybe } from "@/core/utils/types";
 
 const props = defineProps<{
-	selected: CardFolder | undefined;
-	folder: CardFolder;
+	selected: Maybe<Folder>;
+	folder: Folder;
 	level: number;
 	title?: string;
 	disabled?: boolean;
