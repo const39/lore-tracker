@@ -41,7 +41,7 @@ const { showConfirmDialog } = useGlobalConfirmDialog();
  * Callback triggered when the user grabs the cards for a drag & drop
  */
 function onDragStart(e: DragEvent) {
-	startDrag(e, props.itemData, CustomMIMEType.CardType, {
+	startDrag(e, props.itemData, CustomMIMEType.LoreEntry, {
 		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
 	});
 }

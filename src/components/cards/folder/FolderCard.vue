@@ -69,7 +69,7 @@ const folderRepo = useRepo(FolderRepo);
 const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
-	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
 	acceptMode: ["moveToFolder"],
 });
 
@@ -79,7 +79,7 @@ const childrenCount = computed(() => folderRepo.getChildrenCount(props.folder));
  * Callback triggered when the user grabs the cards for a drag & drop
  */
 function onDragStart(e: DragEvent) {
-	startDrag(e, props.folder, CustomMIMEType.CardFolder, {
+	startDrag(e, props.folder, CustomMIMEType.Folder, {
 		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
 	});
 }
@@ -92,11 +92,11 @@ function onDropAccepted(items: DropPayload[]) {
 		useTryCatch(() => {
 			const { dataType, data: itemToMove } = items[0];
 
-			if (dataType === CustomMIMEType.CardFolder && itemToMove instanceof Folder) {
+			if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
 				folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
 			}
 
-			if (dataType === CustomMIMEType.CardType && itemToMove instanceof LoreEntry) {
+			if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
 				loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
 			}
 		});

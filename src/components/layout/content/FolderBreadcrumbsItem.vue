@@ -11,12 +11,12 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
-import { isCard, isCardFolder } from "@/core/model/cards";
-import { Folder } from "@/core/models";
-import { useCardsStore } from "@/store/cards";
+import { Folder, LoreEntry } from "@/core/models";
+import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 
 const props = defineProps<{
 	folder: Folder;
@@ -32,9 +32,11 @@ const to = computed(() => ({
 
 const refDropZone = ref<HTMLElement | null>(null);
 
-const cardsStore = useCardsStore();
+const loreEntryRepo = useRepo(LoreEntryRepo);
+const folderRepo = useRepo(FolderRepo);
+
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
-	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
 	acceptMode: ["moveToFolder"],
 });
 
@@ -46,12 +48,12 @@ function onDropAccepted(items: DropPayload[]) {
 		useTryCatch(() => {
 			const { dataType, data: itemToMove } = items[0];
 
-			if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
-				cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
+			if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
+				folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
 			}
 
-			if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
-				cardsStore.moveFolder(itemToMove, props.folder);
+			if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
+				loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
 			}
 		});
 	}

@@ -30,8 +30,8 @@ export interface DropPayload<T = unknown> {
 
 export enum CustomMIMEType {
 	DragAndDropID = "application/drag-and-drop-id",
-	CardType = "application/card-type",
-	CardFolder = "application/card-folder",
+	LoreEntry = "application/lore-entry",
+	Folder = "application/folder",
 }
 
 const compoundMIMETypes = {
