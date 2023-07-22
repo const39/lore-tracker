@@ -60,7 +60,7 @@ import { Campaign } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { useFilterStore } from "@/store/filter";
-import DragAndDropModeSelector from "../content/DragAndDropModeSelector.vue";
+import DragAndDropModeSelector from "./actions/DragAndDropModeSelector.vue";
 import StatusTray from "./StatusTray.vue";
 
 const rules = [
