@@ -29,4 +29,8 @@ export class Location extends LoreEntry implements ILocation {
 		if (this.name.trim()) return this.name;
 		return super.getText();
 	}
+
+	getAllText() {
+		return [...super.getAllText(), this.name];
+	}
 }

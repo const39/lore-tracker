@@ -63,6 +63,10 @@ export class Folder<File extends LoreEntry = LoreEntry>
 		return this.name;
 	}
 
+	getAllText() {
+		return [this.name];
+	}
+
 	getIcon() {
 		return Icon.folder;
 	}

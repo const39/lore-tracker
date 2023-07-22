@@ -39,4 +39,8 @@ export class Character extends LoreEntry implements ICharacter {
 		if (this.name.trim()) return this.name;
 		return super.getText();
 	}
+
+	getAllText() {
+		return [...super.getAllText(), this.name];
+	}
 }

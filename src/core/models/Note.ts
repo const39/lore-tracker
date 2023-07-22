@@ -29,4 +29,8 @@ export class Note extends LoreEntry implements INote {
 		if (this.title.trim()) return this.title;
 		return super.getText();
 	}
+
+	getAllText() {
+		return [...super.getAllText(), this.title];
+	}
 }

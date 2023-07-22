@@ -36,4 +36,8 @@ export class Quest extends LoreEntry implements IQuest {
 		if (this.title.trim()) return this.title;
 		return super.getText();
 	}
+
+	getAllText() {
+		return [...super.getAllText(), this.title];
+	}
 }

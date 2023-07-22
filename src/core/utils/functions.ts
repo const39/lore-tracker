@@ -88,6 +88,15 @@ export function pipe(...functions: ((arg: any) => any)[]) {
 	return (initial: any) => functions.reduce((previous, f) => f(previous), initial);
 }
 
+/**
+ * Run fn asynchronously.
+ * @param fn the function to run
+ * @returns a Promise that resolves when fn returns.
+ */
+export function defer<T>(fn: () => T) {
+	return new Promise<T>((resolve) => setTimeout(() => resolve(fn()), 0));
+}
+
 export default {
 	mergeMaps,
 	serializeMap,
@@ -98,4 +107,5 @@ export default {
 	truncate,
 	deepCopy,
 	pipe,
+	defer,
 };

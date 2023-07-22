@@ -33,6 +33,7 @@ export interface Revivable<T> {
 
 export interface Describable {
 	getText(): string;
+	getAllText(): string[];
 }
 
 export interface HasIcon {

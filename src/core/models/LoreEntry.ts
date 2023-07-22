@@ -60,6 +60,10 @@ export class LoreEntry extends Model implements ILoreEntry, Describable, HasIcon
 		return this.desc;
 	}
 
+	getAllText(): string[] {
+		return [this.desc];
+	}
+
 	getIcon(): Icon {
 		return Icon[this.category];
 	}

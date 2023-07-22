@@ -29,4 +29,8 @@ export class Faction extends LoreEntry implements IFaction {
 		if (this.name.trim()) return this.name;
 		return super.getText();
 	}
+
+	getAllText() {
+		return [...super.getAllText(), this.name];
+	}
 }

@@ -14,33 +14,30 @@
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
 				<!-- Safe-guard - Ensure current folder exists before showing content -->
-				<template v-if="appStore.currentCategory && appStore.currentFolder">
-					<FolderBreadcrumbs :current-folder="appStore.currentFolder" />
+				<template v-if="currentFolder && !alertState.isShown">
+					<FolderBreadcrumbs :current-folder="currentFolder" />
+					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
-						:items="appStore.currentFolder.subfolders"
-						:category="appStore.currentCategory"
-						:folder-id="appStore.currentFolder.id"
+						:items="(folders as Folder[])"
+						:category="category"
+						:folder-id="currentFolder.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
-						:items="appStore.currentFolder.files"
-						:category="appStore.currentCategory"
-						:folder-id="appStore.currentFolder.id"
+						:items="(files as LoreEntry[])"
+						:category="category"
+						:folder-id="currentFolder.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 				</template>
 				<!-- Display alert in case folder does not exist -->
-				<v-alert
-					v-else
-					:title="$t('messages.errors.files.folderNotFound.title')"
-					variant="tonal"
-				>
+				<v-alert v-else v-bind="alertState" variant="tonal">
 					<router-link
 						:to="{
 							name: 'LoreBookTab',
-							params: { category: appStore.currentCategory ?? Category.Quest },
+							params: { category },
 						}"
 					>
 						{{ $t("messages.errors.files.folderNotFound.action") }}
@@ -52,46 +49,70 @@
 </template>
 
 <script lang="ts" setup>
-import { onKeyDown, useDebounceFn } from "@vueuse/core";
-import { ref, watch } from "vue";
+import { onKeyDown } from "@vueuse/core";
+import { useRepo } from "pinia-orm";
+import { computed, ref, watch } from "vue";
 import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
+import { useAlert } from "@/composables/alert";
 import eventBus from "@/core/eventBus";
-import { CardCategory, CardFolder } from "@/core/model/cards";
-import { Category } from "@/core/models";
+import { Category, Folder, LoreEntry } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { defer } from "@/core/utils/functions";
 import { Icon } from "@/core/utils/icons";
-import { useAppStore } from "@/store/app";
-import { useCardsStore } from "@/store/cards";
+import { UUID } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 
-const appStore = useAppStore();
-const cardsStore = useCardsStore();
-const filterStore = useFilterStore();
+const props = defineProps<{ category: Category; folderId?: UUID }>();
 
-const tabs = ref(Object.values(CardCategory));
+const tabs = Object.values(Category);
+
 const activeTab = ref(0);
 const loading = ref(false);
 
-const filterItems = useDebounceFn(() => filterStore.filter(cardsStore.currentFolder), 800);
+const folders = ref<Folder[]>([]);
+const files = ref<LoreEntry[]>([]);
 
-function updateItems() {
+const filterStore = useFilterStore();
+const { alertState, setError, resetAlert } = useAlert();
+
+const folderRepo = useRepo(FolderRepo);
+
+// Current folder is either:
+// - the folder with the specified ID
+// - the current category's root folder if no ID is given
+const currentFolder = computed(() => {
+	return props.folderId
+		? folderRepo.getFolder(props.folderId, props.category)
+		: folderRepo.getRootFolder(props.category);
+});
+
+/**
+ * Update the current folders and files to display based.
+ */
+async function updateItems() {
+	resetAlert();
 	loading.value = true;
 
-	const promise = filterStore.isFilterActive
-		? new Promise<CardFolder>((resolve) => setTimeout(() => filterItems().then(resolve), 0))
-		: Promise.resolve(cardsStore.currentFolder);
-
-	promise.then((folder) => {
-		// Safe-guard: Ensure folder is defined
-		// -> because when the debounced function is cancelled by a new call, the promise returns undefined
-		// @see https://vueuse.org/shared/useDebounceFn/#usage
-		if (folder) {
-			currentFolder.value = folder;
-			loading.value = false;
+	// Defer function to run it asynchronously
+	await defer(() => {
+		// - If a filter is active, display the search results
+		// - If the current URL resolves to a folder, display its content
+		// - Otherwise, display an error message because no folder can be displayed
+		if (filterStore.isFilterActive) {
+			folders.value = filterStore.filterFolders(props.category);
+			files.value = filterStore.filterLoreEntries(props.category);
+		} else if (currentFolder.value) {
+			folders.value = folderRepo.getSubfolders(currentFolder.value);
+			files.value = folderRepo.getFiles(currentFolder.value);
+		} else {
+			setError($t("messages.errors.files.folderNotFound.title"));
 		}
 	});
+
+	loading.value = false;
 }
 
 // Trigger update on new save load
@@ -99,16 +120,12 @@ eventBus.on((e) => {
 	if (e === "data-loaded") updateItems();
 });
 
-// Trigger update on filter rules change
-watch(
-	() => filterStore.rules,
-	() => updateItems(),
-	{ deep: true }
-);
+// Trigger update on props or filter rules change
+watch([() => props, () => filterStore.rules], updateItems, { deep: true, immediate: true });
 
 // Register hotkeys
 onKeyDown(
-	Array.from({ length: tabs.value.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
+	Array.from({ length: tabs.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
 	hotkey
 );
 
@@ -124,7 +141,7 @@ onKeyDown(
 function hotkey(e: KeyboardEvent) {
 	if (e.altKey) {
 		const num = Number.parseInt(e.key);
-		if (num >= 1 && num <= tabs.value.length) {
+		if (num >= 1 && num <= tabs.length) {
 			e.preventDefault();
 			activeTab.value = num - 1;
 		}
