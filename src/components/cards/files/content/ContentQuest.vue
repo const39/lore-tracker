@@ -39,9 +39,9 @@
 import { computed } from "vue";
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { Icon } from "@/core/utils/icons";
-import { Quest } from "@/core/model/cards";
+import { Quest } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
 
 const props = defineProps<{
 	itemData: Quest;

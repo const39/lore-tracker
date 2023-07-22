@@ -45,9 +45,9 @@
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon } from "@/core/utils/icons";
-import { Quest, Task } from "@/core/model/cards";
+import { Quest, Task } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
 import { required } from "@/core/validationRules";
 
 const props = defineProps<{
