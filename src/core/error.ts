@@ -1,4 +1,4 @@
-import { UnionOfTupleValues } from "./utilities";
+import { UnionOfTupleValues } from "./utils/types";
 
 export const StateTypes = ["error", "warning", "success", "info"] as const;
 export type StateTypes = UnionOfTupleValues<typeof StateTypes>;

@@ -34,7 +34,7 @@
 import { useRepo } from "pinia-orm";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { Category, Folder, LoreEntry } from "@/core/models";
+import { Category, Folder, Indexable, Orderable } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
@@ -56,7 +56,7 @@ const sidePanelStore = useSidePanel();
  * Save the new items order.
  * @param movedItems the items with their new position.
  */
-function onSort(movedItems: Folder<LoreEntry>[]) {
+function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(FolderRepo).changeOrder(movedItems);
 }
 

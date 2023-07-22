@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { Category, LoreEntry } from "@/core/models";
+import { Category, Indexable, LoreEntry, Orderable } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
@@ -46,7 +46,7 @@ const sidePanel = useSidePanel();
  * Save the new items order.
  * @param movedItems the items with their new position.
  */
-function onSort(movedItems: LoreEntry[]) {
+function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(LoreEntryRepo).changeOrder(movedItems);
 }
 
