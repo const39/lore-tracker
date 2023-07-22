@@ -19,10 +19,8 @@ export default class FolderRepo extends BaseRepo<Folder> {
 	}
 
 	getRootFolder(category: Category, options?: QueryOptions) {
-		// Get the root folder
-		const rootFolder = this.createQuery(options).where("name", `${category}-root`).first();
-		// If the root folder of this category does not exist yet, create and return it
-		return rootFolder ?? this.createRootFolder(category);
+		// Type assertion is there because root folders SHOULD have been created on app startup (see App.vue)
+		return this.createQuery(options).where("name", `${category}-root`).first()!;
 	}
 
 	/**

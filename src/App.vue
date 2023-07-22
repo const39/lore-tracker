@@ -127,6 +127,7 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
+import { useRepo } from "pinia-orm";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
@@ -136,11 +137,12 @@ import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
 import { LocalStorageKey, VERSION } from "@/core/constants";
-import { getPersistentModels } from "@/core/models";
+import { Category, getPersistentModels } from "@/core/models";
 import * as persistence from "@/core/persistence/indexed-db";
 import { importSave } from "@/core/persistence/save-manager";
 import { t as $t } from "@/core/translation";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
+import { FolderRepo } from "./core/repositories";
 import { usePreferencesStore } from "./store/preferences";
 import { useGlobalSnackbar } from "./store/snackbar";
 
@@ -201,6 +203,12 @@ onMounted(async () => {
 
 	// Bind ORM models to a persistence back-end (IndexedDB)
 	await Promise.all(getPersistentModels().map((model) => persistence.bind(model)));
+
+	// Create any missing category's root folder
+	const folderRepo = useRepo(FolderRepo);
+	Object.values(Category).forEach((category) => {
+		if (!folderRepo.getRootFolder(category)) folderRepo.createRootFolder(category);
+	});
 
 	loading.value = false;
 });
