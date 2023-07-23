@@ -70,7 +70,9 @@ async function submit() {
 	if (isValid.value && model.value) {
 		useTryCatch(() => {
 			// Add or update the Lore entry
-			repo.save(model.value);
+			// Note: type casts are necessary because of https://github.com/vuejs/core/issues/2981
+			if (props.variant === "add") repo.add(model.value as LoreEntry);
+			else repo.update(model.value as LoreEntry);
 
 			// Display feedback snackbar when card is saved
 			if (model.value.folderId) {

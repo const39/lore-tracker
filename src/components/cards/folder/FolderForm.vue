@@ -93,7 +93,10 @@ async function submit() {
 	if (isValid.value) {
 		model.value.name = model.value.name.trim();
 		useTryCatch(() => {
-			folderRepo.save(model.value);
+			// Add or update the folder
+			// Note: type casts are necessary because of https://github.com/vuejs/core/issues/2981
+			if (props.variant === "add") folderRepo.add(model.value as Folder);
+			else folderRepo.update(model.value as Folder);
 			emit("submit");
 		});
 	}

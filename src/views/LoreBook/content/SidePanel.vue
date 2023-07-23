@@ -1,5 +1,6 @@
 <template>
 	<v-card class="pa-2 border sticky" variant="outlined">
+		<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 		<template v-if="state?.status === 'file-form'">
 			<FormWrapper
 				v-bind="{ variant: state.variant, baseModel: state.baseModel as LoreEntry }"

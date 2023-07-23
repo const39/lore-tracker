@@ -15,19 +15,32 @@ export default class BaseRepo<M extends Model> extends Repository<M> {
 		return query;
 	}
 
-	add(item: M) {
-		this.save(item);
+	exists(id: UUID): boolean {
+		return !!this.find(id);
 	}
 
-	update(item: PartialModel<M>) {
-		this.save(item);
+	add(item: M): M {
+		if (this.exists(item.id))
+			throw new Error(`Cannot add item: an item of ID ${item.id} already exists.`);
+
+		return this.save(item);
 	}
 
-	delete(id: UUID) {
+	update(item: PartialModel<M>): M {
+		if (!this.exists(item.id))
+			throw new Error(`Cannot update item: no existing item with ID ${item.id}.`);
+
+		return this.save(item);
+	}
+
+	delete(id: UUID): void {
+		if (!this.exists(id))
+			throw new Error(`Cannot delete item: no existing item with ID ${id}.`);
+
 		this.destroy(id);
 	}
 
 	changeOrder(items: Array<Indexable & Orderable>) {
-		this.save(items);
+		return this.save(items);
 	}
 }

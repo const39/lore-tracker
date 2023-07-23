@@ -1,10 +1,84 @@
-import { Category, Folder } from "../models";
-import { UUID } from "../utils/types";
-import BaseRepo, { QueryOptions } from "./BaseRepo";
+import { LocalisableError } from "@/core/error";
+import { Category, Folder, LoreEntry } from "@/core/models";
+import { t as $t } from "@/core/translation/translation";
+import { UUID } from "@/core/utils/types";
+import BaseRepo, { PartialModel, QueryOptions } from "./BaseRepo";
 import LoreEntryRepo from "./LoreEntryRepo";
+
+export class InvalidFileOperationError extends Error implements LocalisableError {
+	override toLocaleString(): string {
+		return $t("messages.errors.files.invalidOperation.title");
+	}
+}
+
+export class FolderNotFoundError extends Error implements LocalisableError {
+	override toLocaleString(): string {
+		return $t("messages.errors.files.folderNotFound.title");
+	}
+}
+
+export class FolderNameAlreadyUsedError extends Error implements LocalisableError {
+	override toLocaleString(): string {
+		return $t("messages.errors.files.nameAlreadyUsed.title");
+	}
+}
 
 export default class FolderRepo extends BaseRepo<Folder> {
 	use = Folder;
+
+	/**
+	 * Add a new folder.
+	 * @param item the folder to add
+	 * @returns the folder model
+	 *
+	 * @throws {InvalidFileOperationError} if the specified folder is a subfolder of one of its subfolders (circular reference)
+	 */
+	override add(item: Folder<LoreEntry>): Folder {
+		if (item.parentId) {
+			// Abort if the folder is a subfolder of one of its subfolders (circular reference)
+			const subfolders = this.getSubfolders(item);
+			if (subfolders.some((f) => f.id === item.parentId))
+				throw new InvalidFileOperationError(
+					`Cannot add a folder to one of its own children. Tried to add folder ${item.id} (${item.name}) in parent ${item.parentId}.`
+				);
+		}
+
+		return super.add(item);
+	}
+
+	/**
+	 * Update an existing folder.
+	 * @param item the folder to update
+	 * @returns the folder model
+	 *
+	 * @throws {InvalidFileOperationError} if a circular reference between the folder and its parent is detected
+	 * @throws {FolderNameAlreadyUsedError} if the folder has the same name as one of the subfolders of its new parent
+	 */
+	override update(item: PartialModel<Folder>): Folder {
+		if (item.parentId) {
+			// Abort if the folder is a parent of itself (circular reference)
+			if (item.id === item.parentId)
+				throw new InvalidFileOperationError(
+					`Cannot move a folder into itself. Tried to move folder ${item.id} (${item.name}).`
+				);
+
+			// Abort if the folder has the same name as one of the subfolders of its new parent
+			const subfolders = this.getSubfolders(item.id);
+			const name = item.name?.toLowerCase().trim();
+			if (name && subfolders.some((f) => f.name.toLowerCase().trim() === name))
+				throw new FolderNameAlreadyUsedError(
+					`Cannot move folder named ${item.name} to parent ${item.parentId}: a folder with the same name already exists under the parent folder.`
+				);
+
+			// Abort if the folder is a subfolder of one of its subfolders (circular reference)
+			if (subfolders.some((f) => f.id === item.parentId))
+				throw new InvalidFileOperationError(
+					`Cannot move a folder to one of its own children. Tried to move folder ${item.id} (${item.name}) in parent ${item.parentId}.`
+				);
+		}
+
+		return super.update(item);
+	}
 
 	count() {
 		return this.all().length;
@@ -44,8 +118,9 @@ export default class FolderRepo extends BaseRepo<Folder> {
 		return this.createQuery(options).where("parentId", folder.parentId).get();
 	}
 
-	getSubfolders(folder: Folder, options?: QueryOptions) {
-		return this.createQuery(options).where("parentId", folder.id).get();
+	getSubfolders(folderOrId: Folder | UUID, options?: QueryOptions) {
+		const id = typeof folderOrId === "object" ? folderOrId.id : folderOrId;
+		return this.createQuery(options).where("parentId", id).get();
 	}
 
 	getFiles(folder: Folder) {
@@ -57,6 +132,6 @@ export default class FolderRepo extends BaseRepo<Folder> {
 	}
 
 	createRootFolder(category: Category) {
-		return this.save(new Folder({ category, name: `${category}-root` }));
+		return this.add(new Folder({ category, name: `${category}-root` }));
 	}
 }
