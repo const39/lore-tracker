@@ -6,7 +6,7 @@ import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import schemaV3 from "@/schemas/save_format_v3.json";
-import { CardCategory, createRootFolder } from "../model/cards";
+import { Category } from "../models";
 
 export enum SaveVersion {
 	Legacy = "save-legacy",
@@ -145,11 +145,37 @@ class V2SaveProcessor extends SaveProcessor {
 
 		// For each category, create a root folder and set all existing cards as its files
 		Object.keys(converted.cards).forEach((category) => {
-			const folder = createRootFolder(category as CardCategory, converted.cards[category]);
-			converted.cards[category] = folder.serialize();
+			converted.cards[category] = this.createRootFolder(
+				category as Category,
+				converted.cards[category]
+			);
 		});
 
+		// Update save version
+		converted._meta.version = SaveVersion.v2;
+
 		return converted;
+	}
+
+	/**
+	 * Create a serialized root folder used by the V2 save format.
+	 * @param category the category of the folder to create
+	 */
+	protected createRootFolder<T extends Category>(category: T, files?: any[]) {
+		const dummyHash = `dummy-hash-${category}-${Date.now()}`;
+		const metadata = {
+			id: Date.now() + Math.random() * 50,
+			_category: category,
+			color: "#ffffff",
+			name: `${category}-root`,
+		};
+		return {
+			[dummyHash]: {
+				metadata,
+				files,
+				subfolders: [],
+			},
+		};
 	}
 }
 
@@ -170,7 +196,12 @@ class V3SaveProcessor extends SaveProcessor {
 	 * @returns input data converted to v3 format
 	 */
 	protected convert(save: any): SaveFormat {
-		return this.convertToORMFormat(this.convertFieldsAndIDs(save));
+		const converted = this.convertToORMFormat(this.convertFieldsAndIDs(save));
+
+		// Update save version
+		converted._meta.version = SaveVersion.v3;
+
+		return converted;
 	}
 
 	private convertFieldsAndIDs(save: any) {
@@ -304,8 +335,6 @@ export default {
 		if (Object.values(SaveVersion).includes(inputSaveVersion)) {
 			const pipeline = buildConversionPipeline(inputSaveVersion);
 			const saveAtLatestFormat: SaveFormat = pipeline(save);
-			console.log(saveAtLatestFormat);
-
 			return saveAtLatestFormat;
 		} else throw new Error("Save format could not be identified: save data is unusable.");
 	},
