@@ -85,7 +85,7 @@ function goToCard() {
 		if (props.item.folderId) {
 			// Navigate to the event's folder, passing along the event ID in the URL's hash
 			router.push({
-				name: "LoreBookTab",
+				name: "LoreBookContent",
 				params: {
 					category: props.item.category,
 					folderId: props.item.folderId,

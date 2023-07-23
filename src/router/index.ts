@@ -18,9 +18,9 @@ const routes = [
 			{
 				// Current folder sub-view
 				path: ":category/:folderId?",
-				name: "LoreBookTab",
+				name: "LoreBookContent",
 				props: true, // pass route.params as component props
-				component: () => import("../views/LoreBook/content/LayoutTabs.vue"),
+				component: () => import("../views/LoreBook/content/LoreBookContent.vue"),
 				// Checks :category is indeed a valid category or redirect to 404 page if not
 				beforeEnter: (to: RouteLocation) => {
 					const cat = Array.isArray(to.params.category)

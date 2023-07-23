@@ -2,7 +2,7 @@
 	<FolderTree
 		v-model="selected"
 		:root-folders="rootFolder"
-		:open-at="appStore.currentFolder"
+		:open-at="currentFolder"
 		:title="title"
 		:disabled="disabledItems"
 		@close="$emit('close')"
@@ -27,16 +27,14 @@ import { useTryCatch } from "@/composables/tryCatch";
 import { Folder, LoreEntry } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useAppStore } from "@/store/app";
 import FolderTree from "./FolderTree.vue";
 
 const props = defineProps<{
+	currentFolder: Folder;
 	itemToMove: Folder | LoreEntry;
 }>();
 
 const emit = defineEmits(["close", "submit"]);
-
-const appStore = useAppStore();
 
 const loreEntryRepo = useRepo(LoreEntryRepo);
 const folderRepo = useRepo(FolderRepo);

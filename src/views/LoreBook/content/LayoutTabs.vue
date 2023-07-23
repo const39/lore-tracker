@@ -3,7 +3,7 @@
 		<v-tab
 			v-for="tab in tabs"
 			:key="tab"
-			:to="{ name: 'LoreBookTab', params: { category: tab } }"
+			:to="{ name: 'LoreBookContent', params: { category: tab } }"
 		>
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
@@ -13,21 +13,21 @@
 		<v-window-item v-for="(tab, i) in tabs" :key="tab">
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
-				<!-- Safe-guard - Ensure current folder exists before showing content -->
-				<template v-if="currentFolder && !alertState.isShown">
-					<FolderBreadcrumbs :current-folder="currentFolder" />
+				<template v-if="!alertState.isShown">
+					<!-- Safe-guard - Breadcrumbs cannot be shown if there's no current folder -->
+					<FolderBreadcrumbs v-if="currentFolder" :current-folder="currentFolder" />
 					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
 						:items="(folders as Folder[])"
 						:category="category"
-						:folder-id="currentFolder.id"
+						:folder-id="currentFolder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
 						:items="(files as LoreEntry[])"
 						:category="category"
-						:folder-id="currentFolder.id"
+						:folder-id="currentFolder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
@@ -36,7 +36,7 @@
 				<v-alert v-else v-bind="alertState" variant="tonal">
 					<router-link
 						:to="{
-							name: 'LoreBookTab',
+							name: 'LoreBookContent',
 							params: { category },
 						}"
 					>
@@ -51,7 +51,7 @@
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { useRepo } from "pinia-orm";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
@@ -62,32 +62,23 @@ import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { defer } from "@/core/utils/functions";
 import { Icon } from "@/core/utils/icons";
-import { UUID } from "@/core/utils/types";
+import { Maybe } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 
-const props = defineProps<{ category: Category; folderId?: UUID }>();
+const props = defineProps<{ category: Category; currentFolder: Maybe<Folder> }>();
 
 const tabs = Object.values(Category);
+
+const folderRepo = useRepo(FolderRepo);
+
+const filterStore = useFilterStore();
+const { alertState, setError, resetAlert } = useAlert();
 
 const activeTab = ref(0);
 const loading = ref(false);
 
 const folders = ref<Folder[]>([]);
 const files = ref<LoreEntry[]>([]);
-
-const filterStore = useFilterStore();
-const { alertState, setError, resetAlert } = useAlert();
-
-const folderRepo = useRepo(FolderRepo);
-
-// Current folder is either:
-// - the folder with the specified ID
-// - the current category's root folder if no ID is given
-const currentFolder = computed(() => {
-	return props.folderId
-		? folderRepo.getFolder(props.folderId, props.category)
-		: folderRepo.getRootFolder(props.category);
-});
 
 /**
  * Update the current folders and files to display based.
@@ -104,9 +95,9 @@ async function updateItems() {
 		if (filterStore.isFilterActive) {
 			folders.value = filterStore.filterFolders(props.category);
 			files.value = filterStore.filterLoreEntries(props.category);
-		} else if (currentFolder.value) {
-			folders.value = folderRepo.getSubfolders(currentFolder.value);
-			files.value = folderRepo.getFiles(currentFolder.value);
+		} else if (props.currentFolder) {
+			folders.value = folderRepo.getSubfolders(props.currentFolder);
+			files.value = folderRepo.getFiles(props.currentFolder);
 		} else {
 			setError($t("messages.errors.files.folderNotFound.title"));
 		}

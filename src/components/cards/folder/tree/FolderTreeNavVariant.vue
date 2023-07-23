@@ -2,7 +2,7 @@
 	<FolderTree
 		v-model="selected"
 		:root-folders="rootFolders"
-		:open-at="appStore.currentFolder"
+		:open-at="currentFolder"
 		:title="$t('sidePanel.folderList')"
 		@close="$emit('close')"
 	>
@@ -26,12 +26,14 @@ import { useRouter } from "vue-router";
 import { Category, Folder } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useAppStore } from "@/store/app";
 import FolderTree from "./FolderTree.vue";
+
+defineProps<{
+	currentFolder: Folder;
+}>();
 
 const emit = defineEmits(["close", "submit"]);
 
-const appStore = useAppStore();
 const router = useRouter();
 
 const folderRepo = useRepo(FolderRepo);

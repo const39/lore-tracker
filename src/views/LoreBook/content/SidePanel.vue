@@ -16,10 +16,10 @@
 			/>
 		</template>
 		<template v-if="state?.status === 'folder-tree'">
-			<FolderTreeNavVariant v-if="state.variant === 'nav'" @submit="close" @close="close" />
+			<FolderTreeNavVariant v-if="state.variant === 'nav'" :current-folder="currentFolder" @submit="close" @close="close" />
 			<FolderTreeMoveVariant
 				v-if="state.variant === 'card-move'"
-				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry }"
+				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, currentFolder }"
 				@submit="close"
 				@close="close"
 			/>
@@ -36,6 +36,10 @@ import FolderTreeNavVariant from "@/components/cards/folder/tree/FolderTreeNavVa
 import { Folder, LoreEntry } from "@/core/models";
 import { useSidePanel } from "@/store/sidePanel";
 
+defineProps<{
+	currentFolder: Folder;
+}>();
+
 const sidePanelStore = useSidePanel();
 
 const state = computed(() => sidePanelStore.state);
@@ -44,3 +48,10 @@ function close() {
 	sidePanelStore.close();
 }
 </script>
+
+<style scoped>
+.sticky {
+	position: sticky;
+	top: 78px;
+}
+</style>
