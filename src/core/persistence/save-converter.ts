@@ -7,6 +7,7 @@ import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import schemaV3 from "@/schemas/save_format_v3.json";
 import { Category } from "../models";
+import { UUID } from "../utils/types";
 
 export enum SaveVersion {
 	Legacy = "save-legacy",
@@ -180,6 +181,8 @@ class V2SaveProcessor extends SaveProcessor {
 }
 
 class V3SaveProcessor extends SaveProcessor {
+	private idConversionMapping = new Map<number, UUID>();
+
 	constructor() {
 		super(SaveVersion.v2, SaveVersion.v3);
 	}
@@ -204,6 +207,17 @@ class V3SaveProcessor extends SaveProcessor {
 		return converted;
 	}
 
+	private convertID(oldId: number) {
+		// If the ID has already been converted, return its new value
+		const alreadyConverted = this.idConversionMapping.get(oldId);
+		if (alreadyConverted) return alreadyConverted;
+
+		// Otherwise, convert it and store it in the map for future retrieval
+		const newId = utilities.uuid();
+		this.idConversionMapping.set(oldId, newId);
+		return newId;
+	}
+
 	private convertFieldsAndIDs(save: any) {
 		const copy = utilities.deepCopy(save);
 
@@ -221,14 +235,25 @@ class V3SaveProcessor extends SaveProcessor {
 				folder.metadata.position = idx; // [2]
 				folder.metadata.category = folder.metadata._category; // [3]
 				delete folder.metadata._category; // [3]
-				folder.metadata.id = utilities.uuid(); // [4]
+				folder.metadata.id = this.convertID(folder.metadata.id); // [4]
+
 				folder.files.forEach((file: any, i: number) => {
-					file.id = utilities.uuid(); // [4]
-					file.tags = file.tags.map(() => utilities.uuid()); // [4]
+					file.id = this.convertID(file.id); // [4]
 					file.category = file._category; // [3]
 					delete file._category; // [3]
 					file.position = i; // [2]
 					if (category === "quest") file.desc = ""; // [6]
+				});
+			});
+		});
+
+		// Once all card IDs have been converted, do a second pass to update the tags with the new IDs [4]
+		Object.keys(copy.cards).forEach((category) => {
+			const rootFolder = copy.cards[category];
+			Object.keys(rootFolder).forEach((folderHash) => {
+				const folder = rootFolder[folderHash];
+				folder.files.forEach((file: any) => {
+					file.tags = file.tags.map((oldId: number) => this.convertID(oldId)); // [4]
 				});
 			});
 		});
