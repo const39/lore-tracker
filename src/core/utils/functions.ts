@@ -3,49 +3,6 @@ import { nanoid } from "nanoid";
 import { UUID } from "./types";
 
 /**
- * Merge mapB onto mapA.
- *
- * In case of conflicting keys, the second map's values prevail.
- *
- * @param a the base Map
- * @param b the map to merge
- */
-export function mergeMaps<K, V>(a: Map<K, V>, b: Map<K, V>) {
-	for (const [k, v] of b.entries()) {
-		a.set(k, v);
-	}
-}
-
-/**
- * Convert a Map to a literal object.
- */
-export function serializeMap<K extends string | number, V>(map: Map<K, V>) {
-	const result: Record<K, V> = Object.create(null);
-	for (const [key, value] of map.entries()) result[key] = value;
-	return result;
-}
-
-/**
- * Convert a literal object to a Map.
- */
-export function deserializeMap<K extends string | number, V>(obj: Record<K, V>): Map<K, V> {
-	const map = new Map<K, V>();
-	for (const key in obj) {
-		const k = key as keyof typeof obj;
-		map.set(k, obj[k]);
-	}
-	return map;
-}
-
-/**
- * Returns the current timestamp. To be used as a Unique Identifier.
- * @returns the current timestamp
- */
-export function uid() {
-	return new Date().getTime();
-}
-
-/**
  * Generate a UUID.
  */
 export function uuid(): UUID {
@@ -98,10 +55,6 @@ export function defer<T>(fn: () => T) {
 }
 
 export default {
-	mergeMaps,
-	serializeMap,
-	deserializeMap,
-	uid,
 	uuid,
 	capitalize,
 	truncate,

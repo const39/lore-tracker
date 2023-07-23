@@ -1,5 +1,4 @@
 import { useRepo } from "pinia-orm";
-import { ID } from "../model/cards";
 import {
 	Campaign,
 	Folder,
@@ -9,8 +8,14 @@ import {
 	getPersistentModels,
 	loreEntryEntityName
 } from "../models";
+import { UUID } from "../utils/types";
 import { clearPersistedData } from "./indexed-db";
 import converter, { SaveVersion } from "./save-converter";
+
+export enum LocalStorageKey {
+	LEGACY_DATA_KEY = "DATA",
+	PREFERENCES_KEY = "PREFERENCES",
+}
 
 /**
  * Metadata of a save file.
@@ -20,14 +25,28 @@ export interface MetaData {
 	lastUpdate: string; // ISO date-time format | Format not enforced !
 }
 
+
+// ! On each update to to SaveFormat or its type dependencies
+// * 1. Update/Create save format converter in saves.ts
+// * 2. Generate the save format's JSON Schema => npm run generate-save-schema
 /**
  * Data format of a save file.
  */
 export interface SaveFormat {
 	_meta: MetaData;
-	[campaignEntityName]: Record<ID, Campaign>;
-	[folderEntityName]: Record<ID, Folder<LoreEntry>>;
-	[loreEntryEntityName]: Record<ID, LoreEntry>;
+	[campaignEntityName]: Record<UUID, Campaign>;
+	[folderEntityName]: Record<UUID, Folder<LoreEntry>>;
+	[loreEntryEntityName]: Record<UUID, LoreEntry>;
+}
+
+/**
+ * Load and import a save using the legacy LocalStorage method.
+ * 
+ * This function will read the LocalStorage save content, import it into the ORM stores and persist it to the new IndexedDB storage.
+ */
+export async function loadFromLegacyStorage() {
+	const rawData = localStorage.getItem(LocalStorageKey.LEGACY_DATA_KEY);
+	if (rawData) await importSave(rawData);
 }
 
 /**

@@ -136,15 +136,15 @@ import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import { LocalStorageKey, VERSION } from "@/core/constants";
 import { Category, getPersistentModels } from "@/core/models";
 import * as persistence from "@/core/persistence/indexed-db";
-import { importSave } from "@/core/persistence/save-manager";
+import { loadFromLegacyStorage } from "@/core/persistence/save-manager";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { VERSION } from "@/core/utils/types";
+import { usePreferencesStore } from "@/store/preferences";
+import { useGlobalSnackbar } from "@/store/snackbar";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
-import { FolderRepo } from "./core/repositories";
-import { usePreferencesStore } from "./store/preferences";
-import { useGlobalSnackbar } from "./store/snackbar";
 
 const version = ref(VERSION);
 const loading = ref(false);
@@ -178,11 +178,6 @@ function closeUpdateNotif() {
 	// Update Version number in LocalStorage to not show the notification a second time
 	localStorage.setItem("VERSION", VERSION);
 	showUpdateNotif.value = false;
-}
-
-async function loadFromLegacyStorage() {
-	const rawData = localStorage.getItem(LocalStorageKey.DATA_KEY);
-	if (rawData) await importSave(rawData);
 }
 
 // Load stored data at application start

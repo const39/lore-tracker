@@ -27,7 +27,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Season } from "@/core/constants";
+import { Season } from "@/core/models";
 import { t as $t } from "@/core/translation";
 
 const props = defineProps<{

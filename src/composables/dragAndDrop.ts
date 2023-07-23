@@ -61,7 +61,7 @@ export function startDrag(
 	options?: DragOptions
 ) {
 	if (e.dataTransfer) {
-		const ID = "drag-" + utilities.uid();
+		const ID = "drag-" + utilities.uuid();
 		buffer.set(ID, data);
 		e.dataTransfer.setData(compoundMIMETypes.create(dataType), ID);
 
