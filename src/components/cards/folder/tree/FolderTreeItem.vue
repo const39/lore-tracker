@@ -34,7 +34,6 @@ const emit = defineEmits<{
 	(e: "update:selected", value: typeof props.selected): void;
 }>();
 
-const isHovered = ref(false);
 
 const selectModelValue = computed({
 	get() {
@@ -45,7 +44,9 @@ const selectModelValue = computed({
 	},
 });
 
-const isSelected = computed(() => selectModelValue.value === props.folder);
+const isHovered = ref(false);
+
+const isSelected = computed(() => selectModelValue.value?.id === props.folder.id);
 
 const color = computed(() => {
 	if (isSelected.value) return "bg-selected-surface";
