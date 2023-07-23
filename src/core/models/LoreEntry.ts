@@ -29,7 +29,7 @@ export class LoreEntry extends Model implements ILoreEntry, Describable, HasIcon
 	@Uid() declare id: UUID;
 	@Str("") declare category: Category;
 	@Str("") declare desc: string;
-	@Num(0) declare position: number;
+	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
 	@Attr(null) declare folderId: UUID | null;
 

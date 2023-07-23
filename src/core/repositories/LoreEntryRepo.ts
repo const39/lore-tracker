@@ -1,6 +1,6 @@
 import { LoreEntry } from "@/core/models";
-import BaseRepo from "./BaseRepo";
+import CardRepo from "./CardRepo";
 
-export default class LoreEntryRepo<T extends LoreEntry> extends BaseRepo<T> {
+export default class LoreEntryRepo<T extends LoreEntry> extends CardRepo<T> {
 	use = LoreEntry;
 }

@@ -109,11 +109,11 @@ function getAlphanumericComparator() {
 }
 
 /**
- * Returns a comparator function that sorts items in the ascending order of their 'position' field.
+ * Returns a comparator function that sorts items in the descending order of their 'position' field (latest first).
  */
 function getPositionComparator() {
 	return (a: Item, b: Item) => {
-		return a.position - b.position;
+		return b.position - a.position;	// DESC order: 0 = oldest, highest = latest
 	};
 }
 </script>

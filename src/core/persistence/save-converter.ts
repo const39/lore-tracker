@@ -218,6 +218,14 @@ class V3SaveProcessor extends SaveProcessor {
 		return newId;
 	}
 
+	private getPosition(idx: number, total: number) {
+		// - Previously to save-v3, position was implicitly saved as the item's index in its array: index = 0 was the highest position.
+		// - From save-v3 and onward, position is explicity saved in a field, sorted in desc order.
+		// As such, the logic is inverted: the higher the position, the higher the item is. Position = 0 means the farthest position.
+		// - Because the new format is inverted, we can get the new position like this:
+		return total - idx;
+	}
+
 	private convertFieldsAndIDs(save: any) {
 		const copy = utilities.deepCopy(save);
 
@@ -229,19 +237,19 @@ class V3SaveProcessor extends SaveProcessor {
 		// [6] Add a new 'desc' field on every quest
 		Object.keys(copy.cards).forEach((category) => {
 			const rootFolder = copy.cards[category];
-			Object.keys(rootFolder).forEach((folderHash, idx) => {
+			Object.keys(rootFolder).forEach((folderHash, idx, arr) => {
 				const folder = rootFolder[folderHash];
 				folder.metadata.tags = []; // [1]
-				folder.metadata.position = idx; // [2]
+				folder.metadata.position = this.getPosition(idx, arr.length); // [2]
 				folder.metadata.category = folder.metadata._category; // [3]
 				delete folder.metadata._category; // [3]
 				folder.metadata.id = this.convertID(folder.metadata.id); // [4]
 
-				folder.files.forEach((file: any, i: number) => {
+				folder.files.forEach((file: any, i: number, a: any[]) => {
 					file.id = this.convertID(file.id); // [4]
 					file.category = file._category; // [3]
 					delete file._category; // [3]
-					file.position = i; // [2]
+					file.position = this.getPosition(i, a.length); // [2]
 					if (category === "quest") file.desc = ""; // [6]
 				});
 			});

@@ -1,5 +1,5 @@
 import { Model, Repository } from "pinia-orm";
-import { Indexable, Orderable } from "../models";
+import { Indexable } from "../models";
 import { UUID } from "../utils/types";
 
 export interface QueryOptions {
@@ -38,9 +38,5 @@ export default class BaseRepo<M extends Model> extends Repository<M> {
 			throw new Error(`Cannot delete item: no existing item with ID ${id}.`);
 
 		this.destroy(id);
-	}
-
-	changeOrder(items: Array<Indexable & Orderable>) {
-		return this.save(items);
 	}
 }

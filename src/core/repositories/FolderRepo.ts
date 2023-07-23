@@ -2,7 +2,8 @@ import { LocalisableError } from "@/core/error";
 import { Category, Folder, LoreEntry } from "@/core/models";
 import { t as $t } from "@/core/translation/translation";
 import { UUID } from "@/core/utils/types";
-import BaseRepo, { PartialModel, QueryOptions } from "./BaseRepo";
+import { PartialModel, QueryOptions } from "./BaseRepo";
+import CardRepo from "./CardRepo";
 import LoreEntryRepo from "./LoreEntryRepo";
 
 export class InvalidFileOperationError extends Error implements LocalisableError {
@@ -23,7 +24,7 @@ export class FolderNameAlreadyUsedError extends Error implements LocalisableErro
 	}
 }
 
-export default class FolderRepo extends BaseRepo<Folder> {
+export default class FolderRepo extends CardRepo<Folder> {
 	use = Folder;
 
 	/**

@@ -37,7 +37,7 @@ export class Folder<File extends LoreEntry = LoreEntry>
 	@Str("") declare category: Category;
 	@Str("") declare name: string;
 	@Str(getRandomColor()) declare color: string;
-	@Num(0) declare position: number;
+	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
 	@Attr(null) declare parentId: UUID | null;
 
