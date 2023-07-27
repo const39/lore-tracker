@@ -1,6 +1,8 @@
-import { Model } from "pinia-orm";
 import { Num, Str, Uid } from "pinia-orm/dist/decorators";
+import { IndexedDBAdapter, database } from "../persistence";
 import { UUID } from "../utils/types";
+import { PersistentModel } from "./PersistentModel";
+import { StoreName } from "./types";
 
 export enum Season {
 	SPRING = "spring",
@@ -18,10 +20,9 @@ interface ICampaign {
 
 type MinimalCampaign = Partial<ICampaign>;
 
-export const campaignEntityName = "campaigns";
-
-export class Campaign extends Model implements ICampaign {
-	static entity = campaignEntityName;
+export class Campaign extends PersistentModel implements ICampaign {
+	static entity = StoreName.Campaign;
+	static persistenceBackend = new IndexedDBAdapter<Campaign>(database, StoreName.Campaign);
 
 	@Uid() declare id: UUID;
 	@Str("Campaign") declare name: string;
@@ -33,7 +34,10 @@ export class Campaign extends Model implements ICampaign {
 		super(data, ...args);
 	}
 
-	static revive(data: MinimalCampaign) {
+	/**
+	 * Revive a campaign record to an actual Campaign instance.
+	 */
+	static revive(data: Record<string, any>) {
 		return new Campaign(data);
 	}
 }

@@ -12,6 +12,8 @@ export type Constructor<T> = new (...args: any[]) => T;
 
 export type Maybe<T = unknown> = T | null | undefined;
 
+export type MaybePromise<T = unknown> = T | Promise<T>;
+
 /**
  * Make the specified properties in T optional.
  */

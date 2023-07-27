@@ -1,9 +1,10 @@
-import { Model } from "pinia-orm";
 import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorators";
+import { IndexedDBAdapter, database } from "../persistence";
 import { getRandomColor } from "../utils/colors";
 import { Icon } from "../utils/icons";
 import { OptionalExceptFor, UUID } from "../utils/types";
 import { LoreEntry } from "./LoreEntry";
+import { PersistentModel } from "./PersistentModel";
 import {
 	Categorizable,
 	Category,
@@ -11,6 +12,7 @@ import {
 	HasIcon,
 	Indexable,
 	Orderable,
+	StoreName,
 	Taggable,
 } from "./types";
 
@@ -25,13 +27,12 @@ interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
 
 type MinimalFolder = OptionalExceptFor<IFolder, "category">;
 
-export const folderEntityName = "folders";
-
 export class Folder<File extends LoreEntry = LoreEntry>
-	extends Model
+	extends PersistentModel
 	implements IFolder, Describable, HasIcon
 {
-	static entity = folderEntityName;
+	static entity = StoreName.Folder;
+	static persistenceBackend = new IndexedDBAdapter<Folder>(database, StoreName.Folder);
 
 	@Uid() declare id: UUID;
 	@Str("") declare category: Category;
@@ -51,8 +52,14 @@ export class Folder<File extends LoreEntry = LoreEntry>
 		super(d, ...args);
 	}
 
-	static revive(data: MinimalFolder) {
-		return new Folder(data);
+	/**
+	 * Revive a folder record to an actual Folder instance.
+	 */
+	static revive(data: Record<string, any>) {
+		// Ensure the record matches the minimal expected data
+		if ("category" in data && Object.values(Category).includes(data.category))
+			return new Folder(data as MinimalFolder);
+		throw new Error("Item does not match the expected Folder data structure.");
 	}
 
 	static createRootFolder(category: Category) {

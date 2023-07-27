@@ -1,7 +1,7 @@
-import { ORMClass } from "./types";
+import { PersistentORMClass } from "./PersistentModel";
 import { Campaign, Folder, LoreEntry } from ".";
 
-export function getPersistentModels(): ORMClass[] {
+export function getPersistentModels(): PersistentORMClass[] {
 	return [Campaign, Folder, LoreEntry];
 }
 

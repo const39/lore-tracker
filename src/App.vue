@@ -137,7 +137,6 @@ import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
 import { Category, getPersistentModels } from "@/core/models";
-import * as persistence from "@/core/persistence/indexed-db";
 import { loadFromLegacyStorage } from "@/core/persistence/save-manager";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -196,13 +195,23 @@ onMounted(async () => {
 		});
 	}
 
-	// Bind ORM models to a persistence back-end (IndexedDB)
-	await Promise.all(getPersistentModels().map((model) => persistence.bind(model)));
+	// Load records stored in the IndexedDB back-end in the runtime ORM stores
+	await Promise.all(
+		getPersistentModels().map((orm) => {
+			const repo = useRepo(orm);
+			return orm.loadFromBackend((item) => {
+				// Revive each stored item to a runtime ORM instance and save it its related ORM store
+				repo.save(orm.revive(item));
+			});
+		})
+	);
 
 	// Create any missing category's root folder
 	const folderRepo = useRepo(FolderRepo);
 	Object.values(Category).forEach((category) => {
-		if (!folderRepo.getRootFolder(category)) folderRepo.createRootFolder(category);
+		if (!folderRepo.getRootFolder(category)) {
+			folderRepo.createRootFolder(category);
+		}
 	});
 
 	loading.value = false;

@@ -22,10 +22,9 @@
 	"dependencies": {
 		"@vueuse/core": "^10.1.0",
 		"ajv": "^6.12.6",
+		"idb": "^7.1.1",
 		"klona": "^2.0.6",
-		"localforage": "^1.10.0",
 		"nanoid": "^4.0.2",
-		"object-hash": "^3.0.0",
 		"pinia": "^2.0.32",
 		"pinia-orm": "^1.6.7",
 		"pinia-plugin-persistedstate": "^3.1.0",

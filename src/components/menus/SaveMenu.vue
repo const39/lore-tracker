@@ -53,7 +53,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import eventBus from "@/core/eventBus";
-import { deleteSave, exportSave, importSave } from "@/core/persistence/save-manager";
+import { deleteSave, exportSaveToFile, importSave } from "@/core/persistence/save-manager";
 import { t as $t } from "@/core/translation";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useGlobalSnackbar } from "@/store/snackbar";
@@ -65,8 +65,8 @@ const showUploadDialog = ref(false);
 const { showSnackbar } = useGlobalSnackbar();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
-function downloadSave(): void {
-	const file = exportSave({ asFile: true }) as Blob;
+async function downloadSave() {
+	const file = await exportSaveToFile();
 	const a = document.createElement("a");
 	a.href = URL.createObjectURL(file);
 	a.download = `LoreTracker_backup_${new Date().toLocaleDateString()}.json`;

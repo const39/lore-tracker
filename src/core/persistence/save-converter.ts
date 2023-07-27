@@ -17,6 +17,16 @@ export enum SaveVersion {
 	Latest = "save-v3",
 }
 
+/**
+ * Extract the version number from a SaveVersion string.
+ * @param saveVersion the save version
+ * @returns the version number of the SaveVersion string. Returns 0 for {@link SaveVersion.Legacy}.
+ */
+export function getSaveVersionNumber(saveVersion: SaveVersion): number {
+	const matches = saveVersion.match(/.+v(?<num>(\d+))/);
+	return Number(matches?.groups?.num ?? 0);
+}
+
 const validator = new Ajv()
 	.addSchema(schemaLegacy, SaveVersion.Legacy)
 	.addSchema(schemaV1, SaveVersion.v1)
@@ -204,7 +214,7 @@ class V3SaveProcessor extends SaveProcessor {
 		// Update save version
 		converted._meta.version = SaveVersion.v3;
 
-		return converted;
+		return converted as SaveFormat;
 	}
 
 	private convertID(oldId: number) {

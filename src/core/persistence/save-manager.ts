@@ -1,15 +1,7 @@
 import { useRepo } from "pinia-orm";
-import {
-	Campaign,
-	Folder,
-	LoreEntry,
-	campaignEntityName,
-	folderEntityName,
-	getPersistentModels,
-	loreEntryEntityName
-} from "../models";
+import { Campaign, Folder, LoreEntry, StoreName, getPersistentModels } from "../models";
 import { UUID } from "../utils/types";
-import { clearPersistedData } from "./indexed-db";
+import { clearDatabase, exportStoreData, importStoreData } from "./indexed-db";
 import converter, { SaveVersion } from "./save-converter";
 
 export enum LocalStorageKey {
@@ -25,7 +17,6 @@ export interface MetaData {
 	lastUpdate: string; // ISO date-time format | Format not enforced !
 }
 
-
 // ! On each update to to SaveFormat or its type dependencies
 // * 1. Update/Create save format converter in saves.ts
 // * 2. Generate the save format's JSON Schema => npm run generate-save-schema
@@ -34,23 +25,26 @@ export interface MetaData {
  */
 export interface SaveFormat {
 	_meta: MetaData;
-	[campaignEntityName]: Record<UUID, Campaign>;
-	[folderEntityName]: Record<UUID, Folder<LoreEntry>>;
-	[loreEntryEntityName]: Record<UUID, LoreEntry>;
+	[StoreName.Campaign]: Record<UUID, Campaign>;
+	[StoreName.Folder]: Record<UUID, Folder<LoreEntry>>;
+	[StoreName.LoreEntry]: Record<UUID, LoreEntry>;
 }
 
 /**
  * Load and import a save using the legacy LocalStorage method.
- * 
- * This function will read the LocalStorage save content, import it into the ORM stores and persist it to the new IndexedDB storage.
+ *
+ * This function will read the LocalStorage save content, import it into the new IndexedDB storage.
  */
 export async function loadFromLegacyStorage() {
 	const rawData = localStorage.getItem(LocalStorageKey.LEGACY_DATA_KEY);
-	if (rawData) await importSave(rawData);
+	if (rawData) {
+		await importSave(rawData);
+		localStorage.removeItem(LocalStorageKey.LEGACY_DATA_KEY);
+	}
 }
 
 /**
- * Read a JSON save and load its contents into the ORM data stores.
+ * Read a JSON save and load its contents to the IndexedDB data stores.
  * The save is automatically converted to the latest format if possible.
  *
  * @param json the JSON save to import
@@ -62,29 +56,26 @@ export async function importSave(json: string) {
 	const converted = converter.ensureLatestVersion(data) as Record<string, any>;
 	// Delete previous data
 	await deleteSave();
-	// Load data into the ORM stores
-	getPersistentModels().forEach((orm) => {
-		const repo = useRepo(orm);
-		const items = converted[orm.entity];
-		for (const key in items) {
-			const item = items[key];
-			repo.save(orm.revive(item));
-		}
-	});
+	// Load data into the IndexedDB database
+	await Promise.all(
+		Object.values(StoreName).map((name) => {
+			return importStoreData(name, converted[name]);
+		})
+	);
 }
 
 /**
- * Export the current ORM data stores to a JSON data save formatted with the latest save format.
- *
- * @param options export options
- * - asFile: whether to wrap the exported JSON data in a Blob, ready to be exported as a file
+ * Export the current persisted data to a JSON data save formatted with the latest save format.
  */
-export function exportSave(options?: { asFile: boolean }): Blob | string {
-	// Fetch the persistent models content
+export async function exportSaveToJSON(): Promise<string> {
 	const mainData: Omit<SaveFormat, "_meta"> = {} as Omit<SaveFormat, "_meta">;
-	getPersistentModels().forEach((orm) => {
-		mainData[orm.entity as keyof typeof mainData] = useRepo(orm).piniaStore().data;
-	});
+
+	// Export each data store's data
+	await Promise.all(
+		Object.values(StoreName).map(async (name) => {
+			mainData[name] = await exportStoreData(name);
+		})
+	);
 
 	// Append save metadata
 	const fullData: SaveFormat = {
@@ -96,18 +87,26 @@ export function exportSave(options?: { asFile: boolean }): Blob | string {
 	};
 
 	// Convert data to JSON
-	const json = JSON.stringify(fullData);
+	return JSON.stringify(fullData);
+}
 
-	// Wrap JSON in a Blob if requested
-	return options?.asFile ? new Blob([json], { type: "application/json" }) : json;
+/**
+ * Export the current persisted data to a JSON data save file formatted with the latest save format.
+ */
+export async function exportSaveToFile(): Promise<Blob> {
+	const json = await exportSaveToJSON();
+	// Wrap JSON in a Blob
+	return new Blob([json], { type: "application/json" });
 }
 
 /**
  * Delete all data from the ORM stores as well as their persisted copy.
  */
 export async function deleteSave() {
+	// Clear runtime ORM stores
 	getPersistentModels().forEach((orm) => {
 		useRepo(orm).flush();
 	});
-	await clearPersistedData();
+	// Clear persisted data
+	await clearDatabase();
 }

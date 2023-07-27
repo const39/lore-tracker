@@ -11,6 +11,12 @@ export enum Category {
 	Note = "note",
 }
 
+export enum StoreName {
+	Campaign = "campaigns",
+	Folder = "folders",
+	LoreEntry = "loreEntries",
+}
+
 export interface Orderable {
 	position: number;
 }
