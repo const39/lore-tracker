@@ -81,6 +81,20 @@ export default class FolderRepo extends CardRepo<Folder> {
 		return super.update(item);
 	}
 
+	/**
+	 * Delete an existing folder.
+	 * This will also recursively delete all the folder's children (files and subfolders alike).
+	 * 
+	 * @param id the ID of the folder to delete
+	 */
+	override delete(id: UUID): void {
+		// Delete the folder
+		super.delete(id);
+		// Delete its children (files and folders alike)
+		this.repo(LoreEntryRepo).where("folderId", id).delete();
+		this.getSubfolders(id).forEach((subfolder) => this.delete(subfolder.id));
+	}
+
 	count() {
 		return this.all().length;
 	}
