@@ -6,7 +6,7 @@ import {
 	IFolder,
 	ILoreEntry,
 	StoreName,
-	getPersistentModels
+	getPersistentModels,
 } from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
 import { t as $t } from "@/core/translation";

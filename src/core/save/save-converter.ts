@@ -49,7 +49,8 @@ const validator = new Ajv()
  */
 export function validateSave(save: SaveFormat | object, format: SaveVersion) {
 	const isValid = validator.validate(format, save);
-	if (!isValid && process.env.NODE_ENV !== "production") console.error("Validation errors:", validator.errors);
+	if (!isValid && process.env.NODE_ENV !== "production")
+		console.error("Validation errors:", validator.errors);
 	return isValid;
 }
 
