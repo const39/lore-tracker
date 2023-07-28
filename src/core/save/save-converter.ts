@@ -379,6 +379,8 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
  *
  * @param save the save data to convert
  * @returns the save data, converted if necessary to the latest save format.
+ *
+ * @throws {SaveFormatError} if the save cannot be used or converted due to an invalid format
  */
 export function convertToLatestVersion(save: any): SaveFormat {
 	const inputSaveVersion = (save?._meta?.version as SaveVersion) ?? SaveVersion.Legacy;

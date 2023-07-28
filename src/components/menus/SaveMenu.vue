@@ -52,13 +52,10 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { useRouter } from "vue-router";
 import { isLocalisableError } from "@/core/error";
 import eventBus from "@/core/eventBus";
-import {
-	deleteSave,
-	exportSaveToFile,
-	importSave
-} from "@/core/save";
+import { deleteSave, exportSaveToFile, importSave } from "@/core/save";
 import { t as $t } from "@/core/translation";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useGlobalSnackbar } from "@/store/snackbar";
@@ -67,6 +64,7 @@ import MenuActivator from "./MenuActivator.vue";
 const uploadedFile = ref<File[]>([]); // v-file-input only accepts an array of files
 const showUploadDialog = ref(false);
 
+const router = useRouter();
 const { showSnackbar } = useGlobalSnackbar();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 
@@ -86,6 +84,10 @@ async function uploadSave() {
 			// Read file content and import the save
 			const fileContent = await uploadedFile.value[0].text();
 			await importSave(fileContent);
+
+			// Redirect user to the current category's root folder (because if we're in a custom folder, it will not exist in the new save file)
+			router.push({ params: { folderId: undefined } });
+			// Trigger whole app update
 			eventBus.emit("data-loaded");
 
 			// Success feedback
@@ -96,9 +98,11 @@ async function uploadSave() {
 			});
 		} catch (err) {
 			console.error(err);
-			
+
 			// If a user-friendly error message is provided, use it. Otherwise, use a default one
-			const errorCause = isLocalisableError(err) ? err.toLocaleString() : $t("messages.errors.genericError");
+			const errorCause = isLocalisableError(err)
+				? err.toLocaleString()
+				: $t("messages.errors.genericError");
 
 			// Show the full error message
 			const message = `${$t("messages.errors.saveFileImportCancelled")} : ${errorCause}`;

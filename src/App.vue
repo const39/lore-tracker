@@ -127,7 +127,6 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
-import { useRepo } from "pinia-orm";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
@@ -136,14 +135,13 @@ import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import { Category, getPersistentModels } from "@/core/models";
-import { FolderRepo } from "@/core/repositories";
-import { loadFromLegacyStorage } from "@/core/save/save-manager";
+import { loadSavedData } from "@/core/save/save-manager";
 import { t as $t } from "@/core/translation";
 import { VERSION } from "@/core/utils/types";
 import { usePreferencesStore } from "@/store/preferences";
 import { useGlobalSnackbar } from "@/store/snackbar";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
+import eventBus from "./core/eventBus";
 
 const version = ref(VERSION);
 const loading = ref(false);
@@ -179,13 +177,11 @@ function closeUpdateNotif() {
 	showUpdateNotif.value = false;
 }
 
-// Load stored data at application start
-onMounted(async () => {
+async function initApp() {
 	loading.value = true;
 
 	try {
-		// Load any previous save file stored in LocalStorage (legacy method)
-		await loadFromLegacyStorage();
+		await loadSavedData();
 	} catch (err) {
 		console.error(err);
 		showSnackbar({
@@ -195,27 +191,16 @@ onMounted(async () => {
 		});
 	}
 
-	// Load records stored in the IndexedDB back-end in the runtime ORM stores
-	await Promise.all(
-		getPersistentModels().map((orm) => {
-			const repo = useRepo(orm);
-			return orm.loadFromBackend((item) => {
-				// Revive each stored item to a runtime ORM instance and save it its related ORM store
-				repo.save(orm.revive(item));
-			});
-		})
-	);
-
-	// Create any missing category's root folder
-	const folderRepo = useRepo(FolderRepo);
-	Object.values(Category).forEach((category) => {
-		if (!folderRepo.getRootFolder(category)) {
-			folderRepo.createRootFolder(category);
-		}
-	});
-
 	loading.value = false;
+}
+
+// Trigger update on data load (e.g. on app start or on save import)
+eventBus.on(async (e) => {
+	if (e === "data-loaded") await initApp();
 });
+
+// Load stored data at application start
+onMounted(() => eventBus.emit("data-loaded"));
 </script>
 
 <style>

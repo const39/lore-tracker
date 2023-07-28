@@ -56,7 +56,6 @@ import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
-import eventBus from "@/core/eventBus";
 import { Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -105,11 +104,6 @@ async function updateItems() {
 
 	loading.value = false;
 }
-
-// Trigger update on new save load
-eventBus.on((e) => {
-	if (e === "data-loaded") updateItems();
-});
 
 // Trigger update on props or filter rules change
 watch([() => props, () => filterStore.rules], updateItems, { deep: true, immediate: true });

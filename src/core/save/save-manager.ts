@@ -1,9 +1,17 @@
 import { useRepo } from "pinia-orm";
-import { Campaign, Folder, LoreEntry, StoreName, getPersistentModels } from "@/core/models";
+import {
+	Campaign,
+	Category,
+	Folder,
+	LoreEntry,
+	StoreName,
+	getPersistentModels,
+} from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
 import { LocalisableError } from "../error";
+import { FolderRepo } from "../repositories";
 import { SaveVersion, convertToLatestVersion } from "./save-converter";
 
 export enum LocalStorageKey {
@@ -39,23 +47,13 @@ export class SaveFileError extends LocalisableError {
 }
 
 /**
- * Load and import a save using the legacy LocalStorage method.
- *
- * This function will read the LocalStorage save content, import it into the new IndexedDB storage.
- */
-export async function loadFromLegacyStorage() {
-	const rawData = localStorage.getItem(LocalStorageKey.LEGACY_DATA_KEY);
-	if (rawData) {
-		await importSave(rawData);
-		localStorage.removeItem(LocalStorageKey.LEGACY_DATA_KEY);
-	}
-}
-
-/**
  * Read a JSON save and load its contents to the IndexedDB data stores.
  * The save is automatically converted to the latest format if possible.
  *
  * @param json the JSON save to import
+ *
+ * @throws {SaveFileError} if the save cannot be read due to a bad encoding or file format
+ * @throws {SaveFormatError} if the save cannot be used or converted due to an invalid format
  */
 export async function importSave(json: string) {
 	try {
@@ -125,4 +123,52 @@ export async function deleteSave() {
 	});
 	// Clear persisted data
 	await clearDatabase();
+}
+
+/**
+ * Load and import a save using the legacy LocalStorage method.
+ *
+ * This function will read the LocalStorage save content, import it into the new IndexedDB storage.
+ *
+ * @throws {SaveFileError} if the save cannot be read due to a bad encoding or file format
+ * @throws {SaveFormatError} if the save cannot be used or converted due to an invalid format
+ * @see {@link importSave()}
+ */
+export async function loadFromLegacyStorage() {
+	const rawData = localStorage.getItem(LocalStorageKey.LEGACY_DATA_KEY);
+	if (rawData) {
+		await importSave(rawData);
+		localStorage.removeItem(LocalStorageKey.LEGACY_DATA_KEY);
+	}
+}
+
+/**
+ * Load the current data save and initialise the ORM data stores with it.
+ * 
+ * @throws {SaveFileError} if the save cannot be read due to a bad encoding or file format
+ * @throws {SaveFormatError} if the save cannot be used or converted due to an invalid format
+ * @see {@link loadFromLegacyStorage()}
+ */
+export async function loadSavedData() {
+	// Transfer any previous save file stored in LocalStorage (legacy method) to IndexedDB
+	await loadFromLegacyStorage();
+
+	// Load records stored in the IndexedDB back-end in the runtime ORM stores
+	await Promise.all(
+		getPersistentModels().map((orm) => {
+			const repo = useRepo(orm);
+			return orm.loadFromBackend((item) => {
+				// Revive each stored item to a runtime ORM instance and save it its related ORM store
+				repo.save(orm.revive(item));
+			});
+		})
+	);
+
+	// Create any missing category's root folder
+	const folderRepo = useRepo(FolderRepo);
+	Object.values(Category).forEach((category) => {
+		if (!folderRepo.getRootFolder(category)) {
+			folderRepo.createRootFolder(category);
+		}
+	});
 }
