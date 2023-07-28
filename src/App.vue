@@ -199,8 +199,21 @@ eventBus.on(async (e) => {
 	if (e === "data-loaded") await initApp();
 });
 
-// Load stored data at application start
-onMounted(() => eventBus.emit("data-loaded"));
+onMounted(() => {
+	// Load stored data at application start
+	eventBus.emit("data-loaded");
+
+	// Show a periodic reminder to backup the save file (1h after app startup)
+	setTimeout(() => {
+		showSnackbar({
+			message: "test",
+			timeout: 15000,
+			color: "grey-lighten-2",
+			icon: "mdi-help-circle-outline",
+			location: "top",
+		});
+	}, 60 * 60 * 1000);
+});
 </script>
 
 <style>
