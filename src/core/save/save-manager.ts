@@ -2,10 +2,11 @@ import { useRepo } from "pinia-orm";
 import {
 	Campaign,
 	Category,
-	Folder,
-	LoreEntry,
+	ICampaign,
+	IFolder,
+	ILoreEntry,
 	StoreName,
-	getPersistentModels,
+	getPersistentModels
 } from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
 import { t as $t } from "@/core/translation";
@@ -35,9 +36,9 @@ export interface MetaData {
  */
 export interface SaveFormat {
 	_meta: MetaData;
-	[StoreName.Campaign]: Record<UUID, Campaign>;
-	[StoreName.Folder]: Record<UUID, Folder<LoreEntry>>;
-	[StoreName.LoreEntry]: Record<UUID, LoreEntry>;
+	[StoreName.Campaign]: Record<UUID, ICampaign>;
+	[StoreName.Folder]: Record<UUID, IFolder>;
+	[StoreName.LoreEntry]: Record<UUID, ILoreEntry>;
 }
 
 export class SaveFileError extends LocalisableError {

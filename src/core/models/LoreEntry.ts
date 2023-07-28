@@ -17,7 +17,7 @@ import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
 export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
 	desc: string;
-	folderId: UUID | null;
+	folderId: UUID | undefined;
 }
 
 export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId">;
@@ -32,7 +32,7 @@ export class LoreEntry extends PersistentModel implements ILoreEntry, Describabl
 	@Str("") declare desc: string;
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
-	@Attr(null) declare folderId: UUID | null;
+	@Attr(undefined) declare folderId: UUID | undefined;
 
 	@BelongsTo(() => Folder, "folderId") declare parent: Folder<LoreEntry> | undefined;
 

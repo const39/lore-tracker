@@ -2,7 +2,7 @@ import { Num, Str, Uid } from "pinia-orm/dist/decorators";
 import { IndexedDBAdapter, database } from "../persistence";
 import { UUID } from "../utils/types";
 import { PersistentModel } from "./PersistentModel";
-import { StoreName } from "./types";
+import { Indexable, StoreName } from "./types";
 
 export enum Season {
 	SPRING = "spring",
@@ -11,7 +11,7 @@ export enum Season {
 	WINTER = "winter",
 }
 
-interface ICampaign {
+export interface ICampaign extends Indexable {
 	name: string;
 	days: number;
 	season: Season;

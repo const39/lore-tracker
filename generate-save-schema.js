@@ -17,9 +17,10 @@ function getNextSaveFormatVersion() {
 
 /** @type {import('ts-json-schema-generator/dist/src/Config').Config} */
 const config = {
-	path: "./src/store/index.ts",
-	tsconfig: "./tsconfig.schemas.json",
+	path: "./src/core/save/save-manager.ts",
+	tsconfig: "./tsconfig.json",
 	type: "SaveFormat",
+	additionalProperties: true,
 };
 
 const nextVersionNumber = getNextSaveFormatVersion();

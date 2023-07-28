@@ -19,10 +19,10 @@ import {
 /**
  * Data structure contract a Folder class should implement.
  */
-interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
+export interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
 	name: string;
 	color: string;
-	parentId: UUID | null;
+	parentId: UUID | undefined;
 }
 
 type MinimalFolder = OptionalExceptFor<IFolder, "category">;
@@ -40,7 +40,7 @@ export class Folder<File extends LoreEntry = LoreEntry>
 	@Str(getRandomColor()) declare color: string;
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
-	@Attr(null) declare parentId: UUID | null;
+	@Attr(undefined) declare parentId: UUID | undefined;
 
 	@BelongsTo(() => Folder, "parentId") declare parent: Folder<File> | undefined;
 	@HasMany(() => LoreEntry, "folderId") declare files: File[];
