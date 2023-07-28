@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Ajv from "ajv";
-import { SaveFormat } from "@/core/persistence/save-manager";
+import { SaveFormat } from "@/core/save/save-manager";
 import utilities from "@/core/utils/functions";
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
@@ -365,20 +365,18 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
 	return utilities.pipe(...toPipe);
 }
 
-export default {
-	/**
-	 * Convert save data to the latest format. If the save is already at the latest version, it is returned as is.
-	 * This method throws an error if the format of the specified save cannot be identified and as such cannot be converted.
-	 *
-	 * @param save the save data to convert
-	 * @returns the save data, converted if necessary to the latest save format.
-	 */
-	ensureLatestVersion(save: any): SaveFormat {
-		const inputSaveVersion = (save?._meta?.version as SaveVersion) ?? SaveVersion.Legacy;
-		if (Object.values(SaveVersion).includes(inputSaveVersion)) {
-			const pipeline = buildConversionPipeline(inputSaveVersion);
-			const saveAtLatestFormat: SaveFormat = pipeline(save);
-			return saveAtLatestFormat;
-		} else throw new Error("Save format could not be identified: save data is unusable.");
-	},
-};
+/**
+ * Convert save data to the latest format. If the save is already at the latest version, it is returned as is.
+ * This method throws an error if the format of the specified save cannot be identified and as such cannot be converted.
+ *
+ * @param save the save data to convert
+ * @returns the save data, converted if necessary to the latest save format.
+ */
+export function convertToLatestVersion(save: any): SaveFormat {
+	const inputSaveVersion = (save?._meta?.version as SaveVersion) ?? SaveVersion.Legacy;
+	if (Object.values(SaveVersion).includes(inputSaveVersion)) {
+		const pipeline = buildConversionPipeline(inputSaveVersion);
+		const saveAtLatestFormat: SaveFormat = pipeline(save);
+		return saveAtLatestFormat;
+	} else throw new Error("Save format could not be identified: save data is unusable.");
+}

@@ -53,7 +53,7 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import eventBus from "@/core/eventBus";
-import { deleteSave, exportSaveToFile, importSave } from "@/core/persistence/save-manager";
+import { deleteSave, exportSaveToFile, importSave } from "@/core/save/save-manager";
 import { t as $t } from "@/core/translation";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useGlobalSnackbar } from "@/store/snackbar";

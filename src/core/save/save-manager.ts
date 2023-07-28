@@ -1,8 +1,8 @@
 import { useRepo } from "pinia-orm";
-import { Campaign, Folder, LoreEntry, StoreName, getPersistentModels } from "../models";
-import { UUID } from "../utils/types";
-import { clearDatabase, exportStoreData, importStoreData } from "./indexed-db";
-import converter, { SaveVersion } from "./save-converter";
+import { Campaign, Folder, LoreEntry, StoreName, getPersistentModels } from "@/core/models";
+import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
+import { UUID } from "@/core/utils/types";
+import { SaveVersion, convertToLatestVersion } from "./save-converter";
 
 export enum LocalStorageKey {
 	LEGACY_DATA_KEY = "DATA",
@@ -53,7 +53,7 @@ export async function importSave(json: string) {
 	// Parse JSON data
 	const data: Record<string, any> = JSON.parse(json);
 	// Convert save to latest format (if needed)
-	const converted = converter.ensureLatestVersion(data) as Record<string, any>;
+	const converted = convertToLatestVersion(data) as Record<string, any>;
 	// Delete previous data
 	await deleteSave();
 	// Load data into the IndexedDB database

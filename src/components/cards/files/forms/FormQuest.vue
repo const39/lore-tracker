@@ -84,11 +84,6 @@ function complete(idx: number): void {
 function remove(idx: number): void {
 	if (idx in model.value.tasks) model.value.tasks.splice(idx, 1);
 }
-
-// function cleanInput(): void {
-// 	// Remove empty tasks
-// 	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());
-// }
 </script>
 
 <style scoped>
