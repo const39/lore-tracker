@@ -77,7 +77,7 @@ async function submit() {
 			// Display feedback snackbar when card is saved
 			if (model.value.folderId) {
 				const parentFolder = useRepo(FolderRepo).getFolder(model.value.folderId);
-				const msg = parentFolder?.isRoot()
+				const message = parentFolder?.isRoot()
 					? $t(`categories.${model.value?.category}`) +
 						" " +
 						$t("messages.success.newCardStored")
@@ -86,7 +86,7 @@ async function submit() {
 						$t("messages.success.newCardStoredInFolder") +
 						" " +
 						parentFolder?.name;
-				globalSnackbar.showSnackbar(msg, "info", 7000);
+				globalSnackbar.showSnackbar({ message, color: "info", timeout: 7000 });
 			}
 		});
 		emit("submit");
