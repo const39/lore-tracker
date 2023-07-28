@@ -36,8 +36,9 @@ const cols = computed(() => {
 // - the folder with the specified ID
 // - the current category's root folder if no ID is given
 const currentFolder = computed(() => {
+	// Load the folder with its relations to enable Vue to track changes to its files/subfolders and re-run this computed property
 	return props.folderId
-		? folderRepo.getFolder(props.folderId, props.category)
-		: folderRepo.getRootFolder(props.category);
+		? folderRepo.getFolder(props.folderId, props.category, { withRelations: true })
+		: folderRepo.getRootFolder(props.category, { withRelations: true });
 });
 </script>
