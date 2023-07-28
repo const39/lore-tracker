@@ -11,11 +11,11 @@ export function useTryCatch(onTry: () => void, onCatch?: (e: any) => void, onFin
 		console.error(error);
 
 		// Try to get the locale-based error message, or fallback to a generic one if it is not available.
-		const msg = isLocalisableError(error)
+		const message = isLocalisableError(error)
 			? error.toLocaleString()
 			: $t("messages.errors.genericError");
 
-		snackbar.showSnackbar(msg, "error", 7000);
+		snackbar.showSnackbar({ message, color: "error", timeout: 7000 });
 
 		onCatch?.(error);
 	} finally {
