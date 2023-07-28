@@ -64,7 +64,7 @@ const editName = ref(false);
 
 const campaignRepo = useRepo(CampaignRepo);
 
-const campaign = ref<Campaign>(campaignRepo.getCurrentCampaign() ?? new Campaign());
+const campaign = ref<Campaign>(campaignRepo.getCurrentCampaign());
 
 // eslint-disable-next-line vue/no-ref-object-destructure
 const campaignName = ref(campaign.value.name);	// Intended separate ref for the name to validate input before committing the change (see updateName())

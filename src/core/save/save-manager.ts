@@ -11,7 +11,7 @@ import { clearDatabase, exportStoreData, importStoreData } from "@/core/persiste
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
 import { LocalisableError } from "../error";
-import { FolderRepo } from "../repositories";
+import { CampaignRepo, FolderRepo } from "../repositories";
 import { SaveVersion, convertToLatestVersion } from "./save-converter";
 
 export enum LocalStorageKey {
@@ -163,6 +163,12 @@ export async function loadSavedData() {
 			});
 		})
 	);
+
+	// Create a campaign if there is none
+	const campaignRepo = useRepo(CampaignRepo);
+	if(!campaignRepo.getCurrentCampaign()) {
+		campaignRepo.add(new Campaign());
+	}
 
 	// Create any missing category's root folder
 	const folderRepo = useRepo(FolderRepo);
