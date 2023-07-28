@@ -16,7 +16,12 @@
 			/>
 		</template>
 		<template v-if="state?.status === 'folder-tree'">
-			<FolderTreeNavVariant v-if="state.variant === 'nav'" :current-folder="currentFolder" @submit="close" @close="close" />
+			<FolderTreeNavVariant
+				v-if="state.variant === 'nav'"
+				:current-folder="currentFolder"
+				@submit="close"
+				@close="close"
+			/>
 			<FolderTreeMoveVariant
 				v-if="state.variant === 'card-move'"
 				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, currentFolder }"

@@ -59,11 +59,11 @@ export class LoreEntry extends PersistentModel implements ILoreEntry, Describabl
 
 	/**
 	 * Create a LoreEntry instance using the correct subclass constructor based on the 'category' discriminator field.
-	 * 
+	 *
 	 * @param data the data of the lore entry to create
 	 * @returns an instance of a subclass of LoreEntry
-	 * 
-	 * @see {@link LoreEntry.types()}: the mapping between the discriminator value and the subclass constructor 
+	 *
+	 * @see {@link LoreEntry.types()}: the mapping between the discriminator value and the subclass constructor
 	 */
 	static create(data: MinimalLoreEntry) {
 		const constructor: Constructor<LoreEntry> = this.types()[data.category];

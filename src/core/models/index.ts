@@ -10,4 +10,3 @@ export * from "./Quest";
 export * from "./Tag";
 export * from "./helpers";
 export * from "./types";
-

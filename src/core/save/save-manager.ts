@@ -144,7 +144,7 @@ export async function loadFromLegacyStorage() {
 
 /**
  * Load the current data save and initialise the ORM data stores with it.
- * 
+ *
  * @throws {SaveFileError} if the save cannot be read due to a bad encoding or file format
  * @throws {SaveFormatError} if the save cannot be used or converted due to an invalid format
  * @see {@link loadFromLegacyStorage()}
@@ -166,7 +166,7 @@ export async function loadSavedData() {
 
 	// Create a campaign if there is none
 	const campaignRepo = useRepo(CampaignRepo);
-	if(!campaignRepo.getCurrentCampaign()) {
+	if (!campaignRepo.getCurrentCampaign()) {
 		campaignRepo.add(new Campaign());
 	}
 

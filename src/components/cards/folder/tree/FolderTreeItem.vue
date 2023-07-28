@@ -34,7 +34,6 @@ const emit = defineEmits<{
 	(e: "update:selected", value: typeof props.selected): void;
 }>();
 
-
 const selectModelValue = computed({
 	get() {
 		return props.selected;

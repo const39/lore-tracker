@@ -20,7 +20,7 @@ export default class BaseRepo<M extends Model> extends Repository<M> {
 
 		// If set, query the record's relations as well (use 1 level of depth if none is given)
 		if (withRelations) query.withAllRecursive(withRelations === true ? 1 : withRelations);
-		
+
 		return query;
 	}
 

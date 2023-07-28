@@ -113,7 +113,7 @@ function getAlphanumericComparator() {
  */
 function getPositionComparator() {
 	return (a: Item, b: Item) => {
-		return b.position - a.position;	// DESC order: 0 = oldest, highest = latest
+		return b.position - a.position; // DESC order: 0 = oldest, highest = latest
 	};
 }
 </script>
