@@ -84,11 +84,7 @@ async function uploadSave() {
 			// Read file content and import the save
 			const fileContent = await uploadedFile.value[0].text();
 			await importSave(fileContent);
-
-			// Redirect user to the current category's root folder (because if we're in a custom folder, it will not exist in the new save file)
-			router.push({ params: { folderId: undefined } });
-			// Trigger whole app update
-			eventBus.emit("data-loaded");
+			onDataChange();
 
 			// Success feedback
 			showSnackbar({
@@ -119,11 +115,21 @@ async function uploadSave() {
 	}
 }
 
+function onDataChange() {
+	// Redirect user to the current category's root folder (because if we're in a custom folder, it will not exist in the new save file)
+	router.push({ params: { folderId: undefined } });
+	// Trigger whole app update
+	eventBus.emit("data-loaded");
+}
+
 function confirmDeletion() {
 	showConfirmDialog({
 		title: $t("options.save.deleteDialogTitle"),
 		message: $t("options.save.deleteDialogMessage"),
-		confirmAction: deleteSave,
+		confirmAction: async () => {
+			await deleteSave();
+			onDataChange();
+		},
 	});
 }
 </script>
