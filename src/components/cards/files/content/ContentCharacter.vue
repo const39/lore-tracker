@@ -1,27 +1,24 @@
 <template>
-	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
-	<div>
-		<v-card-text class="pa-3">
-			<p class="text-h6">
-				{{ itemData.name }}
-				<v-tooltip v-if="!itemData.isAlive" location="top">
-					<template #activator="{ props: tooltipProps }">
-						<v-icon v-bind="tooltipProps" icon="mdi-skull" />
-					</template>
-					<span>{{ $t("fields.dead") }}</span>
-				</v-tooltip>
-				<v-chip size="x-small" label>
-					{{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }}
-				</v-chip>
-			</p>
-			<p class="text-subtitle-2 text-truncate">
-				{{ identity }}
-			</p>
-			<MarkdownView :text="itemData.desc" />
-			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
-			<TagList v-model="itemData.tags" :editable="false" />
-		</v-card-text>
-	</div>
+	<v-card-text class="pa-3">
+		<p class="text-h6">
+			{{ itemData.name }}
+			<v-tooltip v-if="!itemData.isAlive" location="top">
+				<template #activator="{ props: tooltipProps }">
+					<v-icon v-bind="tooltipProps" icon="mdi-skull" />
+				</template>
+				<span>{{ $t("fields.dead") }}</span>
+			</v-tooltip>
+			<v-chip size="x-small" label>
+				{{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }}
+			</v-chip>
+		</p>
+		<p class="text-subtitle-2 text-truncate">
+			{{ identity }}
+		</p>
+		<MarkdownView :text="itemData.desc" />
+		<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+		<TagList v-model="itemData.tags" :editable="false" />
+	</v-card-text>
 </template>
 
 <script lang="ts" setup>

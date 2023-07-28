@@ -1,38 +1,35 @@
 <template>
-	<!-- Surrounding <div> necessary to avoid "bouncing" effect when transitioning with Form component -->
-	<div>
-		<v-card-actions class="float-right">
-			<v-tooltip v-if="fullyComplete" location="top">
-				<template #activator="{ props: tooltipProps }">
-					<v-icon v-bind="tooltipProps" :icon="Icon.questCompleted" class="float-right" />
-				</template>
-				<span>{{ $t("fields.completed") }}</span>
-			</v-tooltip>
-		</v-card-actions>
-		<v-card-text class="pa-3">
-			<p class="text-h6">
-				{{ itemData.title }}
-			</p>
-			<MarkdownView :text="itemData.desc" />
-			<div class="my-2">
-				<div v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">
-					<v-tooltip location="bottom">
-						<template #activator="{ props: tooltipProps }">
-							<v-icon class="ma-2" v-bind="tooltipProps">
-								{{ task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing }}
-							</v-icon>
-						</template>
-						{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
-					</v-tooltip>
-					<p class="pa-2">
-						{{ task.desc }}
-					</p>
-				</div>
+	<v-card-actions class="float-right">
+		<v-tooltip v-if="fullyComplete" location="top">
+			<template #activator="{ props: tooltipProps }">
+				<v-icon v-bind="tooltipProps" :icon="Icon.questCompleted" class="float-right" />
+			</template>
+			<span>{{ $t("fields.completed") }}</span>
+		</v-tooltip>
+	</v-card-actions>
+	<v-card-text class="pa-3">
+		<p class="text-h6">
+			{{ itemData.title }}
+		</p>
+		<MarkdownView :text="itemData.desc" />
+		<div class="my-2">
+			<div v-for="(task, idx) in itemData.tasks" :key="idx" class="d-flex">
+				<v-tooltip location="bottom">
+					<template #activator="{ props: tooltipProps }">
+						<v-icon class="ma-2" v-bind="tooltipProps">
+							{{ task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing }}
+						</v-icon>
+					</template>
+					{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+				</v-tooltip>
+				<p class="pa-2">
+					{{ task.desc }}
+				</p>
 			</div>
-			<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
-			<TagList v-model="itemData.tags" :editable="false" />
-		</v-card-text>
-	</div>
+		</div>
+		<!-- eslint-disable-next-line vue/no-mutating-props - Editable is false so tags is not mutated -->
+		<TagList v-model="itemData.tags" :editable="false" />
+	</v-card-text>
 </template>
 
 <script lang="ts" setup>
