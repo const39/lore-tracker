@@ -24,7 +24,7 @@
 		<v-slide-y-transition>
 			<div v-show="isOpened && hasChildren" class="items">
 				<FolderTreeGroup
-					v-for="subfolder in folder.subfolders"
+					v-for="subfolder in subfolders"
 					:key="subfolder.id"
 					v-model:selected="selectModelValue"
 					v-model:opened="openModelValue"
@@ -80,7 +80,8 @@ const openModelValue = computed({
 	},
 });
 
-const hasChildren = computed(() => !!folderRepo.getSubfolders(props.folder).length);
+const subfolders = computed(() => folderRepo.getSubfolders(props.folder));
+const hasChildren = computed(() => subfolders.value.length > 0);
 const isOpened = computed(() => openModelValue.value?.includes(props.folder.id));
 
 const padding = computed(() => `padding-left: ${16 * (props.level ?? 0) || 8}px;`);

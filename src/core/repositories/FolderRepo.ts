@@ -1,7 +1,7 @@
 import { LocalisableError } from "@/core/error";
 import { Category, Folder, LoreEntry } from "@/core/models";
 import { t as $t } from "@/core/translation/translation";
-import { UUID } from "@/core/utils/types";
+import { Maybe, UUID } from "@/core/utils/types";
 import { PartialModel, QueryOptions } from "./BaseRepo";
 import CardRepo from "./CardRepo";
 import LoreEntryRepo from "./LoreEntryRepo";
@@ -84,7 +84,7 @@ export default class FolderRepo extends CardRepo<Folder> {
 	/**
 	 * Delete an existing folder.
 	 * This will also recursively delete all the folder's children (files and subfolders alike).
-	 * 
+	 *
 	 * @param id the ID of the folder to delete
 	 */
 	override delete(id: UUID): void {
@@ -119,11 +119,14 @@ export default class FolderRepo extends CardRepo<Folder> {
 	 */
 	getHierarchy(from: Folder) {
 		const hierarchy = [];
-		let folder: Folder | undefined = from;
-		do {
+		// Load the folder with its parent relation
+		let folder: Maybe<Folder> = this.getFolder(from.id, undefined, { withRelations: true });
+		while (folder) {
 			hierarchy.push(folder);
-			folder = folder.parent;
-		} while (folder);
+			if (folder.parent)
+				folder = this.getFolder(folder.parent.id, undefined, { withRelations: true });
+			else break;
+		}
 
 		// Reverse the list to get the result in root > target order
 		return hierarchy.reverse();

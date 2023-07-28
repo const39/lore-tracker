@@ -3,15 +3,24 @@ import { Indexable } from "../models";
 import { UUID } from "../utils/types";
 
 export interface QueryOptions {
-	shallow?: boolean;
+	/**
+	 * If truthy, will query the record's relations as well.
+	 * If a number, the value is used as the query's recursive relation depth.
+	 * If a true boolean, uses 1 as relation depth.
+	 */
+	withRelations?: boolean | number;
 }
 
 export type PartialModel<T extends Model> = Partial<T> & Indexable;
 
 export default class BaseRepo<M extends Model> extends Repository<M> {
 	protected createQuery(options?: QueryOptions) {
+		const { withRelations } = options ?? {};
 		const query = this.query();
-		if (!options?.shallow) query.withAll();
+
+		// If set, query the record's relations as well (use 1 level of depth if none is given)
+		if (withRelations) query.withAllRecursive(withRelations === true ? 1 : withRelations);
+		
 		return query;
 	}
 
