@@ -41,7 +41,19 @@ const validator = new Ajv()
 	.addSchema(schemaV2, SaveVersion.v2)
 	.addSchema(schemaV3, SaveVersion.v3);
 
-abstract class SaveProcessor {
+/**
+ * Validate data from a save file against a JSON schema corresponding to the specified save format.
+ * @param save the save data to validate
+ * @param format the save format descriptor. Describes the schema against which data will be validated. Will throw an error if format does not describe a registered schema.
+ * @returns a boolean indicating if the data validates against the specified save format.
+ */
+export function validateSave(save: SaveFormat | object, format: SaveVersion) {
+	const isValid = validator.validate(format, save);
+	if (!isValid && process.env.NODE_ENV !== "production") console.error("Validation errors:", validator.errors);
+	return isValid;
+}
+
+abstract class SaveConverter {
 	inputSaveVersion: SaveVersion;
 	targetSaveVersion: SaveVersion;
 
@@ -50,30 +62,10 @@ abstract class SaveProcessor {
 		this.targetSaveVersion = targetSaveVersion;
 	}
 
-	/**
-	 * Validate data from a save file against a JSON schema corresponding to the specified save format.
-	 * @param save the save data to validate
-	 * @param format the save format descriptor. Describes the schema against which data will be validated. Will throw an error if format does not describe a registered schema.
-	 * @returns a boolean indicating if the data validates against the specified save format.
-	 */
-	static validate(save: SaveFormat | object, format: SaveVersion) {
-		const isValid = validator.validate(format, save);
-		if (!isValid && process.env.NODE_ENV !== "production") console.error(validator.errors);
-		return isValid;
-	}
-
-	validateAndConvert(save: any): any {
-		if (SaveProcessor.validate(save, this.inputSaveVersion)) return this.convert(save);
-		else
-			throw new SaveFormatError(
-				"Save format does not match specified save version: save data is unusable."
-			);
-	}
-
-	protected abstract convert(save: any): any;
+	abstract convert(save: any): any;
 }
 
-class V1SaveProcessor extends SaveProcessor {
+class V1SaveConverter extends SaveConverter {
 	constructor() {
 		super(SaveVersion.Legacy, SaveVersion.v1);
 	}
@@ -92,7 +84,7 @@ class V1SaveProcessor extends SaveProcessor {
 	 * @param save data to convert to v1 format
 	 * @returns input data converted to v1 format
 	 */
-	protected convert(save: any): any {
+	override convert(save: any): any {
 		// Convert root object:
 		// - Add '_meta' property
 		// - Add 'quickNote' property
@@ -146,7 +138,7 @@ class V1SaveProcessor extends SaveProcessor {
 	}
 }
 
-class V2SaveProcessor extends SaveProcessor {
+class V2SaveConverter extends SaveConverter {
 	constructor() {
 		super(SaveVersion.v1, SaveVersion.v2);
 	}
@@ -159,7 +151,7 @@ class V2SaveProcessor extends SaveProcessor {
 	 * @param save data to convert to v2 format
 	 * @returns input data converted to v2 format
 	 */
-	protected convert(save: any): any {
+	override convert(save: any): any {
 		const converted = utilities.deepCopy(save);
 
 		// For each category, create a root folder and set all existing cards as its files
@@ -198,7 +190,7 @@ class V2SaveProcessor extends SaveProcessor {
 	}
 }
 
-class V3SaveProcessor extends SaveProcessor {
+class V3SaveConverter extends SaveConverter {
 	private idConversionMapping = new Map<number, UUID>();
 
 	constructor() {
@@ -216,7 +208,7 @@ class V3SaveProcessor extends SaveProcessor {
 	 * @param save data to convert to v3 format
 	 * @returns input data converted to v3 format
 	 */
-	protected convert(save: any): SaveFormat {
+	override convert(save: any): SaveFormat {
 		const converted = this.convertToORMFormat(this.convertFieldsAndIDs(save));
 
 		// Update save version
@@ -345,14 +337,14 @@ class V3SaveProcessor extends SaveProcessor {
 	}
 }
 
-function getProcessorFromInputVersion(inputSaveVersion: SaveVersion): SaveProcessor | undefined {
+function getProcessorFromInputVersion(inputSaveVersion: SaveVersion): SaveConverter | undefined {
 	switch (inputSaveVersion) {
 		case SaveVersion.Legacy:
-			return new V1SaveProcessor();
+			return new V1SaveConverter();
 		case SaveVersion.v1:
-			return new V2SaveProcessor();
+			return new V2SaveConverter();
 		case SaveVersion.v2:
-			return new V3SaveProcessor();
+			return new V3SaveConverter();
 		case SaveVersion.v3:
 		case SaveVersion.Latest:
 			return undefined;
@@ -366,7 +358,7 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
 		const proc = getProcessorFromInputVersion(nextInput);
 		if (proc) {
 			nextInput = proc.targetSaveVersion;
-			toPipe.push((arg: any) => proc.validateAndConvert(arg));
+			toPipe.push((arg: any) => proc.convert(arg));
 		} else break;
 	}
 
@@ -384,9 +376,21 @@ function buildConversionPipeline(inputSaveVersion: SaveVersion) {
  */
 export function convertToLatestVersion(save: any): SaveFormat {
 	const inputSaveVersion = (save?._meta?.version as SaveVersion) ?? SaveVersion.Legacy;
-	if (Object.values(SaveVersion).includes(inputSaveVersion)) {
-		const pipeline = buildConversionPipeline(inputSaveVersion);
-		const saveAtLatestFormat: SaveFormat = pipeline(save);
-		return saveAtLatestFormat;
-	} else throw new SaveFormatError("Save format could not be identified: save data is unusable.");
+
+	// Fail if save version is unknown
+	if (!Object.values(SaveVersion).includes(inputSaveVersion))
+		throw new SaveFormatError("Save format could not be identified: save data is unusable.");
+
+	// Fail if actual save data does not match its declared format
+	if (!validateSave(save, inputSaveVersion))
+		throw new SaveFormatError(
+			"Save format does not match specified save version: save data is unusable."
+		);
+
+	// If the save is already at the latest format, return it as is
+	if (inputSaveVersion === SaveVersion.Latest) return save;
+
+	// Otherwise, convert it to the latest version
+	const pipeline = buildConversionPipeline(inputSaveVersion);
+	return pipeline(save);
 }
