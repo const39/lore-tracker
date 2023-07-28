@@ -204,6 +204,7 @@ class V3SaveConverter extends SaveConverter {
 	 * - Add a 'tags' list to the folders' metadata
 	 * - Add a 'position' field to all files and folders
 	 * - Add a 'desc' field to quests
+	 * - Rename field '_category' to 'category' on every folder and file
 	 * - Convert all numeric IDs to string UUIDs
 	 *
 	 * @param save data to convert to v3 format
