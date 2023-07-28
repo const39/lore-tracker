@@ -5,627 +5,35 @@
     "SaveFormat": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
-        "days": {
-          "type": "number"
-        },
-        "season": {
-          "$ref": "#/definitions/Season"
-        },
-        "cards": {
-          "$ref": "#/definitions/CardsStoreSerialized"
-        },
-        "quickNote": {
-          "type": "string"
-        },
         "_meta": {
           "$ref": "#/definitions/MetaData"
+        },
+        "campaigns": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ICampaign"
+          }
+        },
+        "folders": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/IFolder"
+          }
+        },
+        "loreEntries": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ILoreEntry"
+          }
         }
       },
       "required": [
         "_meta",
-        "cards",
-        "days",
-        "name",
-        "quickNote",
-        "season"
+        "campaigns",
+        "folders",
+        "loreEntries"
       ],
-      "additionalProperties": false
-    },
-    "Season": {
-      "type": "string",
-      "enum": [
-        "spring",
-        "summer",
-        "autumn",
-        "winter"
-      ]
-    },
-    "CardsStoreSerialized": {
-      "type": "object",
-      "properties": {
-        "quest": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22quest%22%3E%3E"
-        },
-        "event": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22event%22%3E%3E"
-        },
-        "location": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22location%22%3E%3E"
-        },
-        "character": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22character%22%3E%3E"
-        },
-        "faction": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22faction%22%3E%3E"
-        },
-        "note": {
-          "$ref": "#/definitions/SerializedFolder%3CCardFolderMetadata%2CCardTypeBasedOnCategory%3C%22note%22%3E%3E"
-        }
-      },
-      "required": [
-        "quest",
-        "event",
-        "location",
-        "character",
-        "faction",
-        "note"
-      ],
-      "additionalProperties": false
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"quest\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22quest%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardFolderMetadata": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "name": {
-          "type": "string"
-        },
-        "color": {
-          "type": "string"
-        },
-        "_category": {
-          "$ref": "#/definitions/CardCategory"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        }
-      },
-      "required": [
-        "_category",
-        "color",
-        "id",
-        "name",
-        "tags"
-      ],
-      "additionalProperties": false
-    },
-    "ID": {
-      "type": "number"
-    },
-    "CardCategory": {
-      "type": "string",
-      "enum": [
-        "quest",
-        "event",
-        "location",
-        "character",
-        "faction",
-        "note"
-      ]
-    },
-    "CardTypeBasedOnCategory<\"quest\">": {
-      "$ref": "#/definitions/Quest",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Quest": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "quest"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "title": {
-          "type": "string"
-        },
-        "desc": {
-          "type": "string"
-        },
-        "tasks": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Task"
-          }
-        }
-      },
-      "required": [
-        "_category",
-        "desc",
-        "id",
-        "tags",
-        "tasks",
-        "title"
-      ],
-      "additionalProperties": false
-    },
-    "Task": {
-      "type": "object",
-      "properties": {
-        "isCompleted": {
-          "type": "boolean"
-        },
-        "desc": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "isCompleted",
-        "desc"
-      ],
-      "additionalProperties": false
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"event\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22event%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardTypeBasedOnCategory<\"event\">": {
-      "$ref": "#/definitions/Event",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Event": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "event"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "desc": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "#/definitions/EventType"
-        },
-        "day": {
-          "type": "number"
-        }
-      },
-      "required": [
-        "_category",
-        "day",
-        "desc",
-        "id",
-        "tags",
-        "type"
-      ],
-      "additionalProperties": false
-    },
-    "EventType": {
-      "type": "string",
-      "enum": [
-        "combat",
-        "encounter",
-        "discovery",
-        "travel",
-        "other"
-      ]
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"location\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22location%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardTypeBasedOnCategory<\"location\">": {
-      "$ref": "#/definitions/Location",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Location": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "location"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "desc": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "_category",
-        "desc",
-        "id",
-        "name",
-        "tags"
-      ],
-      "additionalProperties": false
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"character\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22character%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardTypeBasedOnCategory<\"character\">": {
-      "$ref": "#/definitions/Character",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Character": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "character"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "race": {
-          "type": "string"
-        },
-        "classes": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        },
-        "isNPC": {
-          "type": "boolean"
-        },
-        "isAlive": {
-          "type": "boolean"
-        },
-        "desc": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "_category",
-        "classes",
-        "desc",
-        "id",
-        "isAlive",
-        "isNPC",
-        "name",
-        "race",
-        "role",
-        "tags"
-      ],
-      "additionalProperties": false
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"faction\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22faction%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardTypeBasedOnCategory<\"faction\">": {
-      "$ref": "#/definitions/Faction",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Faction": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "faction"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "name": {
-          "type": "string"
-        },
-        "desc": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "_category",
-        "desc",
-        "id",
-        "name",
-        "tags"
-      ],
-      "additionalProperties": false
-    },
-    "SerializedFolder<CardFolderMetadata,CardTypeBasedOnCategory<\"note\">>": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "properties": {
-          "metadata": {
-            "$ref": "#/definitions/CardFolderMetadata"
-          },
-          "files": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/CardTypeBasedOnCategory%3C%22note%22%3E"
-            }
-          },
-          "parent": {
-            "type": "string",
-            "description": "Data type of the keys used to index a FlatFolder."
-          },
-          "subfolders": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "description": "Data type of the keys used to index a FlatFolder."
-            }
-          }
-        },
-        "required": [
-          "files",
-          "metadata",
-          "subfolders"
-        ],
-        "additionalProperties": false,
-        "description": "Structure of a flattened Folder object."
-      },
-      "propertyNames": {
-        "description": "Data type of the keys used to index a FlatFolder."
-      },
-      "description": "An entry in a serialized  {@link  FlatTree } . TODO: maybe remove the Map intermediary in the serialization process (do Folder -> object literal, instead of Folder -> Map -> object literal)"
-    },
-    "CardTypeBasedOnCategory<\"note\">": {
-      "$ref": "#/definitions/Note",
-      "description": "Helper type to get the card type associated to generic category type."
-    },
-    "Note": {
-      "type": "object",
-      "properties": {
-        "_category": {
-          "type": "string",
-          "const": "note"
-        },
-        "id": {
-          "$ref": "#/definitions/ID"
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/ID"
-          }
-        },
-        "title": {
-          "type": "string"
-        },
-        "desc": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "_category",
-        "desc",
-        "id",
-        "tags",
-        "title"
-      ],
-      "additionalProperties": false
+      "description": "Data format of a save file."
     },
     "MetaData": {
       "type": "object",
@@ -642,7 +50,128 @@
         "version",
         "lastUpdate"
       ],
-      "additionalProperties": false
+      "description": "Metadata of a save file."
+    },
+    "ICampaign": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "$ref": "#/definitions/UUID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "days": {
+          "type": "number"
+        },
+        "season": {
+          "$ref": "#/definitions/Season"
+        },
+        "quickNote": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "days",
+        "id",
+        "name",
+        "quickNote",
+        "season"
+      ]
+    },
+    "UUID": {
+      "type": "string"
+    },
+    "Season": {
+      "type": "string",
+      "enum": [
+        "spring",
+        "summer",
+        "autumn",
+        "winter"
+      ]
+    },
+    "IFolder": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UUID"
+          }
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "position": {
+          "type": "number"
+        },
+        "id": {
+          "$ref": "#/definitions/UUID"
+        },
+        "name": {
+          "type": "string"
+        },
+        "color": {
+          "type": "string"
+        },
+        "parentId": {
+          "$ref": "#/definitions/UUID"
+        }
+      },
+      "required": [
+        "category",
+        "color",
+        "id",
+        "name",
+        "position",
+        "tags"
+      ],
+      "description": "Data structure contract a Folder class should implement."
+    },
+    "Category": {
+      "type": "string",
+      "enum": [
+        "quest",
+        "event",
+        "location",
+        "character",
+        "faction",
+        "note"
+      ]
+    },
+    "ILoreEntry": {
+      "type": "object",
+      "properties": {
+        "tags": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UUID"
+          }
+        },
+        "category": {
+          "$ref": "#/definitions/Category"
+        },
+        "position": {
+          "type": "number"
+        },
+        "id": {
+          "$ref": "#/definitions/UUID"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "folderId": {
+          "$ref": "#/definitions/UUID"
+        }
+      },
+      "required": [
+        "category",
+        "desc",
+        "id",
+        "position",
+        "tags"
+      ]
     }
   }
 }

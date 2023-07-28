@@ -15,7 +15,7 @@
 <script lang="ts" setup>
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { Note } from "@/core/model/cards";
+import { Note } from "@/core/models";
 
 defineProps<{
 	itemData: Note;

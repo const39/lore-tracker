@@ -3,12 +3,12 @@
 </template>
 <script lang="ts" setup>
 import { computed } from "vue";
-import { CardFolder, CardTypes, Tag } from "@/core/model/cards";
+import { Folder, LoreEntry, Tag } from "@/core/models";
 import TagItem from "./tags/TagItem.vue";
 
 const props = defineProps<{
-	itemData: CardTypes | CardFolder;
+	itemData: LoreEntry | Folder;
 }>();
 
-const tag = computed(() => new Tag(props.itemData));
+const tag = computed(() => Tag.from(props.itemData));
 </script>

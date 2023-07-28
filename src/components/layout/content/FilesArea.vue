@@ -1,18 +1,19 @@
 <template>
 	<GenericArea
-		v-model="currentFolder.files"
+		:items="items"
 		:title="$t('categories.file') + 's'"
 		:loading="loading"
 		group="files"
+		@sort="onSort"
 	>
 		<template #actions>
 			<v-btn
-				:disabled="disableActions"
+				:disabled="disableActions || !folderId"
 				class="mx-1"
 				icon="mdi-plus"
 				density="compact"
 				variant="text"
-				@click="newFile"
+				@click="newLoreEntry"
 			/>
 		</template>
 		<template #default="{ isDraggable, itemData }">
@@ -22,36 +23,39 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { useRepo } from "pinia-orm";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { Category, Indexable, LoreEntry, Orderable } from "@/core/models";
+import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder; // currentFolder v-model
-	category: CardCategory;
+	items: LoreEntry[];
+	category: Category;
+	folderId?: UUID;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
+const sidePanel = useSidePanel();
 
-const formStore = useSidePanel();
+/**
+ * Save the new items order.
+ * @param movedItems the items with their new position.
+ */
+function onSort(movedItems: Array<Indexable & Orderable>) {
+	useRepo(LoreEntryRepo).changeOrder(movedItems);
+}
 
-const currentFolder = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
-
-function newFile(): void {
-	formStore.newFileAddForm(props.category, currentFolder.value);
+function newLoreEntry(): void {
+	if (props.folderId) {
+		sidePanel.showLoreEntryForm(
+			"add",
+			LoreEntry.create({ category: props.category, folderId: props.folderId })
+		);
+	}
 }
 </script>

@@ -1,13 +1,14 @@
 <template>
 	<GenericArea
-		v-model="currentFolder.subfolders"
+		:items="items"
 		:title="$t('categories.folder') + 's'"
 		:loading="loading"
 		group="folders"
+		@sort="onSort"
 	>
 		<template #actions>
 			<v-btn
-				:disabled="disableActions"
+				:disabled="disableActions || !folderId"
 				class="m1-2"
 				icon="mdi-plus"
 				density="compact"
@@ -30,46 +31,48 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { useRepo } from "pinia-orm";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { Category, Folder, Indexable, Orderable } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder; // currentFolder v-model
-	category: CardCategory;
+	items: Folder[];
+	category: Category;
+	folderId?: UUID;
 	loading?: boolean;
 	disableActions?: boolean;
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
 }>();
 
 const router = useRouter();
 const sidePanelStore = useSidePanel();
 
-const currentFolder = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+/**
+ * Save the new items order.
+ * @param movedItems the items with their new position.
+ */
+function onSort(movedItems: Array<Indexable & Orderable>) {
+	useRepo(FolderRepo).changeOrder(movedItems);
+}
 
 function newFolder(): void {
-	sidePanelStore.newFolderAddForm(props.category, currentFolder.value);
+	if (props.folderId)
+		sidePanelStore.showFolderForm(
+			"add",
+			new Folder({ category: props.category, parentId: props.folderId })
+		);
 }
 
 function showFolderTree() {
-	sidePanelStore.newFolderTree();
+	sidePanelStore.showFolderTree();
 }
 
-function openFolder(folder: CardFolder): void {
-	router.push({ params: { folderURI: [...folder.absolutePath.rawSegments] } });
+function openFolder(folder: Folder): void {
+	router.push({ params: { folderId: folder.id } });
 }
 </script>

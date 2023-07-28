@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Faction } from "@/core/model/cards";
+import { Faction } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 

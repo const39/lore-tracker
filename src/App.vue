@@ -53,8 +53,11 @@
 
 		<!-- Mount point for VueRouter -->
 		<v-main>
-			<v-container>
-				<router-view />
+			<v-container class="h-100">
+				<div v-if="loading" class="h-100 d-flex align-center justify-center">
+					<v-progress-circular color="primary" size="large" indeterminate />
+				</div>
+				<router-view v-else />
 			</v-container>
 		</v-main>
 
@@ -132,21 +135,22 @@ import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import { VERSION } from "@/core/constants";
+import { loadSavedData } from "@/core/save/save-manager";
 import { t as $t } from "@/core/translation";
-import { useStore } from "@/store";
+import { VERSION } from "@/core/utils/types";
+import { usePreferencesStore } from "@/store/preferences";
+import { useGlobalSnackbar } from "@/store/snackbar";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
-import { usePreferencesStore } from "./store/preferences";
-import { useGlobalSnackbar } from "./store/snackbar";
+import eventBus from "./core/eventBus";
 
 const version = ref(VERSION);
+const loading = ref(false);
 const showMenu = ref(false);
 const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
 const router = useRouter();
-const store = useStore();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
@@ -173,10 +177,11 @@ function closeUpdateNotif() {
 	showUpdateNotif.value = false;
 }
 
-onMounted(() => {
-	// Initialise the store at application start
+async function initApp() {
+	loading.value = true;
+
 	try {
-		store.loadData();
+		await loadSavedData();
 	} catch (err) {
 		console.error(err);
 		showSnackbar({
@@ -185,7 +190,17 @@ onMounted(() => {
 			color: "error",
 		});
 	}
+
+	loading.value = false;
+}
+
+// Trigger update on data load (e.g. on app start or on save import)
+eventBus.on(async (e) => {
+	if (e === "data-loaded") await initApp();
 });
+
+// Load stored data at application start
+onMounted(() => eventBus.emit("data-loaded"));
 </script>
 
 <style>

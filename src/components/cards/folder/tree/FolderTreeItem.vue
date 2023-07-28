@@ -1,7 +1,7 @@
 <template>
 	<v-list-item
 		:class="color"
-		:title="title ?? folder.metadata.name"
+		:title="title ?? folder.name"
 		:disabled="disabled"
 		class="rounded default-cursor"
 		@mouseenter="isHovered = true"
@@ -19,11 +19,12 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { CardFolder } from "@/core/model/cards";
+import { Folder } from "@/core/models";
+import { Maybe } from "@/core/utils/types";
 
 const props = defineProps<{
-	selected: CardFolder | undefined;
-	folder: CardFolder;
+	selected: Maybe<Folder>;
+	folder: Folder;
 	level: number;
 	title?: string;
 	disabled?: boolean;
@@ -32,8 +33,6 @@ const props = defineProps<{
 const emit = defineEmits<{
 	(e: "update:selected", value: typeof props.selected): void;
 }>();
-
-const isHovered = ref(false);
 
 const selectModelValue = computed({
 	get() {
@@ -44,7 +43,9 @@ const selectModelValue = computed({
 	},
 });
 
-const isSelected = computed(() => selectModelValue.value === props.folder);
+const isHovered = ref(false);
+
+const isSelected = computed(() => selectModelValue.value?.id === props.folder.id);
 
 const color = computed(() => {
 	if (isSelected.value) return "bg-selected-surface";

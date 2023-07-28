@@ -48,9 +48,9 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Icon } from "@/core/icons";
-import { Event, EventType } from "@/core/model/cards";
+import { Event, EventType } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
 import { number, numberInRange, required } from "@/core/validationRules";
 
 const props = defineProps<{

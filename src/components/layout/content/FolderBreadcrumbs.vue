@@ -4,7 +4,7 @@
 		<v-breadcrumbs :items="breadcrumbs">
 			<template #title="{ item, index }">
 				<FolderBreadcrumbsItem
-					:title="index === 0 ? $t(`categories.${item.metadata._category}`) : undefined"
+					:title="index === 0 ? $t(`categories.${item.category}`) : undefined"
 					:folder="item"
 				/>
 			</template>
@@ -16,19 +16,22 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { CardFolder } from "@/core/model/cards";
+import { Folder, LoreEntry } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import FolderBreadcrumbsItem from "./FolderBreadcrumbsItem.vue";
 
 const props = defineProps<{
-	currentFolder: CardFolder;
+	currentFolder: Folder<LoreEntry>;
 }>();
 
 const router = useRouter();
+const folderRepo = useRepo(FolderRepo);
 
-const breadcrumbs = computed(() => props.currentFolder.getHierarchy());
+const breadcrumbs = computed(() => folderRepo.getHierarchy(props.currentFolder));
 
 function goBack() {
 	router.back();

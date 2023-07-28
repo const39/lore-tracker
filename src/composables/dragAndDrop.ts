@@ -1,6 +1,6 @@
 import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
 import { DragAndDropMode, useDragAndDropMode } from "@/store/dragAndDropMode";
 
 type DragAndDropID = string;
@@ -30,8 +30,8 @@ export interface DropPayload<T = unknown> {
 
 export enum CustomMIMEType {
 	DragAndDropID = "application/drag-and-drop-id",
-	CardType = "application/card-type",
-	CardFolder = "application/card-folder",
+	LoreEntry = "application/lore-entry",
+	Folder = "application/folder",
 }
 
 const compoundMIMETypes = {
@@ -61,7 +61,7 @@ export function startDrag(
 	options?: DragOptions
 ) {
 	if (e.dataTransfer) {
-		const ID = "drag-" + utilities.uid();
+		const ID = "drag-" + utilities.uuid();
 		buffer.set(ID, data);
 		e.dataTransfer.setData(compoundMIMETypes.create(dataType), ID);
 

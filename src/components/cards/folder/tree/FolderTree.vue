@@ -9,39 +9,37 @@
 	<v-list class="list" density="compact">
 		<FolderTreeGroup
 			v-for="folder in rootFolders"
-			:key="folder.metadata.id"
+			:key="folder.id"
 			v-model:selected="selected"
 			v-model:opened="openItems"
-			:title="$t(`categories.${folder.metadata._category}`)"
+			:title="$t(`categories.${folder.category}`)"
 			:folder="folder"
 			:level="0"
 			:disabled="disabled"
 		>
 			<template #prepend>
-				<v-icon
-					:icon="Icon[folder.metadata._category]"
-					class="icon-color"
-					size="small"
-					end
-				/>
+				<v-icon :icon="Icon[folder.category]" class="icon-color" size="small" end />
 			</template>
 		</FolderTreeGroup>
 	</v-list>
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed, ref, watch } from "vue";
-import { Icon } from "@/core/icons";
-import { CardFolder, ID } from "@/core/model/cards";
+import { Folder } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
+import { Maybe, UUID } from "@/core/utils/types";
 import FolderTreeGroup from "./FolderTreeGroup.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder | undefined; // v-model
+	modelValue: Maybe<Folder>; // v-model
 	title: string;
-	rootFolders: CardFolder[];
-	openAt?: CardFolder;
-	disabled?: ID[];
+	rootFolders: Folder[];
+	openAt?: Maybe<Folder>;
+	disabled?: UUID[];
 }>();
 
 const emit = defineEmits<{
@@ -49,7 +47,9 @@ const emit = defineEmits<{
 	(e: "close"): void;
 }>();
 
-const openItems = ref<CardFolder[]>([]);
+const folderRepo = useRepo(FolderRepo);
+
+const openItems = ref<UUID[]>([]);
 
 const selected = computed({
 	get() {
@@ -65,7 +65,7 @@ const selected = computed({
 watch(
 	() => props.openAt,
 	(target) => {
-		openItems.value = target?.getHierarchy() ?? [];
+		openItems.value = target ? folderRepo.getHierarchy(target).map((f) => f.id) : [];
 		// Set the selected item to the openAt value
 		selected.value = target;
 	},
@@ -74,7 +74,7 @@ watch(
 
 // Clear the selected value if it is under closed items
 watch(openItems, () => {
-	if (selected.value && !openItems.value.includes(selected.value)) selected.value = undefined;
+	if (selected.value && !openItems.value.includes(selected.value.id)) selected.value = undefined;
 });
 </script>
 

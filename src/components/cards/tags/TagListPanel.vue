@@ -11,17 +11,18 @@
 import { computed } from "vue";
 import CardDropZone from "@/components/common/CardDropZone.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { CardFolder, CardTypes, ID, isCardFolder } from "@/core/model/cards";
+import { Indexable } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import TagList from "./TagList.vue";
 
 const props = defineProps<{
-	modelValue: ID[]; // v-model
-	excludeId?: ID;
+	modelValue: UUID[]; // v-model
+	excludeId?: UUID;
 }>();
 
 const emit = defineEmits<{
-	(e: "update:modelValue", value: ID[]): void;
+	(e: "update:modelValue", value: UUID[]): void;
 }>();
 
 // v-model binding
@@ -35,10 +36,9 @@ const model = computed({
 });
 
 /**
- * Add the dropped card in the tag list if it is not already in it (or if it is not the excluded ID)
+ * Add the dropped item in the tag list if it is not already in it (or if it is not the excluded ID)
  */
-function onDrop(item: CardTypes | CardFolder) {
-	const id = isCardFolder(item) ? item.metadata.id : item.id;
-	if (!model.value.includes(id) && id !== props.excludeId) model.value.push(id);
+function onDrop(item: Indexable) {
+	if (!model.value.includes(item.id) && item.id !== props.excludeId) model.value.push(item.id);
 }
 </script>

@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Tag } from "@/core/model/cards";
-import { truncate } from "@/core/utilities";
+import { Tag } from "@/core/models";
+import { truncate } from "@/core/utils/functions";
 
 defineProps<{
 	tag: Tag;

@@ -28,7 +28,7 @@
 import { computed } from "vue";
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { Character } from "@/core/model/cards";
+import { Character } from "@/core/models";
 import { t as $t } from "@/core/translation";
 
 const props = defineProps<{

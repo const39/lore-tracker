@@ -3,7 +3,7 @@
 		<v-tab
 			v-for="tab in tabs"
 			:key="tab"
-			:to="{ name: 'LoreBookTab', params: { category: tab } }"
+			:to="{ name: 'LoreBookContent', params: { category: tab } }"
 		>
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
@@ -13,25 +13,33 @@
 		<v-window-item v-for="(tab, i) in tabs" :key="tab">
 			<!-- Only render the active tab to avoid multiple co-existing renders of the tab content -->
 			<v-container v-if="i === activeTab">
-				<!-- Safe-guard - Ensure current folder exists before showing content -->
-				<template v-if="currentFolder && !alertState.isShown">
-					<FolderBreadcrumbs :current-folder="currentFolder" />
+				<template v-if="!alertState.isShown">
+					<!-- Safe-guard - Breadcrumbs cannot be shown if there's no current folder -->
+					<FolderBreadcrumbs v-if="currentFolder" :current-folder="currentFolder" />
+					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
-						v-model="currentFolder"
-						:category="cardsStore.currentCategory"
+						:items="(folders as Folder[])"
+						:category="category"
+						:folder-id="currentFolder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
-						v-model="currentFolder"
-						:category="cardsStore.currentCategory"
+						:items="(files as LoreEntry[])"
+						:category="category"
+						:folder-id="currentFolder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 				</template>
 				<!-- Display alert in case folder does not exist -->
-				<v-alert v-else variant="tonal" v-bind="alertState">
-					<router-link :to="{ name: 'LoreBookTab', params: { category } }">
+				<v-alert v-else v-bind="alertState" variant="tonal">
+					<router-link
+						:to="{
+							name: 'LoreBookContent',
+							params: { category },
+						}"
+					>
 						{{ $t("messages.errors.files.folderNotFound.action") }}
 					</router-link>
 				</v-alert>
@@ -41,86 +49,68 @@
 </template>
 
 <script lang="ts" setup>
-import { onKeyDown, useDebounceFn } from "@vueuse/core";
+import { onKeyDown } from "@vueuse/core";
+import { useRepo } from "pinia-orm";
 import { ref, watch } from "vue";
 import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
-import eventBus from "@/core/eventBus";
-import { Icon } from "@/core/icons";
-import { CardCategory, CardFolder, createRootFolder } from "@/core/model/cards";
-import { Path } from "@/core/model/fileTree";
+import { Category, Folder, LoreEntry } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
+import { defer } from "@/core/utils/functions";
+import { Icon } from "@/core/utils/icons";
+import { Maybe } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 
-const props = defineProps<{ category: CardCategory; folderPath?: Path }>();
+const props = defineProps<{ category: Category; currentFolder: Maybe<Folder> }>();
 
-const cardsStore = useCardsStore();
+const tabs = Object.values(Category);
+
+const folderRepo = useRepo(FolderRepo);
+
 const filterStore = useFilterStore();
 const { alertState, setError, resetAlert } = useAlert();
 
-const tabs = ref(Object.values(CardCategory));
 const activeTab = ref(0);
 const loading = ref(false);
 
-const emptyFolder = createRootFolder(CardCategory.Quest); // use a dummy empty folder on initial page load to trigger loading states without using an undefined object
-const currentFolder = ref<CardFolder>(emptyFolder);
+const folders = ref<Folder[]>([]);
+const files = ref<LoreEntry[]>([]);
 
-const filterItems = useDebounceFn(() => filterStore.filter(cardsStore.currentFolder), 800);
-
-function updateItems() {
+/**
+ * Update the current folders and files to display based.
+ */
+async function updateItems() {
+	resetAlert();
 	loading.value = true;
 
-	const promise = filterStore.isFilterActive
-		? new Promise<CardFolder>((resolve) => setTimeout(() => filterItems().then(resolve), 0))
-		: Promise.resolve(cardsStore.currentFolder);
-
-	promise.then((folder) => {
-		// Safe-guard: Ensure folder is defined
-		// -> because when the debounced function is cancelled by a new call, the promise returns undefined
-		// @see https://vueuse.org/shared/useDebounceFn/#usage
-		if (folder) {
-			currentFolder.value = folder;
-			loading.value = false;
-		}
-	});
-}
-
-// Trigger update on new save load
-eventBus.on((e) => {
-	if (e === "data-loaded") updateItems();
-});
-
-// Trigger update on filter rules change
-watch(
-	() => filterStore.rules,
-	() => updateItems(),
-	{ deep: true }
-);
-
-// Trigger update on navigation update (either category or folder path)
-watch(
-	props,
-	({ category, folderPath }) => {
-		resetAlert();
-		// Try to set current folder to the one given by vue-router based on URI
-		// If this fails (i.e. this folder does not exist), display error message to user
-		try {
-			cardsStore.setCurrentFolder(category, folderPath);
-			updateItems();
-		} catch (e) {
-			console.error(e);
+	// Defer function to run it asynchronously
+	await defer(() => {
+		// - If a filter is active, display the search results
+		// - If the current URL resolves to a folder, display its content
+		// - Otherwise, display an error message because no folder can be displayed
+		if (filterStore.isFilterActive) {
+			folders.value = filterStore.filterFolders(props.category);
+			files.value = filterStore.filterLoreEntries(props.category);
+		} else if (props.currentFolder) {
+			folders.value = folderRepo.getSubfolders(props.currentFolder);
+			files.value = folderRepo.getFiles(props.currentFolder);
+		} else {
 			setError($t("messages.errors.files.folderNotFound.title"));
 		}
-	},
-	{ immediate: true }
-);
+	});
+
+	loading.value = false;
+}
+
+// Trigger update on props or filter rules change
+watch([() => props, () => filterStore.rules], updateItems, { deep: true, immediate: true });
 
 // Register hotkeys
 onKeyDown(
-	Array.from({ length: tabs.value.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
+	Array.from({ length: tabs.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
 	hotkey
 );
 
@@ -136,7 +126,7 @@ onKeyDown(
 function hotkey(e: KeyboardEvent) {
 	if (e.altKey) {
 		const num = Number.parseInt(e.key);
-		if (num >= 1 && num <= tabs.value.length) {
+		if (num >= 1 && num <= tabs.length) {
 			e.preventDefault();
 			activeTab.value = num - 1;
 		}

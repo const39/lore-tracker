@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Character } from "@/core/model/cards";
+import { Character } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 

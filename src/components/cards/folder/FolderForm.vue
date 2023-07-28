@@ -33,26 +33,27 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { ref, watch } from "vue";
 import { type VForm } from "vuetify/components";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import { Icon } from "@/core/icons";
-import { CardFolder, CardFolderMetadata } from "@/core/model/cards";
-import { Path } from "@/core/model/fileTree";
+import { Folder } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utilities";
+import utilities from "@/core/utils/functions";
+import { Icon } from "@/core/utils/icons";
 import validationRules from "@/core/validationRules";
-import { useCardsStore } from "@/store/cards";
 
 const props = defineProps<{
 	variant: "add" | "edit";
-	parentFolder: CardFolder;
-	folderToEdit: CardFolder;
+	baseModel: Folder;
 }>();
 
 const emit = defineEmits(["close", "submit"]);
+
+const folderRepo = useRepo(FolderRepo);
 
 const rules = {
 	name: [
@@ -62,24 +63,25 @@ const rules = {
 		// Check name is not already used by another folder in the current parent folder
 		(name: string) => {
 			// If name is the current folder name, accept value
-			const isCurrentName = name === props.folderToEdit.metadata.name;
+			const isCurrentName = name === props.baseModel.name;
 			// If name is already used by another folder, reject value
-			const isUsedByOther = props.parentFolder.hasFolder(new Path(name));
+			const siblings = folderRepo.getSiblings(props.baseModel);
+			const isUsedByOther = !!siblings.find(
+				(x) => x.name.trim().toLowerCase() === name.trim().toLowerCase()
+			);
 			return isCurrentName || !isUsedByOther || $t("fields.nameAlreadyUsed");
 		},
 	],
 };
 
-const cardsStore = useCardsStore();
-
-const model = ref<CardFolderMetadata>(utilities.deepCopy(props.folderToEdit.metadata)); // Clone object to keep a backup in case the user cancels their changes
+const model = ref<Folder>(utilities.deepCopy(props.baseModel)); // Clone object to keep a backup in case the user cancels their changes
 const isValid = ref(false);
 const form = ref<VForm | undefined>(undefined);
 
 // Clone object to keep a backup in case the user cancels their changes
 watch(
-	() => props.folderToEdit.metadata,
-	() => (model.value = utilities.deepCopy(props.folderToEdit.metadata)),
+	() => props.baseModel,
+	() => (model.value = utilities.deepCopy(props.baseModel)),
 	{ deep: true }
 );
 
@@ -91,9 +93,10 @@ async function submit() {
 	if (isValid.value) {
 		model.value.name = model.value.name.trim();
 		useTryCatch(() => {
-			if (props.variant === "edit")
-				cardsStore.updateFolderMetadata(props.folderToEdit, model.value);
-			else cardsStore.addFolder(new CardFolder(model.value));
+			// Add or update the folder
+			// Note: type casts are necessary because of https://github.com/vuejs/core/issues/2981
+			if (props.variant === "add") folderRepo.add(model.value as Folder);
+			else folderRepo.update(model.value as Folder);
 			emit("submit");
 		});
 	}
