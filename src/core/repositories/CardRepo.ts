@@ -11,7 +11,9 @@ export default class CardRepo<M extends Card> extends BaseRepo<M> {
 			const latest = this.where("category", item.category)
 				.orderBy("position", "desc")
 				.first();
-			if (latest) return super.add({ ...item, position: latest?.position + 1 });
+
+			const nextPosition = (latest?.position ?? -1) + 1; // If there is no previous card, the next position is 0
+			return super.add({ ...item, position: nextPosition });
 		}
 
 		// Leave untouched if position is specified
