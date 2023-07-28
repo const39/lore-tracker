@@ -1,7 +1,9 @@
 import { useRepo } from "pinia-orm";
 import { Campaign, Folder, LoreEntry, StoreName, getPersistentModels } from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
+import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
+import { LocalisableError } from "../error";
 import { SaveVersion, convertToLatestVersion } from "./save-converter";
 
 export enum LocalStorageKey {
@@ -30,6 +32,12 @@ export interface SaveFormat {
 	[StoreName.LoreEntry]: Record<UUID, LoreEntry>;
 }
 
+export class SaveFileError extends LocalisableError {
+	override toLocaleString(): string {
+		return $t("messages.errors.saveFileImportFailed");
+	}
+}
+
 /**
  * Load and import a save using the legacy LocalStorage method.
  *
@@ -50,18 +58,26 @@ export async function loadFromLegacyStorage() {
  * @param json the JSON save to import
  */
 export async function importSave(json: string) {
-	// Parse JSON data
-	const data: Record<string, any> = JSON.parse(json);
-	// Convert save to latest format (if needed)
-	const converted = convertToLatestVersion(data) as Record<string, any>;
-	// Delete previous data
-	await deleteSave();
-	// Load data into the IndexedDB database
-	await Promise.all(
-		Object.values(StoreName).map((name) => {
-			return importStoreData(name, converted[name]);
-		})
-	);
+	try {
+		// Parse JSON data
+		const data: Record<string, any> = JSON.parse(json);
+		// Convert save to latest format (if needed)
+		const converted = convertToLatestVersion(data) as Record<string, any>;
+		// Delete previous data
+		await deleteSave();
+		// Load data into the IndexedDB database
+		await Promise.all(
+			Object.values(StoreName).map((name) => {
+				return importStoreData(name, converted[name]);
+			})
+		);
+	} catch (e) {
+		// If the file could not be parsed as JSON, wrap the error in a custom SaveFileError
+		if (e instanceof SyntaxError)
+			throw new SaveFileError("Invalid save file encoding/format.", { cause: e });
+		// If another error happened, pass it through
+		throw e;
+	}
 }
 
 /**

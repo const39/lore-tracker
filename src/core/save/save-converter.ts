@@ -1,13 +1,21 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Ajv from "ajv";
 import { SaveFormat } from "@/core/save/save-manager";
+import { t as $t } from "@/core/translation";
 import utilities from "@/core/utils/functions";
 import schemaLegacy from "@/schemas/save_format_legacy.json";
 import schemaV1 from "@/schemas/save_format_v1.json";
 import schemaV2 from "@/schemas/save_format_v2.json";
 import schemaV3 from "@/schemas/save_format_v3.json";
+import { LocalisableError } from "../error";
 import { Category } from "../models";
 import { UUID } from "../utils/types";
+
+export class SaveFormatError extends LocalisableError {
+	override toLocaleString(): string {
+		return $t("messages.errors.corruptedSave");
+	}
+}
 
 export enum SaveVersion {
 	Legacy = "save-legacy",
@@ -57,7 +65,7 @@ abstract class SaveProcessor {
 	validateAndConvert(save: any): any {
 		if (SaveProcessor.validate(save, this.inputSaveVersion)) return this.convert(save);
 		else
-			throw new Error(
+			throw new SaveFormatError(
 				"Save format does not match specified save version: save data is unusable."
 			);
 	}
@@ -378,5 +386,5 @@ export function convertToLatestVersion(save: any): SaveFormat {
 		const pipeline = buildConversionPipeline(inputSaveVersion);
 		const saveAtLatestFormat: SaveFormat = pipeline(save);
 		return saveAtLatestFormat;
-	} else throw new Error("Save format could not be identified: save data is unusable.");
+	} else throw new SaveFormatError("Save format could not be identified: save data is unusable.");
 }

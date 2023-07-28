@@ -156,7 +156,7 @@ const fr: Locale = {
 			genericError: "Une erreur est survenue.",
 			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
-			saveFileImportCancelled: "Import du fichier de sauvegarde annulé.",
+			saveFileImportCancelled: "Import du fichier de sauvegarde annulé",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
 			files: {
 				invalidOperation: {

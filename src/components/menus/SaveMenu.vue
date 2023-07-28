@@ -52,8 +52,13 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
+import { isLocalisableError } from "@/core/error";
 import eventBus from "@/core/eventBus";
-import { deleteSave, exportSaveToFile, importSave } from "@/core/save/save-manager";
+import {
+	deleteSave,
+	exportSaveToFile,
+	importSave
+} from "@/core/save";
 import { t as $t } from "@/core/translation";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useGlobalSnackbar } from "@/store/snackbar";
@@ -73,46 +78,40 @@ async function downloadSave() {
 	a.click();
 }
 
-function uploadSave() {
+async function uploadSave() {
 	// v-file-input only accepts an array of files, but we do not use the 'multiple' prop
 	// so we only use the first element in the array
 	if (uploadedFile.value.length) {
-		uploadedFile.value[0]
-			.text()
-			.then(async (value: string) => {
-				try {
-					await importSave(value);
-					eventBus.emit("data-loaded");
-					showSnackbar({
-						message: $t("messages.success.saveFileImportSuccessful"),
-						timeout: 7000,
-						color: "success",
-					});
-				} catch (err) {
-					console.error(err);
-					const message = `${$t("messages.errors.corruptedSave")} ${$t(
-						"messages.errors.saveFileImportCancelled"
-					)}`;
-					showSnackbar({
-						message,
-						timeout: -1,
-						color: "error",
-					});
-				} finally {
-					uploadedFile.value = [];
-					showUploadDialog.value = false;
-				}
-			})
-			.catch((err) => {
-				console.error(err);
-				showSnackbar({
-					message: $t("messages.errors.saveFileImportFailed"),
-					timeout: -1,
-					color: "error",
-				});
-				uploadedFile.value = [];
-				showUploadDialog.value = false;
+		try {
+			// Read file content and import the save
+			const fileContent = await uploadedFile.value[0].text();
+			await importSave(fileContent);
+			eventBus.emit("data-loaded");
+
+			// Success feedback
+			showSnackbar({
+				message: $t("messages.success.saveFileImportSuccessful"),
+				timeout: 7000,
+				color: "success",
 			});
+		} catch (err) {
+			console.error(err);
+			
+			// If a user-friendly error message is provided, use it. Otherwise, use a default one
+			const errorCause = isLocalisableError(err) ? err.toLocaleString() : $t("messages.errors.genericError");
+
+			// Show the full error message
+			const message = `${$t("messages.errors.saveFileImportCancelled")} : ${errorCause}`;
+			showSnackbar({
+				message,
+				timeout: 10000,
+				color: "error",
+			});
+		} finally {
+			// Reset upload form state
+			uploadedFile.value = [];
+			showUploadDialog.value = false;
+		}
 	}
 }
 

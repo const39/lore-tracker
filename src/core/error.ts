@@ -14,11 +14,15 @@ export function isStateType(arg: any): arg is StateTypes {
 	return StateTypes.includes(arg);
 }
 
-export interface LocalisableError {
+export interface ILocalisableError {
 	/**
 	 * @returns the localized error message
 	 */
-	toLocaleString: () => string;
+	toLocaleString(): string;
+}
+
+export abstract class LocalisableError extends Error implements ILocalisableError {
+	abstract toLocaleString(): string;
 }
 
 /**
@@ -29,5 +33,8 @@ export interface LocalisableError {
  * @returns true if error is a {@link LocalisableError}, false otherwise.
  */
 export function isLocalisableError(error: any): error is LocalisableError {
-	return typeof error.toLocaleString === "function";
+	return (
+		error instanceof LocalisableError || // Actual instance of LocalisableError
+		(error instanceof Error && typeof error.toLocaleString === "function") // Generic error that matches the interface's contract
+	);
 }
