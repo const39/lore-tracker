@@ -74,22 +74,17 @@
 	</div>
 </template>
 <script lang="ts" setup>
-import { computed } from "vue";
-import { ref } from "vue";
+import { useRepo } from "pinia-orm";
+import { computed, ref } from "vue";
 import TimelineEvent from "@/components/timeline/TimelineEvent.vue";
-import { CardCategory, Event } from "@/core/model/cards";
+import { Event } from "@/core/models";
 import { t as $t } from "@/core/translation";
-import { useCardsStore } from "@/store/cards";
-
-interface GroupByDayMapping {
-	[key: number]: Event[];
-}
 
 type Order = "asc" | "desc";
 const orderValues: Order[] = ["asc", "desc"];
 const sortOrder = ref<Order>("asc");
 
-const cardsStore = useCardsStore();
+const eventRepo = useRepo(Event);
 
 function getIcon(baseIcon: string, order: Order) {
 	return sortOrder.value === order ? baseIcon : baseIcon + "-outline";
@@ -100,29 +95,18 @@ function getKey(node: Event | string) {
 }
 
 const nodes = computed(() => {
-	// Get events from store and reverse it to obtain events in chronological order
-	const events = cardsStore.getAllFiles(CardCategory.Event).reverse();
-
-	// Browse through events to index them by their day field
-	const indexedByDay: GroupByDayMapping = {};
-	for (const event of events) {
-		const index = event.day;
-
-		// Create array for this index if it doesn't exist yet
-		if (!Array.isArray(indexedByDay[index])) indexedByDay[index] = [];
-
-		indexedByDay[index].push(event);
-	}
+	// Get events from store and group them by day
+	const groupedByDay = eventRepo.groupBy("day").get();
 
 	// Build final array of nodes by joining each indexed array and adding header nodes between them
 	// We then obtain the full nodes array with events sorted in chronological order
 	let nodes: Array<Event | string> = [];
-	for (const index in indexedByDay) {
+	for (const index in groupedByDay) {
 		// Push a header for the current day
 		nodes.push(`${$t("status.day")} ${index}`);
 
 		// Add all events that happened this day, keeping the order defined by the user
-		nodes = nodes.concat(indexedByDay[index]);
+		nodes = nodes.concat(groupedByDay[index]);
 	}
 
 	return nodes;

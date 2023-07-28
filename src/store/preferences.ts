@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 import { useTheme } from "vuetify";
-import { LocalStorageKey } from "@/core/constants";
-import { SupportedLanguages } from "@/core/translation";
+import { LocalStorageKey } from "@/core/save/save-manager";
+import { SupportedLanguages } from "@/core/translation/translation";
 import type { Theme } from "@/plugins/vuetify";
 
 export type { Theme } from "@/plugins/vuetify";

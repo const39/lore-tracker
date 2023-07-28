@@ -14,7 +14,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
-import { Note } from "@/core/model/cards";
+import { Note } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 

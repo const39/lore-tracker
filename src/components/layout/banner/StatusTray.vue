@@ -1,7 +1,7 @@
 <template>
 	<v-tooltip location="bottom">
-		<template #activator="{ props }">
-			<div class="d-inline text-body-2" v-bind="props">
+		<template #activator="{ props: tooltipProps }">
+			<div class="d-inline text-body-2" v-bind="tooltipProps">
 				<span
 					class="clickable"
 					@click.left="daysCounter++"
@@ -27,44 +27,51 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import { Season } from "@/core/constants";
+import { Season } from "@/core/models";
 import { t as $t } from "@/core/translation";
-import { useCampaignInfoStore } from "@/store/campaignInfo";
 
-const campaignInfoStore = useCampaignInfoStore();
+const props = defineProps<{
+	day: number; // v-model:day
+	season: Season; // v-model:season
+}>();
+
+const emit = defineEmits<{
+	(e: "update:day", value: number): void;
+	(e: "update:season", value: Season): void;
+}>();
+
+const seasons = Object.values(Season);
 
 const daysCounter = computed({
 	get() {
-		return campaignInfoStore.days;
+		return props.day;
 	},
 	set(val) {
-		if (Number.isSafeInteger(val) && val > -1) campaignInfoStore.days = val;
+		if (Number.isSafeInteger(val) && val > -1) emit("update:day", val);
 	},
 });
 
 const currentSeason = computed({
 	get() {
-		return campaignInfoStore.season;
+		return props.season;
 	},
 	set(val) {
-		campaignInfoStore.season = val;
+		emit("update:season", val);
 	},
 });
 
 function previousSeason() {
-	const values = Object.values(Season);
-	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
+	const index = seasons.findIndex((entry) => entry === currentSeason.value);
 	if (index > -1) {
-		if (index > 0) currentSeason.value = values[index - 1];
-		else currentSeason.value = values[values.length - 1];
+		if (index > 0) currentSeason.value = seasons[index - 1];
+		else currentSeason.value = seasons[seasons.length - 1];
 	}
 }
 function nextSeason() {
-	const values = Object.values(Season);
-	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
+	const index = seasons.findIndex((entry) => entry === currentSeason.value);
 	if (index > -1) {
-		if (index < values.length - 1) currentSeason.value = values[index + 1];
-		else currentSeason.value = values[0];
+		if (index < seasons.length - 1) currentSeason.value = seasons[index + 1];
+		else currentSeason.value = seasons[0];
 	}
 }
 

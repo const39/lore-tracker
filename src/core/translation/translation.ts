@@ -1,6 +1,6 @@
-import en from "@/locale/en";
-import fr from "@/locale/fr";
 import { usePreferencesStore } from "@/store/preferences";
+import en from "./locale/en";
+import fr from "./locale/fr";
 
 export interface Locale {
 	pages: {
@@ -265,5 +265,3 @@ export function t(key: string): string {
 			);
 	}
 }
-
-export default { t };

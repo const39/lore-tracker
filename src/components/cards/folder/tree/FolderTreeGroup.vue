@@ -24,8 +24,8 @@
 		<v-slide-y-transition>
 			<div v-show="isOpened && hasChildren" class="items">
 				<FolderTreeGroup
-					v-for="subfolder in folder.subfolders"
-					:key="subfolder.metadata.id"
+					v-for="subfolder in subfolders"
+					:key="subfolder.id"
 					v-model:selected="selectModelValue"
 					v-model:opened="openModelValue"
 					:folder="subfolder"
@@ -38,24 +38,29 @@
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed } from "vue";
-import { CardFolder, ID } from "@/core/model/cards";
+import { Folder } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
+import { Maybe, UUID } from "@/core/utils/types";
 import FolderTreeGroup from "./FolderTreeGroup.vue";
 import FolderTreeItem from "./FolderTreeItem.vue";
 
 const props = defineProps<{
-	selected: CardFolder | undefined;
-	opened: CardFolder[] | undefined;
-	folder: CardFolder;
+	selected: Maybe<Folder>;
+	opened: Maybe<UUID[]>;
+	folder: Folder;
 	level: number;
 	title?: string;
-	disabled?: boolean | ID[];
+	disabled?: boolean | UUID[];
 }>();
 
 const emit = defineEmits<{
 	(e: "update:selected", value: typeof props.selected): void;
 	(e: "update:opened", value: typeof props.opened): void;
 }>();
+
+const folderRepo = useRepo(FolderRepo);
 
 const selectModelValue = computed({
 	get() {
@@ -75,23 +80,24 @@ const openModelValue = computed({
 	},
 });
 
-const hasChildren = computed(() => !!props.folder.subfolders.length);
-const isOpened = computed(() => openModelValue.value?.includes(props.folder));
+const subfolders = computed(() => folderRepo.getSubfolders(props.folder));
+const hasChildren = computed(() => subfolders.value.length > 0);
+const isOpened = computed(() => openModelValue.value?.includes(props.folder.id));
 
 const padding = computed(() => `padding-left: ${16 * (props.level ?? 0) || 8}px;`);
 
-function isChildDisabled(child: CardFolder) {
-	return Array.isArray(props.disabled) ? props.disabled.includes(child.metadata.id) : false;
+function isChildDisabled(child: Folder) {
+	return Array.isArray(props.disabled) ? props.disabled.includes(child.id) : false;
 }
 
 function onToggle() {
 	// If open, close it
 	if (isOpened.value && openModelValue.value) {
-		const idx = openModelValue.value.findIndex((x) => x === props.folder);
+		const idx = openModelValue.value.findIndex((x) => x === props.folder.id);
 		if (idx !== -1) openModelValue.value.splice(idx, 1);
 	} else {
 		// If closed, open it
-		openModelValue.value?.push(props.folder);
+		openModelValue.value?.push(props.folder.id);
 	}
 }
 </script>

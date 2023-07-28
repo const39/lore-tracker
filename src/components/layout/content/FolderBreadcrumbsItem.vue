@@ -2,38 +2,41 @@
 	<v-breadcrumbs-item
 		ref="refDropZone"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
-		:title="title ?? folder.metadata.name"
+		:title="title ?? folder.name"
 		:to="to"
 		:disabled="disabled"
-		class="px-4 py-2 rounded-xl"
+		class="px-4 py-2 rounded-xl without-color"
 		exact
 	/>
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
-import { CardFolder, isCard, isCardFolder } from "@/core/model/cards";
-import { useCardsStore } from "@/store/cards";
+import { Folder, LoreEntry } from "@/core/models";
+import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 
 const props = defineProps<{
-	folder: CardFolder;
+	folder: Folder;
 	title?: string;
 	disabled?: boolean;
 }>();
 
 const to = computed(() => ({
 	params: {
-		folderURI: [...props.folder.absolutePath.rawSegments],
+		folderId: props.folder.id,
 	},
 }));
 
 const refDropZone = ref<HTMLElement | null>(null);
 
-const cardsStore = useCardsStore();
+const loreEntryRepo = useRepo(LoreEntryRepo);
+const folderRepo = useRepo(FolderRepo);
+
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
-	acceptMIME: [CustomMIMEType.CardType, CustomMIMEType.CardFolder],
+	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
 	acceptMode: ["moveToFolder"],
 });
 
@@ -45,14 +48,20 @@ function onDropAccepted(items: DropPayload[]) {
 		useTryCatch(() => {
 			const { dataType, data: itemToMove } = items[0];
 
-			if (dataType === CustomMIMEType.CardType && isCard(itemToMove)) {
-				cardsStore.moveCard(itemToMove, cardsStore.currentFolder, props.folder);
+			if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
+				folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
 			}
 
-			if (dataType === CustomMIMEType.CardFolder && isCardFolder(itemToMove)) {
-				cardsStore.moveFolder(itemToMove, props.folder);
+			if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
+				loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
 			}
 		});
 	}
 }
 </script>
+<style scoped>
+/* Fix the folder's color being used text color due to Vuetify forwarding the folder object as props to the v-breadcrumbs-item for some reason */
+.without-color {
+	color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)) !important;
+}
+</style>

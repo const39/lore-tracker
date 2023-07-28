@@ -1,4 +1,4 @@
-import { Locale } from "@/core/translation";
+import { Locale } from "@/core/translation/translation";
 
 const en: Locale = {
 	pages: {
@@ -156,7 +156,7 @@ const en: Locale = {
 			genericError: "An error occurred.",
 			corruptedSave: "Corrupted or incomplete save data.",
 			loadBackup: "Please load a backup version to retrieve your data.",
-			saveFileImportCancelled: "Save file import cancelled.",
+			saveFileImportCancelled: "Save file import cancelled",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
 			files: {
 				invalidOperation: {

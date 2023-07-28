@@ -17,9 +17,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { getIcon } from "@/core/icons";
-import { CardCategory, Event, EventType } from "@/core/model/cards";
-import { useCardsStore } from "@/store/cards";
+import { Category, Event, EventType } from "@/core/models";
 import MarkdownView from "../common/MarkdownView.vue";
 
 interface Node {
@@ -36,7 +34,6 @@ const props = defineProps<{
 	item: ItemType;
 }>();
 
-const cardsStore = useCardsStore();
 const router = useRouter();
 
 /**
@@ -54,9 +51,9 @@ const node = computed(() => {
 		info.text = props.item;
 		info.icon = "";
 		info.color = "on-surface";
-	} else if (props.item._category === CardCategory.Event) {
-		info.text = props.item.desc;
-		info.icon = getIcon(props.item);
+	} else if (props.item.category === Category.Event) {
+		info.text = props.item.getText();
+		info.icon = props.item.getIcon();
 
 		switch (props.item.type) {
 			case EventType.COMBAT:
@@ -85,18 +82,13 @@ const node = computed(() => {
  */
 function goToCard() {
 	if (typeof props.item !== "string") {
-		const category = props.item._category;
-		// Find the folder hosting the card referenced by the tag
-		const folder = cardsStore
-			.getCategoryFolder(category)
-			.getFolderWithFile(props.item.id)?.folder;
-		if (folder) {
-			// Navigate to the card's folder, passing along the card ID in the URL's hash
+		if (props.item.folderId) {
+			// Navigate to the event's folder, passing along the event ID in the URL's hash
 			router.push({
-				name: "LoreBookTab",
+				name: "LoreBookContent",
 				params: {
-					category,
-					folderURI: [...folder.absolutePath.rawSegments],
+					category: props.item.category,
+					folderId: props.item.folderId,
 				},
 				hash: `#${props.item.id}-card`,
 			});

@@ -45,9 +45,9 @@
 import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon } from "@/core/icons";
-import { Quest, Task } from "@/core/model/cards";
+import { Quest, Task } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
 import { required } from "@/core/validationRules";
 
 const props = defineProps<{
@@ -84,11 +84,6 @@ function complete(idx: number): void {
 function remove(idx: number): void {
 	if (idx in model.value.tasks) model.value.tasks.splice(idx, 1);
 }
-
-// function cleanInput(): void {
-// 	// Remove empty tasks
-// 	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());
-// }
 </script>
 
 <style scoped>

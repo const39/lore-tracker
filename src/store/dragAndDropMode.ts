@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref, watch } from "vue";
-import { UnionOfTupleValues } from "@/core/utilities";
+import { UnionOfTupleValues } from "@/core/utils/types";
 import { useFilterStore } from "./filter";
 import { usePreferencesStore } from "./preferences";
 

@@ -6,7 +6,7 @@
 				<v-col class="flex-grow-0 flex-shrink-1 text-center">
 					<v-tooltip location="top">
 						<template #activator="{ props }">
-							<v-icon v-bind="props" :icon="getIcon(itemData)" size="large" />
+							<v-icon v-bind="props" :icon="itemData.getIcon()" size="large" />
 						</template>
 						{{ $t(`eventTypes.${itemData.type}`) }}
 					</v-tooltip>
@@ -27,8 +27,7 @@
 <script lang="ts" setup>
 import TagList from "@/components/cards/tags/TagList.vue";
 import MarkdownView from "@/components/common/MarkdownView.vue";
-import { getIcon } from "@/core/icons";
-import { Event } from "@/core/model/cards";
+import { Event } from "@/core/models";
 import { t as $t } from "@/core/translation";
 
 defineProps<{
