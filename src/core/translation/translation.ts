@@ -22,6 +22,7 @@ export interface Locale {
 			progress: string;
 			entryCount: string;
 			lastUpdate: string;
+			empty: string;
 		};
 		state: {
 			day: string;

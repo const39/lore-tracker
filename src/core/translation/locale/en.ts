@@ -20,6 +20,7 @@ const en: Locale = {
 			progress: "Progress",
 			entryCount: "Entry count",
 			lastUpdate: "Last update",
+			empty: "No campaign available.",
 		},
 		state: {
 			day: "Day",

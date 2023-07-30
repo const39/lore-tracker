@@ -12,7 +12,7 @@
 			@click="showAddDialog = true"
 		/>
 	</div>
-	<v-table hover>
+	<v-table v-if="campaigns.length" hover>
 		<thead>
 			<tr>
 				<th>
@@ -52,6 +52,9 @@
 			</tr>
 		</tbody>
 	</v-table>
+	<div v-else class="py-4">
+		{{ $t("campaign.table.empty") }}
+	</div>
 
 	<CampaignForm v-model="showAddDialog" @submit="addCampaign" />
 </template>
