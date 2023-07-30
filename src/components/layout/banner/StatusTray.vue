@@ -8,7 +8,7 @@
 					@click.prevent.right="daysCounter--"
 				>
 					<v-icon color="yellow-darken-2" size="small" icon="mdi-white-balance-sunny" />
-					{{ $t("status.day") + daysCounter }}
+					{{ $t("campaign.state.day") + daysCounter }}
 				</span>
 				|
 				<span
@@ -17,7 +17,7 @@
 					@click.prevent.right="previousSeason"
 				>
 					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
-					{{ $t(`status.seasons.${currentSeason}`) }}
+					{{ $t(`campaign.state.seasons.${currentSeason}`) }}
 				</span>
 			</div>
 		</template>

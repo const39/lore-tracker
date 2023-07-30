@@ -103,7 +103,7 @@ const nodes = computed(() => {
 	let nodes: Array<Event | string> = [];
 	for (const index in groupedByDay) {
 		// Push a header for the current day
-		nodes.push(`${$t("status.day")} ${index}`);
+		nodes.push(`${$t("campaign.state.day")} ${index}`);
 
 		// Add all events that happened this day, keeping the order defined by the user
 		nodes = nodes.concat(groupedByDay[index]);

@@ -2,6 +2,7 @@ import { Locale } from "@/core/translation/translation";
 
 const en: Locale = {
 	pages: {
+		campaigns: "Campaigns",
 		loreBook: "Lore book",
 		timeline: "Timeline",
 	},
@@ -9,6 +10,27 @@ const en: Locale = {
 	notFound: {
 		title: "Page Not Found",
 		message: "Go back to ",
+	},
+
+	campaign: {
+		name: "Campaign",
+		table: {
+			title: "Welcome on LoreTracker!",
+			subtitle: "Your campaigns",
+			progress: "Progress",
+			entryCount: "Entry count",
+			lastUpdate: "Last update",
+		},
+		state: {
+			day: "Day",
+			entry: "entries",
+			seasons: {
+				spring: "Spring",
+				summer: "Summer",
+				autumn: "Autumn",
+				winter: "Winter",
+			},
+		},
 	},
 
 	timeline: {
@@ -40,13 +62,6 @@ const en: Locale = {
 	},
 
 	status: {
-		day: "Day ",
-		seasons: {
-			spring: "Spring",
-			summer: "Summer",
-			autumn: "Autumn",
-			winter: "Winter",
-		},
 		action: "Click to increase or decrease",
 		search: "Search",
 		selectors: {

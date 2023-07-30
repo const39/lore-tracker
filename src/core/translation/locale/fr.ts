@@ -2,6 +2,7 @@ import { Locale } from "@/core/translation/translation";
 
 const fr: Locale = {
 	pages: {
+		campaigns: "Campagnes",
 		loreBook: "Lore book",
 		timeline: "Frise des événements",
 	},
@@ -9,6 +10,27 @@ const fr: Locale = {
 	notFound: {
 		title: "Page Introuvable",
 		message: "Retourner au ",
+	},
+
+	campaign: {
+		name: "Campagne",
+		table: {
+			title: "Bienvenue sur LoreTracker !",
+			subtitle: "Vos campagnes",
+			progress: "Progression",
+			entryCount: "Nombre d'entrées",
+			lastUpdate: "Dernière modification",
+		},
+		state: {
+			day: "Jour",
+			entry: "entrée(s)",
+			seasons: {
+				spring: "Printemps",
+				summer: "Été",
+				autumn: "Automne",
+				winter: "Hiver",
+			},
+		},
 	},
 
 	timeline: {
@@ -40,13 +62,6 @@ const fr: Locale = {
 	},
 
 	status: {
-		day: "Jour ",
-		seasons: {
-			spring: "Printemps",
-			summer: "Été",
-			autumn: "Automne",
-			winter: "Hiver",
-		},
 		action: "Cliquez pour augmenter ou diminuer",
 		search: "Recherche",
 		selectors: {

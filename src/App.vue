@@ -11,12 +11,22 @@
 
 			<v-spacer />
 
-			<v-btn :to="{ name: 'LoreBook' }" variant="text">
-				<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+			<v-btn :to="{ name: 'Campaigns' }" variant="text">
+				<span class="mr-2">{{ $t("pages.campaigns") }}</span>
 			</v-btn>
-			<v-btn :to="{ name: 'Timeline' }" variant="text">
-				<span class="mr-2">{{ $t("pages.timeline") }}</span>
-			</v-btn>
+
+			<!-- Display campaign-specific navigation buttons when we're on a campaign's LoreBook -->
+			<template v-if="campaignId">
+				<v-divider class="mx-2" vertical />
+
+				<v-btn :to="{ name: 'LoreBookRoot', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+				</v-btn>
+
+				<v-btn :to="{ name: 'Timeline', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.timeline") }}</span>
+				</v-btn>
+			</template>
 
 			<!-- Options menu -->
 			<v-menu v-model="showMenu" location="bottom" start>
@@ -127,8 +137,8 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
 import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
@@ -150,11 +160,14 @@ const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
+const route = useRoute();
 const router = useRouter();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
+
+const campaignId = computed(() => route.params.campaignId);
 
 // Register hotkeys
 onKeyDown(["Escape", "F1", "F2", "F3"], hotkey);

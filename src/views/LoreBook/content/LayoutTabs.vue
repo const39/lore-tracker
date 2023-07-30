@@ -3,7 +3,7 @@
 		<v-tab
 			v-for="tab in tabs"
 			:key="tab"
-			:to="{ name: 'LoreBookContent', params: { category: tab } }"
+			:to="{ name: 'LoreBook', params: { campaignId: campaign.id, category: tab } }"
 		>
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
@@ -36,8 +36,8 @@
 				<v-alert v-else v-bind="alertState" variant="tonal">
 					<router-link
 						:to="{
-							name: 'LoreBookContent',
-							params: { category },
+							name: 'LoreBook',
+							params: { campaignId: campaign.id, category },
 						}"
 					>
 						{{ $t("messages.errors.files.folderNotFound.action") }}
@@ -56,7 +56,7 @@ import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
-import { Category, Folder, LoreEntry } from "@/core/models";
+import { Campaign, Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { defer } from "@/core/utils/functions";
@@ -64,7 +64,11 @@ import { Icon } from "@/core/utils/icons";
 import { Maybe } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 
-const props = defineProps<{ category: Category; currentFolder: Maybe<Folder> }>();
+const props = defineProps<{
+	campaign: Campaign;
+	category: Category;
+	currentFolder: Maybe<Folder>;
+}>();
 
 const tabs = Object.values(Category);
 

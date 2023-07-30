@@ -4,6 +4,7 @@ import fr from "./locale/fr";
 
 export interface Locale {
 	pages: {
+		campaigns: string;
 		loreBook: string;
 		timeline: string;
 	};
@@ -11,6 +12,27 @@ export interface Locale {
 	notFound: {
 		title: string;
 		message: string;
+	};
+
+	campaign: {
+		name: string;
+		table: {
+			title: string;
+			subtitle: string;
+			progress: string;
+			entryCount: string;
+			lastUpdate: string;
+		};
+		state: {
+			day: string;
+			entry: string;
+			seasons: {
+				spring: string;
+				summer: string;
+				autumn: string;
+				winter: string;
+			};
+		};
 	};
 
 	timeline: {
@@ -42,13 +64,6 @@ export interface Locale {
 	};
 
 	status: {
-		day: string;
-		seasons: {
-			spring: string;
-			summer: string;
-			autumn: string;
-			winter: string;
-		};
 		action: string;
 		search: string;
 		selectors: {
