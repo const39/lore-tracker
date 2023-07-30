@@ -13,11 +13,12 @@ import {
 	StoreName,
 	Taggable,
 } from "./types";
-import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
+import { Campaign, Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
 export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
 	desc: string;
 	folderId: UUID | undefined;
+	campaignId: UUID | undefined;
 }
 
 export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId">;
@@ -33,8 +34,10 @@ export class LoreEntry extends PersistentModel implements ILoreEntry, Describabl
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
 	@Attr(undefined) declare folderId: UUID | undefined;
+	@Attr(undefined) declare campaignId: UUID | undefined;
 
 	@BelongsTo(() => Folder, "folderId") declare parent: Folder<LoreEntry> | undefined;
+	@BelongsTo(() => Campaign, "campaignId") declare campaign: Campaign | undefined;
 
 	static override types() {
 		return {

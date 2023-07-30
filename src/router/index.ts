@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteLocation } from "vue-router";
 import { Category } from "@/core/models";
-import CampaignsView from "../views/CampaignsView.vue";
+import CampaignsView from "../views/CampaignsView/CampaignsView.vue";
 
 const routes = [
 	{

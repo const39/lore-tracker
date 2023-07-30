@@ -122,6 +122,7 @@ const en: Locale = {
 	},
 
 	dialogs: {
+		addCampaign: "New campaign",
 		addFolder: "New folder",
 		addQuest: "New quest",
 		addEvent: "New event",
@@ -138,6 +139,7 @@ const en: Locale = {
 		editFaction: "Edit a faction",
 		editNote: "Edit a note",
 
+		deleteCampaign: "Delete a campaign",
 		deleteFolder: "Delete a folder",
 		deleteQuest: "Delete a quest",
 		deleteEvent: "Delete an event",
@@ -147,6 +149,7 @@ const en: Locale = {
 		deleteNote: "Delete a note",
 		deleteConfirm: "Do you really want to delete ",
 		deleteConfirmFolder: "This will delete all its subfolders and files.",
+		deleteConfirmCampaign: "This will delete all its entries.",
 	},
 
 	actions: {

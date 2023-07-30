@@ -3,6 +3,7 @@ import { IndexedDBAdapter, database } from "../persistence";
 import { getRandomColor } from "../utils/colors";
 import { Icon } from "../utils/icons";
 import { OptionalExceptFor, UUID } from "../utils/types";
+import { Campaign } from "./Campaign";
 import { LoreEntry } from "./LoreEntry";
 import { PersistentModel } from "./PersistentModel";
 import {
@@ -23,6 +24,7 @@ export interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
 	name: string;
 	color: string;
 	parentId: UUID | undefined;
+	campaignId: UUID | undefined;
 }
 
 type MinimalFolder = OptionalExceptFor<IFolder, "category">;
@@ -41,10 +43,12 @@ export class Folder<File extends LoreEntry = LoreEntry>
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
 	@Attr(undefined) declare parentId: UUID | undefined;
+	@Attr(undefined) declare campaignId: UUID | undefined;
 
 	@BelongsTo(() => Folder, "parentId") declare parent: Folder<File> | undefined;
 	@HasMany(() => LoreEntry, "folderId") declare files: File[];
 	@HasMany(() => Folder, "parentId") declare subfolders: Folder<File>[];
+	@BelongsTo(() => Campaign, "campaignId") declare campaign: Campaign | undefined;
 
 	constructor(data: MinimalFolder, ...args: any[]) {
 		// Generate a random color if none is given

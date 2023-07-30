@@ -124,6 +124,7 @@ export interface Locale {
 	};
 
 	dialogs: {
+		addCampaign: string;
 		addFolder: string;
 		addQuest: string;
 		addEvent: string;
@@ -140,6 +141,7 @@ export interface Locale {
 		editFaction: string;
 		editNote: string;
 
+		deleteCampaign: string;
 		deleteFolder: string;
 		deleteQuest: string;
 		deleteEvent: string;
@@ -149,6 +151,7 @@ export interface Locale {
 		deleteNote: string;
 		deleteConfirm: string;
 		deleteConfirmFolder: string;
+		deleteConfirmCampaign: string;
 	};
 
 	actions: {
