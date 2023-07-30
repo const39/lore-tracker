@@ -26,7 +26,7 @@
 			<QuickNote :campaign="currentCampaign" />
 		</div>
 	</template>
-	<!-- Display alert in case folder does not exist -->
+	<!-- Display alert in case campaign does not exist -->
 	<v-alert
 		v-else
 		:title="$t('messages.errors.campaign.campaignNotFound.title')"
