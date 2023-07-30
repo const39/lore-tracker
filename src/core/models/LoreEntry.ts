@@ -21,7 +21,7 @@ export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggabl
 	campaignId: UUID | undefined;
 }
 
-export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId">;
+export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId" | "campaignId">;
 
 export class LoreEntry extends PersistentModel implements ILoreEntry, Describable, HasIcon {
 	static entity: string | Category = StoreName.LoreEntry;

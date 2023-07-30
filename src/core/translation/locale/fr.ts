@@ -176,6 +176,12 @@ const fr: Locale = {
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			campaign: {
+				campaignNotFound: {
+					title: "Campagne introuvable",
+					action: "Retourner à la liste des campagnes",
+				},
+			},
 			files: {
 				invalidOperation: {
 					title: "Opération impossible",

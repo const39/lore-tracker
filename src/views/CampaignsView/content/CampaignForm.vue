@@ -37,6 +37,7 @@ import { VForm } from "vuetify/components";
 import { Campaign } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import Icon from "@/core/utils/icons";
+import validationRules from "@/core/validationRules";
 
 const props = defineProps<{
 	modelValue: boolean; // v-model
@@ -50,8 +51,8 @@ const emit = defineEmits<{
 
 const rules = {
 	name: [
-		(v: string) => !!v || $t("fields.requiredField"),
-		(v: string) => v.length <= 30 || "30 max.",
+		validationRules.required($t("fields.requiredField")),
+		validationRules.counter("30 max.", 30),
 	],
 };
 

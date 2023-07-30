@@ -24,18 +24,20 @@
 import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import { Folder, LoreEntry } from "@/core/models";
-import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
+import { Campaign, Folder, LoreEntry } from "@/core/models";
+import { CampaignRepo, FolderRepo, LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import FolderTree from "./FolderTree.vue";
 
 const props = defineProps<{
+	campaign: Campaign;
 	currentFolder: Folder;
 	itemToMove: Folder | LoreEntry;
 }>();
 
 const emit = defineEmits(["close", "submit"]);
 
+const campaignRepo = useRepo(CampaignRepo);
 const loreEntryRepo = useRepo(LoreEntryRepo);
 const folderRepo = useRepo(FolderRepo);
 
@@ -46,7 +48,7 @@ const title = computed(() => {
 });
 
 const rootFolder = computed(() => {
-	return [folderRepo.getRootFolder(props.itemToMove.category)];
+	return [campaignRepo.getRootFolder(props.campaign, props.itemToMove.category)];
 });
 
 const disabledItems = computed(() => {

@@ -1,24 +1,24 @@
 import { LocalisableError } from "@/core/error";
-import { Category, Folder, LoreEntry } from "@/core/models";
+import { Folder, LoreEntry } from "@/core/models";
 import { t as $t } from "@/core/translation/translation";
 import { Maybe, UUID } from "@/core/utils/types";
 import { PartialModel, QueryOptions } from "./BaseRepo";
 import CardRepo from "./CardRepo";
 import LoreEntryRepo from "./LoreEntryRepo";
 
-export class InvalidFileOperationError extends Error implements LocalisableError {
+export class InvalidFileOperationError extends LocalisableError {
 	override toLocaleString(): string {
 		return $t("messages.errors.files.invalidOperation.title");
 	}
 }
 
-export class FolderNotFoundError extends Error implements LocalisableError {
+export class FolderNotFoundError extends LocalisableError {
 	override toLocaleString(): string {
 		return $t("messages.errors.files.folderNotFound.title");
 	}
 }
 
-export class FolderNameAlreadyUsedError extends Error implements LocalisableError {
+export class FolderNameAlreadyUsedError extends LocalisableError {
 	override toLocaleString(): string {
 		return $t("messages.errors.files.nameAlreadyUsed.title");
 	}
@@ -95,21 +95,8 @@ export default class FolderRepo extends CardRepo<Folder> {
 		this.getSubfolders(id).forEach((subfolder) => this.delete(subfolder.id));
 	}
 
-	count() {
-		return this.all().length;
-	}
-
-	getFolder(id: UUID, category?: Category, options?: QueryOptions) {
-		if (category) {
-			return this.createQuery(options).whereId(id).where("category", category).first();
-		} else {
-			return this.createQuery(options).find(id);
-		}
-	}
-
-	getRootFolder(category: Category, options?: QueryOptions) {
-		// Type assertion is there because root folders SHOULD have been created on app startup (see App.vue)
-		return this.createQuery(options).where("name", `${category}-root`).first()!;
+	getFolder(id: UUID, options?: QueryOptions) {
+		return this.createQuery(options).find(id);
 	}
 
 	/**
@@ -120,11 +107,11 @@ export default class FolderRepo extends CardRepo<Folder> {
 	getHierarchy(from: Folder) {
 		const hierarchy = [];
 		// Load the folder with its parent relation
-		let folder: Maybe<Folder> = this.getFolder(from.id, undefined, { withRelations: true });
+		let folder: Maybe<Folder> = this.getFolder(from.id, { withRelations: true });
 		while (folder) {
 			hierarchy.push(folder);
 			if (folder.parent)
-				folder = this.getFolder(folder.parent.id, undefined, { withRelations: true });
+				folder = this.getFolder(folder.parent.id, { withRelations: true });
 			else break;
 		}
 
@@ -147,9 +134,5 @@ export default class FolderRepo extends CardRepo<Folder> {
 
 	getChildrenCount(folder: Folder) {
 		return this.getSubfolders(folder).length + this.getFiles(folder).length;
-	}
-
-	createRootFolder(category: Category) {
-		return this.add(new Folder({ category, name: `${category}-root` }));
 	}
 }

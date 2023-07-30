@@ -15,19 +15,21 @@
 			<v-container v-if="i === activeTab">
 				<template v-if="!alertState.isShown">
 					<!-- Safe-guard - Breadcrumbs cannot be shown if there's no current folder -->
-					<FolderBreadcrumbs v-if="currentFolder" :current-folder="currentFolder" />
+					<FolderBreadcrumbs v-if="folder" :folder="folder" />
 					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
 						:items="(folders as Folder[])"
+						:campaign="campaign"
 						:category="category"
-						:folder-id="currentFolder?.id"
+						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
 						:items="(files as LoreEntry[])"
+						:campaign="campaign"
 						:category="category"
-						:folder-id="currentFolder?.id"
+						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
@@ -67,7 +69,7 @@ import { useFilterStore } from "@/store/filter";
 const props = defineProps<{
 	campaign: Campaign;
 	category: Category;
-	currentFolder: Maybe<Folder>;
+	folder: Maybe<Folder>;
 }>();
 
 const tabs = Object.values(Category);
@@ -98,9 +100,9 @@ async function updateItems() {
 		if (filterStore.isFilterActive) {
 			folders.value = filterStore.filterFolders(props.category);
 			files.value = filterStore.filterLoreEntries(props.category);
-		} else if (props.currentFolder) {
-			folders.value = folderRepo.getSubfolders(props.currentFolder);
-			files.value = folderRepo.getFiles(props.currentFolder);
+		} else if (props.folder) {
+			folders.value = folderRepo.getSubfolders(props.folder);
+			files.value = folderRepo.getFiles(props.folder);
 		} else {
 			setError($t("messages.errors.files.folderNotFound.title"));
 		}

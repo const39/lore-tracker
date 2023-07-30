@@ -178,6 +178,12 @@ export interface Locale {
 			loadBackup: string;
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
+			campaign: {
+				campaignNotFound: {
+					title: string;
+					action: string;
+				};
+			};
 			files: {
 				invalidOperation: {
 					title: string;

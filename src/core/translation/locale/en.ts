@@ -176,6 +176,12 @@ const en: Locale = {
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
+			campaign: {
+				campaignNotFound: {
+					title: "Campaign not found",
+					action: "Go back to the campaign list",
+				},
+			},
 			files: {
 				invalidOperation: {
 					title: "Invalid operation",

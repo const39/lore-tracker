@@ -27,7 +27,7 @@ export interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
 	campaignId: UUID | undefined;
 }
 
-type MinimalFolder = OptionalExceptFor<IFolder, "category">;
+type MinimalFolder = OptionalExceptFor<IFolder, "category" | "campaignId">;
 
 export class Folder<File extends LoreEntry = LoreEntry>
 	extends PersistentModel
@@ -66,8 +66,8 @@ export class Folder<File extends LoreEntry = LoreEntry>
 		throw new Error("Item does not match the expected Folder data structure.");
 	}
 
-	static createRootFolder(category: Category) {
-		return new Folder({ category, name: `${category}-root` });
+	static createRootFolder(campaign: Campaign, category: Category) {
+		return new Folder({ campaignId: campaign.id, category, name: `${category}-root` });
 	}
 
 	getText() {

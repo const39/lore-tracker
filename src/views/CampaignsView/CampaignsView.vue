@@ -62,7 +62,7 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import CardOptions from "@/components/cards/CardOptions.vue";
 import { useTryCatch } from "@/composables/tryCatch";
-import { Campaign } from "@/core/models";
+import { Campaign, Category } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import Icon from "@/core/utils/icons";
@@ -84,6 +84,11 @@ function getLastUpdate(campaign: Campaign) {
 
 function addCampaign(campaign: Campaign) {
 	campaignRepo.add(campaign);
+
+	// Create the campaign's category root folders
+	Object.values(Category).forEach((category) => {
+		campaignRepo.createRootFolder(campaign, category);
+	});
 }
 
 function openCampaign(campaign: Campaign) {
