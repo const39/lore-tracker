@@ -42,9 +42,14 @@
 import { useElementSize, useWindowSize } from "@vueuse/core";
 import { useRepo } from "pinia-orm";
 import { VNodeRef, computed, ref, watch } from "vue";
+import { Campaign } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { usePreferencesStore } from "@/store/preferences";
+
+const props = defineProps<{
+	campaign: Campaign;
+}>();
 
 const open = ref(false);
 const resizing = ref(false);
@@ -60,16 +65,12 @@ const prefStore = usePreferencesStore();
 const { width: windowWidth, height: windowHeight } = useWindowSize(); // Reactive window size
 const elementSize = useElementSize(element); // Reactive element size
 
-const campaign = computed(() => campaignRepo.getCurrentCampaign());
-
 const content = computed({
 	get() {
-		return campaign.value?.quickNote;
+		return props.campaign.quickNote;
 	},
 	set(value) {
-		// Type-guard
-		if (campaign.value)
-			campaignRepo.update({ id: campaign.value.id, quickNote: value?.trim() ?? "" });
+		campaignRepo.update({ id: props.campaign.id, quickNote: value?.trim() ?? "" });
 	},
 });
 

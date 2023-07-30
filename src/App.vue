@@ -71,11 +71,6 @@
 			</v-container>
 		</v-main>
 
-		<!-- Quick note - Floating expanding text area -->
-		<div class="ma-4 quick-note-wrapper">
-			<QuickNote />
-		</div>
-
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
 
@@ -140,7 +135,6 @@ import { onKeyDown } from "@vueuse/core";
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
-import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
@@ -232,12 +226,5 @@ onMounted(() => {
 <style>
 .header-icon > img {
 	position: initial;
-}
-
-.quick-note-wrapper {
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	z-index: 5;
 }
 </style>

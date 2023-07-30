@@ -1,29 +1,37 @@
 <template>
-	<Banner>
-		<template #actions>
-			<LorebookActions />
-		</template>
-	</Banner>
+	<template v-if="currentCampaign">
+		<Banner>
+			<template #actions>
+				<LorebookActions />
+			</template>
+		</Banner>
 
-	<v-row v-if="currentCampaign">
-		<v-slide-x-transition mode="in-out">
-			<v-col v-if="currentFolder && sidePanel.isOpen" v-bind="cols">
-				<SidePanel :current-folder="currentFolder" />
+		<v-row>
+			<v-slide-x-transition mode="in-out">
+				<v-col v-if="currentFolder && sidePanel.isOpen" v-bind="cols">
+					<SidePanel :current-folder="currentFolder" />
+				</v-col>
+			</v-slide-x-transition>
+			<v-col cols="">
+				<LayoutTabs
+					:campaign="currentCampaign"
+					:category="category"
+					:current-folder="currentFolder"
+				/>
 			</v-col>
-		</v-slide-x-transition>
-		<v-col cols="">
-			<LayoutTabs
-				:campaign="currentCampaign"
-				:category="category"
-				:current-folder="currentFolder"
-			/>
-		</v-col>
-	</v-row>
+		</v-row>
+
+		<!-- Quick note - Floating expanding text area -->
+		<div class="ma-4 quick-note-wrapper">
+			<QuickNote :campaign="currentCampaign" />
+		</div>
+	</template>
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed } from "vue";
+import QuickNote from "@/components/global/QuickNote.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
 import { Category } from "@/core/models";
@@ -46,7 +54,7 @@ const cols = computed(() => {
 });
 
 const currentCampaign = computed(() => {
-	return campaignRepo.getCurrentCampaign();
+	return campaignRepo.find(props.campaignId);
 });
 
 // Current folder is either:
@@ -59,3 +67,11 @@ const currentFolder = computed(() => {
 		: folderRepo.getRootFolder(props.category, { withRelations: true });
 });
 </script>
+<style scoped>
+.quick-note-wrapper {
+	position: fixed;
+	bottom: 0;
+	right: 0;
+	z-index: 5;
+}
+</style>
