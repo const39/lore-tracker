@@ -1,4 +1,4 @@
-import { Model } from "pinia-orm";
+import { Model, MetaValues } from "pinia-orm";
 import { Icon } from "@/core/utils/icons";
 import { Constructor, UUID } from "@/core/utils/types";
 
@@ -31,6 +31,10 @@ export interface Categorizable {
 
 export interface Taggable {
 	tags: UUID[];
+}
+
+export interface WithMeta {
+	_meta?: MetaValues;
 }
 
 export interface Revivable<T> {

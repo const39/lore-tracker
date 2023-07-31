@@ -4,7 +4,7 @@ import { UUID } from "../utils/types";
 import { Folder } from "./Folder";
 import { LoreEntry } from "./LoreEntry";
 import { PersistentModel } from "./PersistentModel";
-import { Indexable, StoreName } from "./types";
+import { Indexable, StoreName, WithMeta } from "./types";
 
 export enum Season {
 	SPRING = "spring",
@@ -13,7 +13,7 @@ export enum Season {
 	WINTER = "winter",
 }
 
-export interface ICampaign extends Indexable {
+export interface ICampaign extends Indexable, WithMeta {
 	name: string;
 	days: number;
 	season: Season;

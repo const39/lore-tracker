@@ -55,6 +55,21 @@
     "ICampaign": {
       "type": "object",
       "properties": {
+        "_meta": {
+          "type": "object",
+          "properties": {
+            "createdAt": {
+              "type": "number"
+            },
+            "updatedAt": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "createdAt",
+            "updatedAt"
+          ]
+        },
         "id": {
           "$ref": "#/definitions/UUID"
         },
@@ -94,6 +109,21 @@
     "IFolder": {
       "type": "object",
       "properties": {
+        "_meta": {
+          "type": "object",
+          "properties": {
+            "createdAt": {
+              "type": "number"
+            },
+            "updatedAt": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "createdAt",
+            "updatedAt"
+          ]
+        },
         "tags": {
           "type": "array",
           "items": {
@@ -116,7 +146,24 @@
           "type": "string"
         },
         "parentId": {
-          "$ref": "#/definitions/UUID"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/UUID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "campaignId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/UUID"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
@@ -143,6 +190,21 @@
     "ILoreEntry": {
       "type": "object",
       "properties": {
+        "_meta": {
+          "type": "object",
+          "properties": {
+            "createdAt": {
+              "type": "number"
+            },
+            "updatedAt": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "createdAt",
+            "updatedAt"
+          ]
+        },
         "tags": {
           "type": "array",
           "items": {
@@ -162,7 +224,24 @@
           "type": "string"
         },
         "folderId": {
-          "$ref": "#/definitions/UUID"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/UUID"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "campaignId": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/UUID"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       },
       "required": [
