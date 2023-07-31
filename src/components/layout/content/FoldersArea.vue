@@ -34,7 +34,7 @@
 import { useRepo } from "pinia-orm";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { Category, Folder, Indexable, Orderable } from "@/core/models";
+import { Campaign, Category, Folder, Indexable, Orderable } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
@@ -43,6 +43,7 @@ import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
 	items: Folder[];
+	campaign: Campaign;
 	category: Category;
 	folderId?: UUID;
 	loading?: boolean;
@@ -64,7 +65,11 @@ function newFolder(): void {
 	if (props.folderId)
 		sidePanelStore.showFolderForm(
 			"add",
-			new Folder({ category: props.category, parentId: props.folderId })
+			new Folder({
+				campaignId: props.campaign.id,
+				category: props.category,
+				parentId: props.folderId,
+			})
 		);
 }
 

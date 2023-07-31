@@ -2,6 +2,7 @@ import { Locale } from "@/core/translation/translation";
 
 const en: Locale = {
 	pages: {
+		campaigns: "Campaigns",
 		loreBook: "Lore book",
 		timeline: "Timeline",
 	},
@@ -9,6 +10,28 @@ const en: Locale = {
 	notFound: {
 		title: "Page Not Found",
 		message: "Go back to ",
+	},
+
+	campaign: {
+		name: "Campaign",
+		table: {
+			title: "Welcome on LoreTracker!",
+			subtitle: "Your campaigns",
+			progress: "Progress",
+			entryCount: "Entry count",
+			lastUpdate: "Last update",
+			empty: "No campaign available.",
+		},
+		state: {
+			day: "Day",
+			entry: "entries",
+			seasons: {
+				spring: "Spring",
+				summer: "Summer",
+				autumn: "Autumn",
+				winter: "Winter",
+			},
+		},
 	},
 
 	timeline: {
@@ -40,13 +63,6 @@ const en: Locale = {
 	},
 
 	status: {
-		day: "Day ",
-		seasons: {
-			spring: "Spring",
-			summer: "Summer",
-			autumn: "Autumn",
-			winter: "Winter",
-		},
 		action: "Click to increase or decrease",
 		search: "Search",
 		selectors: {
@@ -107,6 +123,7 @@ const en: Locale = {
 	},
 
 	dialogs: {
+		addCampaign: "New campaign",
 		addFolder: "New folder",
 		addQuest: "New quest",
 		addEvent: "New event",
@@ -123,6 +140,7 @@ const en: Locale = {
 		editFaction: "Edit a faction",
 		editNote: "Edit a note",
 
+		deleteCampaign: "Delete a campaign",
 		deleteFolder: "Delete a folder",
 		deleteQuest: "Delete a quest",
 		deleteEvent: "Delete an event",
@@ -132,6 +150,7 @@ const en: Locale = {
 		deleteNote: "Delete a note",
 		deleteConfirm: "Do you really want to delete ",
 		deleteConfirmFolder: "This will delete all its subfolders and files.",
+		deleteConfirmCampaign: "This will delete all its entries.",
 	},
 
 	actions: {
@@ -158,6 +177,12 @@ const en: Locale = {
 			loadBackup: "Please load a backup version to retrieve your data.",
 			saveFileImportCancelled: "Save file import cancelled",
 			saveFileImportFailed: "The uploaded save file cannot be read.",
+			campaign: {
+				campaignNotFound: {
+					title: "Campaign not found",
+					action: "Go back to the campaign list",
+				},
+			},
 			files: {
 				invalidOperation: {
 					title: "Invalid operation",
@@ -206,11 +231,6 @@ const en: Locale = {
 			optionName: "Show hotkeys",
 			title: "Hotkeys",
 			hold: "Hold",
-			pages: {
-				title: "Pages",
-				toLoreBook: "Navigate to Lore Book",
-				toTimeline: "Navigate to Timeline",
-			},
 			content: {
 				title: "Content",
 				showTabQuest: "Show Quest tab",
@@ -222,7 +242,7 @@ const en: Locale = {
 			},
 			misc: {
 				title: "Other",
-				openOptions: "Open/close option menu",
+				openOptions: "Toggle options menu",
 			},
 		},
 	},

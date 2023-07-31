@@ -8,7 +8,7 @@
 					@click.prevent.right="daysCounter--"
 				>
 					<v-icon color="yellow-darken-2" size="small" icon="mdi-white-balance-sunny" />
-					{{ $t("status.day") + daysCounter }}
+					{{ $t("campaign.state.day") + " " + daysCounter }}
 				</span>
 				|
 				<span
@@ -17,7 +17,7 @@
 					@click.prevent.right="previousSeason"
 				>
 					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
-					{{ $t(`status.seasons.${currentSeason}`) }}
+					{{ $t(`campaign.state.seasons.${currentSeason}`) }}
 				</span>
 			</div>
 		</template>
@@ -29,6 +29,7 @@
 import { computed } from "vue";
 import { Season } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import validationRules from "@/core/validationRules";
 
 const props = defineProps<{
 	day: number; // v-model:day
@@ -41,13 +42,14 @@ const emit = defineEmits<{
 }>();
 
 const seasons = Object.values(Season);
+const dayValidator = validationRules.numberInRange("", 1);
 
 const daysCounter = computed({
 	get() {
 		return props.day;
 	},
 	set(val) {
-		if (Number.isSafeInteger(val) && val > -1) emit("update:day", val);
+		if (dayValidator(val) === true) emit("update:day", val);
 	},
 });
 

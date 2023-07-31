@@ -1,5 +1,5 @@
 import { Attr, BelongsTo, Num, Str, Uid } from "pinia-orm/dist/decorators";
-import { Constructor, OptionalExceptFor, UUID } from "@/core/utils/types";
+import { Constructor, Maybe, OptionalExceptFor, UUID } from "@/core/utils/types";
 import { IndexedDBAdapter, database } from "../persistence";
 import { Icon } from "../utils/icons";
 import { PersistentModel } from "./PersistentModel";
@@ -12,15 +12,20 @@ import {
 	Orderable,
 	StoreName,
 	Taggable,
+	WithMeta,
 } from "./types";
-import { Character, Event, Faction, Folder, Location, Note, Quest } from ".";
+import { Campaign, Character, Event, Faction, Folder, Location, Note, Quest } from ".";
 
-export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable {
+export interface ILoreEntry extends Indexable, Orderable, Categorizable, Taggable, WithMeta {
 	desc: string;
-	folderId: UUID | undefined;
+	folderId: Maybe<UUID>;
+	campaignId: Maybe<UUID>;
 }
 
-export type MinimalLoreEntry = OptionalExceptFor<ILoreEntry, "category" | "folderId">;
+export type MinimalLoreEntry = OptionalExceptFor<
+	ILoreEntry,
+	"category" | "folderId" | "campaignId"
+>;
 
 export class LoreEntry extends PersistentModel implements ILoreEntry, Describable, HasIcon {
 	static entity: string | Category = StoreName.LoreEntry;
@@ -32,9 +37,11 @@ export class LoreEntry extends PersistentModel implements ILoreEntry, Describabl
 	@Str("") declare desc: string;
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
-	@Attr(undefined) declare folderId: UUID | undefined;
+	@Attr(undefined) declare folderId: Maybe<UUID>;
+	@Attr(undefined) declare campaignId: Maybe<UUID>;
 
-	@BelongsTo(() => Folder, "folderId") declare parent: Folder<LoreEntry> | undefined;
+	@BelongsTo(() => Folder, "folderId") declare parent: Maybe<Folder<LoreEntry>>;
+	@BelongsTo(() => Campaign, "campaignId") declare campaign: Maybe<Campaign>;
 
 	static override types() {
 		return {

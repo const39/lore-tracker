@@ -206,6 +206,7 @@ class V3SaveConverter extends SaveConverter {
 	 * - Add a 'desc' field to quests
 	 * - Rename field '_category' to 'category' on every folder and file
 	 * - Convert all numeric IDs to string UUIDs
+	 * - Add the foreign key fields to LoreEntry and Folder items
 	 *
 	 * @param save data to convert to v3 format
 	 * @returns input data converted to v3 format
@@ -282,6 +283,15 @@ class V3SaveConverter extends SaveConverter {
 	}
 
 	private convertToORMFormat(save: any) {
+		// Create the campaign object
+		const campaign = {
+			id: utilities.uuid(),
+			name: save.name,
+			days: save.days,
+			season: save.season,
+			quickNote: save.quickNote,
+		};
+
 		// Group all cards in the same object
 		const loreEntries: Record<string, any> = {};
 		Object.keys(save.cards).forEach((category) => {
@@ -291,7 +301,7 @@ class V3SaveConverter extends SaveConverter {
 				// and add the card with the others
 				const folderId = rootFolder[folderHash].metadata.id;
 				rootFolder[folderHash].files.forEach((file: any) => {
-					loreEntries[file.id] = { ...file, folderId };
+					loreEntries[file.id] = { ...file, folderId, campaignId: campaign.id };
 				});
 			});
 		});
@@ -315,17 +325,11 @@ class V3SaveConverter extends SaveConverter {
 					color: metadata.color,
 					tags: metadata.tags,
 					parentId,
+					campaignId: campaign.id,
 				};
 			});
 		});
 
-		const campaign = {
-			id: utilities.uuid(),
-			name: save.name,
-			days: save.days,
-			season: save.season,
-			quickNote: save.quickNote,
-		};
 		const converted = {
 			_meta: save._meta,
 			campaigns: {

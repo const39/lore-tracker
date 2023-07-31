@@ -1,18 +1,15 @@
 import { useRepo } from "pinia-orm";
 import {
-	Campaign,
-	Category,
 	ICampaign,
 	IFolder,
 	ILoreEntry,
 	StoreName,
-	getPersistentModels,
+	getPersistentModels
 } from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
 import { LocalisableError } from "../error";
-import { CampaignRepo, FolderRepo } from "../repositories";
 import { SaveVersion, convertToLatestVersion } from "./save-converter";
 
 export enum LocalStorageKey {
@@ -164,18 +161,4 @@ export async function loadSavedData() {
 			});
 		})
 	);
-
-	// Create a campaign if there is none
-	const campaignRepo = useRepo(CampaignRepo);
-	if (!campaignRepo.getCurrentCampaign()) {
-		campaignRepo.add(new Campaign());
-	}
-
-	// Create any missing category's root folder
-	const folderRepo = useRepo(FolderRepo);
-	Object.values(Category).forEach((category) => {
-		if (!folderRepo.getRootFolder(category)) {
-			folderRepo.createRootFolder(category);
-		}
-	});
 }

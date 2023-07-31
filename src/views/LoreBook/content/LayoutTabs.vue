@@ -3,7 +3,7 @@
 		<v-tab
 			v-for="tab in tabs"
 			:key="tab"
-			:to="{ name: 'LoreBookContent', params: { category: tab } }"
+			:to="{ name: 'LoreBook', params: { campaignId: campaign.id, category: tab } }"
 		>
 			<v-icon :icon="Icon[tab]" start />
 			{{ $t(`categories.${tab}`) }}
@@ -15,19 +15,21 @@
 			<v-container v-if="i === activeTab">
 				<template v-if="!alertState.isShown">
 					<!-- Safe-guard - Breadcrumbs cannot be shown if there's no current folder -->
-					<FolderBreadcrumbs v-if="currentFolder" :current-folder="currentFolder" />
+					<FolderBreadcrumbs v-if="folder" :folder="folder" />
 					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
 						:items="(folders as Folder[])"
+						:campaign="campaign"
 						:category="category"
-						:folder-id="currentFolder?.id"
+						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
 					<FilesArea
 						:items="(files as LoreEntry[])"
+						:campaign="campaign"
 						:category="category"
-						:folder-id="currentFolder?.id"
+						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
 					/>
@@ -36,8 +38,8 @@
 				<v-alert v-else v-bind="alertState" variant="tonal">
 					<router-link
 						:to="{
-							name: 'LoreBookContent',
-							params: { category },
+							name: 'LoreBook',
+							params: { campaignId: campaign.id, category },
 						}"
 					>
 						{{ $t("messages.errors.files.folderNotFound.action") }}
@@ -56,7 +58,7 @@ import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
-import { Category, Folder, LoreEntry } from "@/core/models";
+import { Campaign, Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { defer } from "@/core/utils/functions";
@@ -64,7 +66,11 @@ import { Icon } from "@/core/utils/icons";
 import { Maybe } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 
-const props = defineProps<{ category: Category; currentFolder: Maybe<Folder> }>();
+const props = defineProps<{
+	campaign: Campaign;
+	category: Category;
+	folder: Maybe<Folder>;
+}>();
 
 const tabs = Object.values(Category);
 
@@ -92,11 +98,11 @@ async function updateItems() {
 		// - If the current URL resolves to a folder, display its content
 		// - Otherwise, display an error message because no folder can be displayed
 		if (filterStore.isFilterActive) {
-			folders.value = filterStore.filterFolders(props.category);
-			files.value = filterStore.filterLoreEntries(props.category);
-		} else if (props.currentFolder) {
-			folders.value = folderRepo.getSubfolders(props.currentFolder);
-			files.value = folderRepo.getFiles(props.currentFolder);
+			folders.value = filterStore.filterFolders(props.campaign, props.category);
+			files.value = filterStore.filterLoreEntries(props.campaign, props.category);
+		} else if (props.folder) {
+			folders.value = folderRepo.getSubfolders(props.folder);
+			files.value = folderRepo.getFiles(props.folder);
 		} else {
 			setError($t("messages.errors.files.folderNotFound.title"));
 		}

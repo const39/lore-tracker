@@ -23,12 +23,13 @@
 import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import { Category, Folder } from "@/core/models";
-import { FolderRepo } from "@/core/repositories";
+import { Campaign, Folder } from "@/core/models";
+import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import FolderTree from "./FolderTree.vue";
 
-defineProps<{
+const props = defineProps<{
+	campaign: Campaign;
 	currentFolder: Folder;
 }>();
 
@@ -36,13 +37,11 @@ const emit = defineEmits(["close", "submit"]);
 
 const router = useRouter();
 
-const folderRepo = useRepo(FolderRepo);
+const campaignRepo = useRepo(CampaignRepo);
 
 const selected = ref<Folder>();
 
-const rootFolders = computed(() => {
-	return Object.values(Category).map((cat) => folderRepo.getRootFolder(cat));
-});
+const rootFolders = computed(() => campaignRepo.getRootFolders(props.campaign));
 
 function openFolder(): void {
 	if (selected.value) {
