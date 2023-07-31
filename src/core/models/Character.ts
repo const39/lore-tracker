@@ -41,6 +41,6 @@ export class Character extends LoreEntry implements ICharacter {
 	}
 
 	getAllText() {
-		return [...super.getAllText(), this.name];
+		return [...super.getAllText(), this.name, this.race, this.classes, this.role];
 	}
 }
