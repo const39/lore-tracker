@@ -9,7 +9,7 @@
 					{{ $t(`eventTypes.${itemData.type}`) }}
 				</v-tooltip>
 				<v-chip size="x-small" variant="text" label>
-					{{ $t("campaign.state.day") + itemData.day }}
+					{{ $t("campaign.state.day") + " " + itemData.day }}
 				</v-chip>
 			</v-col>
 			<v-col class="flex-grow-1 flex-shrink-0">
