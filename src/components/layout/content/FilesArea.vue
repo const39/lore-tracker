@@ -17,14 +17,14 @@
 			/>
 		</template>
 		<template #default="{ isDraggable, itemData }">
-			<CardContainer :draggable="isDraggable" :item-data="itemData" />
+			<LoreEntryCard :draggable="isDraggable" :item-data="itemData" />
 		</template>
 	</GenericArea>
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import CardContainer from "@/components/cards/CardContainer.vue";
+import LoreEntryCard from "@/components/cards/files/LoreEntryCard.vue";
 import { Campaign, Category, Indexable, LoreEntry, Orderable } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
