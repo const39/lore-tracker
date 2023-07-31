@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize, useWindowSize } from "@vueuse/core";
+import { useDebounceFn, useElementSize, useWindowSize } from "@vueuse/core";
 import { useRepo } from "pinia-orm";
 import { VNodeRef, computed, ref, watch } from "vue";
 import { Campaign } from "@/core/models";
@@ -70,9 +70,14 @@ const content = computed({
 		return props.campaign.quickNote;
 	},
 	set(value) {
-		campaignRepo.update({ id: props.campaign.id, quickNote: value?.trim() ?? "" });
+		update(value);
 	},
 });
+
+// Update the quick note's content 300ms after the user finished typing
+const update = useDebounceFn((content?: string) => {
+	campaignRepo.update({ id: props.campaign.id, quickNote: content?.trim() ?? "" });
+}, 300);
 
 const size = computed({
 	get() {
