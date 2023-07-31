@@ -25,7 +25,7 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import CardContainer from "@/components/cards/CardContainer.vue";
-import { Category, Indexable, LoreEntry, Orderable } from "@/core/models";
+import { Campaign, Category, Indexable, LoreEntry, Orderable } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
@@ -34,6 +34,7 @@ import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
 	items: LoreEntry[];
+	campaign: Campaign;
 	category: Category;
 	folderId?: UUID;
 	loading?: boolean;
@@ -54,7 +55,11 @@ function newLoreEntry(): void {
 	if (props.folderId) {
 		sidePanel.showLoreEntryForm(
 			"add",
-			LoreEntry.create({ category: props.category, folderId: props.folderId })
+			LoreEntry.create({
+				campaignId: props.campaign.id,
+				category: props.category,
+				folderId: props.folderId,
+			})
 		);
 	}
 }

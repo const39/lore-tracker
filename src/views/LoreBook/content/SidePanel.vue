@@ -18,13 +18,14 @@
 		<template v-if="state?.status === 'folder-tree'">
 			<FolderTreeNavVariant
 				v-if="state.variant === 'nav'"
+				:campaign="campaign"
 				:current-folder="currentFolder"
 				@submit="close"
 				@close="close"
 			/>
 			<FolderTreeMoveVariant
 				v-if="state.variant === 'card-move'"
-				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, currentFolder }"
+				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, campaign, currentFolder }"
 				@submit="close"
 				@close="close"
 			/>
@@ -38,10 +39,11 @@ import FormWrapper from "@/components/cards/files/forms/FormWrapper.vue";
 import FolderForm from "@/components/cards/folder/FolderForm.vue";
 import FolderTreeMoveVariant from "@/components/cards/folder/tree/FolderTreeMoveVariant.vue";
 import FolderTreeNavVariant from "@/components/cards/folder/tree/FolderTreeNavVariant.vue";
-import { Folder, LoreEntry } from "@/core/models";
+import { Campaign, Folder, LoreEntry } from "@/core/models";
 import { useSidePanel } from "@/store/sidePanel";
 
 defineProps<{
+	campaign: Campaign;
 	currentFolder: Folder;
 }>();
 

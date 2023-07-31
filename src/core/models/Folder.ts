@@ -2,7 +2,8 @@ import { Attr, BelongsTo, HasMany, Num, Str, Uid } from "pinia-orm/dist/decorato
 import { IndexedDBAdapter, database } from "../persistence";
 import { getRandomColor } from "../utils/colors";
 import { Icon } from "../utils/icons";
-import { OptionalExceptFor, UUID } from "../utils/types";
+import { Maybe, OptionalExceptFor, UUID } from "../utils/types";
+import { Campaign } from "./Campaign";
 import { LoreEntry } from "./LoreEntry";
 import { PersistentModel } from "./PersistentModel";
 import {
@@ -14,18 +15,20 @@ import {
 	Orderable,
 	StoreName,
 	Taggable,
+	WithMeta,
 } from "./types";
 
 /**
  * Data structure contract a Folder class should implement.
  */
-export interface IFolder extends Indexable, Orderable, Categorizable, Taggable {
+export interface IFolder extends Indexable, Orderable, Categorizable, Taggable, WithMeta {
 	name: string;
 	color: string;
-	parentId: UUID | undefined;
+	parentId: Maybe<UUID>;
+	campaignId: Maybe<UUID>;
 }
 
-type MinimalFolder = OptionalExceptFor<IFolder, "category">;
+type MinimalFolder = OptionalExceptFor<IFolder, "category" | "campaignId">;
 
 export class Folder<File extends LoreEntry = LoreEntry>
 	extends PersistentModel
@@ -40,11 +43,13 @@ export class Folder<File extends LoreEntry = LoreEntry>
 	@Str(getRandomColor()) declare color: string;
 	@Num(-1) declare position: number; // Defaults to -1. Means 'next position'.
 	@Attr([]) declare tags: UUID[];
-	@Attr(undefined) declare parentId: UUID | undefined;
+	@Attr(undefined) declare parentId: Maybe<UUID>;
+	@Attr(undefined) declare campaignId: Maybe<UUID>;
 
-	@BelongsTo(() => Folder, "parentId") declare parent: Folder<File> | undefined;
+	@BelongsTo(() => Folder, "parentId") declare parent: Maybe<Folder<File>>;
 	@HasMany(() => LoreEntry, "folderId") declare files: File[];
 	@HasMany(() => Folder, "parentId") declare subfolders: Folder<File>[];
+	@BelongsTo(() => Campaign, "campaignId") declare campaign: Maybe<Campaign>;
 
 	constructor(data: MinimalFolder, ...args: any[]) {
 		// Generate a random color if none is given
@@ -62,8 +67,8 @@ export class Folder<File extends LoreEntry = LoreEntry>
 		throw new Error("Item does not match the expected Folder data structure.");
 	}
 
-	static createRootFolder(category: Category) {
-		return new Folder({ category, name: `${category}-root` });
+	static createRootFolder(campaign: Campaign, category: Category) {
+		return new Folder({ campaignId: campaign.id, category, name: `${category}-root` });
 	}
 
 	getText() {

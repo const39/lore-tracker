@@ -34,7 +34,7 @@
 		<v-col cols="12" sm="12" md="6">
 			<v-text-field
 				v-model.number="model.day"
-				:prefix="$t('status.day')"
+				:prefix="$t('campaign.state.day')"
 				:label="$t('fields.eventDay') + '*'"
 				:rules="[rules.dayRange]"
 				type="number"

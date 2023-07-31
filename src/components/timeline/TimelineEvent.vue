@@ -6,7 +6,7 @@
 		:size="node.isHeader ? 'small' : undefined"
 		:fill-dot="!node.isHeader"
 		icon-color="white"
-		@click="goToCard"
+		@click="goToEvent"
 	>
 		<div :class="{ 'font-weight-medium': node.isHeader }">
 			<MarkdownView :text="node.text" />
@@ -80,19 +80,18 @@ const node = computed(() => {
 /**
  * Navigate to the card referenced by the current event.
  */
-function goToCard() {
+function goToEvent() {
 	if (typeof props.item !== "string") {
-		if (props.item.folderId) {
-			// Navigate to the event's folder, passing along the event ID in the URL's hash
-			router.push({
-				name: "LoreBookContent",
-				params: {
-					category: props.item.category,
-					folderId: props.item.folderId,
-				},
-				hash: `#${props.item.id}-card`,
-			});
-		}
+		// Navigate to the event's folder, passing along the event ID in the URL's hash
+		router.push({
+			name: "LoreBook",
+			params: {
+				campaignId: props.item.campaignId,
+				category: props.item.category,
+				folderId: props.item.folderId,
+			},
+			hash: `#${props.item.id}-card`,
+		});
 	}
 }
 </script>

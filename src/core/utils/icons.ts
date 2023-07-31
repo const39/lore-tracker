@@ -1,4 +1,6 @@
 export enum Icon {
+	// Campaign
+	campaign = "mdi-book-open-variant",
 	// Card types
 	quest = "mdi-star-circle",
 	event = "mdi-sword-cross",

@@ -2,6 +2,7 @@ import { Locale } from "@/core/translation/translation";
 
 const fr: Locale = {
 	pages: {
+		campaigns: "Campagnes",
 		loreBook: "Lore book",
 		timeline: "Frise des événements",
 	},
@@ -9,6 +10,28 @@ const fr: Locale = {
 	notFound: {
 		title: "Page Introuvable",
 		message: "Retourner au ",
+	},
+
+	campaign: {
+		name: "Campagne",
+		table: {
+			title: "Bienvenue sur LoreTracker !",
+			subtitle: "Vos campagnes",
+			progress: "Progression",
+			entryCount: "Nombre d'entrées",
+			lastUpdate: "Dernière modification",
+			empty: "Aucune campagne enregistrée.",
+		},
+		state: {
+			day: "Jour",
+			entry: "entrée(s)",
+			seasons: {
+				spring: "Printemps",
+				summer: "Été",
+				autumn: "Automne",
+				winter: "Hiver",
+			},
+		},
 	},
 
 	timeline: {
@@ -40,13 +63,6 @@ const fr: Locale = {
 	},
 
 	status: {
-		day: "Jour ",
-		seasons: {
-			spring: "Printemps",
-			summer: "Été",
-			autumn: "Automne",
-			winter: "Hiver",
-		},
 		action: "Cliquez pour augmenter ou diminuer",
 		search: "Recherche",
 		selectors: {
@@ -107,6 +123,7 @@ const fr: Locale = {
 	},
 
 	dialogs: {
+		addCampaign: "Nouvelle campagne",
 		addFolder: "Nouveau dossier",
 		addQuest: "Nouvelle quête",
 		addEvent: "Nouveau événement",
@@ -123,6 +140,7 @@ const fr: Locale = {
 		editFaction: "Modifier une faction",
 		editNote: "Modifier une note",
 
+		deleteCampaign: "Supprimer une campagne",
 		deleteFolder: "Supprimer un dossier",
 		deleteQuest: "Supprimer une quête",
 		deleteEvent: "Supprimer un événement",
@@ -132,6 +150,7 @@ const fr: Locale = {
 		deleteNote: "Supprimer une note",
 		deleteConfirm: "Voulez-vous vraiment supprimer ",
 		deleteConfirmFolder: "Cela supprimera tous ses sous-dossiers et fichiers.",
+		deleteConfirmCampaign: "Cela supprimera toutes les entrées enregistrées.",
 	},
 
 	actions: {
@@ -158,6 +177,12 @@ const fr: Locale = {
 			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
 			saveFileImportCancelled: "Import du fichier de sauvegarde annulé",
 			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			campaign: {
+				campaignNotFound: {
+					title: "Campagne introuvable",
+					action: "Retourner à la liste des campagnes",
+				},
+			},
 			files: {
 				invalidOperation: {
 					title: "Opération impossible",
@@ -206,11 +231,6 @@ const fr: Locale = {
 			optionName: "Afficher les raccourcis",
 			title: "Raccourcis clavier",
 			hold: "Maintenir",
-			pages: {
-				title: "Pages",
-				toLoreBook: "Naviguer vers le Lore book",
-				toTimeline: "Naviguer vers la Frise des événements",
-			},
 			content: {
 				title: "Contenu",
 				showTabQuest: "Afficher l'onglet Quêtes",

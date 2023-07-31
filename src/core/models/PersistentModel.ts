@@ -9,12 +9,12 @@ import { ORMClass } from "./types";
  */
 export interface PersistentORMClass extends ORMClass {
 	loadFromBackend(loader: (item: Record<UUID, any>) => MaybePromise<void>): MaybePromise<void>;
-	persistenceBackend: CRUDAdapter<PersistentModel>;
+	persistenceBackend: CRUDAdapter<Record<UUID, any>>;
 	persist: boolean;
 }
 
 export class PersistentModel extends Model {
-	public static persistenceBackend: CRUDAdapter<PersistentModel>;
+	public static persistenceBackend: CRUDAdapter<Record<UUID, any>>;
 
 	public static persist = true;
 
@@ -48,11 +48,17 @@ export class PersistentModel extends Model {
 		this.persist = true;
 	}
 
+	static serializeModel(model: PersistentModel) {
+		// Serialize the model's attributes (not the whole model to exclude relations' computed properties)
+		// and deep clone them to remove any Proxy object (because Proxy is not natively serializable)
+		return deepCopy(model.$getAttributes());
+	}
+
 	// Hook called when a new item is saved
 	static async created(model: PersistentModel) {
 		if (this.persist) {
 			if (!this.persistenceBackend) return this.throwPersistenceWarning();
-			await this.persistenceBackend.create(model.id, deepCopy(model)); // Deep clone item to remove any Proxy object (because Proxy is not natively serializable)
+			await this.persistenceBackend.create(model.id, this.serializeModel(model));
 		}
 	}
 
@@ -60,7 +66,7 @@ export class PersistentModel extends Model {
 	static async updated(model: PersistentModel) {
 		if (this.persist) {
 			if (!this.persistenceBackend) return this.throwPersistenceWarning();
-			await this.persistenceBackend.update(model.id, deepCopy(model)); // Deep clone item to remove any Proxy object (because Proxy is not natively serializable)
+			await this.persistenceBackend.update(model.id, this.serializeModel(model));
 		}
 	}
 

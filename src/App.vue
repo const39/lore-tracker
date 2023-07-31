@@ -11,12 +11,22 @@
 
 			<v-spacer />
 
-			<v-btn :to="{ name: 'LoreBook' }" variant="text">
-				<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+			<v-btn :to="{ name: 'Campaigns' }" variant="text">
+				<span class="mr-2">{{ $t("pages.campaigns") }}</span>
 			</v-btn>
-			<v-btn :to="{ name: 'Timeline' }" variant="text">
-				<span class="mr-2">{{ $t("pages.timeline") }}</span>
-			</v-btn>
+
+			<!-- Display campaign-specific navigation buttons when we're on a campaign's LoreBook -->
+			<template v-if="campaignId">
+				<v-divider class="mx-2" vertical />
+
+				<v-btn :to="{ name: 'LoreBookRoot', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+				</v-btn>
+
+				<v-btn :to="{ name: 'Timeline', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.timeline") }}</span>
+				</v-btn>
+			</template>
 
 			<!-- Options menu -->
 			<v-menu v-model="showMenu" location="bottom" start>
@@ -60,11 +70,6 @@
 				<router-view v-else />
 			</v-container>
 		</v-main>
-
-		<!-- Quick note - Floating expanding text area -->
-		<div class="ma-4 quick-note-wrapper">
-			<QuickNote />
-		</div>
 
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
@@ -127,10 +132,9 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
-import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
@@ -150,26 +154,16 @@ const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
-const router = useRouter();
+const route = useRoute();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
-// Register hotkeys
-onKeyDown(["Escape", "F1", "F2", "F3"], hotkey);
+const campaignId = computed(() => route.params.campaignId);
 
-/**
- * Manage this component's hotkeys :
- * - On ESC press : Open/close options menu
- * - On F1 press : Navigate to LoreBook page
- * - On F2 press : Navigate to Timeline page
- */
-function hotkey(e: KeyboardEvent) {
-	if (e.code === "Escape") showMenu.value = !showMenu.value;
-	else if (e.code === "F1") router.push({ name: "LoreBook" });
-	else if (e.code === "F2") router.push({ name: "Timeline" });
-}
+// Toggle options menu on ESC
+onKeyDown("Escape", () => (showMenu.value = !showMenu.value));
 
 function closeUpdateNotif() {
 	// Update Version number in LocalStorage to not show the notification a second time
@@ -219,12 +213,5 @@ onMounted(() => {
 <style>
 .header-icon > img {
 	position: initial;
-}
-
-.quick-note-wrapper {
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	z-index: 5;
 }
 </style>

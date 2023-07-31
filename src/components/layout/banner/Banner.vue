@@ -1,14 +1,20 @@
 <template>
 	<v-row class="my-3 d-flex align-center">
 		<div>
-			<v-hover v-slot="{ isHovering, props }">
-				<div class="text-xl-h4 mb-2" v-bind="props">
-					<v-form v-if="editName" @submit.prevent="editName = false">
+			<v-hover v-slot="{ isHovering, props: hoverProps }">
+				<div class="text-xl-h4 mb-2" v-bind="hoverProps">
+					<v-form
+						v-if="editName"
+						ref="form"
+						v-model="isNameValid"
+						validate-on="input"
+						@submit.prevent="updateName"
+					>
 						<v-text-field
-							v-model="campaignName"
-							:rules="rules"
+							v-model="model.name"
+							:rules="rules.name"
 							class="campaign-name-field min-width"
-							maxlength="30"
+							maxlength="50"
 							append-inner-icon="mdi-check"
 							autofocus
 							counter
@@ -16,18 +22,18 @@
 						/>
 					</v-form>
 					<span v-else>
-						{{ campaignName }}
+						{{ model.name }}
 						<v-icon
 							v-show="isHovering"
 							size="x-small"
 							icon="mdi-pencil"
-							@click="editName = true"
+							@click="toggleNameField"
 						/>
 					</span>
 				</div>
 			</v-hover>
 
-			<StatusTray v-model:day="campaign.days" v-model:season="campaign.season" />
+			<StatusTray v-model:day="model.days" v-model:season="model.season" />
 		</div>
 		<v-spacer />
 		<div class="text-right search-bar min-width">
@@ -47,43 +53,56 @@
 </template>
 
 <script lang="ts" setup>
-import { useRepo } from "pinia-orm";
 import { ref, watch } from "vue";
+import { VForm } from "vuetify/components";
 import { Campaign } from "@/core/models";
-import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { deepCopy } from "@/core/utils/functions";
+import validationRules from "@/core/validationRules";
 import DragAndDropModeSelector from "./actions/DragAndDropModeSelector.vue";
 import SearchBar from "./actions/SearchBar.vue";
 import StatusTray from "./StatusTray.vue";
 
-const rules = [
-	(v: string) => !!v || $t("fields.requiredField"),
-	(v: string) => v.length <= 30 || "30 max.",
-];
+const props = defineProps<{
+	modelValue: Campaign; // v-model
+}>();
+
+const emit = defineEmits<{
+	(e: "update:modelValue", value: Campaign): void;
+}>();
+
+const rules = {
+	name: [
+		validationRules.required($t("fields.requiredField")),
+		validationRules.counter("50 max.", 50),
+	],
+};
+
 const editName = ref(false);
+const isNameValid = ref(false);
+const model = ref<Campaign>(deepCopy(props.modelValue)); // Clone object to keep a backup in case the user cancels their changes
+const form = ref<VForm>();
 
-const campaignRepo = useRepo(CampaignRepo);
-
-const campaign = ref<Campaign>(campaignRepo.getCurrentCampaign());
-
-// eslint-disable-next-line vue/no-ref-object-destructure
-const campaignName = ref(campaign.value.name); // Intended separate ref for the name to validate input before committing the change (see updateName())
-
-watch(
-	campaign,
-	(newCampaign) => {
-		campaignRepo.update(newCampaign);
-	},
-	{ deep: true }
-);
+function toggleNameField() {
+	editName.value = !editName.value;
+}
 
 function updateName() {
-	// Update name if it is not empty
-	const name = campaignName.value.trim();
-	if (name) campaign.value.name = name;
-	// Close edit field
-	editName.value = true;
+	update();
+	// If the name change is successful, toggle the field back to readonly
+	if (isNameValid.value !== false) toggleNameField();
 }
+
+function update() {
+	// Update is successful when
+	// - there's no form (i.e. the name field is still readonly)
+	// - the new name is valid (isNameValid === true) or has not been changed (isNameValid === null)
+	if (!form.value || isNameValid.value !== false) {
+		emit("update:modelValue", model.value as Campaign); // Note: type cast is necessary because of https://github.com/vuejs/core/issues/2981
+	}
+}
+
+watch([() => model.value.days, () => model.value.season], update);
 </script>
 
 <style scoped>

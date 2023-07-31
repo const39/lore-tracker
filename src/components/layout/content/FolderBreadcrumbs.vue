@@ -25,13 +25,13 @@ import { t as $t } from "@/core/translation";
 import FolderBreadcrumbsItem from "./FolderBreadcrumbsItem.vue";
 
 const props = defineProps<{
-	currentFolder: Folder<LoreEntry>;
+	folder: Folder<LoreEntry>;
 }>();
 
 const router = useRouter();
 const folderRepo = useRepo(FolderRepo);
 
-const breadcrumbs = computed(() => folderRepo.getHierarchy(props.currentFolder));
+const breadcrumbs = computed(() => folderRepo.getHierarchy(props.folder));
 
 function goBack() {
 	router.back();

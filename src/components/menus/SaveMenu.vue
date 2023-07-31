@@ -116,8 +116,8 @@ async function uploadSave() {
 }
 
 function onDataChange() {
-	// Redirect user to the current category's root folder (because if we're in a custom folder, it will not exist in the new save file)
-	router.push({ params: { folderId: undefined } });
+	// Redirect user to Home
+	router.push({ name: "Home" });
 	// Trigger whole app update
 	eventBus.emit("data-loaded");
 }

@@ -6,10 +6,6 @@
 				<v-row class="d-flex">
 					<v-col cols="12" md="6">
 						<HotkeyList
-							:title="$t('options.hotkeys.pages.title')"
-							:hotkeys="hotkeysDisplay.pages"
-						/>
-						<HotkeyList
 							:title="$t('dragAndDrop.desc')"
 							:hotkeys="hotkeysDisplay.dragAndDrop"
 						/>
@@ -50,16 +46,6 @@ const emit = defineEmits<{
 }>();
 
 const hotkeysDisplay = {
-	pages: [
-		{
-			text: $t("options.hotkeys.pages.toLoreBook"),
-			command: "F1",
-		},
-		{
-			text: $t("options.hotkeys.pages.toTimeline"),
-			command: "F2",
-		},
-	],
 	content: [
 		{
 			text: $t("options.hotkeys.content.showTabQuest"),

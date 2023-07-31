@@ -4,6 +4,7 @@ import fr from "./locale/fr";
 
 export interface Locale {
 	pages: {
+		campaigns: string;
 		loreBook: string;
 		timeline: string;
 	};
@@ -11,6 +12,28 @@ export interface Locale {
 	notFound: {
 		title: string;
 		message: string;
+	};
+
+	campaign: {
+		name: string;
+		table: {
+			title: string;
+			subtitle: string;
+			progress: string;
+			entryCount: string;
+			lastUpdate: string;
+			empty: string;
+		};
+		state: {
+			day: string;
+			entry: string;
+			seasons: {
+				spring: string;
+				summer: string;
+				autumn: string;
+				winter: string;
+			};
+		};
 	};
 
 	timeline: {
@@ -42,13 +65,6 @@ export interface Locale {
 	};
 
 	status: {
-		day: string;
-		seasons: {
-			spring: string;
-			summer: string;
-			autumn: string;
-			winter: string;
-		};
 		action: string;
 		search: string;
 		selectors: {
@@ -109,6 +125,7 @@ export interface Locale {
 	};
 
 	dialogs: {
+		addCampaign: string;
 		addFolder: string;
 		addQuest: string;
 		addEvent: string;
@@ -125,6 +142,7 @@ export interface Locale {
 		editFaction: string;
 		editNote: string;
 
+		deleteCampaign: string;
 		deleteFolder: string;
 		deleteQuest: string;
 		deleteEvent: string;
@@ -134,6 +152,7 @@ export interface Locale {
 		deleteNote: string;
 		deleteConfirm: string;
 		deleteConfirmFolder: string;
+		deleteConfirmCampaign: string;
 	};
 
 	actions: {
@@ -160,6 +179,12 @@ export interface Locale {
 			loadBackup: string;
 			saveFileImportCancelled: string;
 			saveFileImportFailed: string;
+			campaign: {
+				campaignNotFound: {
+					title: string;
+					action: string;
+				};
+			};
 			files: {
 				invalidOperation: {
 					title: string;
@@ -207,14 +232,8 @@ export interface Locale {
 			optionName: string;
 			title: string;
 			hold: string;
-			pages: {
-				title: string;
-				toLoreBook: string;
-				toTimeline: string;
-			};
 			content: {
 				title: string;
-				// showTabPrefix:string,
 				showTabQuest: string;
 				showTabEvent: string;
 				showTabLocation: string;

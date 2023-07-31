@@ -14,7 +14,7 @@ export interface QueryOptions {
 export type PartialModel<T extends Model> = Partial<T> & Indexable;
 
 export default class BaseRepo<M extends Model> extends Repository<M> {
-	protected createQuery(options?: QueryOptions) {
+	createQuery(options?: QueryOptions) {
 		const { withRelations } = options ?? {};
 		const query = this.query();
 
