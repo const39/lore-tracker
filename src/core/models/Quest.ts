@@ -38,6 +38,6 @@ export class Quest extends LoreEntry implements IQuest {
 	}
 
 	getAllText() {
-		return [...super.getAllText(), this.title];
+		return [...super.getAllText(), this.title, ...this.tasks.map((task) => task.desc)];
 	}
 }
