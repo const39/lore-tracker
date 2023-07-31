@@ -231,11 +231,6 @@ const en: Locale = {
 			optionName: "Show hotkeys",
 			title: "Hotkeys",
 			hold: "Hold",
-			pages: {
-				title: "Pages",
-				toLoreBook: "Navigate to Lore Book",
-				toTimeline: "Navigate to Timeline",
-			},
 			content: {
 				title: "Content",
 				showTabQuest: "Show Quest tab",
@@ -247,7 +242,7 @@ const en: Locale = {
 			},
 			misc: {
 				title: "Other",
-				openOptions: "Open/close option menu",
+				openOptions: "Toggle options menu",
 			},
 		},
 	},

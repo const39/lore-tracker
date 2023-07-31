@@ -133,7 +133,7 @@
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { computed, onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
@@ -155,7 +155,6 @@ const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
 const route = useRoute();
-const router = useRouter();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
@@ -163,20 +162,8 @@ const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
 const campaignId = computed(() => route.params.campaignId);
 
-// Register hotkeys
-onKeyDown(["Escape", "F1", "F2", "F3"], hotkey);
-
-/**
- * Manage this component's hotkeys :
- * - On ESC press : Open/close options menu
- * - On F1 press : Navigate to LoreBook page
- * - On F2 press : Navigate to Timeline page
- */
-function hotkey(e: KeyboardEvent) {
-	if (e.code === "Escape") showMenu.value = !showMenu.value;
-	else if (e.code === "F1") router.push({ name: "LoreBook" });
-	else if (e.code === "F2") router.push({ name: "Timeline" });
-}
+// Toggle options menu on ESC
+onKeyDown("Escape", () => (showMenu.value = !showMenu.value));
 
 function closeUpdateNotif() {
 	// Update Version number in LocalStorage to not show the notification a second time

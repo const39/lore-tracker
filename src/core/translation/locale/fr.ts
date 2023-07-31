@@ -231,11 +231,6 @@ const fr: Locale = {
 			optionName: "Afficher les raccourcis",
 			title: "Raccourcis clavier",
 			hold: "Maintenir",
-			pages: {
-				title: "Pages",
-				toLoreBook: "Naviguer vers le Lore book",
-				toTimeline: "Naviguer vers la Frise des événements",
-			},
 			content: {
 				title: "Contenu",
 				showTabQuest: "Afficher l'onglet Quêtes",

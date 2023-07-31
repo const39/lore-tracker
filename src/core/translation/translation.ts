@@ -232,14 +232,8 @@ export interface Locale {
 			optionName: string;
 			title: string;
 			hold: string;
-			pages: {
-				title: string;
-				toLoreBook: string;
-				toTimeline: string;
-			};
 			content: {
 				title: string;
-				// showTabPrefix:string,
 				showTabQuest: string;
 				showTabEvent: string;
 				showTabLocation: string;
