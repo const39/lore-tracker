@@ -18,6 +18,8 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed, defineAsyncComponent, ref } from "vue";
+import BaseCard from "@/components/cards/BaseCard.vue";
+import CardDragImage from "@/components/cards/CardDragImage.vue";
 import { CustomMIMEType, startDrag } from "@/composables/dragAndDrop";
 import { LoreEntry } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
@@ -25,8 +27,6 @@ import { t as $t } from "@/core/translation";
 import utilities from "@/core/utils/functions";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";
-import BaseCard from "./BaseCard.vue";
-import CardDragImage from "./CardDragImage.vue";
 
 const props = defineProps<{ itemData: LoreEntry; draggable?: boolean }>();
 
@@ -65,7 +65,7 @@ function confirmDelete() {
 const contentComponent = computed(() => {
 	const componentName = "Content" + utilities.capitalize(props.itemData.category);
 	return defineAsyncComponent({
-		loader: () => import(`./files/content/${componentName}.vue`),
+		loader: () => import(`./content/${componentName}.vue`),
 	});
 });
 </script>

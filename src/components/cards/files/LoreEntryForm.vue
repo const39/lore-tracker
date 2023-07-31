@@ -61,7 +61,7 @@ watch(model, () => form.value?.validate(), { deep: true });
 
 const formComponent = computed(() => {
 	return defineAsyncComponent({
-		loader: () => import(`./Form${utilities.capitalize(model.value.category)}.vue`),
+		loader: () => import(`./forms/Form${utilities.capitalize(model.value.category)}.vue`),
 	});
 });
 

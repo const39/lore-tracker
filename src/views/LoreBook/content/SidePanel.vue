@@ -2,7 +2,7 @@
 	<v-card class="pa-2 border sticky" variant="outlined">
 		<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 		<template v-if="state?.status === 'file-form'">
-			<FormWrapper
+			<LoreEntryForm
 				v-bind="{ variant: state.variant, baseModel: state.baseModel as LoreEntry }"
 				@submit="close"
 				@close="close"
@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 import { computed } from "vue";
-import FormWrapper from "@/components/cards/files/forms/FormWrapper.vue";
+import LoreEntryForm from "@/components/cards/files/LoreEntryForm.vue";
 import FolderForm from "@/components/cards/folder/FolderForm.vue";
 import FolderTreeMoveVariant from "@/components/cards/folder/tree/FolderTreeMoveVariant.vue";
 import FolderTreeNavVariant from "@/components/cards/folder/tree/FolderTreeNavVariant.vue";
