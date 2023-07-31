@@ -22,7 +22,7 @@
 						v-model="model.name"
 						:label="$t('fields.name') + '*'"
 						:rules="rules.name"
-						maxlength="30"
+						maxlength="50"
 						counter
 					/>
 				</v-card-text>
@@ -52,7 +52,7 @@ const emit = defineEmits<{
 const rules = {
 	name: [
 		validationRules.required($t("fields.requiredField")),
-		validationRules.counter("30 max.", 30),
+		validationRules.counter("50 max.", 50),
 	],
 };
 

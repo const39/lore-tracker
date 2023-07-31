@@ -14,7 +14,7 @@
 							v-model="model.name"
 							:rules="rules.name"
 							class="campaign-name-field min-width"
-							maxlength="30"
+							maxlength="50"
 							append-inner-icon="mdi-check"
 							autofocus
 							counter
@@ -74,7 +74,7 @@ const emit = defineEmits<{
 const rules = {
 	name: [
 		validationRules.required($t("fields.requiredField")),
-		validationRules.counter("30 max.", 30),
+		validationRules.counter("50 max.", 50),
 	],
 };
 
