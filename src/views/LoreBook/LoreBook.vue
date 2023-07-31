@@ -42,6 +42,7 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed } from "vue";
+import { onBeforeRouteLeave } from "vue-router";
 import QuickNote from "@/components/global/QuickNote.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
@@ -49,6 +50,7 @@ import { Category } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
+import { useFilterStore } from "@/store/filter";
 import { useSidePanel } from "@/store/sidePanel";
 import LayoutTabs from "@/views/LoreBook/content/LayoutTabs.vue";
 import SidePanel from "@/views/LoreBook/content/SidePanel.vue";
@@ -57,6 +59,7 @@ const props = defineProps<{ campaignId: UUID; category: Category; folderId?: UUI
 
 const campaignRepo = useRepo(CampaignRepo);
 
+const filterStore = useFilterStore();
 const sidePanel = useSidePanel();
 
 const cols = computed(() => {
@@ -66,7 +69,7 @@ const cols = computed(() => {
 
 const currentCampaign = computed({
 	get() {
-		return campaignRepo.find(props.campaignId);
+		return campaignRepo.getCampaign(props.campaignId);
 	},
 	set(newCampaign) {
 		if (newCampaign) campaignRepo.update(newCampaign);
@@ -85,6 +88,11 @@ const currentFolder = computed(() => {
 			: campaignRepo.getRootFolder(currentCampaign.value, props.category, options);
 	}
 	return undefined;
+});
+
+// Clear the filter when leaving the lore book of the current campaign
+onBeforeRouteLeave(() => {
+	filterStore.$reset();
 });
 </script>
 <style scoped>

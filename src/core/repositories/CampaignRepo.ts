@@ -25,8 +25,8 @@ export default class CampaignRepo extends BaseRepo<Campaign> {
 		return this.repo(FolderRepo).createQuery(options).where("campaignId", campaign.id);
 	}
 
-	getCampaign(id: UUID) {
-		return this.find(id);
+	getCampaign(id: UUID, options?: QueryOptions) {
+		return this.createQuery(options).find(id);
 	}
 
 	getFolder(campaign: Campaign, folderId: UUID, category?: Category, options?: QueryOptions) {

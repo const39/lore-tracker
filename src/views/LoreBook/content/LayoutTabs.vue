@@ -98,8 +98,8 @@ async function updateItems() {
 		// - If the current URL resolves to a folder, display its content
 		// - Otherwise, display an error message because no folder can be displayed
 		if (filterStore.isFilterActive) {
-			folders.value = filterStore.filterFolders(props.category);
-			files.value = filterStore.filterLoreEntries(props.category);
+			folders.value = filterStore.filterFolders(props.campaign, props.category);
+			files.value = filterStore.filterLoreEntries(props.campaign, props.category);
 		} else if (props.folder) {
 			folders.value = folderRepo.getSubfolders(props.folder);
 			files.value = folderRepo.getFiles(props.folder);
