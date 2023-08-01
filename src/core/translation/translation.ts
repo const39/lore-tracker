@@ -165,6 +165,7 @@ export interface Locale {
 		moveTo: string;
 		quickNote: string;
 		dropCardHere: string;
+		multipleDragItems: string;
 	};
 
 	messages: {

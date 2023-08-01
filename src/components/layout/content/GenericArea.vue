@@ -8,31 +8,36 @@
 			<span class="px-1"> {{ title }} </span>
 			<slot name="actions" />
 		</div>
-		<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
-		<draggable
-			v-if="!loading"
-			v-model="list"
-			:animation="200"
-			:disabled="dndStore.mode !== 'sort'"
-			:group="group"
-			tag="v-row"
-			draggable=".draggable-item"
-			item-key="id"
-			@start="drag = true"
-			@end="swap"
-		>
-			<!-- v-col MUST have "position: relative" to prevent the card's custom drag image to by included in its size -->
-			<template #item="{ element }">
-				<v-col class="draggable-item relative" cols="12" v-bind="density">
-					<slot
-						v-bind="{
-							isDraggable: dndStore.mode !== 'disabled',
-							itemData: element,
-						}"
-					/>
-				</v-col>
-			</template>
-		</draggable>
+		<v-item-group v-if="!loading" v-model="selected" multiple>
+			<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
+			<draggable
+				v-model="list"
+				:animation="200"
+				:disabled="dndStore.mode !== 'sort'"
+				:group="group"
+				tag="v-row"
+				draggable=".draggable-item"
+				item-key="id"
+				@start="drag = true"
+				@end="swap"
+			>
+				<!-- v-col MUST have "position: relative" to prevent the card's custom drag image to by included in its size -->
+				<template #item="{ element }">
+					<v-col class="draggable-item relative" cols="12" v-bind="density">
+						<v-item v-slot="{ isSelected, toggle }" :value="element">
+							<slot
+								v-bind="{
+									itemData: element,
+									isDraggable: dndStore.mode !== 'disabled',
+									isSelected: isSelected,
+									toggle,
+								}"
+							/>
+						</v-item>
+					</v-col>
+				</template>
+			</draggable>
+		</v-item-group>
 	</div>
 </template>
 
@@ -47,6 +52,7 @@ import { usePreferencesStore } from "@/store/preferences";
 type Item = Indexable & Orderable & Describable;
 
 const props = defineProps<{
+	selected: Item[]; // v-model:selected
 	items: Item[];
 	title: string;
 	group: string;
@@ -54,6 +60,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+	(e: "update:selected", value: Item[]): void;
 	(e: "sort", movedItems: Item[]): void;
 }>();
 
@@ -62,6 +69,15 @@ const drag = ref(false);
 const prefStore = usePreferencesStore();
 const dndStore = useDragAndDropMode();
 const { density } = useGridDensity();
+
+const selected = computed({
+	get() {
+		return props.selected;
+	},
+	set(value) {
+		emit("update:selected", value);
+	},
+});
 
 const list = computed({
 	get() {

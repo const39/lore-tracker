@@ -3,15 +3,15 @@
 	<BaseCard
 		v-if="!editMode"
 		:id="folder.id"
-		ref="refDropZone"
+		:selected="selected"
 		:with-options="!editMode"
 		:draggable="draggable"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
 		@edit="editFolder"
 		@delete="confirmDelete"
 		@move="moveFolder"
-		@click="openFolder(folder)"
-		@dragstart="onDragStart"
+		@dblclick="openFolder(folder)"
+		@dragstart="($event) => $emit('dragstart', $event)"
 	>
 		<v-card-title class="d-flex align-center">
 			<v-badge :content="childrenCount" color="grey" offset-x="2" offset-y="6">
@@ -26,8 +26,6 @@
 			<TagList v-model="folder.tags" :editable="false" />
 		</v-card-text>
 	</BaseCard>
-	<!-- Custom drag image used when dragging the card -->
-	<CardDragImage ref="refDragImage" :item-data="folder" />
 </template>
 
 <script lang="ts" setup>
@@ -35,12 +33,7 @@ import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
 import TagList from "@/components/cards/tags/TagList.vue";
-import {
-	CustomMIMEType,
-	startDrag,
-	useDropZone,
-	type DropPayload,
-} from "@/composables/dragAndDrop";
+import { CustomMIMEType, useDropZone, DragItem } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
 import { Folder, LoreEntry } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
@@ -48,20 +41,20 @@ import { t as $t } from "@/core/translation";
 import { Icon } from "@/core/utils/icons";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
 import { useSidePanel } from "@/store/sidePanel";
-import CardDragImage from "../CardDragImage.vue";
 
 const props = defineProps<{
 	folder: Folder;
+	selected?: boolean;
 	draggable?: boolean;
 }>();
 
 const emit = defineEmits<{
 	(e: "open-folder", folder: Folder): void;
+	(e: "dragstart", value: DragEvent): void;
 }>();
 
 const editMode = ref(false);
 const refDropZone = ref<HTMLElement | null>(null);
-const refDragImage = ref<HTMLElement | null>();
 
 const loreEntryRepo = useRepo(LoreEntryRepo);
 const folderRepo = useRepo(FolderRepo);
@@ -76,29 +69,20 @@ const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 const childrenCount = computed(() => folderRepo.getChildrenCount(props.folder));
 
 /**
- * Callback triggered when the user grabs the cards for a drag & drop
- */
-function onDragStart(e: DragEvent) {
-	startDrag(e, props.folder, CustomMIMEType.Folder, {
-		dragImage: { image: refDragImage, offsetX: -12, offsetY: -8 },
-	});
-}
-
-/**
  * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
  */
-function onDropAccepted(items: DropPayload[]) {
+function onDropAccepted(items: DragItem[]) {
 	if (items.length) {
 		useTryCatch(() => {
-			const { dataType, data: itemToMove } = items[0];
+			items.forEach(({ data: itemToMove, dataType }) => {
+				if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
+					folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
+				}
 
-			if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
-				folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
-			}
-
-			if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
-				loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
-			}
+				if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
+					loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
+				}
+			});
 		});
 	}
 }

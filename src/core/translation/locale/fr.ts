@@ -163,6 +163,7 @@ const fr: Locale = {
 		moveTo: "Déplacer vers",
 		quickNote: "Note rapide",
 		dropCardHere: "Déposer une carte ici",
+		multipleDragItems: "éléments",
 	},
 
 	messages: {

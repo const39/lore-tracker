@@ -163,6 +163,7 @@ const en: Locale = {
 		moveTo: "Move to",
 		quickNote: "Quick note",
 		dropCardHere: "Drop a card here",
+		multipleDragItems: "elements",
 	},
 
 	messages: {

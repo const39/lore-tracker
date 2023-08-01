@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
-import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
+import { CustomMIMEType, DragItem, useDropZone } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
 import { Folder, LoreEntry } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
@@ -43,18 +43,18 @@ const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 /**
  * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
  */
-function onDropAccepted(items: DropPayload[]) {
+function onDropAccepted(items: DragItem[]) {
 	if (items.length) {
 		useTryCatch(() => {
-			const { dataType, data: itemToMove } = items[0];
+			items.forEach(({ data: itemToMove, dataType }) => {
+				if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
+					folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
+				}
 
-			if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
-				folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
-			}
-
-			if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
-				loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
-			}
+				if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
+					loreEntryRepo.update({ id: itemToMove.id, folderId: props.folder.id });
+				}
+			});
 		});
 	}
 }

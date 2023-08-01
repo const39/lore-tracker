@@ -1,15 +1,16 @@
 <template>
 	<v-card
 		:id="id"
-		:elevation="highlight ? undefined : elevation"
+		:variant="selected ? 'outlined' : 'elevated'"
+		:elevation="highlight || selected ? undefined : elevation"
 		:draggable="draggable"
 		:ripple="false"
-		:class="{ draggable, highlight }"
+		:class="{ draggable, highlight, selected }"
 		class="mb-4 h-100"
 		fill-height
 		@mouseenter="elevation++"
 		@mouseleave="elevation--"
-		@dragstart="($event) => $emit('dragstart', $event)"
+		@dragstart="onDragStart"
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
@@ -34,12 +35,16 @@ const props = defineProps<{
 	 */
 	withOptions?: boolean;
 	/**
-	 * Whether this card should display the draggable animation
+	 * If selected, this card displays a selection style.
+	 */
+	selected?: boolean;
+	/**
+	 * If draggable, this card can emit the 'dragstart' event and display the drag animation.
 	 */
 	draggable?: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
 	(e: "edit"): void;
 	(e: "delete"): void;
 	(e: "move"): void;
@@ -52,6 +57,10 @@ const highlight = ref(false);
 const elevation = ref(1);
 
 const id = computed(() => props.id + "-card");
+
+function onDragStart(e: DragEvent) {
+	if (props.draggable) emit("dragstart", e);
+}
 
 /**
  * Scroll this card into view if the URL's hash contains its ID.
@@ -83,6 +92,10 @@ watch(
 
 .draggable:hover {
 	transform: scale(1.02);
+}
+
+.selected {
+	border: 1px solid lightblue;
 }
 
 .highlight {
