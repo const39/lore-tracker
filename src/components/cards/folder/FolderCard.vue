@@ -3,6 +3,7 @@
 	<BaseCard
 		v-if="!editMode"
 		:id="folder.id"
+		ref="refDropZone"
 		:selected="selected"
 		:with-options="!editMode"
 		:draggable="draggable"
