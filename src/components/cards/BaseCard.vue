@@ -1,15 +1,14 @@
 <template>
 	<v-card
 		:id="id"
-		:variant="selected ? 'outlined' : 'elevated'"
-		:elevation="highlight || selected ? undefined : elevation"
+		:elevation="elevation"
 		:draggable="draggable"
 		:ripple="false"
 		:class="{ draggable, highlight, selected }"
 		class="mb-4 h-100"
 		fill-height
-		@mouseenter="elevation++"
-		@mouseleave="elevation--"
+		@mouseenter="hovered = true"
+		@mouseleave="hovered = false"
 		@dragstart="onDragStart"
 	>
 		<!-- "Options" button menu (optional) -->
@@ -53,8 +52,15 @@ const emit = defineEmits<{
 
 const route = useRoute();
 
+const hovered = ref(false);
 const highlight = ref(false);
-const elevation = ref(1);
+
+const elevation = computed(() => {
+	let n = 1;
+	if (hovered.value) n++;
+	if (props.selected) n++;
+	return n;
+});
 
 const id = computed(() => props.id + "-card");
 
@@ -90,12 +96,9 @@ watch(
 	transition: transform 250ms ease;
 }
 
-.draggable:hover {
-	transform: scale(1.02);
-}
-
 .selected {
-	border: 1px solid lightblue;
+	border: 1px solid lightgray;
+	transform: scale(1.02);
 }
 
 .highlight {
