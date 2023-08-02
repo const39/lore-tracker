@@ -42,10 +42,6 @@
 
 		<v-divider class="ml-3 mr-1" vertical />
 
-		<DragAndDropModeSelector />
-
-		<v-divider class="ml-3 mr-1" vertical />
-
 		<div>
 			<slot name="actions" />
 		</div>
@@ -59,7 +55,6 @@ import { Campaign } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { deepCopy } from "@/core/utils/functions";
 import validationRules from "@/core/validationRules";
-import DragAndDropModeSelector from "./actions/DragAndDropModeSelector.vue";
 import SearchBar from "./actions/SearchBar.vue";
 import StatusTray from "./StatusTray.vue";
 
