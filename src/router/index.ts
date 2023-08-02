@@ -39,7 +39,7 @@ const routes = [
 		path: "/campaigns/:campaignId/timeline",
 		name: "Timeline",
 		props: true, // pass route.params as component props
-		component: () => import("../views/Timeline.vue"),
+		component: () => import("../views/Timeline/Timeline.vue"),
 	},
 	{
 		path: "/:dummyParam(.*)*",

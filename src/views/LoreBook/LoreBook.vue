@@ -46,14 +46,14 @@ import { onBeforeRouteLeave } from "vue-router";
 import QuickNote from "@/components/global/QuickNote.vue";
 import LorebookActions from "@/components/layout/banner/actions/LorebookActions.vue";
 import Banner from "@/components/layout/banner/Banner.vue";
+import SidePanel from "@/components/layout/side-panel/SidePanel.vue";
 import { Category } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
 import { useFilterStore } from "@/store/filter";
 import { useSidePanel } from "@/store/sidePanel";
-import LayoutTabs from "@/views/LoreBook/content/LayoutTabs.vue";
-import SidePanel from "@/views/LoreBook/content/SidePanel.vue";
+import LayoutTabs from "./CategoryTabs.vue";
 
 const props = defineProps<{ campaignId: UUID; category: Category; folderId?: UUID }>();
 
