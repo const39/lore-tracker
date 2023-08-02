@@ -1,13 +1,12 @@
 <template>
 	<!-- Pass dummy draggable-data only to enable draggable state -->
 	<BaseCard
-		v-if="!editMode"
 		:id="folder.id"
 		ref="refDropZone"
 		:selected="selected"
-		:with-options="!editMode"
 		:draggable="draggable"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
+		with-options
 		@edit="editFolder"
 		@delete="confirmDelete"
 		@move="moveFolder"
@@ -34,7 +33,7 @@ import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
 import BaseCard from "@/components/cards/BaseCard.vue";
 import TagList from "@/components/cards/tags/TagList.vue";
-import { CustomMIMEType, useDropZone, DragItem } from "@/composables/dragAndDrop";
+import { CustomMIMEType, DragItem, useDropZone } from "@/composables/dragAndDrop";
 import { useTryCatch } from "@/composables/tryCatch";
 import { Folder, LoreEntry } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
@@ -54,7 +53,6 @@ const emit = defineEmits<{
 	(e: "dragstart", value: DragEvent): void;
 }>();
 
-const editMode = ref(false);
 const refDropZone = ref<HTMLElement | null>(null);
 
 const loreEntryRepo = useRepo(LoreEntryRepo);
@@ -76,7 +74,10 @@ function onDropAccepted(items: DragItem[]) {
 		useTryCatch(() => {
 			items.forEach(({ data: itemToMove, dataType }) => {
 				if (dataType === CustomMIMEType.Folder && itemToMove instanceof Folder) {
-					folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
+					// Ensure we're not moving this folder into itself
+					if (itemToMove.id !== props.folder.id) {
+						folderRepo.update({ id: itemToMove.id, parentId: props.folder.id });
+					}
 				}
 
 				if (dataType === CustomMIMEType.LoreEntry && itemToMove instanceof LoreEntry) {
