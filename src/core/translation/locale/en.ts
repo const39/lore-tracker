@@ -78,6 +78,7 @@ const en: Locale = {
 		moveCard: "Move",
 		folderList: "Folder list",
 		openFolder: "Open",
+		relatedCards: "Cards related to",
 	},
 
 	fields: {
@@ -148,6 +149,7 @@ const en: Locale = {
 		save: "Save",
 		yes: "Yes",
 		no: "No",
+		showRelated: "See related tags",
 		edit: "Edit",
 		delete: "Delete",
 		moveTo: "Move to",

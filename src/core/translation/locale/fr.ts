@@ -78,6 +78,7 @@ const fr: Locale = {
 		moveCard: "Déplacer",
 		folderList: "Liste des dossiers",
 		openFolder: "Ouvrir",
+		relatedCards: "Cartes liées à",
 	},
 
 	fields: {
@@ -148,6 +149,7 @@ const fr: Locale = {
 		save: "Sauvegarder",
 		yes: "Oui",
 		no: "Non",
+		showRelated: "Voir les cartes liées",
 		edit: "Modifier",
 		delete: "Supprimer",
 		moveTo: "Déplacer vers",

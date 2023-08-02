@@ -27,10 +27,15 @@ interface FolderTreeNavState {
 	variant: "nav";
 }
 
+interface RelatedCardsState {
+	status: "related-cards";
+	relatedTo: LoreEntry | Folder;
+}
+
 type FormState = FileFormState | FolderFormState;
 type FolderTreeState = FolderTreeMoveState | FolderTreeNavState;
 
-export type SidePanelState = FormState | FolderTreeState | undefined;
+export type SidePanelState = FormState | FolderTreeState | RelatedCardsState | undefined;
 
 export const useSidePanel = defineStore("sidePanel", () => {
 	const state = ref<SidePanelState>();
@@ -81,6 +86,14 @@ export const useSidePanel = defineStore("sidePanel", () => {
 		}
 	}
 
+	function showRelatedCards(relatedTo: LoreEntry | Folder) {
+		_preventOverwrite();
+		state.value = {
+			status: "related-cards",
+			relatedTo,
+		};
+	}
+
 	return {
 		state,
 		isOpen,
@@ -92,5 +105,8 @@ export const useSidePanel = defineStore("sidePanel", () => {
 
 		// * File tree
 		showFolderTree,
+
+		// * Related cards
+		showRelatedCards,
 	};
 });

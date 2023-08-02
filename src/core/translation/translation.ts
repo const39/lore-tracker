@@ -80,6 +80,7 @@ export interface Locale {
 		moveCard: string;
 		folderList: string;
 		openFolder: string;
+		relatedCards: string;
 	};
 
 	fields: {
@@ -150,6 +151,7 @@ export interface Locale {
 		save: string;
 		yes: string;
 		no: string;
+		showRelated: string;
 		edit: string;
 		delete: string;
 		moveTo: string;
