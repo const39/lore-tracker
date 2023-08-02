@@ -80,16 +80,6 @@ const en: Locale = {
 		openFolder: "Open",
 	},
 
-	dragAndDrop: {
-		desc: "Drag & drop mode",
-		modes: {
-			disabled: "Disabled",
-			moveToFolder: "Move to folder",
-			sort: "Sort cards",
-			link: "Link a card",
-		},
-	},
-
 	fields: {
 		category: "Catégorie",
 		name: "Name",
@@ -163,6 +153,7 @@ const en: Locale = {
 		moveTo: "Move to",
 		quickNote: "Quick note",
 		dropCardHere: "Drop a card here",
+		dragSort: "Sort cards",
 		multipleDragItems: "elements",
 	},
 

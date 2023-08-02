@@ -80,16 +80,6 @@ const fr: Locale = {
 		openFolder: "Ouvrir",
 	},
 
-	dragAndDrop: {
-		desc: "Mode de glisser-déposer",
-		modes: {
-			disabled: "Désactivé",
-			moveToFolder: "Déplacer vers dossier",
-			sort: "Trier les cartes",
-			link: "Lier une carte",
-		},
-	},
-
 	fields: {
 		category: "Catégorie",
 		name: "Nom",
@@ -163,6 +153,7 @@ const fr: Locale = {
 		moveTo: "Déplacer vers",
 		quickNote: "Note rapide",
 		dropCardHere: "Déposer une carte ici",
+		dragSort: "Trier les cartes",
 		multipleDragItems: "éléments",
 	},
 
