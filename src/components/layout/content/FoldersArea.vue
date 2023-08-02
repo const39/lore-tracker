@@ -26,16 +26,17 @@
 			/>
 		</template>
 		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
-			<!-- Selection toggle is enabled on ctrl-click only -->
+			<!-- The card is unselected when clicking outside of any .selectable card -->
 			<!-- FIXME: remove @expect-error after Vuetify update -->
 			<!-- @vue-expect-error TS raises error on the isDraggable and isSelected props due to a type mismatch in Vuetify -->
 			<FolderCard
-				v-click-outside="($e: MouseEvent) => onClickOutside($e, select)"
+				v-click-outside="{handler: ($e: MouseEvent) => onClickOutside($e, select), include: getSelectableElements}"
 				:folder="itemData"
 				:draggable="isDraggable"
 				:selected="isSelected"
+				class="selectable"
 				@open-folder="openFolder"
-				@click.ctrl="toggle"
+				@click="toggle"
 				@dragstart="($e) => onDragStart($e, isSelected)"
 			/>
 		</template>
@@ -81,6 +82,9 @@ const selected = computed({
 const router = useRouter();
 const sidePanelStore = useSidePanel();
 
+function getSelectableElements() {
+	return Array.from(document.querySelectorAll(".selectable"));
+}
 /**
  * Save the new items order.
  * @param movedItems the items with their new position.

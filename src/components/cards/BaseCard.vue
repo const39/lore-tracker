@@ -91,6 +91,10 @@ watch(
 );
 </script>
 <style scoped>
+:not(.draggable) {
+	cursor: default;
+}
+
 .draggable {
 	cursor: grab;
 	transition: transform 250ms ease;
