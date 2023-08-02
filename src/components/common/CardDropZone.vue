@@ -8,19 +8,18 @@
 
 <script lang="ts" setup>
 import { computed, ref } from "vue";
-import { CustomMIMEType, DropPayload, useDropZone } from "@/composables/dragAndDrop";
+import { CustomMIMEType, DragItem, useDropZone } from "@/composables/dragAndDrop";
 import { Folder, LoreEntry } from "@/core/models";
 import { t as $t } from "@/core/translation";
 
 const emit = defineEmits<{
-	(e: "drop", value: LoreEntry | Folder): void;
+	(e: "drop", value: Array<LoreEntry | Folder>): void;
 }>();
 
 const refDropZone = ref<HTMLElement | null>(null);
 
-const { status } = useDropZone<LoreEntry | Folder>(refDropZone, "copy", onDropAccepted, {
+const { status } = useDropZone(refDropZone, "copy", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
-	acceptMode: ["link"],
 });
 
 const color = computed(() => {
@@ -37,10 +36,20 @@ const color = computed(() => {
 /**
  * Callback triggered when the user releases the click (i.e. drops the item) in the drop zone
  */
-function onDropAccepted(items: DropPayload<LoreEntry | Folder>[]) {
+function onDropAccepted(items: DragItem[]) {
 	if (items.length) {
-		const { data } = items[0];
-		emit("drop", data);
+		// Ensure the items are LoreEntry or Folder instances
+		const filteredItems = items.filter((item): item is DragItem<LoreEntry | Folder> => {
+			const { data, dataType } = item;
+			const isFolder = dataType === CustomMIMEType.Folder && data instanceof Folder;
+			const isLoreEntry = dataType === CustomMIMEType.LoreEntry && data instanceof LoreEntry;
+			return isFolder || isLoreEntry;
+		});
+		// Emit with the items' data
+		emit(
+			"drop",
+			filteredItems.map((item) => item.data)
+		);
 	}
 }
 </script>

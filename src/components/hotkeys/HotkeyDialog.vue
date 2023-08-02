@@ -6,10 +6,6 @@
 				<v-row class="d-flex">
 					<v-col cols="12" md="6">
 						<HotkeyList
-							:title="$t('dragAndDrop.desc')"
-							:hotkeys="hotkeysDisplay.dragAndDrop"
-						/>
-						<HotkeyList
 							:title="$t('options.hotkeys.misc.title')"
 							:hotkeys="hotkeysDisplay.misc"
 						/>
@@ -72,19 +68,12 @@ const hotkeysDisplay = {
 			command: "Alt+6",
 		},
 	],
-	dragAndDrop: [
+	misc: [
 		{
-			text: $t("dragAndDrop.modes.moveToFolder"),
-			command: "Ctrl",
-			hold: true,
-		},
-		{
-			text: $t("dragAndDrop.modes.sort"),
+			text: $t("actions.dragSort"),
 			command: "Ctrl+Alt",
 			hold: true,
 		},
-	],
-	misc: [
 		{
 			text: $t("options.hotkeys.misc.openOptions"),
 			command: "ESC",

@@ -1,5 +1,6 @@
 <template>
 	<GenericArea
+		v-model:selected="selected"
 		:items="items"
 		:title="$t('categories.file') + 's'"
 		:loading="loading"
@@ -16,14 +17,26 @@
 				@click="newLoreEntry"
 			/>
 		</template>
-		<template #default="{ isDraggable, itemData }">
-			<LoreEntryCard :draggable="isDraggable" :item-data="itemData" />
+		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
+			<!-- The card is unselected when clicking outside of any .selectable card -->
+			<!-- FIXME: remove @expect-error after Vuetify update -->
+			<!-- @vue-expect-error TS raises error on the isDraggable and isSelected props due to a type mismatch in Vuetify -->
+			<LoreEntryCard
+				v-click-outside="{handler: ($e: MouseEvent) => onClickOutside($e, select), include: getSelectableElements}"
+				:item-data="itemData"
+				:draggable="isDraggable"
+				:selected="isSelected"
+				class="selectable"
+				@click="toggle"
+				@dragstart="($e) => onDragStart($e, isSelected)"
+			/>
 		</template>
 	</GenericArea>
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
+import { computed } from "vue";
 import LoreEntryCard from "@/components/cards/files/LoreEntryCard.vue";
 import { Campaign, Category, Indexable, LoreEntry, Orderable } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
@@ -33,6 +46,7 @@ import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
+	selected: LoreEntry[]; // v-model:selected
 	items: LoreEntry[];
 	campaign: Campaign;
 	category: Category;
@@ -41,7 +55,25 @@ const props = defineProps<{
 	disableActions?: boolean;
 }>();
 
+const emit = defineEmits<{
+	(e: "update:selected", value: LoreEntry[]): void;
+	(e: "dragstart", value: DragEvent): void;
+}>();
+
+const selected = computed({
+	get() {
+		return props.selected;
+	},
+	set(value) {
+		emit("update:selected", value);
+	},
+});
+
 const sidePanel = useSidePanel();
+
+function getSelectableElements() {
+	return Array.from(document.querySelectorAll(".selectable"));
+}
 
 /**
  * Save the new items order.
@@ -49,6 +81,14 @@ const sidePanel = useSidePanel();
  */
 function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(LoreEntryRepo).changeOrder(movedItems);
+}
+
+function onDragStart(e: DragEvent, isSelected: boolean) {
+	if (isSelected) emit("dragstart", e);
+}
+
+function onClickOutside(e: MouseEvent, selectFn: (arg: boolean) => void) {
+	if (!e.ctrlKey) selectFn(false);
 }
 
 function newLoreEntry(): void {

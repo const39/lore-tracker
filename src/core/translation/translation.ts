@@ -82,16 +82,6 @@ export interface Locale {
 		openFolder: string;
 	};
 
-	dragAndDrop: {
-		desc: string;
-		modes: {
-			disabled: string;
-			moveToFolder: string;
-			sort: string;
-			link: string;
-		};
-	};
-
 	fields: {
 		category: string;
 		name: string;
@@ -165,6 +155,8 @@ export interface Locale {
 		moveTo: string;
 		quickNote: string;
 		dropCardHere: string;
+		dragSort: string;
+		multipleDragItems: string;
 	};
 
 	messages: {

@@ -1,5 +1,6 @@
 <template>
 	<GenericArea
+		v-model:selected="selected"
 		:items="items"
 		:title="$t('categories.folder') + 's'"
 		:loading="loading"
@@ -24,14 +25,27 @@
 				@click="showFolderTree"
 			/>
 		</template>
-		<template #default="{ isDraggable, itemData }">
-			<FolderCard :draggable="isDraggable" :folder="itemData" @open-folder="openFolder" />
+		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
+			<!-- The card is unselected when clicking outside of any .selectable card -->
+			<!-- FIXME: remove @expect-error after Vuetify update -->
+			<!-- @vue-expect-error TS raises error on the isDraggable and isSelected props due to a type mismatch in Vuetify -->
+			<FolderCard
+				v-click-outside="{handler: ($e: MouseEvent) => onClickOutside($e, select), include: getSelectableElements}"
+				:folder="itemData"
+				:draggable="isDraggable"
+				:selected="isSelected"
+				class="selectable"
+				@open-folder="openFolder"
+				@click="toggle"
+				@dragstart="($e) => onDragStart($e, isSelected)"
+			/>
 		</template>
 	</GenericArea>
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import { Campaign, Category, Folder, Indexable, Orderable } from "@/core/models";
@@ -42,6 +56,7 @@ import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
+	selected: Folder[]; // v-model:selected
 	items: Folder[];
 	campaign: Campaign;
 	category: Category;
@@ -50,15 +65,40 @@ const props = defineProps<{
 	disableActions?: boolean;
 }>();
 
+const emit = defineEmits<{
+	(e: "update:selected", value: Folder[]): void;
+	(e: "dragstart", value: DragEvent): void;
+}>();
+
+const selected = computed({
+	get() {
+		return props.selected;
+	},
+	set(value) {
+		emit("update:selected", value);
+	},
+});
+
 const router = useRouter();
 const sidePanelStore = useSidePanel();
 
+function getSelectableElements() {
+	return Array.from(document.querySelectorAll(".selectable"));
+}
 /**
  * Save the new items order.
  * @param movedItems the items with their new position.
  */
 function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(FolderRepo).changeOrder(movedItems);
+}
+
+function onDragStart(e: DragEvent, isSelected: boolean) {
+	if (isSelected) emit("dragstart", e);
+}
+
+function onClickOutside(e: MouseEvent, selectFn: (arg: boolean) => void) {
+	if (!e.ctrlKey) selectFn(false);
 }
 
 function newFolder(): void {

@@ -38,7 +38,11 @@ const model = computed({
 /**
  * Add the dropped item in the tag list if it is not already in it (or if it is not the excluded ID)
  */
-function onDrop(item: Indexable) {
-	if (!model.value.includes(item.id) && item.id !== props.excludeId) model.value.push(item.id);
+function onDrop(items: Indexable[]) {
+	items.forEach((item) => {
+		if (!model.value.includes(item.id) && item.id !== props.excludeId) {
+			model.value.push(item.id);
+		}
+	});
 }
 </script>
