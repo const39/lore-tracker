@@ -4,7 +4,7 @@
 			{{ itemData.name }}
 			<v-tooltip v-if="!itemData.isAlive" location="top">
 				<template #activator="{ props: tooltipProps }">
-					<v-icon v-bind="tooltipProps" icon="mdi-skull" />
+					<v-icon v-bind="tooltipProps" icon="mdi-skull" start />
 				</template>
 				<span>{{ $t("fields.dead") }}</span>
 			</v-tooltip>
