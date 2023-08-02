@@ -1,7 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { Folder, LoreEntry } from "@/core/models";
-import { useDragAndDropMode } from "./dragAndDropMode";
 
 type FormVariant = "add" | "edit";
 
@@ -34,8 +33,6 @@ type FolderTreeState = FolderTreeMoveState | FolderTreeNavState;
 export type SidePanelState = FormState | FolderTreeState | undefined;
 
 export const useSidePanel = defineStore("sidePanel", () => {
-	const _dndStore = useDragAndDropMode();
-
 	const state = ref<SidePanelState>();
 
 	const isOpen = computed(() => !!state.value);
@@ -46,13 +43,10 @@ export const useSidePanel = defineStore("sidePanel", () => {
 
 	function close() {
 		state.value = undefined;
-		_dndStore.setMode("disabled");
 	}
 
 	function showLoreEntryForm<T extends LoreEntry>(variant: FormVariant, model: T) {
 		_preventOverwrite();
-		// Enable 'drop' drag and drop when form is open
-		_dndStore.setMode("link");
 		// Show side panel with form inside it
 		state.value = {
 			status: "file-form",
@@ -63,8 +57,6 @@ export const useSidePanel = defineStore("sidePanel", () => {
 
 	function showFolderForm(variant: FormVariant, model: Folder) {
 		_preventOverwrite();
-		// Enable 'drop' drag and drop when form is open
-		_dndStore.setMode("link");
 		// Show side panel with form inside it
 		state.value = {
 			status: "folder-form",

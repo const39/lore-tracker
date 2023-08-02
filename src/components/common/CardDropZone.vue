@@ -20,7 +20,6 @@ const refDropZone = ref<HTMLElement | null>(null);
 
 const { status } = useDropZone(refDropZone, "copy", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
-	acceptMode: ["link"],
 });
 
 const color = computed(() => {

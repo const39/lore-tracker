@@ -37,7 +37,6 @@ const folderRepo = useRepo(FolderRepo);
 
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
-	acceptMode: ["moveToFolder"],
 });
 
 /**
