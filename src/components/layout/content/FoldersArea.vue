@@ -27,6 +27,8 @@
 		</template>
 		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
 			<!-- Selection toggle is enabled on ctrl-click only -->
+			<!-- FIXME: remove @expect-error after Vuetify update -->
+			<!-- @vue-expect-error TS raises error on the isDraggable and isSelected props due to a type mismatch in Vuetify -->
 			<FolderCard
 				v-click-outside="($e: MouseEvent) => onClickOutside($e, select)"
 				:folder="itemData"
