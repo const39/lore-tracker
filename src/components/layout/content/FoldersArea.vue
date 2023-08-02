@@ -1,6 +1,6 @@
 <template>
 	<GenericArea
-		v-model:selected="selectedItems"
+		v-model:selected="selected"
 		:items="items"
 		:title="$t('categories.folder') + 's'"
 		:loading="loading"
@@ -32,22 +32,17 @@
 				:selected="isSelected"
 				@open-folder="openFolder"
 				@click="toggle"
-				@dragstart="onDragStart"
+				@dragstart="($e) => onDragStart($e, isSelected)"
 			/>
 		</template>
 	</GenericArea>
-
-	<!-- Custom drag image used when dragging cards -->
-	<CardDragImage ref="dragImage" :items="selectedItems" />
 </template>
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { ref } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
-import CardDragImage from "@/components/cards/CardDragImage.vue";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import { CustomMIMEType, DragItem, startDrag } from "@/composables/dragAndDrop";
 import { Campaign, Category, Folder, Indexable, Orderable } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -56,6 +51,7 @@ import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
+	selected: Folder[]; // v-model:selected
 	items: Folder[];
 	campaign: Campaign;
 	category: Category;
@@ -64,11 +60,22 @@ const props = defineProps<{
 	disableActions?: boolean;
 }>();
 
+const emit = defineEmits<{
+	(e: "update:selected", value: Folder[]): void;
+	(e: "dragstart", value: DragEvent): void;
+}>();
+
+const selected = computed({
+	get() {
+		return props.selected;
+	},
+	set(value) {
+		emit("update:selected", value);
+	},
+});
+
 const router = useRouter();
 const sidePanelStore = useSidePanel();
-
-const selectedItems = ref<Folder[]>([]);
-const dragImage = ref<HTMLElement | null>(null);
 
 /**
  * Save the new items order.
@@ -78,17 +85,8 @@ function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(FolderRepo).changeOrder(movedItems);
 }
 
-/**
- * Callback triggered when the user grabs the cards for a drag & drop
- */
-function onDragStart(e: DragEvent) {
-	const items: DragItem[] = selectedItems.value.map((item) => ({
-		data: item,
-		dataType: CustomMIMEType.Folder,
-	}));
-	startDrag(e, items, {
-		dragImage: { image: dragImage, offsetX: -12, offsetY: -8 },
-	});
+function onDragStart(e: DragEvent, isSelected: boolean) {
+	if (isSelected) emit("dragstart", e);
 }
 
 function newFolder(): void {

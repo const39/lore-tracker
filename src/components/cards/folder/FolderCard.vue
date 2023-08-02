@@ -64,7 +64,6 @@ const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
 const { status } = useDropZone(refDropZone, "move", onDropAccepted, {
 	acceptMIME: [CustomMIMEType.LoreEntry, CustomMIMEType.Folder],
-	acceptMode: ["moveToFolder"],
 });
 
 const childrenCount = computed(() => folderRepo.getChildrenCount(props.folder));

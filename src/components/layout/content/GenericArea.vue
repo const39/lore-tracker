@@ -8,12 +8,12 @@
 			<span class="px-1"> {{ title }} </span>
 			<slot name="actions" />
 		</div>
-		<v-item-group v-if="!loading" v-model="selected" multiple>
+		<v-item-group v-if="!loading" v-model="selected" :multiple="multipleSelectionEnabled">
 			<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
 			<draggable
 				v-model="list"
 				:animation="200"
-				:disabled="dndStore.mode !== 'sort'"
+				:disabled="!sortEnabled"
 				:group="group"
 				tag="v-row"
 				draggable=".draggable-item"
@@ -28,7 +28,7 @@
 							<slot
 								v-bind="{
 									itemData: element,
-									isDraggable: dndStore.mode !== 'disabled',
+									isDraggable: isSelected || sortEnabled,
 									isSelected: isSelected,
 									toggle,
 								}"
@@ -42,11 +42,11 @@
 </template>
 
 <script lang="ts" setup>
+import { onKeyStroke, onKeyUp } from "@vueuse/core";
 import { computed, ref } from "vue";
 import draggable from "vuedraggable";
 import { useGridDensity } from "@/composables/gridDensity";
 import { Describable, Indexable, Orderable } from "@/core/models";
-import { useDragAndDropMode } from "@/store/dragAndDropMode";
 import { usePreferencesStore } from "@/store/preferences";
 
 type Item = Indexable & Orderable & Describable;
@@ -66,8 +66,10 @@ const emit = defineEmits<{
 
 const drag = ref(false);
 
+const sortEnabled = ref(false);
+const multipleSelectionEnabled = ref(false);
+
 const prefStore = usePreferencesStore();
-const dndStore = useDragAndDropMode();
 const { density } = useGridDensity();
 
 const selected = computed({
@@ -75,7 +77,10 @@ const selected = computed({
 		return props.selected;
 	},
 	set(value) {
-		emit("update:selected", value);
+		let items = value;
+		if (!items) items = [];
+		if (!Array.isArray(items)) items = [items];
+		emit("update:selected", items);
 	},
 });
 
@@ -132,6 +137,23 @@ function getPositionComparator() {
 		return b.position - a.position; // DESC order: 0 = oldest, highest = latest
 	};
 }
+
+onKeyStroke(
+	["Control", "Alt"],
+	(e: KeyboardEvent) => {
+		// Enable 'sort' mode on Ctrl+Alt hold
+		if (e.ctrlKey && e.altKey) sortEnabled.value = true;
+		// Enable 'moveToFolder' mode on Ctrl hold
+		else if (e.ctrlKey) multipleSelectionEnabled.value = true;
+	},
+	{ dedupe: true } // Fire event once on hold, instead of at each tick
+);
+
+// Disable when key is released
+onKeyUp(["Control", "Alt"], (e: KeyboardEvent) => {
+	sortEnabled.value = false;
+	if (!e.ctrlKey) multipleSelectionEnabled.value = false;
+});
 </script>
 
 <style scoped>

@@ -2,7 +2,6 @@ import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
 import utilities from "@/core/utils/functions";
 import { UUID } from "@/core/utils/types";
-import { DragAndDropMode, useDragAndDropMode } from "@/store/dragAndDropMode";
 
 interface DragOptions {
 	/**
@@ -18,7 +17,6 @@ interface DragOptions {
 
 interface DropOptions {
 	acceptMIME?: string[];
-	acceptMode?: DragAndDropMode[];
 }
 
 export interface DragItem<T = unknown> {
@@ -61,8 +59,6 @@ export function useDropZone(
 	onDropAccepted: (items: DragItem[]) => void,
 	options?: DropOptions
 ) {
-	const _dndStore = useDragAndDropMode();
-
 	const acceptedMIMETypes = options?.acceptMIME
 		? [...options.acceptMIME, CustomMIMEType.DragAndDropID].map((type) => type.toLowerCase())
 		: undefined;
@@ -70,30 +66,24 @@ export function useDropZone(
 	const status = ref<Status>("idle");
 	let counter = 0;
 
-	function _isAccepted(dataTransfer: DataTransfer) {
-		if (dataTransfer.items.length) {
-			// If there is no requirement for MIME types, accept all by default
-			if (!acceptedMIMETypes) return true;
-			else {
-				// Browse through the items' dataTypes and reject if any of them is not accepted
-				const ID = dataTransfer.getData(CustomMIMEType.DragAndDropID);
-				const items = buffer.get(ID) ?? [];
-				return items.every((item) => {
-					return acceptedMIMETypes.includes(item.dataType.toLowerCase());
-				});
-			}
-		}
+	function _isAccepted(dragAndDropID: UUID) {
+		// If there is no requirement for MIME types, accept all by default
+		if (!acceptedMIMETypes) return true;
 
-		// Reject if current drag & drop mode is not among the accepted ones
-		if (options?.acceptMode && !options.acceptMode.includes(_dndStore.mode)) return false;
-
-		return true;
+		// Browse through the items' dataTypes and reject if any of them is not accepted
+		const items = buffer.get(dragAndDropID) ?? [];
+		return items.every((item) => {
+			return acceptedMIMETypes.includes(item.dataType.toLowerCase());
+		});
 	}
 
 	function onDragEnter(e: DragEvent) {
 		e.preventDefault();
 		counter++;
-		if (e.dataTransfer) status.value = _isAccepted(e.dataTransfer) ? "accepted" : "rejected";
+		if (e.dataTransfer) {
+			const ID = e.dataTransfer.getData(CustomMIMEType.DragAndDropID);
+			status.value = _isAccepted(ID) ? "accepted" : "rejected";
+		}
 	}
 
 	function onDragOver(e: DragEvent) {
@@ -115,8 +105,8 @@ export function useDropZone(
 		e.preventDefault();
 		counter = 0;
 		status.value = "idle";
-		if (e.dataTransfer && _isAccepted(e.dataTransfer)) {
-			const ID = e.dataTransfer.getData(CustomMIMEType.DragAndDropID);
+		const ID = e.dataTransfer?.getData(CustomMIMEType.DragAndDropID);
+		if (ID && _isAccepted(ID)) {
 			const items = buffer.get(ID) ?? [];
 			// Call drop handler with accepted items
 			onDropAccepted(items);

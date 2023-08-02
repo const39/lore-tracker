@@ -18,20 +18,24 @@
 					<FolderBreadcrumbs v-if="folder" :folder="folder" />
 					<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
 					<FoldersArea
+						v-model:selected="selectedFolders"
 						:items="(folders as Folder[])"
 						:campaign="campaign"
 						:category="category"
 						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
+						@dragstart="onDragStart"
 					/>
 					<FilesArea
+						v-model:selected="selectedFiles"
 						:items="(files as LoreEntry[])"
 						:campaign="campaign"
 						:category="category"
 						:folder-id="folder?.id"
 						:loading="loading"
 						:disable-actions="filterStore.isFilterActive"
+						@dragstart="onDragStart"
 					/>
 				</template>
 				<!-- Display alert in case folder does not exist -->
@@ -48,16 +52,21 @@
 			</v-container>
 		</v-window-item>
 	</v-window>
+
+	<!-- Custom drag image used when dragging cards -->
+	<CardDragImage ref="dragImage" :items="selectedItems" />
 </template>
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
 import { useRepo } from "pinia-orm";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
+import CardDragImage from "@/components/cards/CardDragImage.vue";
 import FilesArea from "@/components/layout/content/FilesArea.vue";
 import FolderBreadcrumbs from "@/components/layout/content/FolderBreadcrumbs.vue";
 import FoldersArea from "@/components/layout/content/FoldersArea.vue";
 import { useAlert } from "@/composables/alert";
+import { CustomMIMEType, DragItem, startDrag } from "@/composables/dragAndDrop";
 import { Campaign, Category, Folder, LoreEntry } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -81,9 +90,19 @@ const { alertState, setError, resetAlert } = useAlert();
 
 const activeTab = ref(0);
 const loading = ref(false);
+const dragImage = ref<HTMLElement | null>(null);
 
 const folders = ref<Folder[]>([]);
 const files = ref<LoreEntry[]>([]);
+
+// Note: the 'selected...' refs below are not strictly typed because of https://github.com/vuejs/core/issues/2981
+const selectedFolders = ref([]); // Expected type: Folder[]
+const selectedFiles = ref([]); // Expected type: LoreEntry[]
+
+const selectedItems = computed<Array<Folder | LoreEntry>>(() => [
+	...selectedFolders.value,
+	...selectedFiles.value,
+]);
 
 /**
  * Update the current folders and files to display based.
@@ -114,14 +133,22 @@ async function updateItems() {
 // Trigger update on props or filter rules change
 watch([() => props, () => filterStore.rules], updateItems, { deep: true, immediate: true });
 
-// Register hotkeys
-onKeyDown(
-	Array.from({ length: tabs.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
-	hotkey
-);
+/**
+ * Callback triggered when the user grabs the cards for a drag & drop
+ */
+function onDragStart(e: DragEvent) {
+	const items: DragItem[] = selectedItems.value.map((item) => ({
+		data: item,
+		dataType: item instanceof Folder ? CustomMIMEType.Folder : CustomMIMEType.LoreEntry,
+	}));
+
+	startDrag(e, items, {
+		dragImage: { image: dragImage, offsetX: -12, offsetY: -8 },
+	});
+}
 
 /**
- * Manage each column hot key :
+ * Register tab hotkeys:
  * - Alt+1 : Show Quest tab
  * - Alt+2 : Show Event tab
  * - Alt+3 : Show Location tab
@@ -129,13 +156,16 @@ onKeyDown(
  * - Alt+5 : Show Faction tab
  * - Alt+6 : Show Note tab
  */
-function hotkey(e: KeyboardEvent) {
-	if (e.altKey) {
-		const num = Number.parseInt(e.key);
-		if (num >= 1 && num <= tabs.length) {
-			e.preventDefault();
-			activeTab.value = num - 1;
+onKeyDown(
+	Array.from({ length: tabs.length }, (v, idx) => (idx + 1).toString()), // Register listener for each tab
+	(e) => {
+		if (e.altKey) {
+			const num = Number.parseInt(e.key);
+			if (num >= 1 && num <= tabs.length) {
+				e.preventDefault();
+				activeTab.value = num - 1;
+			}
 		}
 	}
-}
+);
 </script>
