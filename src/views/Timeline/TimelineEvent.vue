@@ -17,8 +17,8 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import MarkdownView from "@/components/common/MarkdownView.vue";
 import { Category, Event, EventType } from "@/core/models";
-import MarkdownView from "../common/MarkdownView.vue";
 
 interface Node {
 	isHeader: boolean;
