@@ -25,13 +25,15 @@
 				@click="showFolderTree"
 			/>
 		</template>
-		<template #default="{ itemData, isDraggable, isSelected, toggle }">
+		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
+			<!-- Selection toggle is enabled on ctrl-click only -->
 			<FolderCard
+				v-click-outside="($e: MouseEvent) => onClickOutside($e, select)"
 				:folder="itemData"
 				:draggable="isDraggable"
 				:selected="isSelected"
 				@open-folder="openFolder"
-				@click="toggle"
+				@click.ctrl="toggle"
 				@dragstart="($e) => onDragStart($e, isSelected)"
 			/>
 		</template>
@@ -87,6 +89,10 @@ function onSort(movedItems: Array<Indexable & Orderable>) {
 
 function onDragStart(e: DragEvent, isSelected: boolean) {
 	if (isSelected) emit("dragstart", e);
+}
+
+function onClickOutside(e: MouseEvent, selectFn: (arg: boolean) => void) {
+	if (!e.ctrlKey) selectFn(false);
 }
 
 function newFolder(): void {

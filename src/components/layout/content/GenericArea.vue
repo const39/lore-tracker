@@ -8,7 +8,7 @@
 			<span class="px-1"> {{ title }} </span>
 			<slot name="actions" />
 		</div>
-		<v-item-group v-if="!loading" v-model="selected" :multiple="multipleSelectionEnabled">
+		<v-item-group v-if="!loading" v-model="selected" multiple>
 			<!-- the <draggable> component only controls the 'sort' drag&drop mode -->
 			<draggable
 				v-model="list"
@@ -24,13 +24,14 @@
 				<!-- v-col MUST have "position: relative" to prevent the card's custom drag image to by included in its size -->
 				<template #item="{ element }">
 					<v-col class="draggable-item relative" cols="12" v-bind="density">
-						<v-item v-slot="{ isSelected, toggle }" :value="element">
+						<v-item v-slot="{ isSelected, toggle, select }" :value="element">
 							<slot
 								v-bind="{
 									itemData: element,
 									isDraggable: isSelected || sortEnabled,
 									isSelected: isSelected,
 									toggle,
+									select,
 								}"
 							/>
 						</v-item>
@@ -67,7 +68,6 @@ const emit = defineEmits<{
 const drag = ref(false);
 
 const sortEnabled = ref(false);
-const multipleSelectionEnabled = ref(false);
 
 const prefStore = usePreferencesStore();
 const { density } = useGridDensity();
@@ -77,10 +77,7 @@ const selected = computed({
 		return props.selected;
 	},
 	set(value) {
-		let items = value;
-		if (!items) items = [];
-		if (!Array.isArray(items)) items = [items];
-		emit("update:selected", items);
+		emit("update:selected", value);
 	},
 });
 
@@ -143,17 +140,12 @@ onKeyStroke(
 	(e: KeyboardEvent) => {
 		// Enable 'sort' mode on Ctrl+Alt hold
 		if (e.ctrlKey && e.altKey) sortEnabled.value = true;
-		// Enable 'moveToFolder' mode on Ctrl hold
-		else if (e.ctrlKey) multipleSelectionEnabled.value = true;
 	},
 	{ dedupe: true } // Fire event once on hold, instead of at each tick
 );
 
 // Disable when key is released
-onKeyUp(["Control", "Alt"], (e: KeyboardEvent) => {
-	sortEnabled.value = false;
-	if (!e.ctrlKey) multipleSelectionEnabled.value = false;
-});
+onKeyUp(["Control", "Alt"], () => (sortEnabled.value = false));
 </script>
 
 <style scoped>
