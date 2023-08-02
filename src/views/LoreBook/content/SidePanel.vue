@@ -1,36 +1,38 @@
 <template>
-	<v-card class="pa-2 border sticky" variant="outlined">
-		<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
-		<template v-if="state?.status === 'file-form'">
-			<LoreEntryForm
-				v-bind="{ variant: state.variant, baseModel: state.baseModel as LoreEntry }"
-				@submit="close"
-				@close="close"
-			/>
-		</template>
-		<template v-if="state?.status === 'folder-form'">
-			<FolderForm
-				v-bind="{ variant: state.variant, baseModel: state.baseModel as Folder }"
-				@submit="close"
-				@close="close"
-			/>
-		</template>
-		<template v-if="state?.status === 'folder-tree'">
-			<FolderTreeNavVariant
-				v-if="state.variant === 'nav'"
-				:campaign="campaign"
-				:current-folder="currentFolder"
-				@submit="close"
-				@close="close"
-			/>
-			<FolderTreeMoveVariant
-				v-if="state.variant === 'card-move'"
-				v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, campaign, currentFolder }"
-				@submit="close"
-				@close="close"
-			/>
-		</template>
-	</v-card>
+	<div class="sticky">
+		<v-card class="pa-2 border fixed-height" variant="outlined">
+			<!-- Type casts are necessary because of https://github.com/vuejs/core/issues/2981 -->
+			<template v-if="state?.status === 'file-form'">
+				<LoreEntryForm
+					v-bind="{ variant: state.variant, baseModel: state.baseModel as LoreEntry }"
+					@submit="close"
+					@close="close"
+				/>
+			</template>
+			<template v-if="state?.status === 'folder-form'">
+				<FolderForm
+					v-bind="{ variant: state.variant, baseModel: state.baseModel as Folder }"
+					@submit="close"
+					@close="close"
+				/>
+			</template>
+			<template v-if="state?.status === 'folder-tree'">
+				<FolderTreeNavVariant
+					v-if="state.variant === 'nav'"
+					:campaign="campaign"
+					:current-folder="currentFolder"
+					@submit="close"
+					@close="close"
+				/>
+				<FolderTreeMoveVariant
+					v-if="state.variant === 'card-move'"
+					v-bind="{ itemToMove: state.itemToMove as Folder | LoreEntry, campaign, currentFolder }"
+					@submit="close"
+					@close="close"
+				/>
+			</template>
+		</v-card>
+	</div>
 </template>
 
 <script lang="ts" setup>
@@ -60,5 +62,9 @@ function close() {
 .sticky {
 	position: sticky;
 	top: 78px;
+}
+.fixed-height {
+	max-height: 85vh;
+	overflow-y: auto;
 }
 </style>
