@@ -70,7 +70,7 @@ import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import Icon from "@/core/utils/icons";
 import { useGlobalConfirmDialog } from "@/store/confirmDialog";
-import CampaignForm from "./content/CampaignForm.vue";
+import CampaignForm from "./CampaignForm.vue";
 
 const campaignRepo = useRepo(CampaignRepo);
 

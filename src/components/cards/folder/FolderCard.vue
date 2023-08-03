@@ -7,6 +7,7 @@
 		:draggable="draggable"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
 		with-options
+		@show-related="showRelatedCards"
 		@edit="editFolder"
 		@delete="confirmDelete"
 		@move="moveFolder"
@@ -86,6 +87,10 @@ function onDropAccepted(items: DragItem[]) {
 			});
 		});
 	}
+}
+
+function showRelatedCards() {
+	sidePanelStore.showRelatedCards(props.folder);
 }
 
 function moveFolder() {

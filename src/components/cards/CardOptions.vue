@@ -7,6 +7,13 @@
 		<v-list density="compact">
 			<slot>
 				<v-list-item
+					v-if="!options || options.includes('show-related')"
+					:title="$t('actions.showRelated')"
+					prepend-icon="mdi-tag-multiple"
+					@click="$emit('show-related')"
+				/>
+				<v-divider class="my-1" />
+				<v-list-item
 					v-if="!options || options.includes('edit')"
 					:title="$t('actions.edit')"
 					prepend-icon="mdi-pencil"
@@ -33,8 +40,8 @@
 import { t as $t } from "@/core/translation";
 
 defineProps<{
-	options?: Array<"edit" | "delete" | "move">;
+	options?: Array<"show-related" | "edit" | "delete" | "move">;
 }>();
 
-defineEmits(["edit", "delete", "move"]);
+defineEmits(["show-related", "edit", "delete", "move"]);
 </script>
