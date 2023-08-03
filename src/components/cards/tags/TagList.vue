@@ -24,6 +24,7 @@
 import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import { useCardLink } from "@/composables/cardLink";
 import { Category, Tag } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 import { Icon } from "@/core/utils/icons";
@@ -93,22 +94,17 @@ function remove(tag: Tag) {
 	const index = model.value.indexOf(tag.id);
 	if (index >= 0) model.value.splice(index, 1);
 }
+
 /**
  * Navigate to the card referenced by the specified tag.
  */
 function goToCard(tag: Tag) {
 	const item = findItem(tag.id);
-	// Get the ID of the folder hosting the item referenced by the tag
-	const targetFolderId = item?.folderId || item?.parentId;
-	if (targetFolderId) {
-		// Navigate to the card's folder, passing along the card ID in the URL's hash
-		router.push({
-			params: {
-				category: tag.category,
-				folderId: targetFolderId,
-			},
-			hash: `#${tag.id}-card`,
-		});
+	if (item) {
+		const routeParams = useCardLink(item);
+		if (routeParams) {
+			router.push(routeParams);
+		}
 	}
 }
 </script>
