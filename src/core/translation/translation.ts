@@ -81,6 +81,7 @@ export interface Locale {
 		folderList: string;
 		openFolder: string;
 		relatedCards: string;
+		noRelatedCards: string;
 	};
 
 	fields: {

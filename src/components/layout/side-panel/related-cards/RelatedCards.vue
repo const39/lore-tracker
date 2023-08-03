@@ -6,7 +6,7 @@
 		{{ $t("sidePanel.relatedCards") }}
 		<TagItem :tag="Tag.from(relatedTo)" show-icon />
 	</v-card-title>
-	<v-list v-model:opened="openCategories" density="compact">
+	<v-list v-if="relatedCardsCount" v-model:opened="openCategories" density="compact">
 		<v-list-group v-for="category in categories" :key="category" :value="category">
 			<template v-if="relatedCards[category]?.length" #activator="{ props: activatorProps }">
 				<v-list-item v-bind="activatorProps">
@@ -26,6 +26,9 @@
 			</v-list-item>
 		</v-list-group>
 	</v-list>
+	<v-card-text v-else>
+		{{ $t("sidePanel.noRelatedCards") }}
+	</v-card-text>
 </template>
 
 <script lang="ts" setup>
@@ -75,5 +78,12 @@ const relatedCards = computed(() => {
 		groupedByCategory[category] = [...folders, ...entries];
 	}
 	return groupedByCategory;
+});
+
+const relatedCardsCount = computed(() => {
+	return Object.values(relatedCards.value).reduce((sum, entries) => {
+		sum += entries?.length;
+		return sum;
+	}, 0);
 });
 </script>

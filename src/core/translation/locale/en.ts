@@ -79,6 +79,7 @@ const en: Locale = {
 		folderList: "Folder list",
 		openFolder: "Open",
 		relatedCards: "Cards related to",
+		noRelatedCards: "No related card.",
 	},
 
 	fields: {
