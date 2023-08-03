@@ -78,6 +78,8 @@ const fr: Locale = {
 		moveCard: "Déplacer",
 		folderList: "Liste des dossiers",
 		openFolder: "Ouvrir",
+		relatedCards: "Cartes liées à",
+		noRelatedCards: "Aucune carte liée.",
 	},
 
 	fields: {
@@ -148,6 +150,7 @@ const fr: Locale = {
 		save: "Sauvegarder",
 		yes: "Oui",
 		no: "Non",
+		showRelated: "Voir les cartes liées",
 		edit: "Modifier",
 		delete: "Supprimer",
 		moveTo: "Déplacer vers",
@@ -185,6 +188,11 @@ const fr: Locale = {
 				},
 				nameAlreadyUsed: {
 					title: "Nom déjà utilisé",
+				},
+			},
+			sidePanel: {
+				formAlreadyOpen: {
+					title: "Le panneau latéral ne peut être ouvert : un formulaire est déjà ouvert.",
 				},
 			},
 		},

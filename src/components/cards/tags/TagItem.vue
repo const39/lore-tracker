@@ -1,7 +1,7 @@
 <template>
 	<v-chip
 		:closable="closable"
-		:text="truncate(tag.text, 30)"
+		:text="truncate(tag.text, 25)"
 		:prepend-icon="showIcon ? tag.icon : undefined"
 		class="ma-1"
 		size="small"

@@ -13,7 +13,12 @@
 	>
 		<!-- "Options" button menu (optional) -->
 		<v-card-actions v-if="withOptions" class="float-right">
-			<CardOptions @edit="$emit('edit')" @delete="$emit('delete')" @move="$emit('move')" />
+			<CardOptions
+				@show-related="$emit('show-related')"
+				@edit="$emit('edit')"
+				@delete="$emit('delete')"
+				@move="$emit('move')"
+			/>
 		</v-card-actions>
 		<!-- Inner content of the card -->
 		<slot />
@@ -44,6 +49,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
+	(e: "show-related"): void;
 	(e: "edit"): void;
 	(e: "delete"): void;
 	(e: "move"): void;

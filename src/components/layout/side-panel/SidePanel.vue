@@ -31,6 +31,13 @@
 					@close="close"
 				/>
 			</template>
+			<template v-if="state?.status === 'related-cards'">
+				<RelatedCards
+					v-bind="{ relatedTo: state.relatedTo as Folder | LoreEntry }"
+					@submit="close"
+					@close="close"
+				/>
+			</template>
 		</v-card>
 	</div>
 </template>
@@ -43,6 +50,7 @@ import { Campaign, Folder, LoreEntry } from "@/core/models";
 import { useSidePanel } from "@/store/sidePanel";
 import FolderTreeMoveVariant from "./folder-tree/FolderTreeMoveVariant.vue";
 import FolderTreeNavVariant from "./folder-tree/FolderTreeNavVariant.vue";
+import RelatedCards from "./related-cards/RelatedCards.vue";
 
 defineProps<{
 	campaign: Campaign;

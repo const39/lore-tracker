@@ -4,6 +4,7 @@
 		:selected="selected"
 		:draggable="draggable"
 		with-options
+		@show-related="showRelatedCards"
 		@edit="showForm"
 		@delete="confirmDelete"
 		@move="moveLoreEntry"
@@ -39,6 +40,10 @@ const loreEntryRepo = useRepo(LoreEntryRepo);
 
 const sidePanelStore = useSidePanel();
 const { showConfirmDialog } = useGlobalConfirmDialog();
+
+function showRelatedCards() {
+	sidePanelStore.showRelatedCards(props.itemData);
+}
 
 function showForm() {
 	sidePanelStore.showLoreEntryForm("edit", props.itemData);

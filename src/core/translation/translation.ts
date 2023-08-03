@@ -80,6 +80,8 @@ export interface Locale {
 		moveCard: string;
 		folderList: string;
 		openFolder: string;
+		relatedCards: string;
+		noRelatedCards: string;
 	};
 
 	fields: {
@@ -150,6 +152,7 @@ export interface Locale {
 		save: string;
 		yes: string;
 		no: string;
+		showRelated: string;
 		edit: string;
 		delete: string;
 		moveTo: string;
@@ -186,6 +189,11 @@ export interface Locale {
 					action: string;
 				};
 				nameAlreadyUsed: {
+					title: string;
+				};
+			};
+			sidePanel: {
+				formAlreadyOpen: {
 					title: string;
 				};
 			};
