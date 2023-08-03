@@ -29,7 +29,7 @@
 			</template>
 
 			<!-- Options menu -->
-			<v-menu v-model="showMenu" location="bottom" start>
+			<v-menu v-model="showMenu" location="bottom" close-on-content-click start>
 				<template #activator="{ props }">
 					<v-btn icon="mdi-cog" v-bind="props" />
 				</template>
