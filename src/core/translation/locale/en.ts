@@ -78,6 +78,8 @@ const en: Locale = {
 		moveCard: "Move",
 		folderList: "Folder list",
 		openFolder: "Open",
+		relatedCards: "Cards related to",
+		noRelatedCards: "No related card.",
 	},
 
 	fields: {
@@ -148,6 +150,7 @@ const en: Locale = {
 		save: "Save",
 		yes: "Yes",
 		no: "No",
+		showRelated: "See related tags",
 		edit: "Edit",
 		delete: "Delete",
 		moveTo: "Move to",
@@ -185,6 +188,11 @@ const en: Locale = {
 				},
 				nameAlreadyUsed: {
 					title: "Name already used",
+				},
+			},
+			sidePanel: {
+				formAlreadyOpen: {
+					title: "Cannot open the side panel: a form is already open.",
 				},
 			},
 		},
