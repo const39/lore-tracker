@@ -192,6 +192,11 @@ export interface Locale {
 					title: string;
 				};
 			};
+			sidePanel: {
+				formAlreadyOpen: {
+					title: string;
+				};
+			};
 		};
 		info: {
 			updateNotifTitle: string;

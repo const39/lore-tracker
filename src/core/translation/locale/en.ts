@@ -190,6 +190,11 @@ const en: Locale = {
 					title: "Name already used",
 				},
 			},
+			sidePanel: {
+				formAlreadyOpen: {
+					title: "Cannot open the side panel: a form is already open.",
+				},
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker has been updated!",

@@ -190,6 +190,11 @@ const fr: Locale = {
 					title: "Nom déjà utilisé",
 				},
 			},
+			sidePanel: {
+				formAlreadyOpen: {
+					title: "Le panneau latéral ne peut être ouvert : un formulaire est déjà ouvert.",
+				},
+			},
 		},
 		info: {
 			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",
