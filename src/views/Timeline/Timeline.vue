@@ -87,11 +87,11 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
-import TimelineEvent from "@/components/timeline/TimelineEvent.vue";
 import { Event } from "@/core/models";
 import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";
+import TimelineEvent from "./TimelineEvent.vue";
 
 const props = defineProps<{ campaignId: UUID }>();
 
