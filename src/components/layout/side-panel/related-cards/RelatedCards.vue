@@ -17,10 +17,13 @@
 			<v-list-item
 				v-for="card in relatedCards[category]"
 				:key="card.id"
-				:title="card.getText()"
 				:to="useCardLink(card)"
 				@click="$emit('submit')"
-			/>
+			>
+				<v-list-item-title class="marquee">
+					<span>{{ card.getText() }}</span>
+				</v-list-item-title>
+			</v-list-item>
 		</v-list-group>
 	</v-list>
 </template>
