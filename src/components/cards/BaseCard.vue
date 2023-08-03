@@ -117,10 +117,10 @@ watch(
 
 @keyframes highlight-anim {
 	from {
-		box-shadow: 0 1px 2px lightgray;
+		transform: scale(1);
 	}
 	to {
-		box-shadow: 0 1px 6px rgb(180, 180, 180);
+		transform: scale(1.01);
 	}
 }
 </style>
