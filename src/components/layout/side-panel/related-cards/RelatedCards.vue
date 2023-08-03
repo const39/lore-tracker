@@ -4,7 +4,7 @@
 	</v-card-actions>
 	<v-card-title class="mb-1 text-truncate">
 		{{ $t("sidePanel.relatedCards") }}
-		<TagItem :tag="Tag.from(relatedTo)" show-icon />
+		<TagItem :tag="Tag.from(relatedTo)" show-icon @click="goToSourceCard" />
 	</v-card-title>
 	<v-list v-if="relatedCardsCount" v-model:opened="openCategories" density="compact">
 		<v-list-group v-for="category in categories" :key="category" :value="category">
@@ -34,6 +34,7 @@
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
+import { useRouter } from "vue-router";
 import TagItem from "@/components/cards/tags/TagItem.vue";
 import { useCardLink } from "@/composables/cardLink";
 import { Category, Folder, LoreEntry, Tag } from "@/core/models";
@@ -49,6 +50,7 @@ const props = defineProps<{
 defineEmits(["close", "submit"]);
 
 const categories = Object.values(Category);
+const router = useRouter();
 
 const openCategories = ref(categories);
 
@@ -86,4 +88,9 @@ const relatedCardsCount = computed(() => {
 		return sum;
 	}, 0);
 });
+
+function goToSourceCard() {
+	const routeParams = useCardLink(props.relatedTo);
+	if (routeParams) router.push(routeParams);
+}
 </script>
