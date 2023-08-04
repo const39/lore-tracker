@@ -12,6 +12,11 @@ export default defineConfig({
 			"@": path.resolve(__dirname, "src"),
 		},
 	},
+	esbuild: {
+		supported: {
+			"top-level-await": true,
+		},
+	},
 	define: {
 		// Generate app version from package.json version during build phase
 		APP_VERSION: JSON.stringify(process.env.npm_package_version),
