@@ -23,29 +23,17 @@ import { Folder } from "@/core/models";
 import { Maybe } from "@/core/utils/types";
 
 const props = defineProps<{
-	selected: Maybe<Folder>;
 	folder: Folder;
 	level: number;
 	title?: string;
 	disabled?: boolean;
 }>();
 
-const emit = defineEmits<{
-	(e: "update:selected", value: typeof props.selected): void;
-}>();
-
-const selectModelValue = computed({
-	get() {
-		return props.selected;
-	},
-	set(value) {
-		emit("update:selected", value);
-	},
-});
+const selected = defineModel<Maybe<Folder>>("selected", { required: true }); // v-model:selected
 
 const isHovered = ref(false);
 
-const isSelected = computed(() => selectModelValue.value?.id === props.folder.id);
+const isSelected = computed(() => selected.value?.id === props.folder.id);
 
 const color = computed(() => {
 	if (isSelected.value) return "bg-selected-surface";
@@ -54,7 +42,7 @@ const color = computed(() => {
 });
 
 function onSelect() {
-	selectModelValue.value = props.folder;
+	selected.value = props.folder;
 }
 </script>
 

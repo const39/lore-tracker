@@ -31,32 +31,14 @@ import { Icon } from "@/core/utils/icons";
 import { UUID } from "@/core/utils/types";
 import TagItem from "./TagItem.vue";
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: UUID[]; // v-model
-		editable?: boolean;
-	}>(),
-	{ editable: false }
-);
+defineProps<{ editable?: boolean }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: UUID[]): void;
-}>();
+const modelValue = defineModel<UUID[]>({ required: true }); // v-model
 
 const router = useRouter();
 
 const folderRepo = useRepo(FolderRepo);
 const loreEntryRepo = useRepo(LoreEntryRepo);
-
-// v-model binding
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 
 /**
  * Create a Tag for each object whose ID is given
@@ -70,7 +52,7 @@ const tags = computed(() => {
 		faction: [],
 		note: [],
 	};
-	for (const id of model.value) {
+	for (const id of modelValue.value) {
 		const item = findItem(id);
 		// If the ID matches an item (lore entry or folder), add the tag in the list of its category
 		if (item) {
@@ -91,8 +73,8 @@ function findItem(id: UUID) {
  * Performs in-place removal, the prop is changed directly.
  */
 function remove(tag: Tag) {
-	const index = model.value.indexOf(tag.id);
-	if (index >= 0) model.value.splice(index, 1);
+	const index = modelValue.value.indexOf(tag.id);
+	if (index >= 0) modelValue.value.splice(index, 1);
 }
 
 /**

@@ -45,7 +45,6 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
 import { Campaign, Category, Folder, Indexable, Orderable } from "@/core/models";
@@ -56,7 +55,6 @@ import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	selected: Folder[]; // v-model:selected
 	items: Folder[];
 	campaign: Campaign;
 	category: Category;
@@ -66,18 +64,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: "update:selected", value: Folder[]): void;
 	(e: "dragstart", value: DragEvent): void;
 }>();
 
-const selected = computed({
-	get() {
-		return props.selected;
-	},
-	set(value) {
-		emit("update:selected", value);
-	},
-});
+const selected = defineModel<Folder[]>("selected", { required: true }); // v-model:selected
 
 const router = useRouter();
 const sidePanelStore = useSidePanel();

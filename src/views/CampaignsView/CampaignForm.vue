@@ -32,22 +32,19 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { VForm } from "vuetify/components";
 import { Campaign } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import Icon from "@/core/utils/icons";
 import validationRules from "@/core/validationRules";
 
-const props = defineProps<{
-	modelValue: boolean; // v-model
-}>();
-
 const emit = defineEmits<{
-	(e: "update:modelValue", value: boolean): void;
 	(e: "close"): void;
 	(e: "submit", value: Campaign): void;
 }>();
+
+const showDialog = defineModel<boolean>({ required: true }); // v-model
 
 const rules = {
 	name: [
@@ -59,15 +56,6 @@ const rules = {
 const model = ref(new Campaign());
 const isValid = ref(false);
 const form = ref<VForm>();
-
-const showDialog = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 
 function close() {
 	showDialog.value = false;

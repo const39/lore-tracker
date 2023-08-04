@@ -25,38 +25,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, mergeProps } from "vue";
+import { mergeProps } from "vue";
 import { VColorPicker } from "vuetify/components";
 
-/**
- * TODO: Replace with Vue's native ExtractPublicPropTypes when available
- * @see https://vuejs.org/api/utility-types.html#extractpublicproptypes
- */
-type PropsType<TComponent> = TComponent extends new () => {
-	$props: infer P;
-}
-	? P
-	: never;
-
-interface Props extends /* @vue-ignore */ PropsType<typeof VColorPicker> {
-	modelValue: string;
-}
-
-const props = defineProps<Props>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: string): void;
+defineSlots<{
+	activator: (props: { color: string }) => any;
 }>();
 
-// v-model binding
-const color = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const color = defineModel<string>({ required: true }); // v-model
 </script>
 <style scoped>
 .picker-btn-overlay {

@@ -12,28 +12,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import { Note } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { required } from "@/core/validationRules";
 
-const props = defineProps<{
-	modelValue: Note; // v-model
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const model = defineModel<Note>({ required: true }); // v-model
 
 const requiredRule = required($t("fields.requiredField"));
 </script>

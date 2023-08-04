@@ -46,29 +46,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import { Event, EventType } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import { Icon } from "@/core/utils/icons";
 import { number, numberInRange, required } from "@/core/validationRules";
 
-const props = defineProps<{
-	modelValue: Event; // v-model
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const model = defineModel<Event>({ required: true }); // v-model
 
 const eventTypes = Object.values(EventType);
 
