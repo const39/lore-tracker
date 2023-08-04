@@ -3,10 +3,7 @@
 		<v-icon icon="mdi-arrow-left" @click="goBack" />
 		<v-breadcrumbs :items="breadcrumbs">
 			<template #title="{ item, index }">
-				<FolderBreadcrumbsItem
-					:title="index === 0 ? $t(`categories.${item.category}`) : undefined"
-					:folder="item"
-				/>
+				<FolderBreadcrumbsItem :title="item" :folder="hierarchy[index]" />
 			</template>
 			<template #divider>
 				<v-icon icon="mdi-chevron-right" />
@@ -31,7 +28,13 @@ const props = defineProps<{
 const router = useRouter();
 const folderRepo = useRepo(FolderRepo);
 
-const breadcrumbs = computed(() => folderRepo.getHierarchy(props.folder));
+const hierarchy = computed(() => folderRepo.getHierarchy(props.folder));
+
+const breadcrumbs = computed(() => {
+	return hierarchy.value.map((folder) =>
+		folder.isRoot() ? $t(`categories.${folder.category}`) : folder.name
+	);
+});
 
 function goBack() {
 	router.back();

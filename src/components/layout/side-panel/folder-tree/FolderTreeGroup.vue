@@ -3,7 +3,7 @@
 		<div class="header">
 			<FolderTreeItem
 				v-bind="props"
-				v-model:selected="selectModelValue"
+				v-model:selected="selected"
 				:style="padding"
 				:disabled="disabled === true"
 			>
@@ -26,8 +26,8 @@
 				<FolderTreeGroup
 					v-for="subfolder in subfolders"
 					:key="subfolder.id"
-					v-model:selected="selectModelValue"
-					v-model:opened="openModelValue"
+					v-model:selected="selected"
+					v-model:opened="opened"
 					:folder="subfolder"
 					:level="level + 1"
 					:disabled="isChildDisabled(subfolder) ? true : disabled"
@@ -47,42 +47,20 @@ import FolderTreeGroup from "./FolderTreeGroup.vue";
 import FolderTreeItem from "./FolderTreeItem.vue";
 
 const props = defineProps<{
-	selected: Maybe<Folder>;
-	opened: Maybe<UUID[]>;
 	folder: Folder;
 	level: number;
 	title?: string;
 	disabled?: boolean | UUID[];
 }>();
 
-const emit = defineEmits<{
-	(e: "update:selected", value: typeof props.selected): void;
-	(e: "update:opened", value: typeof props.opened): void;
-}>();
+const selected = defineModel<Maybe<Folder>>("selected", { required: true }); // v-model:selected
+const opened = defineModel<Maybe<UUID[]>>("opened", { required: true }); // v-model:opened
 
 const folderRepo = useRepo(FolderRepo);
 
-const selectModelValue = computed({
-	get() {
-		return props.selected;
-	},
-	set(value) {
-		emit("update:selected", value);
-	},
-});
-
-const openModelValue = computed({
-	get() {
-		return props.opened;
-	},
-	set(value) {
-		emit("update:opened", value);
-	},
-});
-
 const subfolders = computed(() => folderRepo.getSubfolders(props.folder));
 const hasChildren = computed(() => subfolders.value.length > 0);
-const isOpened = computed(() => openModelValue.value?.includes(props.folder.id));
+const isOpened = computed(() => opened.value?.includes(props.folder.id));
 
 const padding = computed(() => `padding-left: ${16 * (props.level ?? 0) || 8}px;`);
 
@@ -92,12 +70,12 @@ function isChildDisabled(child: Folder) {
 
 function onToggle() {
 	// If open, close it
-	if (isOpened.value && openModelValue.value) {
-		const idx = openModelValue.value.findIndex((x) => x === props.folder.id);
-		if (idx !== -1) openModelValue.value.splice(idx, 1);
+	if (isOpened.value && opened.value) {
+		const idx = opened.value.findIndex((x) => x === props.folder.id);
+		if (idx !== -1) opened.value.splice(idx, 1);
 	} else {
 		// If closed, open it
-		openModelValue.value?.push(props.folder.id);
+		opened.value?.push(props.folder.id);
 	}
 }
 </script>

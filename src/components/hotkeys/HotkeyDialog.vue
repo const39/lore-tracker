@@ -29,17 +29,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import { t as $t } from "@/core/translation";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
-const props = defineProps<{
-	modelValue: boolean; // Default v-model overwrite
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: boolean): void;
-}>();
+const showDialog = defineModel<boolean>({ required: true }); // v-model
 
 const hotkeysDisplay = {
 	content: [
@@ -80,18 +73,4 @@ const hotkeysDisplay = {
 		},
 	],
 };
-
-/**
- * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
- * This allows to use a custom component as an external activator for the v-dialog.
- * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
- */
-const showDialog = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 </script>

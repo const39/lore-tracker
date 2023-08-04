@@ -2,10 +2,10 @@
 	<v-breadcrumbs-item
 		ref="refDropZone"
 		:class="{ 'bg-hovered-surface': status === 'accepted' }"
-		:title="title ?? folder.name"
+		:title="title"
 		:to="to"
 		:disabled="disabled"
-		class="px-4 py-2 rounded-xl without-color"
+		class="px-4 py-2 rounded-xl"
 		exact
 	/>
 </template>
@@ -20,7 +20,7 @@ import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 
 const props = defineProps<{
 	folder: Folder;
-	title?: string;
+	title: string;
 	disabled?: boolean;
 }>();
 
@@ -58,9 +58,3 @@ function onDropAccepted(items: DragItem[]) {
 	}
 }
 </script>
-<style scoped>
-/* Fix the folder's color being used text color due to Vuetify forwarding the folder object as props to the v-breadcrumbs-item for some reason */
-.without-color {
-	color: rgba(var(--v-theme-on-surface), var(--v-high-emphasis-opacity)) !important;
-}
-</style>

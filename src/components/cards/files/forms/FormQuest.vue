@@ -41,7 +41,6 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
 import { Quest, Task } from "@/core/models";
@@ -49,22 +48,7 @@ import { t as $t } from "@/core/translation";
 import { Icon } from "@/core/utils/icons";
 import { required } from "@/core/validationRules";
 
-const props = defineProps<{
-	modelValue: Quest; // v-model
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const model = defineModel<Quest>({ required: true }); // v-model
 
 const requiredRule = required($t("fields.requiredField"));
 

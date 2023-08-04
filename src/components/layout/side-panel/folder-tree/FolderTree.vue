@@ -26,7 +26,7 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import { Folder } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
@@ -35,30 +35,19 @@ import { Maybe, UUID } from "@/core/utils/types";
 import FolderTreeGroup from "./FolderTreeGroup.vue";
 
 const props = defineProps<{
-	modelValue: Maybe<Folder>; // v-model
 	title: string;
 	rootFolders: Folder[];
 	openAt?: Maybe<Folder>;
 	disabled?: UUID[];
 }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-	(e: "close"): void;
-}>();
+defineEmits(["close"]);
+
+const selected = defineModel<Maybe<Folder>>(); // v-model
 
 const folderRepo = useRepo(FolderRepo);
 
 const openItems = ref<UUID[]>([]);
-
-const selected = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 
 // Update open items if the 'openAt' prop changes
 // -> runs immediately on component load

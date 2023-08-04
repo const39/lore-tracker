@@ -42,7 +42,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script setup lang="ts" generic="T extends Indexable & Orderable & Describable">
 import { onKeyStroke, onKeyUp } from "@vueuse/core";
 import { computed, ref } from "vue";
 import draggable from "vuedraggable";
@@ -50,20 +50,18 @@ import { useGridDensity } from "@/composables/gridDensity";
 import { Describable, Indexable, Orderable } from "@/core/models";
 import { usePreferencesStore } from "@/store/preferences";
 
-type Item = Indexable & Orderable & Describable;
-
 const props = defineProps<{
-	selected: Item[]; // v-model:selected
-	items: Item[];
+	items: T[];
 	title: string;
 	group: string;
 	loading?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(e: "update:selected", value: Item[]): void;
-	(e: "sort", movedItems: Item[]): void;
+	(e: "sort", movedItems: T[]): void;
 }>();
+
+const selected = defineModel<T[]>("selected", { required: true }); // v-model:selected
 
 const drag = ref(false);
 
@@ -71,15 +69,6 @@ const sortEnabled = ref(false);
 
 const prefStore = usePreferencesStore();
 const { density } = useGridDensity();
-
-const selected = computed({
-	get() {
-		return props.selected;
-	},
-	set(value) {
-		emit("update:selected", value);
-	},
-});
 
 const list = computed({
 	get() {
@@ -119,7 +108,7 @@ function swap(e: { oldIndex: number; newIndex: number }) {
  * Returns a comparator function that sorts items in the alphanumeric order of their text.
  */
 function getAlphanumericComparator() {
-	return (a: Item, b: Item) => {
+	return (a: T, b: T) => {
 		const textA = a.getText().toLowerCase();
 		const textB = b.getText().toLowerCase();
 		return textA.localeCompare(textB);
@@ -130,7 +119,7 @@ function getAlphanumericComparator() {
  * Returns a comparator function that sorts items in the descending order of their 'position' field (latest first).
  */
 function getPositionComparator() {
-	return (a: Item, b: Item) => {
+	return (a: T, b: T) => {
 		return b.position - a.position; // DESC order: 0 = oldest, highest = latest
 	};
 }

@@ -36,7 +36,6 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed } from "vue";
 import LoreEntryCard from "@/components/cards/files/LoreEntryCard.vue";
 import { Campaign, Category, Indexable, LoreEntry, Orderable } from "@/core/models";
 import { LoreEntryRepo } from "@/core/repositories";
@@ -46,7 +45,6 @@ import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	selected: LoreEntry[]; // v-model:selected
 	items: LoreEntry[];
 	campaign: Campaign;
 	category: Category;
@@ -56,18 +54,10 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-	(e: "update:selected", value: LoreEntry[]): void;
 	(e: "dragstart", value: DragEvent): void;
 }>();
 
-const selected = computed({
-	get() {
-		return props.selected;
-	},
-	set(value) {
-		emit("update:selected", value);
-	},
-});
+const selected = defineModel<LoreEntry[]>("selected", { required: true }); // v-model:selected
 
 const sidePanel = useSidePanel();
 
