@@ -49,6 +49,7 @@ export interface Locale {
 		loreBook: {
 			name: string;
 			banner: {
+				backToCampaigns: string;
 				statusAction: string;
 				search: string;
 				selectors: {
@@ -345,32 +346,32 @@ function pluralize(rawMessage: Plural, n: number, options?: PluralOptions): stri
 
 /**
  * Get the message located at the given key in the current locale.
- * 
+ *
  * @param key the message key, as a dotted property path (e.g. 'foo.bar.baz')
- * 
+ *
  * @returns the localized message
  */
 export function t(key: string): string;
 
 /**
  * Get the message located at the given key in the current locale and customize it with the specified values.
- * 
+ *
  * @param key the message key, as a dotted property path (e.g. 'foo.bar.baz')
- * @param values values to include in the message at the interpolation slots specified in the locale entry 
- * 
+ * @param values values to include in the message at the interpolation slots specified in the locale entry
+ *
  * @returns the localized message, with inserted values
  */
 export function t(key: string, values?: DynamicMessageValues): string;
 
 /**
  * Get the message located at the given key in the current locale in its pluralized version.
- * 
+ *
  * @param key the message key, as a dotted property path (e.g. 'foo.bar.baz')
  * @param n the amount used to choose the pluralization variant of the message, based on the following rules:
  * - n = 0: use the 'none' version (if supported by the message)
  * - n = 1: use the 'singular' version
  * - n >= 2: use the 'plural' version
- * 
+ *
  * @returns the localized message, pluralized based on the given amount
  */
 export function t(key: string, n: number, pluralOptions?: PluralOptions): string;

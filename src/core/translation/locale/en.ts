@@ -33,6 +33,7 @@ const en: Locale = {
 		loreBook: {
 			name: "Lore book",
 			banner: {
+				backToCampaigns: "Back to campaigns",
 				statusAction: "Click to increase or decrease",
 				search: "Search",
 				selectors: {
