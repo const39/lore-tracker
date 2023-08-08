@@ -19,7 +19,7 @@
 		</v-card-title>
 		<v-card-text>
 			<component :is="formComponent" v-if="formComponent" v-model="model" />
-			<small>{{ "*" + $t("fields.requiredField") }}</small>
+			<small>{{ "*" + $t("pages.loreBook.fields.errors.requiredField") }}</small>
 		</v-card-text>
 	</v-form>
 </template>
@@ -78,10 +78,10 @@ async function submit() {
 			if (model.value.folderId) {
 				const parentFolder = useRepo(FolderRepo).getFolder(model.value.folderId);
 				const message = parentFolder?.isRoot()
-					? $t(`categories.${model.value?.category}`) +
+					? $t(`data.categories.${model.value?.category}`) +
 						" " +
 						$t("messages.success.newCardStored")
-					: $t(`categories.${model.value?.category}`) +
+					: $t(`data.categories.${model.value?.category}`) +
 						" " +
 						$t("messages.success.newCardStoredInFolder") +
 						" " +

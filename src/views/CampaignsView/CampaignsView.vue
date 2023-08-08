@@ -1,9 +1,9 @@
 <template>
 	<div class="py-3 mb-4 text-h3">
-		{{ $t("campaign.table.title") }}
+		{{ $t("pages.campaigns.title") }}
 	</div>
 	<div class="py-3 text-h6">
-		{{ $t("campaign.table.subtitle") }}
+		{{ $t("pages.campaigns.subtitle") }}
 		<v-btn
 			class="mx-1"
 			icon="mdi-plus"
@@ -17,19 +17,19 @@
 			<tr>
 				<th>
 					<v-icon :icon="Icon.campaign" start />
-					{{ $t("campaign.name") }}
+					{{ $t("data.campaign.name", 1) }}
 				</th>
 				<th>
 					<v-icon icon="mdi-timelapse" start />
-					{{ $t("campaign.table.progress") }}
+					{{ $t("pages.campaigns.table.progress") }}
 				</th>
 				<th>
 					<v-icon :icon="Icon.note" start />
-					{{ $t("campaign.table.entryCount") }}
+					{{ $t("pages.campaigns.table.entryCount") }}
 				</th>
 				<th>
 					<v-icon icon="mdi-clock-outline" start />
-					{{ $t("campaign.table.lastUpdate") }}
+					{{ $t("pages.campaigns.table.lastUpdate") }}
 				</th>
 				<!-- Empty header column for the 'options' button -->
 				<th />
@@ -43,8 +43,14 @@
 				@click="openCampaign(campaign)"
 			>
 				<td>{{ campaign.name }}</td>
-				<td>{{ $t("campaign.state.day") }} {{ campaign.days }}</td>
-				<td>{{ campaign.loreEntries?.length }} {{ $t("campaign.state.entry") }}</td>
+				<td>{{ $t("data.campaign.day") }} {{ campaign.days }}</td>
+				<td>
+					{{
+						$t("data.campaign.entryCount", campaign.loreEntries?.length, {
+							includeCount: true,
+						})
+					}}
+				</td>
 				<td>{{ getLastUpdate(campaign).toLocaleString() }}</td>
 				<td class="text-right">
 					<CardOptions :options="['delete']" @delete="confirmDelete(campaign)" />
@@ -53,7 +59,7 @@
 		</tbody>
 	</v-table>
 	<div v-else class="py-4">
-		{{ $t("campaign.table.empty") }}
+		{{ $t("pages.campaigns.table.empty") }}
 	</div>
 
 	<CampaignForm v-model="showAddDialog" @submit="addCampaign" />

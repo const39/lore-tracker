@@ -4,7 +4,7 @@
 			<template #activator="{ props: tooltipProps }">
 				<v-icon v-bind="tooltipProps" :icon="Icon.questCompleted" class="float-right" />
 			</template>
-			<span>{{ $t("fields.completed") }}</span>
+			<span>{{ $t("pages.loreBook.fields.labels.completed") }}</span>
 		</v-tooltip>
 	</v-card-actions>
 	<v-card-text class="pa-3">
@@ -20,7 +20,7 @@
 							{{ task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing }}
 						</v-icon>
 					</template>
-					{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+					{{ task.isCompleted ? $t("pages.loreBook.fields.labels.completed") : $t("pages.loreBook.fields.labels.ongoing") }}
 				</v-tooltip>
 				<p class="pa-2">
 					{{ task.desc }}

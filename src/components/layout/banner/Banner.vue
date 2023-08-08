@@ -68,7 +68,7 @@ const emit = defineEmits<{
 
 const rules = {
 	name: [
-		validationRules.required($t("fields.requiredField")),
+		validationRules.required($t("pages.loreBook.fields.errors.requiredField")),
 		validationRules.counter("50 max.", 50),
 	],
 };

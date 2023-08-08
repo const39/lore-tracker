@@ -1,15 +1,15 @@
 <template>
-	<v-text-field v-model="model.title" :label="$t('fields.title') + '*'" :rules="[requiredRule]" />
+	<v-text-field v-model="model.title" :label="$t('pages.loreBook.fields.labels.title') + '*'" :rules="[requiredRule]" />
 	<v-textarea
 		v-model="model.desc"
-		:label="$t('fields.desc')"
-		:hint="$t('fields.mdSupport')"
+		:label="$t('pages.loreBook.fields.labels.desc')"
+		:hint="$t('pages.loreBook.fields.labels.mdSupport')"
 		variant="outlined"
 		auto-grow
 	/>
 	<ListPanel
-		:title="$t('fields.tasks')"
-		:placeholder="$t('fields.noTask')"
+		:title="$t('pages.loreBook.fields.labels.tasks')"
+		:placeholder="$t('pages.loreBook.fields.labels.noTask')"
 		:is-filled="model.tasks.length > 0"
 	>
 		<template #action>
@@ -32,7 +32,7 @@
 							@click="complete(idx)"
 						/>
 					</template>
-					{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+					{{ task.isCompleted ? $t("pages.loreBook.fields.labels.completed") : $t("pages.loreBook.fields.labels.ongoing") }}
 				</v-tooltip>
 			</template>
 		</v-text-field>
@@ -50,7 +50,7 @@ import { required } from "@/core/validationRules";
 
 const model = defineModel<Quest>({ required: true }); // v-model
 
-const requiredRule = required($t("fields.requiredField"));
+const requiredRule = required($t("pages.loreBook.fields.errors.requiredField"));
 
 function addTask(): void {
 	const task: Task = {

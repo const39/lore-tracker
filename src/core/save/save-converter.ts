@@ -13,7 +13,7 @@ import { UUID } from "../utils/types";
 
 export class SaveFormatError extends LocalisableError {
 	override toLocaleString(): string {
-		return $t("messages.errors.corruptedSave");
+		return $t("messages.errors.save.corruptedSave");
 	}
 }
 

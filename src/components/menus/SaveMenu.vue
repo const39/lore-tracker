@@ -101,7 +101,7 @@ async function uploadSave() {
 				: $t("messages.errors.genericError");
 
 			// Show the full error message
-			const message = `${$t("messages.errors.saveFileImportCancelled")} : ${errorCause}`;
+			const message = `${$t("messages.errors.save.saveFileImportCancelled")} : ${errorCause}`;
 			showSnackbar({
 				message,
 				timeout: 10000,

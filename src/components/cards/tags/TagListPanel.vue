@@ -1,5 +1,5 @@
 <template>
-	<ListPanel :title="$t('fields.tags')" :is-filled="modelValue.length !== 0">
+	<ListPanel :title="$t('pages.loreBook.fields.labels.tags')" :is-filled="modelValue.length !== 0">
 		<TagList v-model="modelValue" editable />
 		<template #append>
 			<CardDropZone @drop="onDrop" />

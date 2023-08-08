@@ -14,7 +14,7 @@
 				color="primary"
 				@click="move"
 			>
-				{{ $t("sidePanel.moveCard") }}
+				{{ $t("pages.loreBook.sidePanel.moveCard") }}
 			</v-btn>
 		</template>
 	</FolderTree>
@@ -44,7 +44,7 @@ const folderRepo = useRepo(FolderRepo);
 const selected = ref<Folder>();
 
 const title = computed(() => {
-	return `${$t("sidePanel.moveCard")} "${props.itemToMove.getText()}"`;
+	return `${$t("pages.loreBook.sidePanel.moveCard")} "${props.itemToMove.getText()}"`;
 });
 
 const rootFolder = computed(() => {

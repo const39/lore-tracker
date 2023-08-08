@@ -20,7 +20,7 @@
 				<v-card-text class="d-flex text-body-2">
 					<v-text-field
 						v-model="model.name"
-						:label="$t('fields.name') + '*'"
+						:label="$t('pages.loreBook.fields.labels.name') + '*'"
 						:rules="rules.name"
 						maxlength="50"
 						counter
@@ -48,7 +48,7 @@ const showDialog = defineModel<boolean>({ required: true }); // v-model
 
 const rules = {
 	name: [
-		validationRules.required($t("fields.requiredField")),
+		validationRules.required($t("pages.loreBook.fields.errors.requiredField")),
 		validationRules.counter("50 max.", 50),
 	],
 };

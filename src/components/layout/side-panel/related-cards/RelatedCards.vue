@@ -3,7 +3,7 @@
 		<v-btn icon="mdi-close" density="comfortable" @click="$emit('close')" />
 	</v-card-actions>
 	<v-card-title class="mb-1 text-truncate">
-		{{ $t("sidePanel.relatedCards") }}
+		{{ $t("pages.loreBook.sidePanel.relatedCards") }}
 		<TagItem :tag="Tag.from(relatedTo)" show-icon @click="goToSourceCard" />
 	</v-card-title>
 	<v-list v-if="relatedCardsCount" v-model:opened="openCategories" density="compact">
@@ -11,7 +11,7 @@
 			<template v-if="relatedCards[category]?.length" #activator="{ props: activatorProps }">
 				<v-list-item v-bind="activatorProps">
 					<v-icon :icon="Icon[category]" size="small" start />
-					{{ $t(`categories.${category}`) }}
+					{{ $t(`data.categories.${category}`, 2) }}
 				</v-list-item>
 			</template>
 			<v-list-item
@@ -27,7 +27,7 @@
 		</v-list-group>
 	</v-list>
 	<v-card-text v-else>
-		{{ $t("sidePanel.noRelatedCards") }}
+		{{ $t("pages.loreBook.sidePanel.noRelatedCards") }}
 	</v-card-text>
 </template>
 

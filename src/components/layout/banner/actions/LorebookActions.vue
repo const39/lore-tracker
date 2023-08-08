@@ -18,7 +18,7 @@
 						icon="mdi-sort-clock-descending"
 					/>
 				</template>
-				{{ $t("status.selectors.customOrder") }}
+				{{ $t("pages.loreBook.banner.selectors.customOrder") }}
 			</v-tooltip>
 			<v-tooltip location="top">
 				<template #activator="{ props }">
@@ -30,7 +30,7 @@
 						icon="mdi-sort-alphabetical-variant"
 					/>
 				</template>
-				{{ $t("status.selectors.alphanumericOrder") }}
+				{{ $t("pages.loreBook.banner.selectors.alphanumericOrder") }}
 			</v-tooltip>
 		</v-btn-toggle>
 		<!-- Density selector -->
@@ -45,7 +45,7 @@
 						icon="mdi-view-grid"
 					/>
 				</template>
-				{{ $t("status.selectors.largeTabDensity") }}
+				{{ $t("pages.loreBook.banner.selectors.largeTabDensity") }}
 			</v-tooltip>
 			<v-tooltip location="bottom">
 				<template #activator="{ props }">
@@ -57,7 +57,7 @@
 						icon="mdi-view-comfy"
 					/>
 				</template>
-				{{ $t("status.selectors.comfortableTabDensity") }}
+				{{ $t("pages.loreBook.banner.selectors.comfortableTabDensity") }}
 			</v-tooltip>
 			<v-tooltip location="bottom">
 				<template #activator="{ props }">
@@ -69,7 +69,7 @@
 						icon="mdi-view-module"
 					/>
 				</template>
-				{{ $t("status.selectors.compactTabDensity") }}
+				{{ $t("pages.loreBook.banner.selectors.compactTabDensity") }}
 			</v-tooltip>
 		</v-btn-toggle>
 	</div>

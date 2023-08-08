@@ -12,13 +12,13 @@
 			:key="folder.id"
 			v-model:selected="selected"
 			v-model:opened="openItems"
-			:title="$t(`categories.${folder.category}`)"
+			:title="$t(`data.categories.${folder.category}`, 2)"
 			:folder="folder"
 			:level="0"
 			:disabled="disabled"
 		>
 			<template #prepend>
-				<v-icon :icon="Icon[folder.category]" class="icon-color" size="small" end />
+				<v-icon :icon="Icon[folder.category]" class="icon-color" size="small" start />
 			</template>
 		</FolderTreeGroup>
 	</v-list>

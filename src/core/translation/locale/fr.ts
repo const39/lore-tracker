@@ -2,29 +2,101 @@ import { Locale } from "@/core/translation/translation";
 
 const fr: Locale = {
 	pages: {
-		campaigns: "Campagnes",
-		loreBook: "Lore book",
-		timeline: "Frise des événements",
-	},
-
-	notFound: {
-		title: "Page Introuvable",
-		message: "Retourner au ",
-	},
-
-	campaign: {
-		name: "Campagne",
-		table: {
+		notFound: {
+			title: "Page Introuvable",
+			message: "Retourner aux ",
+		},
+		campaigns: {
+			name: "Campagnes", 
 			title: "Bienvenue sur LoreTracker !",
 			subtitle: "Vos campagnes",
-			progress: "Progression",
-			entryCount: "Nombre d'entrées",
-			lastUpdate: "Dernière modification",
-			empty: "Aucune campagne enregistrée.",
+			table: {
+				progress: "Progression",
+				entryCount: "Nombre d'entrées",
+				lastUpdate: "Dernière modification",
+				empty: "Aucune campagne enregistrée.",
+			},
 		},
-		state: {
+		timeline: {
+			name: "Frise des événements", 
+			title: "Frise des événements",
+			content: {
+				campaignStart: "Début de la campagne",
+				noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
+				ascOrder: "Ordre chronologique croissant",
+				descOrder: "Ordre chronologique décroissant",
+			},
+		},
+		loreBook: {
+			name: "Lore book",
+			banner: {
+				statusAction: "Cliquez pour augmenter ou diminuer",
+				search: "Recherche",
+				selectors: {
+					customOrder: "Ordre personnalisé",
+					alphanumericOrder: "Ordre alphanumérique",
+					largeTabDensity: "Densité spacieuse",
+					comfortableTabDensity: "Densité confortable",
+					compactTabDensity: "Densité compacte",
+				},
+			},
+
+			sidePanel: {
+				moveCard: "Déplacer",
+				folderList: "Liste des dossiers",
+				openFolder: "Ouvrir",
+				relatedCards: "Cartes liées à",
+				noRelatedCards: "Aucune carte liée.",
+			},
+
+			quickNote: {
+				name: "Note rapide",
+			},
+
+			fields: {
+				labels: {
+					category: "Catégorie",
+					name: "Nom",
+					title: "Titre",
+					desc: "Description",
+					tags: "Liens",
+					noTag: "Aucun lien",
+					mdSupport: "Langage Markdown supporté",
+					tasks: "Tâches",
+					noTask: "Aucune tâche",
+					ongoing: "En cours",
+					completed: "Accompli",
+					eventType: "Type d'événement",
+					eventDay: "Date de l'événement",
+					race: "Race",
+					class: "Classe",
+					role: "Rôle",
+					npc: "PNJ",
+					player: "Joueur",
+					alive: "En vie",
+					dead: "Mort",
+				},
+				content: {
+					unknownRace: "Race inconnue",
+					unknownClass: "Classe inconnue",
+					unknownRole: "Rôle inconnu",
+				},
+				errors: {
+					requiredField: "Champ requis",
+					dayNotValid: "Jour invalide",
+					illegalCharacters: "Le nom contient des caractères invalides",
+					nameAlreadyUsed: "Nom déjà utilisé",
+					maxCharacterCount: ({ n }) => `${n} caractères max.`,
+				},
+			},
+		},
+	},
+
+	data: {
+		campaign: {
+			name: ["Aucune campagne", "Campagne", "Campagnes"],
 			day: "Jour",
-			entry: "entrée(s)",
+			entryCount: ["Aucune entrée", "entrée", "entrées"],
 			seasons: {
 				spring: "Printemps",
 				summer: "Été",
@@ -32,86 +104,25 @@ const fr: Locale = {
 				winter: "Hiver",
 			},
 		},
-	},
-
-	timeline: {
-		campaignStart: "Début de la campagne",
-		noEvent: "Aucun événement enregistré. Vous pouvez en ajouter sur le ",
-		ascOrder: "Ordre chronologique croissant",
-		descOrder: "Ordre chronologique décroissant",
-	},
-
-	eventTypes: {
-		combat: "Combat",
-		encounter: "Rencontre",
-		discovery: "Découverte",
-		travel: "Voyage",
-		other: "Autre",
-	},
-
-	categories: {
-		all: "Tous",
-		quest: "Quête",
-		event: "Événement",
-		location: "Localité",
-		character: "Personnage",
-		faction: "Faction",
-		note: "Note",
-
-		folder: "Dossier",
-		file: "Fichier",
-	},
-
-	status: {
-		action: "Cliquez pour augmenter ou diminuer",
-		search: "Recherche",
-		selectors: {
-			customOrder: "Ordre personnalisé",
-			alphanumericOrder: "Ordre alphanumérique",
-			largeTabDensity: "Densité spacieuse",
-			comfortableTabDensity: "Densité confortable",
-			compactTabDensity: "Densité compacte",
+		categories: {
+			quest: ["Aucune quête", "Quête", "Quêtes"],
+			event: ["Aucun événement", "Événement", "Événements"],
+			location: ["Aucune localité", "Localité", "Localités"],
+			character: ["Aucun personnage", "Personnage", "Personnages"],
+			faction: ["Aucune faction", "Faction", "Factions"],
+			note: ["Aucune note", "Note", "Notes"],
 		},
-	},
-
-	sidePanel: {
-		moveCard: "Déplacer",
-		folderList: "Liste des dossiers",
-		openFolder: "Ouvrir",
-		relatedCards: "Cartes liées à",
-		noRelatedCards: "Aucune carte liée.",
-	},
-
-	fields: {
-		category: "Catégorie",
-		name: "Nom",
-		title: "Titre",
-		desc: "Description",
-		tags: "Liens",
-		noTag: "Aucun lien",
-		mdSupport: "Langage Markdown supporté",
-		otherCounter: " autre(s)",
-		tasks: "Tâches",
-		noTask: "Aucune tâche",
-		ongoing: "En cours",
-		completed: "Accompli",
-		eventType: "Type d'événement",
-		eventDay: "Date de l'événement",
-		race: "Race",
-		class: "Classe",
-		role: "Rôle",
-		npc: "PNJ",
-		player: "Joueur",
-		alive: "En vie",
-		dead: "Mort",
-		unknownRace: "Race inconnue",
-		unknownClass: "Classe inconnue",
-		unknownRole: "Rôle inconnu",
-		requiredField: "Champ requis",
-		dayNotValid: "Jour invalide",
-		illegalCharacters: "Le nom contient des caractères invalides",
-		nameAlreadyUsed: "Nom déjà utilisé",
-		maxCharacterCount: " caractères max.",
+		eventTypes: {
+			combat: "Combat",
+			encounter: "Rencontre",
+			discovery: "Découverte",
+			travel: "Voyage",
+			other: "Autre",
+		},
+		cardTypes: {
+			folder: ["Aucun dossier", "Dossier", "Dossiers"],
+			file: ["Aucun fichier", "Fichier", "Fichiers"],
+		},
 	},
 
 	dialogs: {
@@ -154,7 +165,6 @@ const fr: Locale = {
 		edit: "Modifier",
 		delete: "Supprimer",
 		moveTo: "Déplacer vers",
-		quickNote: "Note rapide",
 		dropCardHere: "Déposer une carte ici",
 		dragSort: "Trier les cartes",
 		multipleDragItems: "éléments",
@@ -168,10 +178,12 @@ const fr: Locale = {
 		},
 		errors: {
 			genericError: "Une erreur est survenue.",
-			corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
-			loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
-			saveFileImportCancelled: "Import du fichier de sauvegarde annulé",
-			saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			save: {
+				corruptedSave: "Données de sauvegarde corrompues ou incomplètes.",
+				loadBackup: " Chargez une copie de sauvegarde valide pour récupérer les données.",
+				saveFileImportCancelled: "Import du fichier de sauvegarde annulé",
+				saveFileImportFailed: "Le fichier de sauvegarde importé est illisible.",
+			},
 			campaign: {
 				campaignNotFound: {
 					title: "Campagne introuvable",
@@ -197,8 +209,10 @@ const fr: Locale = {
 			},
 		},
 		info: {
-			updateNotifTitle: "LoreTracker a reçu une nouvelle mise à jour !",
-			updateNotifMessage: "Voir les détails sur GitHub.",
+			updateNotif: {
+				title: "LoreTracker a reçu une nouvelle mise à jour !",
+				message: "Voir les détails sur GitHub.",
+			},
 		},
 	},
 
@@ -233,12 +247,7 @@ const fr: Locale = {
 			hold: "Maintenir",
 			content: {
 				title: "Contenu",
-				showTabQuest: "Afficher l'onglet Quêtes",
-				showTabEvent: "Afficher l'onglet Événements",
-				showTabLocation: "Afficher l'onglet Localités",
-				showTabCharacter: "Afficher l'onglet Personnages",
-				showTabFaction: "Afficher l'onglet Factions",
-				showTabNote: "Afficher l'onglet Notes",
+				showTab: ({ category }) => `Afficher l'onglet ${category}`,
 			},
 			misc: {
 				title: "Divers",

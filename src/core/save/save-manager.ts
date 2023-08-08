@@ -40,7 +40,7 @@ export interface SaveFormat {
 
 export class SaveFileError extends LocalisableError {
 	override toLocaleString(): string {
-		return $t("messages.errors.saveFileImportFailed");
+		return $t("messages.errors.save.saveFileImportFailed");
 	}
 }
 
