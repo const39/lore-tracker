@@ -19,8 +19,6 @@
 		</template>
 		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
 			<!-- The card is unselected when clicking outside of any .selectable card -->
-			<!-- FIXME: remove @expect-error after Vuetify update -->
-			<!-- @vue-expect-error TS raises error on the isDraggable and isSelected props due to a type mismatch in Vuetify -->
 			<LoreEntryCard
 				v-click-outside="{handler: ($e: MouseEvent) => onClickOutside($e, select), include: getSelectableElements}"
 				:item-data="itemData"
@@ -73,12 +71,12 @@ function onSort(movedItems: Array<Indexable & Orderable>) {
 	useRepo(LoreEntryRepo).changeOrder(movedItems);
 }
 
-function onDragStart(e: DragEvent, isSelected: boolean) {
+function onDragStart(e: DragEvent, isSelected?: boolean) {
 	if (isSelected) emit("dragstart", e);
 }
 
-function onClickOutside(e: MouseEvent, selectFn: (arg: boolean) => void) {
-	if (!e.ctrlKey) selectFn(false);
+function onClickOutside(e: MouseEvent, selectFn?: (arg: boolean) => void) {
+	if (!e.ctrlKey && selectFn) selectFn(false);
 }
 
 function newLoreEntry(): void {
