@@ -3,7 +3,7 @@
 		v-model="selected"
 		:root-folders="rootFolders"
 		:open-at="currentFolder"
-		:title="$t('sidePanel.folderList')"
+		:title="$t('pages.loreBook.sidePanel.folderList')"
 		@close="$emit('close')"
 	>
 		<template #action="{ props: actionProps }">
@@ -13,7 +13,7 @@
 				color="primary"
 				@click="openFolder"
 			>
-				{{ $t("sidePanel.openFolder") }}
+				{{ $t("pages.loreBook.sidePanel.openFolder") }}
 			</v-btn>
 		</template>
 	</FolderTree>

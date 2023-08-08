@@ -2,7 +2,7 @@
 	<GenericArea
 		v-model:selected="selected"
 		:items="items"
-		:title="$t('categories.file') + 's'"
+		:title="$t('data.cardTypes.file', items.length)"
 		:loading="loading"
 		group="files"
 		@sort="onSort"

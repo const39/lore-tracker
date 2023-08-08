@@ -6,10 +6,10 @@
 				<template #activator="{ props: tooltipProps }">
 					<v-icon v-bind="tooltipProps" icon="mdi-skull" start />
 				</template>
-				<span>{{ $t("fields.dead") }}</span>
+				<span>{{ $t("pages.loreBook.fields.labels.dead") }}</span>
 			</v-tooltip>
 			<v-chip size="x-small" label>
-				{{ itemData.isNPC ? $t("fields.npc") : $t("fields.player") }}
+				{{ itemData.isNPC ? $t("pages.loreBook.fields.labels.npc") : $t("pages.loreBook.fields.labels.player") }}
 			</v-chip>
 		</p>
 		<p class="text-subtitle-2 text-truncate">
@@ -33,9 +33,9 @@ const props = defineProps<{
 }>();
 
 const identity = computed(() => {
-	const race = props.itemData.race || $t("fields.unknownRace");
-	const classes = props.itemData.classes || $t("fields.unknownClass");
-	const role = props.itemData.role || $t("fields.unknownRole");
+	const race = props.itemData.race || $t("pages.loreBook.fields.labels.unknownRace");
+	const classes = props.itemData.classes || $t("pages.loreBook.fields.labels.unknownClass");
+	const role = props.itemData.role || $t("pages.loreBook.fields.labels.unknownRole");
 
 	return `${race} - ${classes} (${role})`;
 });

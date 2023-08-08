@@ -6,7 +6,7 @@
 			:to="{ name: 'LoreBook', params: { campaignId: campaign.id, category: tab } }"
 		>
 			<v-icon :icon="Icon[tab]" start />
-			{{ $t(`categories.${tab}`) }}
+			{{ $t(`data.categories.${tab}`, 2) }}
 		</v-tab>
 	</v-tabs>
 	<v-window v-model="activeTab">

@@ -54,6 +54,24 @@ export function defer<T>(fn: () => T) {
 	return new Promise<T>((resolve) => setTimeout(() => resolve(fn()), 0));
 }
 
+/**
+ * Get a nested property located at path in object.
+ * @param object the object to search the property into
+ * @param path the dotted property path (e.g. 'foo.bar.baz')
+ * @returns the value associated to the path or undefined
+ */
+export function getNestedProperty(object: Record<string, any>, path: string): any | undefined {
+	const properties = path.split(".");
+	let currentVal = object;
+	let i = 0;
+	do {
+		if (currentVal) currentVal = currentVal[properties[i]];
+		i++;
+	} while (currentVal && i < properties.length);
+
+	return currentVal ?? undefined;
+}
+
 export default {
 	uuid,
 	capitalize,
@@ -61,4 +79,5 @@ export default {
 	deepCopy,
 	pipe,
 	defer,
+	getNestedProperty,
 };

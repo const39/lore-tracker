@@ -2,29 +2,104 @@ import { Locale } from "@/core/translation/translation";
 
 const en: Locale = {
 	pages: {
-		campaigns: "Campaigns",
-		loreBook: "Lore book",
-		timeline: "Timeline",
-	},
+		notFound: {
+			title: "Page Not Found",
+			message: "Go back to ",
+		},
 
-	notFound: {
-		title: "Page Not Found",
-		message: "Go back to ",
-	},
-
-	campaign: {
-		name: "Campaign",
-		table: {
+		campaigns: {
+			name: "Campaigns",
 			title: "Welcome on LoreTracker!",
 			subtitle: "Your campaigns",
-			progress: "Progress",
-			entryCount: "Entry count",
-			lastUpdate: "Last update",
-			empty: "No campaign available.",
+			table: {
+				progress: "Progress",
+				entryCount: "Entry count",
+				lastUpdate: "Last update",
+				empty: "No campaign available.",
+			},
 		},
-		state: {
+
+		timeline: {
+			name: "Timeline",
+			title: "Timeline",
+			content: {
+				campaignStart: "Campaign start",
+				noEvent: "No event registered. Add some on the ",
+				ascOrder: "Ascending chronological order",
+				descOrder: "Descending chronological order",
+			},
+		},
+
+		loreBook: {
+			name: "Lore book",
+			banner: {
+				statusAction: "Click to increase or decrease",
+				search: "Search",
+				selectors: {
+					customOrder: "Custom order",
+					alphanumericOrder: "Alphanumeric order",
+					largeTabDensity: "Large density",
+					comfortableTabDensity: "Comfortable density",
+					compactTabDensity: "Compact density",
+				},
+			},
+
+			sidePanel: {
+				moveCard: "Move",
+				folderList: "Folder list",
+				openFolder: "Open",
+				relatedCards: "Cards related to",
+				noRelatedCards: "No related card.",
+			},
+
+			quickNote: {
+				name: "Quick note",
+			},
+
+			fields: {
+				labels: {
+					category: "Catégorie",
+					name: "Name",
+					title: "Title",
+					desc: "Description",
+					tags: "Tags",
+					noTag: "No tag",
+					mdSupport: "Markdown language supported",
+					tasks: "Tasks",
+					noTask: "No task",
+					ongoing: "On-going",
+					completed: "Completed",
+					eventType: "Event type",
+					eventDay: "Event date",
+					race: "Race",
+					class: "Class",
+					role: "Role",
+					npc: "NPC",
+					player: "Player",
+					alive: "Alive",
+					dead: "Dead",
+				},
+				content: {
+					unknownRace: "Unknown race",
+					unknownClass: "Unknown class",
+					unknownRole: "Unknown role",
+				},
+				errors: {
+					requiredField: "Required field",
+					dayNotValid: "Invalid day",
+					illegalCharacters: "Name contains illegal characters",
+					nameAlreadyUsed: "Name already used",
+					maxCharacterCount: ({ n }) => `${n} characters max.`,
+				},
+			},
+		},
+	},
+
+	data: {
+		campaign: {
+			name: ["No campaign", "Campaign", "Campaigns"],
 			day: "Day",
-			entry: "entries",
+			entryCount: ["No entries", "entry", "entries"],
 			seasons: {
 				spring: "Spring",
 				summer: "Summer",
@@ -32,86 +107,25 @@ const en: Locale = {
 				winter: "Winter",
 			},
 		},
-	},
-
-	timeline: {
-		campaignStart: "Campaign start",
-		noEvent: "No event registered. Add some on the ",
-		ascOrder: "Ascending chronological order",
-		descOrder: "Descending chronological order",
-	},
-
-	eventTypes: {
-		combat: "Combat",
-		encounter: "Encounter",
-		discovery: "Discovery",
-		travel: "Travel",
-		other: "Other",
-	},
-
-	categories: {
-		all: "Any",
-		quest: "Quest",
-		event: "Event",
-		location: "Location",
-		character: "Character",
-		faction: "Faction",
-		note: "Note",
-
-		folder: "Folder",
-		file: "File",
-	},
-
-	status: {
-		action: "Click to increase or decrease",
-		search: "Search",
-		selectors: {
-			customOrder: "Custom order",
-			alphanumericOrder: "Alphanumeric order",
-			largeTabDensity: "Large density",
-			comfortableTabDensity: "Comfortable density",
-			compactTabDensity: "Compact density",
+		categories: {
+			quest: ["No quests", "Quest", "Quests"],
+			event: ["No events", "Event", "Events"],
+			location: ["No locations", "Location", "Locations"],
+			character: ["No characters", "Character", "Characters"],
+			faction: ["No factions", "Faction", "Factions"],
+			note: ["No notes", "Note", "Notes"],
 		},
-	},
-
-	sidePanel: {
-		moveCard: "Move",
-		folderList: "Folder list",
-		openFolder: "Open",
-		relatedCards: "Cards related to",
-		noRelatedCards: "No related card.",
-	},
-
-	fields: {
-		category: "Catégorie",
-		name: "Name",
-		title: "Title",
-		desc: "Description",
-		tags: "Tags",
-		noTag: "No tag",
-		mdSupport: "Markdown language supported",
-		otherCounter: " other",
-		tasks: "Tasks",
-		noTask: "No task",
-		ongoing: "On-going",
-		completed: "Completed",
-		eventType: "Event type",
-		eventDay: "Event date",
-		race: "Race",
-		class: "Class",
-		role: "Role",
-		npc: "NPC",
-		player: "Player",
-		alive: "Alive",
-		dead: "Dead",
-		unknownRace: "Unknown race",
-		unknownClass: "Unknown class",
-		unknownRole: "Unknown role",
-		requiredField: "Required field",
-		dayNotValid: "Invalid day",
-		illegalCharacters: "Name contains illegal characters",
-		nameAlreadyUsed: "Name already used",
-		maxCharacterCount: " characters max.",
+		eventTypes: {
+			combat: "Combat",
+			encounter: "Encounter",
+			discovery: "Discovery",
+			travel: "Travel",
+			other: "Other",
+		},
+		cardTypes: {
+			folder: ["No folders", "Folder", "Folders"],
+			file: ["No files", "File", "Files"],
+		},
 	},
 
 	dialogs: {
@@ -154,7 +168,6 @@ const en: Locale = {
 		edit: "Edit",
 		delete: "Delete",
 		moveTo: "Move to",
-		quickNote: "Quick note",
 		dropCardHere: "Drop a card here",
 		dragSort: "Sort cards",
 		multipleDragItems: "elements",
@@ -168,10 +181,12 @@ const en: Locale = {
 		},
 		errors: {
 			genericError: "An error occurred.",
-			corruptedSave: "Corrupted or incomplete save data.",
-			loadBackup: "Please load a backup version to retrieve your data.",
-			saveFileImportCancelled: "Save file import cancelled",
-			saveFileImportFailed: "The uploaded save file cannot be read.",
+			save: {
+				corruptedSave: "Corrupted or incomplete save data.",
+				loadBackup: "Please load a backup version to retrieve your data.",
+				saveFileImportCancelled: "Save file import cancelled",
+				saveFileImportFailed: "The uploaded save file cannot be read.",
+			},
 			campaign: {
 				campaignNotFound: {
 					title: "Campaign not found",
@@ -197,8 +212,10 @@ const en: Locale = {
 			},
 		},
 		info: {
-			updateNotifTitle: "LoreTracker has been updated!",
-			updateNotifMessage: "See update details on GitHub.",
+			updateNotif: {
+				title: "LoreTracker has been updated!",
+				message: "See update details on GitHub.",
+			},
 		},
 	},
 
@@ -233,12 +250,7 @@ const en: Locale = {
 			hold: "Hold",
 			content: {
 				title: "Content",
-				showTabQuest: "Show Quest tab",
-				showTabEvent: "Show Event tab",
-				showTabLocation: "Show Location tab",
-				showTabCharacter: "Show Character tab",
-				showTabFaction: "Show Faction tab",
-				showTabNote: "Show Note tab",
+				showTab: ({ category }) => `Show ${category} tab`,
 			},
 			misc: {
 				title: "Other",

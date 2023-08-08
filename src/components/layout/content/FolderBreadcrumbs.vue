@@ -32,7 +32,7 @@ const hierarchy = computed(() => folderRepo.getHierarchy(props.folder));
 
 const breadcrumbs = computed(() => {
 	return hierarchy.value.map((folder) =>
-		folder.isRoot() ? $t(`categories.${folder.category}`) : folder.name
+		folder.isRoot() ? $t(`data.categories.${folder.category}`, 2) : folder.name
 	);
 });
 

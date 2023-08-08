@@ -2,7 +2,7 @@
 	<div v-if="campaign" class="my-3">
 		<div class="d-flex">
 			<div class="text-xl-h4">
-				{{ $t("pages.timeline") }}
+				{{ $t("pages.timeline.title") }}
 			</div>
 			<!-- Events order selector -->
 			<v-btn-toggle
@@ -22,7 +22,7 @@
 							rounded="xl"
 						/>
 					</template>
-					{{ $t("timeline.ascOrder") }}
+					{{ $t("pages.timeline.content.ascOrder") }}
 				</v-tooltip>
 				<v-tooltip location="top">
 					<template #activator="{ props: tooltipProps }">
@@ -34,7 +34,7 @@
 							rounded="xl"
 						/>
 					</template>
-					{{ $t("timeline.descOrder") }}
+					{{ $t("pages.timeline.content.descOrder") }}
 				</v-tooltip>
 			</v-btn-toggle>
 		</div>
@@ -57,7 +57,7 @@
 				fill-dot
 			>
 				<div class="font-weight-medium">
-					{{ $t("timeline.campaignStart") }}
+					{{ $t("pages.timeline.content.campaignStart") }}
 				</div>
 			</v-timeline-item>
 			<!-- Place events after pivot node in ascending order -->
@@ -66,9 +66,9 @@
 			</template>
 		</v-timeline>
 		<p v-else class="text-center">
-			{{ $t("timeline.noEvent") }}
+			{{ $t("pages.timeline.content.noEvent") }}
 			<router-link :to="{ name: 'LoreBookRoot' }">
-				{{ $t("pages.loreBook") }}
+				{{ $t("pages.loreBook.name") }}
 			</router-link>.
 		</p>
 	</div>
@@ -112,7 +112,7 @@ const nodes = computed(() => {
 	let nodes: Array<Event | string> = [];
 	for (const index in groupedByDay) {
 		// Push a header for the current day
-		nodes.push(`${$t("campaign.state.day")} ${index}`);
+		nodes.push(`${$t("data.campaign.day")} ${index}`);
 
 		// Add all events that happened this day, keeping the order defined by the user
 		nodes = nodes.concat(groupedByDay[index]);

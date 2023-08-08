@@ -1,7 +1,7 @@
 <template>
 	<v-text-field
 		v-model="textInput"
-		:label="$t('status.search')"
+		:label="$t('pages.loreBook.banner.search')"
 		append-inner-icon="mdi-magnify"
 		density="comfortable"
 		hide-details

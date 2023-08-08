@@ -8,7 +8,7 @@
 					@click.prevent.right="daysCounter--"
 				>
 					<v-icon color="yellow-darken-2" size="small" icon="mdi-white-balance-sunny" />
-					{{ $t("campaign.state.day") + " " + daysCounter }}
+					{{ $t("data.campaign.day") + " " + daysCounter }}
 				</span>
 				|
 				<span
@@ -17,11 +17,11 @@
 					@click.prevent.right="previousSeason"
 				>
 					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
-					{{ $t(`campaign.state.seasons.${currentSeason}`) }}
+					{{ $t(`data.campaign.seasons.${currentSeason}`) }}
 				</span>
 			</div>
 		</template>
-		{{ $t("status.action") }}
+		{{ $t("pages.loreBook.banner.statusAction") }}
 	</v-tooltip>
 </template>
 

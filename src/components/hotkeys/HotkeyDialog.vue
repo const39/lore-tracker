@@ -29,38 +29,21 @@
 </template>
 
 <script lang="ts" setup>
+import { Category } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
 const showDialog = defineModel<boolean>({ required: true }); // v-model
 
 const hotkeysDisplay = {
-	content: [
-		{
-			text: $t("options.hotkeys.content.showTabQuest"),
-			command: "Alt+1",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabEvent"),
-			command: "Alt+2",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabLocation"),
-			command: "Alt+3",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabCharacter"),
-			command: "Alt+4",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabFaction"),
-			command: "Alt+5",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabNote"),
-			command: "Alt+6",
-		},
-	],
+	content: Object.values(Category).map((category, idx) => {
+		return {
+			text: $t("options.hotkeys.content.showTab", {
+				category: $t(`data.categories.${category}`),
+			}),
+			command: `Alt+${idx + 1}`,
+		};
+	}),
 	misc: [
 		{
 			text: $t("actions.dragSort"),

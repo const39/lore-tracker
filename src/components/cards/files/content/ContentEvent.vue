@@ -7,10 +7,10 @@
 						<template #activator="{ props }">
 							<v-icon v-bind="props" :icon="itemData.getIcon()" size="large" />
 						</template>
-						{{ $t(`eventTypes.${itemData.type}`) }}
+						{{ $t(`data.eventTypes.${itemData.type}`) }}
 					</v-tooltip>
 					<v-chip size="x-small" variant="text" label>
-						{{ $t("campaign.state.day") + " " + itemData.day }}
+						{{ $t("data.campaign.day") + " " + itemData.day }}
 					</v-chip>
 				</div>
 			</v-col>

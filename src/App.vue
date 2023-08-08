@@ -12,7 +12,7 @@
 			<v-spacer />
 
 			<v-btn :to="{ name: 'Campaigns' }" variant="text">
-				<span class="mr-2">{{ $t("pages.campaigns") }}</span>
+				<span class="mr-2">{{ $t("pages.campaigns.name") }}</span>
 			</v-btn>
 
 			<!-- Display campaign-specific navigation buttons when we're on a campaign's LoreBook -->
@@ -20,11 +20,11 @@
 				<v-divider class="mx-2" vertical />
 
 				<v-btn :to="{ name: 'LoreBookRoot', params: { campaignId } }" variant="text">
-					<span class="mr-2">{{ $t("pages.loreBook") }}</span>
+					<span class="mr-2">{{ $t("pages.loreBook.name") }}</span>
 				</v-btn>
 
 				<v-btn :to="{ name: 'Timeline', params: { campaignId } }" variant="text">
-					<span class="mr-2">{{ $t("pages.timeline") }}</span>
+					<span class="mr-2">{{ $t("pages.timeline.name") }}</span>
 				</v-btn>
 			</template>
 
@@ -112,11 +112,11 @@
 			multi-line
 		>
 			<div class="text-subtitle-1">
-				{{ $t("messages.info.updateNotifTitle") }}
+				{{ $t("messages.info.updateNotif.title") }}
 			</div>
 			<div class="text-body-2">
 				<a href="https://github.com/const39/lore-tracker/releases/latest" target="_blank">
-					{{ $t("messages.info.updateNotifMessage") }}
+					{{ $t("messages.info.updateNotif.message") }}
 				</a>
 			</div>
 			<template #actions>
@@ -179,7 +179,7 @@ async function initApp() {
 	} catch (err) {
 		console.error(err);
 		showSnackbar({
-			message: $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup"),
+			message: $t("messages.errors.save.corruptedSave") + " " + $t("messages.errors.save.loadBackup"),
 			timeout: -1,
 			color: "error",
 		});

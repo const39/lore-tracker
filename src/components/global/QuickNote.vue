@@ -13,14 +13,14 @@
 							@mouseup="stopResize"
 						/>
 						<p class="text-h6">
-							{{ $t("actions.quickNote") }}
+							{{ $t("pages.loreBook.quickNote.name") }}
 						</p>
 						<v-btn variant="plain" icon="mdi-chevron-down" @click="open = false" />
 					</div>
 					<v-textarea
 						ref="el"
 						v-model="content"
-						:hint="$t('fields.mdSupport')"
+						:hint="$t('pages.loreBook.fields.labels.mdSupport')"
 						variant="outlined"
 						auto-grow
 						autofocus

@@ -23,7 +23,7 @@
 				</ColorPickerMenu>
 				<v-text-field
 					v-model="model.name"
-					:label="$t('fields.name') + '*'"
+					:label="$t('pages.loreBook.fields.labels.name') + '*'"
 					:rules="rules.name"
 				/>
 			</div>
@@ -57,9 +57,12 @@ const folderRepo = useRepo(FolderRepo);
 
 const rules = {
 	name: [
-		validationRules.required($t("fields.requiredField")),
-		validationRules.counter(100 + $t("fields.maxCharacterCount"), 100),
-		validationRules.folderName($t("fields.illegalCharacters")),
+		validationRules.required($t("pages.loreBook.fields.errors.requiredField")),
+		validationRules.counter(
+			$t("pages.loreBook.fields.errors.maxCharacterCount", { n: 100 }),
+			100
+		),
+		validationRules.folderName($t("pages.loreBook.fields.errors.illegalCharacters")),
 		// Check name is not already used by another folder in the current parent folder
 		(name: string) => {
 			// If name is the current folder name, accept value
@@ -69,7 +72,11 @@ const rules = {
 			const isUsedByOther = !!siblings.find(
 				(x) => x.name.trim().toLowerCase() === name.trim().toLowerCase()
 			);
-			return isCurrentName || !isUsedByOther || $t("fields.nameAlreadyUsed");
+			return (
+				isCurrentName ||
+				!isUsedByOther ||
+				$t("pages.loreBook.fields.errors.nameAlreadyUsed")
+			);
 		},
 	],
 };
