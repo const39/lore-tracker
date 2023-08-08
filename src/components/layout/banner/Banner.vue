@@ -1,8 +1,15 @@
 <template>
-	<v-row class="my-3 d-flex align-center">
+	<div class="py-4 d-flex align-center">
 		<div>
+			<v-btn
+				:to="{ name: 'Campaigns' }"
+				:text="$t('pages.loreBook.banner.backToCampaigns')"
+				class="px-2"
+				prepend-icon="mdi-arrow-left"
+				variant="flat"
+			/>
 			<v-hover v-slot="{ isHovering, props: hoverProps }">
-				<div class="text-xl-h4 mb-2" v-bind="hoverProps">
+				<div class="text-xl-h4 my-2" v-bind="hoverProps">
 					<v-form
 						v-if="editName"
 						ref="form"
@@ -40,12 +47,12 @@
 			<SearchBar />
 		</div>
 
-		<v-divider class="ml-3 mr-1" vertical />
+		<v-divider class="ml-6 mr-2" vertical />
 
 		<div>
 			<slot name="actions" />
 		</div>
-	</v-row>
+	</div>
 </template>
 
 <script lang="ts" setup>

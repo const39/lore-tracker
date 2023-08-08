@@ -30,6 +30,7 @@ const fr: Locale = {
 		loreBook: {
 			name: "Lore book",
 			banner: {
+				backToCampaigns: "Retour aux campagnes",
 				statusAction: "Cliquez pour augmenter ou diminuer",
 				search: "Recherche",
 				selectors: {
