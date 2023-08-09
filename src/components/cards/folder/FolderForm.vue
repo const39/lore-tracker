@@ -34,15 +34,15 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { type VForm } from "vuetify/components";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ColorPickerMenu from "@/components/common/ColorPickerMenu.vue";
+import { useFormModel } from "@/composables/formModel";
 import { useTryCatch } from "@/composables/tryCatch";
 import { Folder } from "@/core/models";
 import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
-import utilities from "@/core/utils/functions";
 import { Icon } from "@/core/utils/icons";
 import validationRules from "@/core/validationRules";
 
@@ -81,19 +81,9 @@ const rules = {
 	],
 };
 
-const model = ref<Folder>(utilities.deepCopy(props.baseModel)); // Clone object to keep a backup in case the user cancels their changes
-const isValid = ref(false);
 const form = ref<VForm | undefined>(undefined);
-
-// Clone object to keep a backup in case the user cancels their changes
-watch(
-	() => props.baseModel,
-	() => (model.value = utilities.deepCopy(props.baseModel)),
-	{ deep: true }
-);
-
-// Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
-watch(model, () => form.value?.validate(), { deep: true });
+const isValid = ref(false);
+const model = useFormModel<Folder>(() => props.baseModel, form, { validate: true }); // Get model from the initialValue to avoid modifying the prop itself
 
 async function submit() {
 	await form.value?.validate();

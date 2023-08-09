@@ -26,8 +26,9 @@
 
 <script lang="ts" setup>
 import { useRepo } from "pinia-orm";
-import { computed, defineAsyncComponent, ref, watch } from "vue";
+import { computed, defineAsyncComponent, ref } from "vue";
 import { VForm } from "vuetify/components";
+import { useFormModel } from "@/composables/formModel";
 import { useTryCatch } from "@/composables/tryCatch";
 import { LoreEntry } from "@/core/models";
 import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
@@ -46,18 +47,8 @@ const repo = useRepo(LoreEntryRepo);
 const globalSnackbar = useGlobalSnackbar();
 
 const form = ref<VForm | undefined>();
-const model = ref<LoreEntry>(utilities.deepCopy(props.baseModel)); // Clone object to keep a backup in case the user cancels their changes
 const isValid = ref(false);
-
-// Clone object to keep a backup in case the user cancels their changes
-watch(
-	() => props.baseModel,
-	() => (model.value = utilities.deepCopy(props.baseModel)),
-	{ deep: true }
-);
-
-// Force trigger validation on any change in model properties because Vuetify does not do it by itself for some reason
-watch(model, () => form.value?.validate(), { deep: true });
+const model = useFormModel<LoreEntry>(() => props.baseModel, form, { validate: true }); // Get model from the initialValue to avoid modifying the prop itself
 
 const formComponent = computed(() => {
 	return defineAsyncComponent({

@@ -58,9 +58,9 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 import { VForm } from "vuetify/components";
+import { useFormModel } from "@/composables/formModel";
 import { Campaign } from "@/core/models";
 import { t as $t } from "@/core/translation";
-import { deepCopy } from "@/core/utils/functions";
 import validationRules from "@/core/validationRules";
 import SearchBar from "./actions/SearchBar.vue";
 import StatusTray from "./StatusTray.vue";
@@ -82,8 +82,8 @@ const rules = {
 
 const editName = ref(false);
 const isNameValid = ref(false);
-const model = ref<Campaign>(deepCopy(props.modelValue)); // Clone object to keep a backup in case the user cancels their changes
 const form = ref<VForm>();
+const model = useFormModel<Campaign>(() => props.modelValue, form, { validate: true }); // Get model from the initialValue to avoid modifying the prop itself
 
 function toggleNameField() {
 	editName.value = !editName.value;
