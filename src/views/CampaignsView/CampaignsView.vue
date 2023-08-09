@@ -1,5 +1,5 @@
 <template>
-	<div class="py-3 mb-4 text-h3">
+	<div class="py-3 mb-8 text-h3 text-center">
 		{{ $t("pages.campaigns.title") }}
 	</div>
 	<div class="py-3 text-h6">
