@@ -95,8 +95,9 @@ function swap(e: { oldIndex: number; newIndex: number }) {
 	const targetItem = list.value[e.newIndex];
 
 	// Swap their position (only update their 'position' field, not their actual place in the array: vue-draggable performs that itself)
-	sourceItem.position = e.newIndex;
-	targetItem.position = e.oldIndex;
+	const tmp = sourceItem.position;
+	sourceItem.position = targetItem.position;
+	targetItem.position = tmp;
 
 	// Emit 'sort' event to parent with the updated items
 	emit("sort", [sourceItem, targetItem]);
