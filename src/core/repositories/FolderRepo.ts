@@ -110,8 +110,7 @@ export default class FolderRepo extends CardRepo<Folder> {
 		let folder: Maybe<Folder> = this.getFolder(from.id, { withRelations: true });
 		while (folder) {
 			hierarchy.push(folder);
-			if (folder.parent)
-				folder = this.getFolder(folder.parent.id, { withRelations: true });
+			if (folder.parent) folder = this.getFolder(folder.parent.id, { withRelations: true });
 			else break;
 		}
 

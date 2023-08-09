@@ -178,8 +178,10 @@ async function initApp() {
 		await loadSavedData();
 	} catch (err) {
 		console.error(err);
+		const message =
+			$t("messages.errors.save.corruptedSave") + " " + $t("messages.errors.save.loadBackup");
 		showSnackbar({
-			message: $t("messages.errors.save.corruptedSave") + " " + $t("messages.errors.save.loadBackup"),
+			message,
 			timeout: -1,
 			color: "error",
 		});

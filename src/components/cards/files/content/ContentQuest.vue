@@ -20,7 +20,11 @@
 							{{ task.isCompleted ? Icon.taskCompleted : Icon.taskOngoing }}
 						</v-icon>
 					</template>
-					{{ task.isCompleted ? $t("pages.loreBook.fields.labels.completed") : $t("pages.loreBook.fields.labels.ongoing") }}
+					{{
+						task.isCompleted
+							? $t("pages.loreBook.fields.labels.completed")
+							: $t("pages.loreBook.fields.labels.ongoing")
+					}}
 				</v-tooltip>
 				<p class="pa-2">
 					{{ task.desc }}

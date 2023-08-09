@@ -9,7 +9,11 @@
 				<span>{{ $t("pages.loreBook.fields.labels.dead") }}</span>
 			</v-tooltip>
 			<v-chip size="x-small" label>
-				{{ itemData.isNPC ? $t("pages.loreBook.fields.labels.npc") : $t("pages.loreBook.fields.labels.player") }}
+				{{
+					itemData.isNPC
+						? $t("pages.loreBook.fields.labels.npc")
+						: $t("pages.loreBook.fields.labels.player")
+				}}
 			</v-chip>
 		</p>
 		<p class="text-subtitle-2 text-truncate">

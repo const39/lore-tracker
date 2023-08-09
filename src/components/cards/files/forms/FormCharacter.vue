@@ -11,7 +11,10 @@
 			<v-text-field v-model="model.race" :label="$t('pages.loreBook.fields.labels.race')" />
 		</v-col>
 		<v-col cols="6">
-			<v-text-field v-model="model.classes" :label="$t('pages.loreBook.fields.labels.class')" />
+			<v-text-field
+				v-model="model.classes"
+				:label="$t('pages.loreBook.fields.labels.class')"
+			/>
 		</v-col>
 		<v-col cols="6">
 			<v-text-field v-model="model.role" :label="$t('pages.loreBook.fields.labels.role')" />
