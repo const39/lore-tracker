@@ -13,8 +13,8 @@
 				|
 				<span
 					class="clickable"
-					@click.left="nextSeason"
-					@click.prevent.right="previousSeason"
+					@click.left="nextSeason()"
+					@click.prevent.right="previousSeason()"
 				>
 					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
 					{{ $t(`data.campaign.seasons.${currentSeason}`) }}
@@ -26,7 +26,8 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { useCycleList } from "@vueuse/core";
+import { computed, watch } from "vue";
 import { Season } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import validationRules from "@/core/validationRules";
@@ -41,7 +42,6 @@ const emit = defineEmits<{
 	(e: "update:season", value: Season): void;
 }>();
 
-const seasons = Object.values(Season);
 const dayValidator = validationRules.numberInRange("", 1);
 
 const daysCounter = computed({
@@ -49,33 +49,19 @@ const daysCounter = computed({
 		return props.day;
 	},
 	set(val) {
+		// Update v-model:day if the validation passed
 		if (dayValidator(val) === true) emit("update:day", val);
 	},
 });
 
-const currentSeason = computed({
-	get() {
-		return props.season;
-	},
-	set(val) {
-		emit("update:season", val);
-	},
-});
+const {
+	state: currentSeason,
+	next: nextSeason,
+	prev: previousSeason,
+} = useCycleList(Object.values(Season), { initialValue: computed(() => props.season) });
 
-function previousSeason() {
-	const index = seasons.findIndex((entry) => entry === currentSeason.value);
-	if (index > -1) {
-		if (index > 0) currentSeason.value = seasons[index - 1];
-		else currentSeason.value = seasons[seasons.length - 1];
-	}
-}
-function nextSeason() {
-	const index = seasons.findIndex((entry) => entry === currentSeason.value);
-	if (index > -1) {
-		if (index < seasons.length - 1) currentSeason.value = seasons[index + 1];
-		else currentSeason.value = seasons[0];
-	}
-}
+// Update v-model:season on value change
+watch(currentSeason, (season) => emit("update:season", season));
 
 // * Style
 const seasonColors = {
