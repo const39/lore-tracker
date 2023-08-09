@@ -1,11 +1,5 @@
 import { useRepo } from "pinia-orm";
-import {
-	ICampaign,
-	IFolder,
-	ILoreEntry,
-	StoreName,
-	getPersistentModels
-} from "@/core/models";
+import { ICampaign, IFolder, ILoreEntry, StoreName, getPersistentModels } from "@/core/models";
 import { clearDatabase, exportStoreData, importStoreData } from "@/core/persistence/indexed-db";
 import { t as $t } from "@/core/translation";
 import { UUID } from "@/core/utils/types";

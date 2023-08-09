@@ -1,5 +1,9 @@
 <template>
-	<v-text-field v-model="model.title" :label="$t('pages.loreBook.fields.labels.title') + '*'" :rules="[requiredRule]" />
+	<v-text-field
+		v-model="model.title"
+		:label="$t('pages.loreBook.fields.labels.title') + '*'"
+		:rules="[requiredRule]"
+	/>
 	<v-textarea
 		v-model="model.desc"
 		:label="$t('pages.loreBook.fields.labels.desc')"
@@ -32,7 +36,11 @@
 							@click="complete(idx)"
 						/>
 					</template>
-					{{ task.isCompleted ? $t("pages.loreBook.fields.labels.completed") : $t("pages.loreBook.fields.labels.ongoing") }}
+					{{
+						task.isCompleted
+							? $t("pages.loreBook.fields.labels.completed")
+							: $t("pages.loreBook.fields.labels.ongoing")
+					}}
 				</v-tooltip>
 			</template>
 		</v-text-field>

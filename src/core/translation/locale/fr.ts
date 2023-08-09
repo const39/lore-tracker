@@ -7,7 +7,7 @@ const fr: Locale = {
 			message: "Retourner aux ",
 		},
 		campaigns: {
-			name: "Campagnes", 
+			name: "Campagnes",
 			title: "Bienvenue sur LoreTracker !",
 			subtitle: "Vos campagnes",
 			table: {
@@ -18,7 +18,7 @@ const fr: Locale = {
 			},
 		},
 		timeline: {
-			name: "Frise des événements", 
+			name: "Frise des événements",
 			title: "Frise des événements",
 			content: {
 				campaignStart: "Début de la campagne",

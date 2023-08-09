@@ -15,7 +15,6 @@
 	left: 16px;
 }
 
-
 /* The 'marquee' effect makes an overflowing text slide progressively to display the whole text when hovered */
 .marquee {
 	position: relative;
@@ -30,11 +29,13 @@
 
 @keyframes marquee {
 	/* Start the animation at 20% and end it at 80% to include a delay before replaying the animation backwards (pause between alternatives) */
-	0%, 20% {
+	0%,
+	20% {
 		transform: translateX(0);
 		margin-left: 0;
 	}
-	80%, 100% {
+	80%,
+	100% {
 		transform: translateX(-100%);
 		margin-left: 100%;
 	}

@@ -1,256 +1,208 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$ref": "#/definitions/SaveFormat",
-  "definitions": {
-    "SaveFormat": {
-      "type": "object",
-      "properties": {
-        "_meta": {
-          "$ref": "#/definitions/MetaData"
-        },
-        "campaigns": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/ICampaign"
-          }
-        },
-        "folders": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/IFolder"
-          }
-        },
-        "loreEntries": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/ILoreEntry"
-          }
-        }
-      },
-      "required": [
-        "_meta",
-        "campaigns",
-        "folders",
-        "loreEntries"
-      ],
-      "description": "Data format of a save file."
-    },
-    "MetaData": {
-      "type": "object",
-      "properties": {
-        "version": {
-          "type": "string",
-          "const": "save-v3"
-        },
-        "lastUpdate": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "version",
-        "lastUpdate"
-      ],
-      "description": "Metadata of a save file."
-    },
-    "ICampaign": {
-      "type": "object",
-      "properties": {
-        "_meta": {
-          "type": "object",
-          "properties": {
-            "createdAt": {
-              "type": "number"
-            },
-            "updatedAt": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "createdAt",
-            "updatedAt"
-          ]
-        },
-        "id": {
-          "$ref": "#/definitions/UUID"
-        },
-        "name": {
-          "type": "string"
-        },
-        "days": {
-          "type": "number"
-        },
-        "season": {
-          "$ref": "#/definitions/Season"
-        },
-        "quickNote": {
-          "type": "string"
-        }
-      },
-      "required": [
-        "days",
-        "id",
-        "name",
-        "quickNote",
-        "season"
-      ]
-    },
-    "UUID": {
-      "type": "string"
-    },
-    "Season": {
-      "type": "string",
-      "enum": [
-        "spring",
-        "summer",
-        "autumn",
-        "winter"
-      ]
-    },
-    "IFolder": {
-      "type": "object",
-      "properties": {
-        "_meta": {
-          "type": "object",
-          "properties": {
-            "createdAt": {
-              "type": "number"
-            },
-            "updatedAt": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "createdAt",
-            "updatedAt"
-          ]
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/UUID"
-          }
-        },
-        "category": {
-          "$ref": "#/definitions/Category"
-        },
-        "position": {
-          "type": "number"
-        },
-        "id": {
-          "$ref": "#/definitions/UUID"
-        },
-        "name": {
-          "type": "string"
-        },
-        "color": {
-          "type": "string"
-        },
-        "parentId": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/UUID"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "campaignId": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/UUID"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      },
-      "required": [
-        "category",
-        "color",
-        "id",
-        "name",
-        "position",
-        "tags"
-      ],
-      "description": "Data structure contract a Folder class should implement."
-    },
-    "Category": {
-      "type": "string",
-      "enum": [
-        "quest",
-        "event",
-        "location",
-        "character",
-        "faction",
-        "note"
-      ]
-    },
-    "ILoreEntry": {
-      "type": "object",
-      "properties": {
-        "_meta": {
-          "type": "object",
-          "properties": {
-            "createdAt": {
-              "type": "number"
-            },
-            "updatedAt": {
-              "type": "number"
-            }
-          },
-          "required": [
-            "createdAt",
-            "updatedAt"
-          ]
-        },
-        "tags": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/UUID"
-          }
-        },
-        "category": {
-          "$ref": "#/definitions/Category"
-        },
-        "position": {
-          "type": "number"
-        },
-        "id": {
-          "$ref": "#/definitions/UUID"
-        },
-        "desc": {
-          "type": "string"
-        },
-        "folderId": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/UUID"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "campaignId": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/UUID"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        }
-      },
-      "required": [
-        "category",
-        "desc",
-        "id",
-        "position",
-        "tags"
-      ]
-    }
-  }
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$ref": "#/definitions/SaveFormat",
+	"definitions": {
+		"SaveFormat": {
+			"type": "object",
+			"properties": {
+				"_meta": {
+					"$ref": "#/definitions/MetaData"
+				},
+				"campaigns": {
+					"type": "object",
+					"additionalProperties": {
+						"$ref": "#/definitions/ICampaign"
+					}
+				},
+				"folders": {
+					"type": "object",
+					"additionalProperties": {
+						"$ref": "#/definitions/IFolder"
+					}
+				},
+				"loreEntries": {
+					"type": "object",
+					"additionalProperties": {
+						"$ref": "#/definitions/ILoreEntry"
+					}
+				}
+			},
+			"required": ["_meta", "campaigns", "folders", "loreEntries"],
+			"description": "Data format of a save file."
+		},
+		"MetaData": {
+			"type": "object",
+			"properties": {
+				"version": {
+					"type": "string",
+					"const": "save-v3"
+				},
+				"lastUpdate": {
+					"type": "string"
+				}
+			},
+			"required": ["version", "lastUpdate"],
+			"description": "Metadata of a save file."
+		},
+		"ICampaign": {
+			"type": "object",
+			"properties": {
+				"_meta": {
+					"type": "object",
+					"properties": {
+						"createdAt": {
+							"type": "number"
+						},
+						"updatedAt": {
+							"type": "number"
+						}
+					},
+					"required": ["createdAt", "updatedAt"]
+				},
+				"id": {
+					"$ref": "#/definitions/UUID"
+				},
+				"name": {
+					"type": "string"
+				},
+				"days": {
+					"type": "number"
+				},
+				"season": {
+					"$ref": "#/definitions/Season"
+				},
+				"quickNote": {
+					"type": "string"
+				}
+			},
+			"required": ["days", "id", "name", "quickNote", "season"]
+		},
+		"UUID": {
+			"type": "string"
+		},
+		"Season": {
+			"type": "string",
+			"enum": ["spring", "summer", "autumn", "winter"]
+		},
+		"IFolder": {
+			"type": "object",
+			"properties": {
+				"_meta": {
+					"type": "object",
+					"properties": {
+						"createdAt": {
+							"type": "number"
+						},
+						"updatedAt": {
+							"type": "number"
+						}
+					},
+					"required": ["createdAt", "updatedAt"]
+				},
+				"tags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/UUID"
+					}
+				},
+				"category": {
+					"$ref": "#/definitions/Category"
+				},
+				"position": {
+					"type": "number"
+				},
+				"id": {
+					"$ref": "#/definitions/UUID"
+				},
+				"name": {
+					"type": "string"
+				},
+				"color": {
+					"type": "string"
+				},
+				"parentId": {
+					"anyOf": [
+						{
+							"$ref": "#/definitions/UUID"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				"campaignId": {
+					"anyOf": [
+						{
+							"$ref": "#/definitions/UUID"
+						},
+						{
+							"type": "null"
+						}
+					]
+				}
+			},
+			"required": ["category", "color", "id", "name", "position", "tags"],
+			"description": "Data structure contract a Folder class should implement."
+		},
+		"Category": {
+			"type": "string",
+			"enum": ["quest", "event", "location", "character", "faction", "note"]
+		},
+		"ILoreEntry": {
+			"type": "object",
+			"properties": {
+				"_meta": {
+					"type": "object",
+					"properties": {
+						"createdAt": {
+							"type": "number"
+						},
+						"updatedAt": {
+							"type": "number"
+						}
+					},
+					"required": ["createdAt", "updatedAt"]
+				},
+				"tags": {
+					"type": "array",
+					"items": {
+						"$ref": "#/definitions/UUID"
+					}
+				},
+				"category": {
+					"$ref": "#/definitions/Category"
+				},
+				"position": {
+					"type": "number"
+				},
+				"id": {
+					"$ref": "#/definitions/UUID"
+				},
+				"desc": {
+					"type": "string"
+				},
+				"folderId": {
+					"anyOf": [
+						{
+							"$ref": "#/definitions/UUID"
+						},
+						{
+							"type": "null"
+						}
+					]
+				},
+				"campaignId": {
+					"anyOf": [
+						{
+							"$ref": "#/definitions/UUID"
+						},
+						{
+							"type": "null"
+						}
+					]
+				}
+			},
+			"required": ["category", "desc", "id", "position", "tags"]
+		}
+	}
 }
