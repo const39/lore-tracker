@@ -89,13 +89,14 @@ function toggleNameField() {
 	editName.value = !editName.value;
 }
 
-function updateName() {
-	update();
+async function updateName() {
+	await update();
 	// If the name change is successful, toggle the field back to readonly
 	if (isNameValid.value !== false) toggleNameField();
 }
 
-function update() {
+async function update() {
+	await form.value?.validate();
 	// Update is successful when
 	// - there's no form (i.e. the name field is still readonly)
 	// - the new name is valid (isNameValid === true) or has not been changed (isNameValid === null)
