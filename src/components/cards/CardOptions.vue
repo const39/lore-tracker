@@ -6,13 +6,14 @@
 
 		<v-list density="compact">
 			<slot>
-				<v-list-item
-					v-if="!options || options.includes('show-related')"
-					:title="$t('actions.showRelated')"
-					prepend-icon="mdi-tag-multiple"
-					@click="$emit('show-related')"
-				/>
-				<v-divider class="my-1" />
+				<template v-if="!options || options.includes('show-related')">
+					<v-list-item
+						:title="$t('actions.showRelated')"
+						prepend-icon="mdi-tag-multiple"
+						@click="$emit('show-related')"
+					/>
+					<v-divider class="my-1" />
+				</template>
 				<v-list-item
 					v-if="!options || options.includes('edit')"
 					:title="$t('actions.edit')"
