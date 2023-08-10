@@ -37,9 +37,9 @@ const props = defineProps<{
 }>();
 
 const identity = computed(() => {
-	const race = props.itemData.race || $t("pages.loreBook.fields.labels.unknownRace");
-	const classes = props.itemData.classes || $t("pages.loreBook.fields.labels.unknownClass");
-	const role = props.itemData.role || $t("pages.loreBook.fields.labels.unknownRole");
+	const race = props.itemData.race || $t("pages.loreBook.fields.content.unknownRace");
+	const classes = props.itemData.classes || $t("pages.loreBook.fields.content.unknownClass");
+	const role = props.itemData.role || $t("pages.loreBook.fields.content.unknownRole");
 
 	return `${race} - ${classes} (${role})`;
 });
