@@ -128,8 +128,8 @@ function getPositionComparator() {
 onKeyStroke(
 	["Control", "Alt"],
 	(e: KeyboardEvent) => {
-		// Enable 'sort' mode on Ctrl+Alt hold
-		if (e.ctrlKey && e.altKey) sortEnabled.value = true;
+		// Enable 'sort' mode on Ctrl+Alt hold when not using the alphanumeric sort
+		if (e.ctrlKey && e.altKey && prefStore.cardsOrder !== "alphanumeric") sortEnabled.value = true;
 	},
 	{ dedupe: true } // Fire event once on hold, instead of at each tick
 );
