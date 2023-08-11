@@ -1,7 +1,7 @@
 {
 	"name": "lore-tracker",
 	"private": true,
-	"version": "1.3.1",
+	"version": "1.4.0",
 	"description": "Lore Tracker allows you to easily save, manage and visualise story elements for Table-top RPGs.",
 	"homepage": "https://github.com/const39/lore-tracker",
 	"license": "GPL-3.0-or-later",
