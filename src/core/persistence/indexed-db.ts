@@ -1,5 +1,5 @@
 import * as idb from "idb";
-import { StoreName } from "../models";
+import { StoreName } from "../models/types";
 import { SaveVersion, getSaveVersionNumber } from "../save/save-converter";
 import { Maybe, UUID } from "../utils/types";
 import { CRUDAdapter } from ".";
