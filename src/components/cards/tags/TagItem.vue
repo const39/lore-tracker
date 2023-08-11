@@ -1,7 +1,7 @@
 <template>
 	<v-chip
 		:closable="closable"
-		:text="truncate(tag.text, 30)"
+		:text="truncate(tag.text, 25)"
 		:prepend-icon="showIcon ? tag.icon : undefined"
 		class="ma-1"
 		size="small"
@@ -10,8 +10,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Tag } from "@/core/model/cards";
-import { truncate } from "@/core/utilities";
+import { Tag } from "@/core/models";
+import { truncate } from "@/core/utils/functions";
 
 defineProps<{
 	tag: Tag;

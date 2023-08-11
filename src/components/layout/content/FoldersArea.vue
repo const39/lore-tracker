@@ -1,13 +1,15 @@
 <template>
 	<GenericArea
-		v-model="currentFolder.subfolders"
-		:title="$t('categories.folder') + 's'"
+		v-model:selected="selected"
+		:items="items"
+		:title="$t('data.cardTypes.folder', items.length)"
 		:loading="loading"
 		group="folders"
+		@sort="onSort"
 	>
 		<template #actions>
 			<v-btn
-				:disabled="disableActions"
+				:disabled="disableActions || !folderId"
 				class="m1-2"
 				icon="mdi-plus"
 				density="compact"
@@ -23,57 +25,87 @@
 				@click="showFolderTree"
 			/>
 		</template>
-		<template #default="{ isDraggable, itemData }">
-			<FolderCard :draggable="isDraggable" :folder="itemData" @open-folder="openFolder" />
+		<template #default="{ itemData, isDraggable, isSelected, toggle, select }">
+			<!-- The card is unselected when clicking outside of any .selectable card -->
+			<FolderCard
+				v-click-outside="{handler: ($e: MouseEvent) => onClickOutside($e, select), include: getSelectableElements}"
+				:folder="itemData"
+				:draggable="isDraggable"
+				:selected="isSelected"
+				class="selectable"
+				@open-folder="openFolder"
+				@click="toggle"
+				@dragstart="($e) => onDragStart($e, isSelected)"
+			/>
 		</template>
 	</GenericArea>
-	<FolderDialog v-model="showFolderDialog" />
 </template>
 
 <script lang="ts" setup>
-import { computed, ref } from "vue";
+import { useRepo } from "pinia-orm";
 import { useRouter } from "vue-router";
 import FolderCard from "@/components/cards/folder/FolderCard.vue";
-import FolderDialog from "@/components/cards/folder/FolderDialog.vue";
-import { CardCategory, CardFolder } from "@/core/model/cards";
+import { Campaign, Category, Folder, Indexable, Orderable } from "@/core/models";
+import { FolderRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import { useSidePanel } from "@/store/sidePanel";
 import GenericArea from "./GenericArea.vue";
 
 const props = defineProps<{
-	modelValue: CardFolder; // currentFolder v-model
-	category: CardCategory;
+	items: Folder[];
+	campaign: Campaign;
+	category: Category;
+	folderId?: UUID;
 	loading?: boolean;
 	disableActions?: boolean;
 }>();
 
 const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
+	(e: "dragstart", value: DragEvent): void;
 }>();
 
-const showFolderDialog = ref(false);
+const selected = defineModel<Folder[]>("selected", { required: true }); // v-model:selected
 
 const router = useRouter();
 const sidePanelStore = useSidePanel();
 
-const currentFolder = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+function getSelectableElements() {
+	return Array.from(document.querySelectorAll(".selectable"));
+}
+/**
+ * Save the new items order.
+ * @param movedItems the items with their new position.
+ */
+function onSort(movedItems: Array<Indexable & Orderable>) {
+	useRepo(FolderRepo).changeOrder(movedItems);
+}
+
+function onDragStart(e: DragEvent, isSelected?: boolean) {
+	if (isSelected) emit("dragstart", e);
+}
+
+function onClickOutside(e: MouseEvent, selectFn?: (arg: boolean) => void) {
+	if (!e.ctrlKey && selectFn) selectFn(false);
+}
 
 function newFolder(): void {
-	showFolderDialog.value = true;
+	if (props.folderId)
+		sidePanelStore.showFolderForm(
+			"add",
+			new Folder({
+				campaignId: props.campaign.id,
+				category: props.category,
+				parentId: props.folderId,
+			})
+		);
 }
 
 function showFolderTree() {
-	sidePanelStore.newFolderTree();
+	sidePanelStore.showFolderTree();
 }
 
-function openFolder(folder: CardFolder): void {
-	router.push({ params: { folderURI: [...folder.absolutePath.rawSegments] } });
+function openFolder(folder: Folder): void {
+	router.push({ params: { folderId: folder.id } });
 }
 </script>

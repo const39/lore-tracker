@@ -13,14 +13,14 @@
 							@mouseup="stopResize"
 						/>
 						<p class="text-h6">
-							{{ $t("actions.quickNote") }}
+							{{ $t("pages.loreBook.quickNote.name") }}
 						</p>
 						<v-btn variant="plain" icon="mdi-chevron-down" @click="open = false" />
 					</div>
 					<v-textarea
 						ref="el"
 						v-model="content"
-						:hint="$t('fields.mdSupport')"
+						:hint="$t('pages.loreBook.fields.labels.mdSupport')"
 						variant="outlined"
 						auto-grow
 						autofocus
@@ -39,11 +39,17 @@
 </template>
 
 <script lang="ts" setup>
-import { useElementSize, useWindowSize } from "@vueuse/core";
+import { useDebounceFn, useElementSize, useWindowSize } from "@vueuse/core";
+import { useRepo } from "pinia-orm";
 import { VNodeRef, computed, ref, watch } from "vue";
+import { Campaign } from "@/core/models";
+import { CampaignRepo } from "@/core/repositories";
 import { t as $t } from "@/core/translation";
 import { usePreferencesStore } from "@/store/preferences";
-import { useQuickNoteStore } from "@/store/quickNote";
+
+const props = defineProps<{
+	campaign: Campaign;
+}>();
 
 const open = ref(false);
 const resizing = ref(false);
@@ -54,19 +60,24 @@ const el = ref<VNodeRef | null>(null); // Vuetify underlying element
  */
 const element = computed<HTMLElement | undefined>(() => el.value?.$el);
 
-const quickNoteStore = useQuickNoteStore();
+const campaignRepo = useRepo(CampaignRepo);
 const prefStore = usePreferencesStore();
 const { width: windowWidth, height: windowHeight } = useWindowSize(); // Reactive window size
 const elementSize = useElementSize(element); // Reactive element size
 
 const content = computed({
 	get() {
-		return quickNoteStore.content;
+		return props.campaign.quickNote;
 	},
 	set(value) {
-		quickNoteStore.content = value.trim() ?? "";
+		update(value);
 	},
 });
+
+// Update the quick note's content 300ms after the user finished typing
+const update = useDebounceFn((content?: string) => {
+	campaignRepo.update({ id: props.campaign.id, quickNote: content?.trim() ?? "" });
+}, 300);
 
 const size = computed({
 	get() {

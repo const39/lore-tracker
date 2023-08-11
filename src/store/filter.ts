@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
+import { useRepo } from "pinia-orm";
 import { computed, ref } from "vue";
-import { CardFolder, CardFolderMetadata, CardTypes, getAllText } from "@/core/model/cards";
-import utilities from "@/core/utilities";
+import { Campaign, Category, Describable, Folder } from "@/core/models";
+import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
 
 export interface Filter {
 	text?: string;
@@ -12,32 +13,35 @@ export const useFilterStore = defineStore("filter", () => {
 
 	const isFilterActive = computed(() => !!rules.value.text?.trim());
 
-	function _getItemPredicate(item: CardTypes | CardFolder) {
+	function _getPredicate(item: Describable) {
 		let predicate = true;
 		if (rules.value.text) {
 			const str = rules.value.text;
-			predicate &&= getAllText(item).some((text) => text.toLowerCase().includes(str));
+			predicate &&= item.getAllText().some((text) => text.toLowerCase().includes(str));
 		}
 		return predicate;
 	}
 
-	function filter(toFilter: CardFolder) {
-		const filteredFiles = toFilter.files.filter((item) => _getItemPredicate(item));
+	function filterLoreEntries(campaign: Campaign, category: Category) {
+		return useRepo(LoreEntryRepo)
+			.where("campaignId", campaign.id)
+			.where("category", category)
+			.get()
+			.filter(_getPredicate);
+	}
 
-		const filteredFolders = toFilter.subfolders.filter((item) => _getItemPredicate(item));
-
-		const meta: CardFolderMetadata = {
-			id: utilities.uid(),
-			_category: toFilter.metadata._category,
-			color: "#ffffff",
-			name: "search-results",
-		};
-		return new CardFolder(meta, undefined, filteredFiles, filteredFolders);
+	function filterFolders(campaign: Campaign, category: Category) {
+		return useRepo(FolderRepo)
+			.where("campaignId", campaign.id)
+			.where("category", category)
+			.where((folder: Folder) => !folder.isRoot()) // Exclude root folders from the filtering
+			.get()
+			.filter(_getPredicate);
 	}
 
 	function $reset() {
 		rules.value = {};
 	}
 
-	return { rules, isFilterActive, filter, $reset };
+	return { rules, isFilterActive, filterLoreEntries, filterFolders, $reset };
 });

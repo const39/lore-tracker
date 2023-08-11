@@ -6,14 +6,6 @@
 				<v-row class="d-flex">
 					<v-col cols="12" md="6">
 						<HotkeyList
-							:title="$t('options.hotkeys.pages.title')"
-							:hotkeys="hotkeysDisplay.pages"
-						/>
-						<HotkeyList
-							:title="$t('dragAndDrop.desc')"
-							:hotkeys="hotkeysDisplay.dragAndDrop"
-						/>
-						<HotkeyList
 							:title="$t('options.hotkeys.misc.title')"
 							:hotkeys="hotkeysDisplay.misc"
 						/>
@@ -37,86 +29,31 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
+import { Category } from "@/core/models";
 import { t as $t } from "@/core/translation";
 import HotkeyList from "../hotkeys/HotkeyList.vue";
 
-const props = defineProps<{
-	modelValue: boolean; // Default v-model overwrite
-}>();
-
-const emit = defineEmits<{
-	(e: "update:modelValue", value: boolean): void;
-}>();
+const showDialog = defineModel<boolean>({ required: true }); // v-model
 
 const hotkeysDisplay = {
-	pages: [
+	content: Object.values(Category).map((category, idx) => {
+		return {
+			text: $t("options.hotkeys.content.showTab", {
+				category: $t(`data.categories.${category}`),
+			}),
+			command: `Alt+${idx + 1}`,
+		};
+	}),
+	misc: [
 		{
-			text: $t("options.hotkeys.pages.toLoreBook"),
-			command: "F1",
-		},
-		{
-			text: $t("options.hotkeys.pages.toTimeline"),
-			command: "F2",
-		},
-	],
-	content: [
-		{
-			text: $t("options.hotkeys.content.showTabQuest"),
-			command: "Alt+1",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabEvent"),
-			command: "Alt+2",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabLocation"),
-			command: "Alt+3",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabCharacter"),
-			command: "Alt+4",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabFaction"),
-			command: "Alt+5",
-		},
-		{
-			text: $t("options.hotkeys.content.showTabNote"),
-			command: "Alt+6",
-		},
-	],
-	dragAndDrop: [
-		{
-			text: $t("dragAndDrop.modes.moveToFolder"),
-			command: "Ctrl",
-			hold: true,
-		},
-		{
-			text: $t("dragAndDrop.modes.sort"),
+			text: $t("actions.dragSort"),
 			command: "Ctrl+Alt",
 			hold: true,
 		},
-	],
-	misc: [
 		{
 			text: $t("options.hotkeys.misc.openOptions"),
 			command: "ESC",
 		},
 	],
 };
-
-/**
- * Overwrite default v-model to bind the QuestForm v-model attribute to the v-dialog one.
- * This allows to use a custom component as an external activator for the v-dialog.
- * @see https://vuejs.org/v2/guide/components-custom-events.html#Customizing-Component-v-model
- */
-const showDialog = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
 </script>

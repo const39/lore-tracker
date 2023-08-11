@@ -1,103 +1,123 @@
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
-import { CardCategory, CardFolder, CardTypes, ID, createCard } from "@/core/model/cards";
-import utilities from "@/core/utilities";
-import { useCardsStore } from "./cards";
-import { useDragAndDropMode } from "./dragAndDropMode";
+import { computed, ref } from "vue";
+import { Folder, LoreEntry } from "@/core/models";
+import { t as $t } from "@/core/translation";
+import { useGlobalSnackbar } from "./snackbar";
 
-export type FormVariant = "edit" | "add";
-export type FolderTreeVariant = "card-move" | "nav";
-export type SidePanel = "closed" | "form" | "folder-tree";
+type FormVariant = "add" | "edit";
+
+interface FileFormState {
+	status: "file-form";
+	variant: FormVariant;
+	baseModel: LoreEntry;
+}
+
+interface FolderFormState {
+	status: "folder-form";
+	variant: "add" | "edit";
+	baseModel: Folder;
+}
+
+interface FolderTreeMoveState {
+	status: "folder-tree";
+	variant: "card-move";
+	itemToMove: LoreEntry | Folder;
+}
+
+interface FolderTreeNavState {
+	status: "folder-tree";
+	variant: "nav";
+}
+
+interface RelatedCardsState {
+	status: "related-cards";
+	relatedTo: LoreEntry | Folder;
+}
+
+type FormState = FileFormState | FolderFormState;
+type FolderTreeState = FolderTreeMoveState | FolderTreeNavState;
+
+export type SidePanelState = FormState | FolderTreeState | RelatedCardsState | undefined;
 
 export const useSidePanel = defineStore("sidePanel", () => {
-	const _dndStore = useDragAndDropMode();
+	const _snackbar = useGlobalSnackbar();
 
-	const formState = reactive({
-		variant: ref<FormVariant>("add"),
-		parentFolder: ref<CardFolder>(),
-		model: ref<CardTypes>(),
-	});
+	const state = ref<SidePanelState>();
 
-	const folderTreeState = reactive({
-		variant: ref<FolderTreeVariant>("nav"),
-		parentFolder: ref<CardFolder>(),
-		itemToMove: ref<CardTypes | CardFolder>(),
-	});
+	const isOpen = computed(() => !!state.value);
 
-	const sidePanelStatus = ref<SidePanel>("closed");
-
-	function _resetSidePanel() {
-		sidePanelStatus.value = "closed";
-		_dndStore.setMode("disabled");
-	}
-
-	function _showForm() {
-		// Show side panel with form inside it
-		sidePanelStatus.value = "form";
-		// Enable 'drop' drag and drop when form is open
-		_dndStore.setMode("link");
-	}
-
-	function newAddForm(category: CardCategory, inFolder: CardFolder) {
-		formState.variant = "add";
-		formState.parentFolder = inFolder;
-		formState.model = createCard(category);
-		_showForm();
-	}
-
-	function newEditForm(id: ID, inFolder: CardFolder) {
-		formState.variant = "edit";
-		formState.parentFolder = inFolder;
-
-		const cardsStore = useCardsStore();
-		const data = cardsStore.findFileInFolder(id, cardsStore.currentFolder);
-
-		// Clone object to keep a backup in case the user cancels their changes
-		if (data) formState.model = utilities.deepCopy(data) as CardTypes;
-		_showForm();
-	}
-
-	function resetForm() {
-		formState.model = undefined;
-		formState.parentFolder = undefined;
-		_resetSidePanel();
-	}
-
-	function newFolderTree(): void;
-	function newFolderTree(itemToMove: CardTypes | CardFolder, inFolder: CardFolder): void;
-	function newFolderTree(itemToMove?: CardTypes | CardFolder, inFolder?: CardFolder) {
-		if (itemToMove && inFolder) {
-			folderTreeState.itemToMove = itemToMove;
-			folderTreeState.parentFolder = inFolder;
-			folderTreeState.variant = "card-move";
-		} else {
-			folderTreeState.variant = "nav";
+	function _preventOverwrite() {
+		if (state.value?.status === "file-form" || state.value?.status === "folder-form") {
+			_snackbar.showSnackbar({
+				message: $t("messages.errors.sidePanel.formAlreadyOpen.title"),
+				color: "error",
+				timeout: 5000,
+			});
+			throw new Error("Cannot open side panel: form already open.");
 		}
-		sidePanelStatus.value = "folder-tree";
 	}
 
-	function resetFolderTree() {
-		folderTreeState.itemToMove = undefined;
-		folderTreeState.parentFolder = undefined;
-		_resetSidePanel();
+	function close() {
+		state.value = undefined;
+	}
+
+	function showLoreEntryForm<T extends LoreEntry>(variant: FormVariant, model: T) {
+		_preventOverwrite();
+		// Show side panel with form inside it
+		state.value = {
+			status: "file-form",
+			variant,
+			baseModel: model,
+		};
+	}
+
+	function showFolderForm(variant: FormVariant, model: Folder) {
+		_preventOverwrite();
+		// Show side panel with form inside it
+		state.value = {
+			status: "folder-form",
+			variant,
+			baseModel: model,
+		};
+	}
+
+	function showFolderTree(itemToMove?: LoreEntry | Folder) {
+		_preventOverwrite();
+		if (itemToMove) {
+			state.value = {
+				status: "folder-tree",
+				variant: "card-move",
+				itemToMove,
+			};
+		} else {
+			state.value = {
+				status: "folder-tree",
+				variant: "nav",
+			};
+		}
+	}
+
+	function showRelatedCards(relatedTo: LoreEntry | Folder) {
+		_preventOverwrite();
+		state.value = {
+			status: "related-cards",
+			relatedTo,
+		};
 	}
 
 	return {
-		sidePanelStatus,
+		state,
+		isOpen,
+		close,
 
-		// * Form
-		// State
-		formState,
-		// Actions
-		newAddForm,
-		newEditForm,
-		resetForm,
+		// * Forms
+		showLoreEntryForm,
+		showFolderForm,
 
 		// * File tree
-		// State
-		folderTreeState,
-		// Actions
-		newFolderTree,
-		resetFolderTree,
+		showFolderTree,
+
+		// * Related cards
+		showRelatedCards,
 	};
 });

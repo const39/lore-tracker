@@ -1,6 +1,9 @@
 <template>
-	<ListPanel :title="$t('fields.tags')" :is-filled="model.length !== 0">
-		<TagList v-model="model" editable />
+	<ListPanel
+		:title="$t('pages.loreBook.fields.labels.tags')"
+		:is-filled="modelValue.length !== 0"
+	>
+		<TagList v-model="modelValue" editable />
 		<template #append>
 			<CardDropZone @drop="onDrop" />
 		</template>
@@ -8,36 +11,25 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import CardDropZone from "@/components/common/CardDropZone.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { CardTypes, ID } from "@/core/model/cards";
+import { Indexable } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { UUID } from "@/core/utils/types";
 import TagList from "./TagList.vue";
 
-const props = defineProps<{
-	modelValue: ID[]; // v-model
-	excludeId?: ID;
-}>();
+const props = defineProps<{ excludeId?: UUID }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: ID[]): void;
-}>();
-
-// v-model binding
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const modelValue = defineModel<UUID[]>({ required: true }); // v-model
 
 /**
- * Add the dropped card in the tag list if it is not already in it (or if it is not the excluded ID)
+ * Add the dropped item in the tag list if it is not already in it (or if it is not the excluded ID)
  */
-function onDrop(card: CardTypes) {
-	if (!model.value.includes(card.id) && card.id !== props.excludeId) model.value.push(card.id);
+function onDrop(items: Indexable[]) {
+	items.forEach((item) => {
+		if (!modelValue.value.includes(item.id) && item.id !== props.excludeId) {
+			modelValue.value.push(item.id);
+		}
+	});
 }
 </script>

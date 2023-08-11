@@ -1,10 +1,7 @@
 import { MaybeElementRef, unrefElement, useEventListener } from "@vueuse/core";
 import { Ref, ref } from "vue";
-import utilities from "@/core/utilities";
-import { DragAndDropMode, useDragAndDropMode } from "@/store/dragAndDropMode";
-
-type DragAndDropID = string;
-type DragAndDropData = any;
+import utilities from "@/core/utils/functions";
+import { UUID } from "@/core/utils/types";
 
 interface DragOptions {
 	/**
@@ -20,50 +17,32 @@ interface DragOptions {
 
 interface DropOptions {
 	acceptMIME?: string[];
-	acceptMode?: DragAndDropMode[];
 }
 
-export interface DropPayload<T = unknown> {
+export interface DragItem<T = unknown> {
 	dataType: CustomMIMEType | string;
 	data: T;
 }
 
 export enum CustomMIMEType {
 	DragAndDropID = "application/drag-and-drop-id",
-	CardType = "application/card-type",
-	CardFolder = "application/card-folder",
+	LoreEntry = "application/lore-entry",
+	Folder = "application/folder",
 }
-
-const compoundMIMETypes = {
-	create(referencedType: CustomMIMEType | string) {
-		return `${CustomMIMEType.DragAndDropID}:${referencedType}`;
-	},
-	detect(str: string) {
-		return str.trim().startsWith(CustomMIMEType.DragAndDropID + ":");
-	},
-	extract(str: string) {
-		return this.detect(str)
-			? str.replace(CustomMIMEType.DragAndDropID + ":", "").trim()
-			: undefined;
-	},
-};
 
 export type Operation = Exclude<typeof DataTransfer.prototype.dropEffect, "none">;
 
 export type Status = "idle" | "accepted" | "rejected";
 
-const buffer = new Map<DragAndDropID, DragAndDropData>();
+const buffer = new Map<UUID, DragItem[]>();
 
-export function startDrag(
-	e: DragEvent,
-	data: any,
-	dataType: CustomMIMEType | string,
-	options?: DragOptions
-) {
+export function startDrag(e: DragEvent, items: DragItem[], options?: DragOptions) {
 	if (e.dataTransfer) {
-		const ID = "drag-" + utilities.uid();
-		buffer.set(ID, data);
-		e.dataTransfer.setData(compoundMIMETypes.create(dataType), ID);
+		// Store the drag items into an internal buffer
+		const ID = "drag-" + utilities.uuid();
+		buffer.set(ID, items);
+		// Only transfer the drag operation's ID via HTML5 Drag & Drop API
+		e.dataTransfer.setData(CustomMIMEType.DragAndDropID, ID);
 
 		// Set drag image if specified
 		if (options?.dragImage) {
@@ -77,11 +56,9 @@ export function startDrag(
 export function useDropZone(
 	target: Ref<HTMLElement | null | undefined>,
 	operation: Operation,
-	onDropAccepted: (items: DropPayload[]) => void,
+	onDropAccepted: (items: DragItem[]) => void,
 	options?: DropOptions
 ) {
-	const _dndStore = useDragAndDropMode();
-
 	const acceptedMIMETypes = options?.acceptMIME
 		? [...options.acceptMIME, CustomMIMEType.DragAndDropID].map((type) => type.toLowerCase())
 		: undefined;
@@ -89,31 +66,24 @@ export function useDropZone(
 	const status = ref<Status>("idle");
 	let counter = 0;
 
-	function _isAccepted(dataTransfer: DataTransfer) {
-		if (dataTransfer.items.length) {
-			// If there is no requirement for MIME types, accept all by default
-			if (!acceptedMIMETypes) return true;
-			else {
-				// Browse through the items' dataTypes and reject if any of them is not accepted
-				for (let i = 0; i < dataTransfer.items.length; i++) {
-					const item = dataTransfer.items[i];
-					const dataType = compoundMIMETypes.extract(item.type) ?? item.type;
+	function _isAccepted(dragAndDropID: UUID) {
+		// If there is no requirement for MIME types, accept all by default
+		if (!acceptedMIMETypes) return true;
 
-					if (!acceptedMIMETypes.includes(dataType.toLowerCase())) return false;
-				}
-			}
-		}
-
-		// Reject if current drag & drop mode is not among the accepted ones
-		if (options?.acceptMode && !options.acceptMode.includes(_dndStore.mode)) return false;
-
-		return true;
+		// Browse through the items' dataTypes and reject if any of them is not accepted
+		const items = buffer.get(dragAndDropID) ?? [];
+		return items.every((item) => {
+			return acceptedMIMETypes.includes(item.dataType.toLowerCase());
+		});
 	}
 
 	function onDragEnter(e: DragEvent) {
 		e.preventDefault();
 		counter++;
-		if (e.dataTransfer) status.value = _isAccepted(e.dataTransfer) ? "accepted" : "rejected";
+		if (e.dataTransfer) {
+			const ID = e.dataTransfer.getData(CustomMIMEType.DragAndDropID);
+			status.value = _isAccepted(ID) ? "accepted" : "rejected";
+		}
 	}
 
 	function onDragOver(e: DragEvent) {
@@ -135,26 +105,11 @@ export function useDropZone(
 		e.preventDefault();
 		counter = 0;
 		status.value = "idle";
-		if (e.dataTransfer && _isAccepted(e.dataTransfer)) {
-			const promises = [];
-			for (let i = 0; i < e.dataTransfer.items.length; i++) {
-				const item = e.dataTransfer.items[i];
-				const isCompound = compoundMIMETypes.detect(item.type);
-				const dataType = compoundMIMETypes.extract(item.type) ?? item.type;
-				promises.push(
-					new Promise<DropPayload>((resolve) => {
-						if (item.kind === "string")
-							item.getAsString((str) => {
-								const data = isCompound ? buffer.get(str) : str;
-								resolve({ dataType, data });
-							});
-						else if (item.kind === "file")
-							resolve({ dataType, data: item.getAsFile() });
-					})
-				);
-			}
-
-			Promise.all(promises).then(onDropAccepted);
+		const ID = e.dataTransfer?.getData(CustomMIMEType.DragAndDropID);
+		if (ID && _isAccepted(ID)) {
+			const items = buffer.get(ID) ?? [];
+			// Call drop handler with accepted items
+			onDropAccepted(items);
 		}
 	}
 

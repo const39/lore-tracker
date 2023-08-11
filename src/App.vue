@@ -11,15 +11,25 @@
 
 			<v-spacer />
 
-			<v-btn :to="{ name: 'LoreBook' }" variant="text">
-				<span class="mr-2">{{ $t("pages.loreBook") }}</span>
-			</v-btn>
-			<v-btn :to="{ name: 'Timeline' }" variant="text">
-				<span class="mr-2">{{ $t("pages.timeline") }}</span>
+			<v-btn :to="{ name: 'Campaigns' }" variant="text">
+				<span class="mr-2">{{ $t("pages.campaigns.name") }}</span>
 			</v-btn>
 
+			<!-- Display campaign-specific navigation buttons when we're on a campaign's LoreBook -->
+			<template v-if="campaignId">
+				<v-divider class="mx-2" vertical />
+
+				<v-btn :to="{ name: 'LoreBookRoot', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.loreBook.name") }}</span>
+				</v-btn>
+
+				<v-btn :to="{ name: 'Timeline', params: { campaignId } }" variant="text">
+					<span class="mr-2">{{ $t("pages.timeline.name") }}</span>
+				</v-btn>
+			</template>
+
 			<!-- Options menu -->
-			<v-menu v-model="showMenu" location="bottom" start>
+			<v-menu v-model="showMenu" location="bottom" close-on-content-click start>
 				<template #activator="{ props }">
 					<v-btn icon="mdi-cog" v-bind="props" />
 				</template>
@@ -53,15 +63,13 @@
 
 		<!-- Mount point for VueRouter -->
 		<v-main>
-			<v-container>
-				<router-view />
+			<v-container class="h-100">
+				<div v-if="loading" class="h-100 d-flex align-center justify-center">
+					<v-progress-circular color="primary" size="large" indeterminate />
+				</div>
+				<router-view v-else />
 			</v-container>
 		</v-main>
-
-		<!-- Quick note - Floating expanding text area -->
-		<div class="ma-4 quick-note-wrapper">
-			<QuickNote />
-		</div>
 
 		<!-- Hotkeys dialog -->
 		<HotkeyDialog v-model="showHotkeysDialog" />
@@ -104,11 +112,11 @@
 			multi-line
 		>
 			<div class="text-subtitle-1">
-				{{ $t("messages.info.updateNotifTitle") }}
+				{{ $t("messages.info.updateNotif.title") }}
 			</div>
 			<div class="text-body-2">
 				<a href="https://github.com/const39/lore-tracker/releases/latest" target="_blank">
-					{{ $t("messages.info.updateNotifMessage") }}
+					{{ $t("messages.info.updateNotif.message") }}
 				</a>
 			</div>
 			<template #actions>
@@ -124,48 +132,38 @@
 
 <script lang="ts" setup>
 import { onKeyDown } from "@vueuse/core";
-import { onMounted, ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import GlobalSnackbar from "@/components/common/GlobalSnackbar.vue";
-import QuickNote from "@/components/global/QuickNote.vue";
 import HotkeyDialog from "@/components/hotkeys/HotkeyDialog.vue";
 import LangMenu from "@/components/menus/LangMenu.vue";
 import SaveMenu from "@/components/menus/SaveMenu.vue";
 import ThemeMenu from "@/components/menus/ThemeMenu.vue";
-import { VERSION } from "@/core/constants";
+import { loadSavedData } from "@/core/save/save-manager";
 import { t as $t } from "@/core/translation";
-import { useStore } from "@/store";
+import { VERSION } from "@/core/utils/types";
+import { usePreferencesStore } from "@/store/preferences";
+import { useGlobalSnackbar } from "@/store/snackbar";
 import GlobalConfirmDialog from "./components/common/GlobalConfirmDialog.vue";
-import { usePreferencesStore } from "./store/preferences";
-import { useGlobalSnackbar } from "./store/snackbar";
+import eventBus from "./core/eventBus";
 
 const version = ref(VERSION);
+const loading = ref(false);
 const showMenu = ref(false);
 const showHotkeysDialog = ref(false);
 const showAboutDialog = ref(false);
 const showUpdateNotif = ref(localStorage.getItem("VERSION") !== VERSION); // Display notif when version has changed
 
-const router = useRouter();
-const store = useStore();
+const route = useRoute();
 const preferences = usePreferencesStore();
 const { showSnackbar } = useGlobalSnackbar();
 
 const copyrightText = `© 2021-${new Date().getUTCFullYear()} const39`;
 
-// Register hotkeys
-onKeyDown(["Escape", "F1", "F2", "F3"], hotkey);
+const campaignId = computed(() => route.params.campaignId);
 
-/**
- * Manage this component's hotkeys :
- * - On ESC press : Open/close options menu
- * - On F1 press : Navigate to LoreBook page
- * - On F2 press : Navigate to Timeline page
- */
-function hotkey(e: KeyboardEvent) {
-	if (e.code === "Escape") showMenu.value = !showMenu.value;
-	else if (e.code === "F1") router.push({ name: "LoreBook" });
-	else if (e.code === "F2") router.push({ name: "Timeline" });
-}
+// Toggle options menu on ESC
+onKeyDown("Escape", () => (showMenu.value = !showMenu.value));
 
 function closeUpdateNotif() {
 	// Update Version number in LocalStorage to not show the notification a second time
@@ -173,30 +171,49 @@ function closeUpdateNotif() {
 	showUpdateNotif.value = false;
 }
 
-onMounted(() => {
-	// Initialise the store at application start
+async function initApp() {
+	loading.value = true;
+
 	try {
-		store.loadData();
+		await loadSavedData();
 	} catch (err) {
 		console.error(err);
+		const message =
+			$t("messages.errors.save.corruptedSave") + " " + $t("messages.errors.save.loadBackup");
 		showSnackbar({
-			message: $t("messages.errors.corruptedSave") + " " + $t("messages.errors.loadBackup"),
+			message,
 			timeout: -1,
 			color: "error",
 		});
 	}
+
+	loading.value = false;
+}
+
+// Trigger update on data load (e.g. on app start or on save import)
+eventBus.on(async (e) => {
+	if (e === "data-loaded") await initApp();
+});
+
+onMounted(() => {
+	// Load stored data at application start
+	eventBus.emit("data-loaded");
+
+	// Show a periodic reminder to backup the save file (1h after app startup)
+	setTimeout(() => {
+		showSnackbar({
+			message: $t('messages.info.backupReminder.message'),
+			timeout: 20000,
+			color: "grey-lighten-2",
+			icon: "mdi-information-outline",
+			location: "top",
+		});
+	}, 60 * 60 * 1000);
 });
 </script>
 
 <style>
 .header-icon > img {
 	position: initial;
-}
-
-.quick-note-wrapper {
-	position: fixed;
-	bottom: 0;
-	right: 0;
-	z-index: 5;
 }
 </style>

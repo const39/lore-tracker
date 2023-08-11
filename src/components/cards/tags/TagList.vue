@@ -1,99 +1,50 @@
 <template>
-	<div class="pa-3">
-		<v-row v-for="(list, category) in tags" :key="category">
-			<div v-if="list.length" class="d-flex align-center">
-				<v-icon :icon="Icon[category]" size="small" />
-				<!-- Editable version -->
-				<div v-if="editable">
-					<TagItem
-						v-for="tag in list"
-						:key="tag.id"
-						:tag="tag"
-						closable
-						@click:close="remove(tag)"
-					/>
-				</div>
-				<!-- Immutable version -->
-				<div v-else>
-					<TagItem
-						v-for="tag in list"
-						:key="tag.id"
-						:tag="tag"
-						@click.stop="goToCard(tag)"
-					/>
-				</div>
+	<template v-for="(list, category) in tags" :key="category">
+		<div v-if="list.length" class="d-flex align-start">
+			<v-icon :icon="Icon[category]" class="my-2" size="small" />
+			<!-- Editable version -->
+			<div v-if="editable">
+				<TagItem
+					v-for="tag in list"
+					:key="tag.id"
+					:tag="tag"
+					closable
+					@click:close="remove(tag)"
+				/>
 			</div>
-		</v-row>
-	</div>
+			<!-- Immutable version -->
+			<div v-else>
+				<TagItem v-for="tag in list" :key="tag.id" :tag="tag" @click.stop="goToCard(tag)" />
+			</div>
+		</div>
+	</template>
 </template>
 
 <script lang="ts" setup>
+import { useRepo } from "pinia-orm";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-import { Icon } from "@/core/icons";
-import { CardCategory, ID, Tag } from "@/core/model/cards";
-import { useCardsStore } from "@/store/cards";
+import { useCardLink } from "@/composables/cardLink";
+import { Category, Tag } from "@/core/models";
+import { FolderRepo, LoreEntryRepo } from "@/core/repositories";
+import { Icon } from "@/core/utils/icons";
+import { UUID } from "@/core/utils/types";
 import TagItem from "./TagItem.vue";
 
-const props = withDefaults(
-	defineProps<{
-		modelValue: ID[]; // v-model
-		editable?: boolean;
-	}>(),
-	{ editable: false }
-);
+defineProps<{ editable?: boolean }>();
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: ID[]): void;
-}>();
+const modelValue = defineModel<UUID[]>({ required: true }); // v-model
 
-const cardsStore = useCardsStore();
 const router = useRouter();
 
-// v-model binding
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
+const folderRepo = useRepo(FolderRepo);
+const loreEntryRepo = useRepo(LoreEntryRepo);
 
-/**
- * Remove the ID matching the specified Tag from the 'value' prop (if any).
- * Performs in-place removal, the prop is changed directly.
- */
-function remove(tag: Tag) {
-	const index = model.value.indexOf(tag.id);
-	if (index >= 0) model.value.splice(index, 1);
-}
-/**
- * Navigate to the card referenced by the specified tag.
- */
-function goToCard(tag: Tag) {
-	// Find the folder hosting the card referenced by the tag
-	const res = cardsStore.getCategoryFolder(tag.category).getFolderWithFile(tag.id);
-	if (res) {
-		// Navigate to the card's folder, passing along the card ID in the URL's hash
-		router.push({
-			params: {
-				category: tag.category,
-				folderURI: [...res.folder.absolutePath.rawSegments],
-			},
-			hash: `#${tag.id}-card`,
-		});
-	}
-}
-
-type TagsPerCategory = {
-	[Category in CardCategory]: Tag[];
-};
 /**
  * Create a Tag for each object whose ID is given
  */
 const tags = computed(() => {
-	const tagLists: TagsPerCategory = {
+	const tagLists: Record<Category, Tag[]> = {
 		quest: [],
 		character: [],
 		event: [],
@@ -101,15 +52,41 @@ const tags = computed(() => {
 		faction: [],
 		note: [],
 	};
-	for (const id of model.value) {
-		const elem = cardsStore.findFile(id);
-
-		// If the object is found, create a tag object from the element's data
-		if (elem) {
-			// Add the tag in the list of its type
-			tagLists[elem._category].push(new Tag(elem));
-		} else console.error(`TagList: No card with id ${id} found.`);
+	for (const id of modelValue.value) {
+		const item = findItem(id);
+		// If the ID matches an item (lore entry or folder), add the tag in the list of its category
+		if (item) {
+			tagLists[item.category].push(Tag.from(item));
+		} else {
+			console.error(`TagList: No item with id ${id} found.`);
+		}
 	}
 	return tagLists;
 });
+
+function findItem(id: UUID) {
+	return loreEntryRepo.find(id) ?? folderRepo.find(id);
+}
+
+/**
+ * Remove the ID matching the specified Tag from the 'value' prop (if any).
+ * Performs in-place removal, the prop is changed directly.
+ */
+function remove(tag: Tag) {
+	const index = modelValue.value.indexOf(tag.id);
+	if (index >= 0) modelValue.value.splice(index, 1);
+}
+
+/**
+ * Navigate to the card referenced by the specified tag.
+ */
+function goToCard(tag: Tag) {
+	const item = findItem(tag.id);
+	if (item) {
+		const routeParams = useCardLink(item);
+		if (routeParams) {
+			router.push(routeParams);
+		}
+	}
+}
 </script>

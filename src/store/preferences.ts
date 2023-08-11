@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 import { useTheme } from "vuetify";
-import { LocalStorageKey } from "@/core/constants";
-import { SupportedLanguages } from "@/core/translation";
+import { LocalStorageKey } from "@/core/save/save-manager";
+import { SupportedLanguages } from "@/core/translation/translation";
 import type { Theme } from "@/plugins/vuetify";
 
 export type { Theme } from "@/plugins/vuetify";
@@ -47,6 +47,7 @@ export const usePreferencesStore = defineStore(
 		return { cardsOrder, cardsDensity, language, theme, quickNoteSize };
 	},
 	{
+		// @ts-ignore because ts-json-schema-generator raises a type error on this plugin option (it somehow seems to not find the plugin types)
 		persist: {
 			key: LocalStorageKey.PREFERENCES_KEY,
 		},

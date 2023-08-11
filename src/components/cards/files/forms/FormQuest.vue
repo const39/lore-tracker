@@ -1,8 +1,19 @@
 <template>
-	<v-text-field v-model="model.title" :label="$t('fields.title') + '*'" :rules="[requiredRule]" />
+	<v-text-field
+		v-model="model.title"
+		:label="$t('pages.loreBook.fields.labels.title') + '*'"
+		:rules="[requiredRule]"
+	/>
+	<v-textarea
+		v-model="model.desc"
+		:label="$t('pages.loreBook.fields.labels.desc')"
+		:hint="$t('pages.loreBook.fields.labels.mdSupport')"
+		variant="outlined"
+		auto-grow
+	/>
 	<ListPanel
-		:title="$t('fields.tasks')"
-		:placeholder="$t('fields.noTask')"
+		:title="$t('pages.loreBook.fields.labels.tasks')"
+		:placeholder="$t('pages.loreBook.fields.labels.noTask')"
 		:is-filled="model.tasks.length > 0"
 	>
 		<template #action>
@@ -25,7 +36,11 @@
 							@click="complete(idx)"
 						/>
 					</template>
-					{{ task.isCompleted ? $t("fields.completed") : $t("fields.ongoing") }}
+					{{
+						task.isCompleted
+							? $t("pages.loreBook.fields.labels.completed")
+							: $t("pages.loreBook.fields.labels.ongoing")
+					}}
 				</v-tooltip>
 			</template>
 		</v-text-field>
@@ -34,32 +49,16 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
 import TagListPanel from "@/components/cards/tags/TagListPanel.vue";
 import ListPanel from "@/components/common/ListPanel.vue";
-import { Icon } from "@/core/icons";
-import { Quest, Task } from "@/core/model/cards";
+import { Quest, Task } from "@/core/models";
 import { t as $t } from "@/core/translation";
+import { Icon } from "@/core/utils/icons";
 import { required } from "@/core/validationRules";
 
-const props = defineProps<{
-	modelValue: Quest; // v-model
-}>();
+const model = defineModel<Quest>({ required: true }); // v-model
 
-const emit = defineEmits<{
-	(e: "update:modelValue", value: typeof props.modelValue): void;
-}>();
-
-const model = computed({
-	get() {
-		return props.modelValue;
-	},
-	set(value) {
-		emit("update:modelValue", value);
-	},
-});
-
-const requiredRule = required($t("fields.requiredField"));
+const requiredRule = required($t("pages.loreBook.fields.errors.requiredField"));
 
 function addTask(): void {
 	const task: Task = {
@@ -76,11 +75,6 @@ function complete(idx: number): void {
 function remove(idx: number): void {
 	if (idx in model.value.tasks) model.value.tasks.splice(idx, 1);
 }
-
-// function cleanInput(): void {
-// 	// Remove empty tasks
-// 	model.value.tasks = model.value.tasks.filter((task: Task) => task.desc.trim());
-// }
 </script>
 
 <style scoped>

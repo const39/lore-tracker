@@ -1,72 +1,67 @@
 <template>
 	<v-tooltip location="bottom">
-		<template #activator="{ props }">
-			<div class="d-inline text-body-2" v-bind="props">
+		<template #activator="{ props: tooltipProps }">
+			<div class="d-inline text-body-2" v-bind="tooltipProps">
 				<span
 					class="clickable"
 					@click.left="daysCounter++"
 					@click.prevent.right="daysCounter--"
 				>
 					<v-icon color="yellow-darken-2" size="small" icon="mdi-white-balance-sunny" />
-					{{ $t("status.day") + daysCounter }}
+					{{ $t("data.campaign.day") + " " + daysCounter }}
 				</span>
 				|
 				<span
 					class="clickable"
-					@click.left="nextSeason"
-					@click.prevent.right="previousSeason"
+					@click.left="nextSeason()"
+					@click.prevent.right="previousSeason()"
 				>
 					<v-icon :color="seasonColors[currentSeason]" size="small" icon="mdi-flower" />
-					{{ $t(`status.seasons.${currentSeason}`) }}
+					{{ $t(`data.campaign.seasons.${currentSeason}`) }}
 				</span>
 			</div>
 		</template>
-		{{ $t("status.action") }}
+		{{ $t("pages.loreBook.banner.statusAction") }}
 	</v-tooltip>
 </template>
 
 <script lang="ts" setup>
-import { computed } from "vue";
-import { Season } from "@/core/constants";
+import { useCycleList } from "@vueuse/core";
+import { computed, watch } from "vue";
+import { Season } from "@/core/models";
 import { t as $t } from "@/core/translation";
-import { useCampaignInfoStore } from "@/store/campaignInfo";
+import validationRules from "@/core/validationRules";
 
-const campaignInfoStore = useCampaignInfoStore();
+const props = defineProps<{
+	day: number; // v-model:day
+	season: Season; // v-model:season
+}>();
+
+const emit = defineEmits<{
+	(e: "update:day", value: number): void;
+	(e: "update:season", value: Season): void;
+}>();
+
+const dayValidator = validationRules.numberInRange("", 1);
 
 const daysCounter = computed({
 	get() {
-		return campaignInfoStore.days;
+		return props.day;
 	},
 	set(val) {
-		if (Number.isSafeInteger(val) && val > -1) campaignInfoStore.days = val;
+		// Update v-model:day if the validation passed
+		if (dayValidator(val) === true) emit("update:day", val);
 	},
 });
 
-const currentSeason = computed({
-	get() {
-		return campaignInfoStore.season;
-	},
-	set(val) {
-		campaignInfoStore.season = val;
-	},
-});
+const {
+	state: currentSeason,
+	next: nextSeason,
+	prev: previousSeason,
+} = useCycleList(Object.values(Season), { initialValue: computed(() => props.season) });
 
-function previousSeason() {
-	const values = Object.values(Season);
-	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
-	if (index > -1) {
-		if (index > 0) currentSeason.value = values[index - 1];
-		else currentSeason.value = values[values.length - 1];
-	}
-}
-function nextSeason() {
-	const values = Object.values(Season);
-	const index = values.findIndex((entry) => entry === campaignInfoStore.season);
-	if (index > -1) {
-		if (index < values.length - 1) currentSeason.value = values[index + 1];
-		else currentSeason.value = values[0];
-	}
-}
+// Update v-model:season on value change
+watch(currentSeason, (season) => emit("update:season", season));
 
 // * Style
 const seasonColors = {
