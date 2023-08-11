@@ -214,6 +214,9 @@ const fr: Locale = {
 				title: "LoreTracker a reçu une nouvelle mise à jour !",
 				message: "Voir les détails sur GitHub.",
 			},
+			backupReminder: {
+				message: "N'oubliez pas de faire une copie de votre sauvegarde !",
+			},
 		},
 	},
 

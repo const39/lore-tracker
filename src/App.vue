@@ -202,10 +202,10 @@ onMounted(() => {
 	// Show a periodic reminder to backup the save file (1h after app startup)
 	setTimeout(() => {
 		showSnackbar({
-			message: "test",
-			timeout: 15000,
+			message: $t('messages.info.backupReminder.message'),
+			timeout: 20000,
 			color: "grey-lighten-2",
-			icon: "mdi-help-circle-outline",
+			icon: "mdi-information-outline",
 			location: "top",
 		});
 	}, 60 * 60 * 1000);
