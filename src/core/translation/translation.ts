@@ -230,6 +230,9 @@ export interface Locale {
 				title: string;
 				message: string;
 			};
+			backupReminder: {
+				message: string;
+			};
 		};
 	};
 
