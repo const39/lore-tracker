@@ -70,14 +70,14 @@ const content = computed({
 		return props.campaign.quickNote;
 	},
 	set(value) {
-		update(value);
+		saveContent(value);
 	},
 });
 
-// Update the quick note's content 300ms after the user finished typing
-const update = useDebounceFn((content?: string) => {
-	campaignRepo.update({ id: props.campaign.id, quickNote: content?.trim() ?? "" });
-}, 300);
+// Update the quick note's content 800ms after the user finished typing
+const saveContent = useDebounceFn((content?: string) => {
+	campaignRepo.update({ id: props.campaign.id, quickNote: content ?? "" });
+}, 800);
 
 const size = computed({
 	get() {
