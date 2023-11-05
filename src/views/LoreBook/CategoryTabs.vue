@@ -105,7 +105,7 @@ const selectedItems = computed<Array<Folder | LoreEntry>>(() => [
 ]);
 
 /**
- * Update the current folders and files to display based.
+ * Update the current folders and files to display.
  */
 async function updateItems() {
 	resetAlert();
