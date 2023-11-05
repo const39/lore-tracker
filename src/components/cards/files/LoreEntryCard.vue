@@ -8,6 +8,7 @@
 		@edit="showForm"
 		@delete="confirmDelete"
 		@move="moveLoreEntry"
+		@dblclick="showForm"
 		@dragstart="($event) => $emit('dragstart', $event)"
 	>
 		<!-- Dynamic Card content component -->
