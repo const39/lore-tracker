@@ -1,0 +1,6 @@
+services:
+  lore-tracker:
+    container_name: lore-tracker
+    build: .
+    ports:
+      - 3000:80
