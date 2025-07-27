@@ -54,4 +54,4 @@ npm --no-git-tag-version version <major|minor|patch>
 
 This program is licensed under the GNU General Public License v3.0.
 
-© 2021-2023 const39
+© 2021-2025 const39
